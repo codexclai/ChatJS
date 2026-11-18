@@ -43,6 +43,9 @@
 23. Recorded Windows Codex, command runner, code-mode host, sandbox, terminal, browser/native-host, computer-use, plugin/skill, shell and file-association observations in docs/REFERENCE_DESKTOP.md.
 24. Updated future-chat continuity and Project Instructions to rely on committed mobile/desktop findings instead of repeatedly requesting reference binaries.
 25. Copied the supplied Android ChatGPT.zip archive into private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip and verified it by materializing the Library copy back successfully (54,869,202 bytes).
+26. Moved Android archive to private Library /ChatJS-Archives/ChatJS-Android.zip, deleted old folder, verified new listing and re-materialized renamed 54,869,202-byte file.
+27. Recorded Windows MSIX retention attempt and blocker: browser export caps at 25 MiB; 1 MiB test succeeded but full 1,057,802,768-byte transfer was not achieved.
+28. Made contemporaneous canonical documentation of meaningful requirements, decisions, actions, file changes, tests, failures, limits and handoffs a permanent workflow requirement.
 
 ## Not implemented
 
@@ -64,8 +67,8 @@
 
 - Source: Owner-supplied ChatGPT.zip Android reference and ChatGPT-x64.msix Windows desktop URL.
 - Acquisition: The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.
-- Availability: Android archive retained in the owner's private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip (54,869,202 bytes); Library listing and re-materialization succeeded. Windows MSIX is not retained as a binary; its official URL and static package findings are recorded in docs/REFERENCE_DESKTOP.md. Neither binary is in public Git. Owner intends to clear Project Sources; deletion is not confirmed.
-- Evidence limit: Android inspection was static manifest/resource metadata only; the original archive is privately retained in ChatGPT Library, not Git. Windows inspection was static MSIX manifest, ZIP listing and Electron ASAR directory metadata only; app was not installed/launched, signature was not verified, and no proprietary code/assets were extracted/copied. Package observations do not prove full UI behavior or supported Node.js interfaces.
+- Availability: Android archive retained in owner's private ChatGPT Library at /ChatJS-Archives/ChatJS-Android.zip (54,869,202 bytes); path/name verified and file re-materialized after move. Windows MSIX (1,057,802,768 bytes) is not retained: browser file export limited to 25 MiB, only a 1 MiB test chunk transferred, and full direct download failed. Official URL/findings are in docs/REFERENCE_DESKTOP.md. Neither binary is in public Git. Owner intends to clear Project Sources; deletion is not confirmed.
+- Evidence limit: Android inspection was static manifest/resource metadata only; original archive is in private Library, not Git. Windows inspection was static MSIX manifest, ZIP listing and Electron ASAR metadata only; app was not installed/launched, signature not verified, and no proprietary code/assets extracted/copied. Full Windows installer was not transferred to Library; browser export cap is 25 MiB. Package observations do not prove full UI behavior or Node.js interfaces.
 
 ## Continuity
 
