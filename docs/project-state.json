@@ -32,7 +32,8 @@
     "Explicitly excluded health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permission domains.",
     "Downloaded and statically inspected the user-supplied Windows x64 MSIX manifest and Electron/ASAR directory metadata without installing or executing it.",
     "Recorded Windows Codex, command runner, code-mode host, sandbox, terminal, browser/native-host, computer-use, plugin/skill, shell and file-association observations in docs/REFERENCE_DESKTOP.md.",
-    "Updated future-chat continuity and Project Instructions to rely on committed mobile/desktop findings instead of repeatedly requesting reference binaries."
+    "Updated future-chat continuity and Project Instructions to rely on committed mobile/desktop findings instead of repeatedly requesting reference binaries.",
+    "Copied the supplied Android ChatGPT.zip archive into private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip and verified it by materializing the Library copy back successfully (54,869,202 bytes)."
   ],
   "notImplemented": [
     "Local workspace, file, command/process, task, memory, artifact, browser, desktop-control or remote-host capabilities.",
@@ -51,7 +52,7 @@
   "reference": {
     "source": "Owner-supplied ChatGPT.zip Android reference and ChatGPT-x64.msix Windows desktop URL.",
     "acquisition": "The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.",
-    "availability": "Android ZIP and Windows x64 MSIX were available during inspection. Permitted observations are preserved in docs/REFERENCE_APK.md and docs/REFERENCE_DESKTOP.md; neither official binary is retained in Git. The owner intends to clear Project Sources; deletion is not confirmed.",
-    "evidenceLimit": "Android inspection was static manifest/resource metadata only. Windows inspection was static MSIX manifest, ZIP listing and Electron ASAR directory metadata only; the app was not installed/launched, its signature was not verified, and no proprietary code/assets were extracted or copied. Package observations do not prove complete UI behavior or supported Node.js interfaces."
+    "availability": "Android archive retained in the owner's private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip (54,869,202 bytes); Library listing and re-materialization succeeded. Windows MSIX is not retained as a binary; its official URL and static package findings are recorded in docs/REFERENCE_DESKTOP.md. Neither binary is in public Git. Owner intends to clear Project Sources; deletion is not confirmed.",
+    "evidenceLimit": "Android inspection was static manifest/resource metadata only; the original archive is privately retained in ChatGPT Library, not Git. Windows inspection was static MSIX manifest, ZIP listing and Electron ASAR directory metadata only; app was not installed/launched, signature was not verified, and no proprietary code/assets were extracted/copied. Package observations do not prove full UI behavior or supported Node.js interfaces."
   }
 }
