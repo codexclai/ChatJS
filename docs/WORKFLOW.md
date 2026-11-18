@@ -3,64 +3,71 @@
 ## Start
 
 1. Read docs/AI_MEMORY.md and docs/CONTINUATION.md.
-2. Inspect the live repository, main, complete branch list, latest commit, tasks, decisions, knowledge, experiments and history.
-3. Search ChatJS Project → Sources for ChatGPT.zip before requesting the reference APK again.
-4. Work only on main. Never create, delete, rename, switch to or publish another branch; never use branch/ref creation or deletion operations. Do not configure or propose branch protection/rulesets or repository topics.
+2. Inspect live repository/main, full branch list, latest commit, tree, issues/PRs, CI and TODO.
+3. Search ChatJS Project → Sources for ChatGPT.zip before asking for another upload.
+4. Work only on main. Never create/delete/rename/switch branches or worktrees. Do not configure or propose branch protection/rulesets or repository topics.
 5. Choose one high-priority task and define acceptance criteria before editing.
+
+## Product boundary
+
+- ChatJS is mobile-first, with applicable desktop Work/Codex capabilities translated into Node.js.
+- Do not use OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth/token sharing, private ChatGPT backend endpoints, or app cookies/tokens/session state.
+- Treat official ChatGPT product docs only as descriptions of the reference app.
+- No non-OpenAI inference engine is selected. Do not fake generated answers, agent behavior, voice or image generation.
+- Exclude health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions/features.
+- See CHATGPT_CAPABILITY_INVENTORY.md and DECISIONS.md.
 
 ## Research
 
-- Prefer current official documentation and authoritative sources.
-- Record source links, dates, scope and limitations.
-- Distinguish official API contracts, public product documentation, observed UI behavior and inference.
-- Record unresolved questions rather than hiding uncertainty.
-- Check legal, privacy, security, platform and plan limitations early.
+- Prefer current official product documentation and authoritative Node.js/OS documentation.
+- Record source links, access dates, scope, limitations and evidence class.
+- Separate observed APK package indicators from actual user-visible product behavior.
+- Separate ChatGPT app features from Node.js local capabilities and account-only/cloud services.
+- Record unknowns and blockers rather than converting assumptions into facts.
 
 ## Implementation
 
-- Inspect existing code and conventions.
-- Keep changes cohesive and directly related to ChatJS.
+- Inspect existing code and prior experiments before editing.
+- Every change must directly serve ChatJS.
 - Use the smallest justified dependency set.
-- No fake, canned, predefined, mock or placeholder runtime features; test fixtures remain test-only.
-- No telemetry, analytics, tracking, profiling, hidden collection, phone-home, background reporting, remote diagnostics or telemetry dependencies.
-- No hidden or unsolicited network traffic. Service requests must be explicit, necessary, documented, configured and authorized.
-- Define asynchronous behavior, cancellation, concurrency and cleanup.
-- Validate inputs; keep credentials/private content out of logs; use stable errors.
+- No fake, canned, mock, placeholder or no-op runtime features.
+- Zero telemetry, hidden collection, phone-home, background reporting or unsolicited network traffic.
+- Local filesystem/process operations require explicit caller scope, validated inputs, limits, cancellation and cleanup.
+- Command execution must use explicit executable/argv, no shell by default, and an approval policy.
+- External/platform adapters require explicit configuration, permissions, authorization and side-effect review.
+- Protect credentials and private data; redact logs; do not persist content silently.
 
 ## Verification
 
-Run the project check suite before finalizing:
+Run npm run check before finalizing:
 - JavaScript syntax checks.
 - Generated project-state synchronization.
 - Local Markdown link validation.
 - Node.js built-in test suite.
 - ChatJS.tar.gz generation and archive-content tests.
-- GitHub CI extraction and ESM/CommonJS module-loading smoke tests.
+- CI extraction and CommonJS/ESM package-loading smoke tests.
 
-Add focused tests for changed behavior. State clearly if a test was not run or depends on an unavailable service. When network integrations are added, test that no unsolicited requests or telemetry occur.
+Add tests for success, failure, cancellation, concurrency, security and regressions as relevant. State clearly if a test was not run.
 
 ## Documentation
 
 When behavior or design changes:
-- update root ChatJS.md for public API and user-visible behavior;
-- update CAPABILITY_MATRIX.md with status and evidence;
+- update root ChatJS.md for actual public API/user-visible behavior;
+- update CAPABILITY_MATRIX.md and CHATGPT_CAPABILITY_INVENTORY.md;
 - update ARCHITECTURE.md and DECISIONS.md as applicable;
 - update TODO.md and ROADMAP.md;
-- update docs/project-state.json and regenerate PROJECT_STATE.md;
-- append a dated SESSION_LOG.md entry;
+- update project-state.json and regenerate PROJECT_STATE.md;
+- append SESSION_LOG.md;
 - update KNOWLEDGE_BASE.md, EXPERIMENTS.md and OPEN_QUESTIONS.md when relevant.
-
-CI checks generated-state and broken-link drift, but authors remain responsible for semantic accuracy.
 
 ## Git hygiene
 
 - Commit focused, descriptive changes directly to main.
-- Never create, delete, rename, switch to, publish or modify another branch.
+- Never create/delete/rename/switch/publish/modify another branch or worktree.
 - Never force-push.
-- Do not configure or propose branch protection/rulesets or repository topics.
-- Review changes for secrets, binary artifacts, unrelated generated files and licensing issues.
-- Do not commit dist/ChatJS.tar.gz; CI builds and uploads it as an artifact.
+- Review changes for secrets, binaries, unrelated generated files and proprietary content.
+- Do not commit dist/ChatJS.tar.gz; CI builds and uploads it.
 
 ## Finish
 
-Record files changed, actual behavior and remaining gaps, tests actually run, commit references, blockers and the next task. The history must let a different chat resume without asking what happened.
+Record changed files, actual behavior, gaps, tests, commit references, blockers and the next exact task. No background work or future-delivery promises.
