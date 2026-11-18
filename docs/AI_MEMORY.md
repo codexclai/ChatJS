@@ -7,7 +7,7 @@
 2. docs/project-state.json: structured state; PROJECT_STATE.md is generated.
 3. /docs: requirements, reference findings, decisions, tasks, experiments, risks and handoff.
 4. Project Instructions and latest owner direction.
-5. Project Sources are optional: the owner intends to clear them. The Android ZIP is backed up in the personal Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip; the Windows MSIX can be re-fetched from the URL in REFERENCE_DESKTOP.md. Never request the old Project Sources merely to repeat research.
+5. Project Sources are optional: the owner intends to clear them. The Android ZIP is backed up in the personal Library at /ChatJS-Archives/ChatJS-Android.zip; the Windows MSIX is not retained; its URL and findings are in REFERENCE_DESKTOP.md. Never request the old Project Sources merely to repeat research.
 6. Model assumptions never override repository evidence.
 
 Resolve conflicts using live main and latest owner direction, then record the correction.
@@ -47,6 +47,9 @@ ChatJS is an independent Node.js module inspired by ChatGPT mobile first and app
 
 ## Evidence
 Verified = code/tests or authoritative docs. Observed = package/UI indicator, not API guarantee. Inferred = unconfirmed. Planned = not implemented. Blocked = missing engine/permission/platform/interface. Out of scope = owner excluded it. Keep sources, dates and limits.
+
+## Documentation completeness
+Record available meaningful requirements, decisions, research, actions, file changes, tests, failures, limits, blockers and handoffs in canonical docs during the same session. Correct affected references; do not claim invisible monitoring.
 
 ## End of session
 Commit coherent work directly to main. Update project-state.json and regenerate PROJECT_STATE.md; update TODO, SESSION_LOG and relevant docs. Run npm run check, verify ChatJS.tar.gz, inspect final tree, and record actual results, commit refs, blockers and next task. Never claim unverified behavior.
