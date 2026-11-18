@@ -12,7 +12,7 @@
 
 ## Evidence
 
-The Project Source ChatGPT.zip contains one base.apk. Prior inspection was static and limited to the binary manifest and high-level packaged resource/module names. No emulator, interactive session, or DEX decompilation was used. Package names/permissions are **Observed package indicators** only; they do not prove a feature is enabled, entitled, or accessible to Node.js.
+The supplied Android ZIP contained one base.apk. Inspection was static and limited to the binary manifest and high-level packaged resource/module names. Package names/permissions are **Observed package indicators** only, not proof of feature availability or Node.js access. The original is not retained in Git; see [REFERENCE_APK.md](REFERENCE_APK.md).
 
 Current product references:
 - [ChatGPT Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)
@@ -58,6 +58,12 @@ Work has scheduling concepts: run once, repeat, trigger on supported events, or 
 | Deliverables | Local artifact generation with tested format support |
 | Scheduling | Explicit caller-managed scheduler; stopped Node process cannot continue work |
 | Voice coordination | Only after a real speech engine and host permission contract exist |
+
+## Windows desktop package observations
+
+The supplied Windows x64 MSIX was downloaded and statically inspected on 2026-11-18. The manifest identifies the ChatGPT Windows app and a separate Codex executable. Electron ASAR/package metadata and file listing indicate a bundled Node.js runtime, command runner, code-mode host, Windows sandbox service/setup, PTY/ConPTY components, browser native-host, computer-use components, plugin/skill directories, Explorer context-menu integration for opening a project in Codex, a codex: URI handler, document/spreadsheet associations, and programmatic screen-capture capability declarations. The app was not installed/executed; no code/assets were extracted. The MSIX itself is not retained in Git.
+
+See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md) for package metadata, observations, limitations and independent implementation implications.
 
 ## Desktop Codex
 

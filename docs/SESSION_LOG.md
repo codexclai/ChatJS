@@ -103,3 +103,15 @@ Resolve legal ownership/licensing and Sign in with ChatGPT eligibility without c
 
 ### Next task
 Specify and implement a local Work/Codex vertical slice: a caller-selected, path-confined workspace with bounded file operations. Define symlink/race handling, size/depth limits, cancellation, atomic writes, and tests before exposing the public API.
+
+ 
+## 2026-11-18 — Windows MSIX static inspection and durable reference handoff
+
+- Downloaded the supplied Windows x64 MSIX to temporary browser storage (1,057,802,768 bytes; response Last-Modified 2026-11-14).
+- Inspected AppxManifest.xml, package listing and Electron ASAR directory/package metadata. Identity OpenAI.Codex, x64, display name ChatGPT; Appx version 26.1111.2228.0; embedded Electron package metadata names Codex / openai-codex-electron / 26.1111.21308.
+- Observed ChatGPT.exe and separate Codex.exe; Electron/Chromium; bundled Node runtime; command runner/code-mode host; Windows sandbox service/setup; node-pty/ConPTY; browser native host; computer-use executables; plugin/skill resources; Explorer OpenProjectInCodex context menu; codex: protocol; .skill and document/spreadsheet associations; screen-capture capability declarations.
+- Signature/blockmap files were present but signature verification was not performed. App was not installed/launched/signed into. No proprietary source, binaries, docs, plugins, assets, tokens, cookies or private protocols were extracted, executed or copied.
+- Added docs/REFERENCE_DESKTOP.md and linked it from the capability inventory, knowledge base and project index. Updated Android reference and future-chat continuity rules.
+- The owner intends to clear ChatGPT Project → Sources after this review. This records intention only; never claim Sources are empty until the owner confirms it.
+- Original Android APK and Windows MSIX are not committed to the public repo. Permitted, independently authored observations and implementation implications are the durable reference.
+- Next: define a secure read-only local workspace contract and implement it as the first deterministic Work/Codex feature.

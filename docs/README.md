@@ -1,33 +1,30 @@
 # ChatJS Project Documentation
 
-This directory contains the persistent project knowledge and engineering handbook for ChatJS. It is shared memory for all chats working in the ChatJS Project.
+This directory contains persistent project knowledge and the engineering handbook. The user-facing module manual is root-level [ChatJS.md](../ChatJS.md).
 
-The user-facing Node.js module manual is the root-level [ChatJS.md](../ChatJS.md).
-
-## Start here
-1. [AI Memory](AI_MEMORY.md) — shared memory, evidence rules, permanent constraints.
-2. [Continuation Guide](CONTINUATION.md) — start, resume, and finish protocol.
-3. [Project State](PROJECT_STATE.md) — snapshot generated from project-state.json.
-4. [Tasks](TODO.md) — prioritized work queue.
-5. [Session History](SESSION_LOG.md) — chronological work record.
+## Start
+1. [AI Memory](AI_MEMORY.md) — continuity and permanent constraints.
+2. [Continuation](CONTINUATION.md) — session protocol and “Continue”.
+3. [Project State](PROJECT_STATE.md) — generated snapshot from project-state.json.
+4. [Tasks](TODO.md) — priority queue.
+5. [Session History](SESSION_LOG.md) — chronological record.
 
 ## Product and engineering knowledge
-- [ChatGPT App Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md) — mobile-first references, desktop Work/Codex mapping, Node.js feasibility, and explicit exclusions.
-- [Capability Matrix](CAPABILITY_MATRIX.md) — actual ChatJS implementation status.
-- [Knowledge Base](KNOWLEDGE_BASE.md) — verified facts and product-reference sources.
-- [Decisions](DECISIONS.md) — permanent requirements and design rationale.
-- [Experiments](EXPERIMENTS.md) — investigation history, including withdrawn directions.
-- [Open Questions](OPEN_QUESTIONS.md) — unknowns, blockers, dependencies and risks.
-- [Roadmap](ROADMAP.md) — intended delivery sequence, not support claims.
+- [Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md) — mobile-first references and desktop Work/Codex mapping.
+- [Capability Matrix](CAPABILITY_MATRIX.md) — actual implementation status.
+- [Knowledge Base](KNOWLEDGE_BASE.md) — facts, sources and technical notes.
+- [Decisions](DECISIONS.md) — owner requirements and design rationale.
+- [Experiments](EXPERIMENTS.md) — successful, failed and withdrawn investigations.
+- [Open Questions](OPEN_QUESTIONS.md) — unresolved issues.
+- [Roadmap](ROADMAP.md) — intended sequence.
 
-## Engineering references
-- [Architecture](ARCHITECTURE.md) — module boundaries, privacy and technical contracts.
-- [Development Workflow](WORKFLOW.md) — research, implementation, testing and handoff.
-- [Reference APK](REFERENCE_APK.md) — provenance and safe use of ChatGPT.zip in Project Sources.
-- [Repository Settings](REPOSITORY_SETTINGS.md) — verified GitHub settings and main-only rule.
-- [Governance](GOVERNANCE.md) — rights and contribution policy.
-- [Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md) — compact instructions for the ChatJS Project.
+## Reference evidence
+- [Android package record](REFERENCE_APK.md) — static mobile manifest/resource observations and limits.
+- [Windows desktop MSIX record](REFERENCE_DESKTOP.md) — package identity, Electron/Node/Codex/sandbox/browser/shell observations and implementation implications.
 
-## Keeping documentation current
+## Engineering handbook
+- [Architecture](ARCHITECTURE.md), [Workflow](WORKFLOW.md), [Repository Settings](REPOSITORY_SETTINGS.md), [Governance](GOVERNANCE.md), [Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md).
 
-Update canonical documents when knowledge changes. Avoid duplication. Update project-state.json and regenerate PROJECT_STATE.md. Append to SESSION_LOG.md at the end of every meaningful session.
+The owner intends to clear ChatGPT Project → Sources after this review. Committed records are the durable permitted references; official APK/MSIX binaries are not stored here. Do not claim Source deletion until confirmed.
+
+Update canonical records when knowledge changes; update project-state.json and regenerate PROJECT_STATE.md; append SESSION_LOG.md for each meaningful session.
