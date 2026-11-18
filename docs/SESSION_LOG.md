@@ -2,6 +2,38 @@
 
 Append a concise but complete entry for each meaningful work session. Preserve the chronological record.
 
+## 2026-11-18 — Main-only, privacy, and project-scope rules
+
+### Goals
+Apply the user's latest permanent constraints to ChatJS, update the Project Instructions text, and ensure future chats continue without reintroducing unwanted repository or product behavior.
+
+### Work completed
+- Confirmed through GitHub's full branches endpoint that the repository currently has only main; the branch record reports protected=false.
+- Confirmed repository topics are empty, the About description is unset, and no repository rulesets were returned.
+- Recorded the permanent policy: work directly on main; never create, delete, rename, switch to or publish other branches; do not configure branch protection/rulesets or repository topics.
+- Added the zero-telemetry policy: no analytics, tracking, ads, profiling, hidden collection, background reporting, phone-home requests, remote diagnostics or telemetry dependencies.
+- Explicitly prohibited fake, canned, predefined, demo-only, placeholder, no-op or mock runtime behavior, and prohibited bloatware, filler and unrelated additions. Test fixtures must remain test-only.
+- Updated docs/CHATGPT_PROJECT_INSTRUCTIONS.md, AI_MEMORY.md, CONTINUATION.md, WORKFLOW.md, REPOSITORY_SETTINGS.md, TODO.md, ARCHITECTURE.md, docs/README.md, root ChatJS.md, project-state.json and generated PROJECT_STATE.md.
+- Recorded permanent decisions in DECISIONS.md.
+- Inspected the current package manifest and runtime entry points: no runtime dependencies are declared and the current foundation client makes no network requests.
+- Kept the Google Play reference APK outside the public repository.
+
+### Verification
+- The Project Instructions file is 5,790 characters, below the 6,000-character limit.
+- GitHub's branches API returned exactly one branch, main, and marked it unprotected. No repository topics are set.
+- The new CI test job completed successfully on the updated main commit.
+- The CodeQL run for the updated commit was still in progress at handoff; do not mark it successful until its result is checked.
+- An earlier full CI run passed all 9 tests, generated-state synchronization, local Markdown link checks, archive integrity and ESM/CommonJS extraction smoke tests.
+
+### Remaining limitations
+- The GitHub repository About description is still empty. The connected GitHub tools do not expose an authorized repository-description update operation.
+- The proprietary all-rights-reserved notice still needs legal review.
+- The APK ZIP layout is confirmed, but APK internals and visible feature surfaces have not been analyzed.
+- ChatGPT feature implementation has not started. The current module is a clearly labelled foundation scaffold, not a finished ChatGPT client.
+
+### Next task
+Set the repository description using docs/REPOSITORY_SETTINGS.md, then resume the highest-priority product research task: inspect the available APK source and build an evidence-backed inventory of ChatGPT mobile capabilities and authorized programmatic interfaces.
+
 ## 2026-11-18 — Repository foundation and continuity setup
 
 ### Goals
