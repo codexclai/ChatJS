@@ -2,8 +2,8 @@
   "project": "ChatJS",
   "repository": "codexclai/ChatJS",
   "moduleName": "ChatJS",
-  "phase": "Repository foundation and pre-implementation",
-  "status": "Repository setup, shared memory and the module archive pipeline are in place; ChatGPT feature implementation has not started.",
+  "phase": "Public-interface research and pre-implementation",
+  "status": "Repository foundation and static Android/API capability research are documented; ChatGPT feature implementation has not started.",
   "defaultBranch": "main",
   "lastReviewed": "2026-11-18",
   "runtimePolicy": "Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system.",
@@ -21,24 +21,30 @@
     "Verified the CodeQL workflow completed successfully.",
     "Removed ChatJS product release numbering, package version fields, lockfiles, release workflows, checksum inventories and npm registry publishing.",
     "Verified the complete paginated repository branch search currently returns only main.",
-    "Recorded permanent constraints: main-only with no branch creation/deletion, no branch-protection/topics setup, no product telemetry/tracking/hidden data collection, and no unrelated or pretend functionality."
+    "Recorded permanent constraints: main-only with no branch creation/deletion, no branch-protection/topics setup, no product telemetry/tracking/hidden data collection, and no unrelated or pretend functionality.",
+    "Set the GitHub About description to the owner-approved wording; no topics or branch protection/rulesets were added.",
+    "Removed Dependabot update automation that could create branches; verified the branch listing contains only main.",
+    "Inspected the reference APK manifest and high-level resource/module names statically; documented scope and limitations without redistributing the APK.",
+    "Created a capability inventory separating static APK indicators from official, authorized Node.js interfaces.",
+    "Reviewed current OpenAI developer documentation, selected Responses API as the new-integration foundation, and documented the Assistants API shutdown and Sign in with ChatGPT preview restrictions."
   ],
   "notImplemented": [
     "ChatGPT authentication, account/session management or service transport.",
-    "Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT or settings features.",
-    "A source-backed and verified 1:1 ChatGPT mobile feature inventory or compatibility guarantee.",
-    "Runtime integrations with official, documented or otherwise authorized service interfaces."
+    "Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT or settings features in ChatJS.",
+    "Access to users' ChatGPT consumer conversation history, memory or other account context.",
+    "Hands-on verification of every ChatGPT mobile UI surface or a 1:1 compatibility guarantee.",
+    "Sign in with ChatGPT plan-usage OAuth; eligibility is unresolved because the repository currently carries an all-rights-reserved notice."
   ],
   "nextActions": [
-    "Set the GitHub repository description to the wording in docs/REPOSITORY_SETTINGS.md; do not add topics or branch protection.",
-    "Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external code contributions.",
-    "Inspect ChatGPT.zip's base.apk reference and build a source-backed ChatGPT capability inventory, separating observed application behavior from authorized programmatic interfaces.",
-    "Design and test the first stable client, transport, event, streaming, cancellation and error contracts before implementing capabilities."
+    "Resolve legal ownership, licensing and eligibility for Sign in with ChatGPT plan usage; do not change the license without explicit owner direction.",
+    "Specify a complete API-key Responses provider contract covering credentials, transport, streaming, cancellation, backpressure, timeouts, retries, errors, concurrency and cleanup.",
+    "Implement and test one narrow, real Responses text workflow only after the contract is defined.",
+    "Verify the availability and status of private vulnerability reporting, secret scanning and push protection."
   ],
   "reference": {
     "source": "ChatGPT.zip in ChatJS Project → Sources in ChatGPT",
     "acquisition": "The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.",
-    "availability": "The Project Source was found and its original ZIP bytes were made available in this session. The ZIP contains one base.apk entry. New chats must search Project Sources before asking the user to reattach it.",
-    "evidenceLimit": "The user's Google Play acquisition provenance is recorded. Only the ZIP entry layout has been inventoried so far; APK internals and feature surfaces have not yet been analyzed. Future chats must inspect the actual source file when available and must not claim deeper inspection if it has not occurred."
+    "availability": "ChatGPT.zip was found in Project Sources and contains one base.apk. Static inspection of the binary manifest and high-level resource/module names was completed and documented.",
+    "evidenceLimit": "Inspection was static only; no emulator or interactive UI session, DEX decompilation, or code/resource extraction was performed. Package declarations and resource names are indicators, not proof of active UI, account entitlement, granted permission, or public Node.js API access."
   }
 }
