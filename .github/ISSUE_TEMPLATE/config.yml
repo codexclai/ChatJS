@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability reporting
+    url: https://github.com/codexclai/ChatJS/security/advisories/new
+    about: Report security issues privately. Do not post vulnerabilities in public issues.

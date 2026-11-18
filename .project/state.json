@@ -1,0 +1,45 @@
+{
+  "project": "ChatJS",
+  "repository": "codexclai/ChatJS",
+  "package": "@codexclai/chatjs",
+  "packageVersion": "0.0.1",
+  "phase": "Repository bootstrap and pre-implementation",
+  "status": "Foundation scaffold; feature implementation has not started",
+  "defaultBranch": "main",
+  "lastReviewed": "2026-11-18",
+  "node": {
+    "minimum": "22.14.0",
+    "ci": ["22", "24", "26"],
+    "activeLts": "26"
+  },
+  "completed": [
+    "Confirmed the public GitHub repository codexclai/ChatJS and its empty starting state.",
+    "Created the repository overview and independence / compatibility boundary notices.",
+    "Established ESM and CommonJS package entry points and initial TypeScript declarations.",
+    "Added a minimal lifecycle foundation and built-in Node.js test coverage.",
+    "Added machine-readable project state and generated documentation synchronization.",
+    "Prepared CI, documentation validation, CodeQL, dependency review, Dependabot, and npm OIDC release workflows.",
+    "Recorded the supplied Android APK provenance without publishing or copying the APK into the repository."
+  ],
+  "notImplemented": [
+    "ChatGPT authentication, account/session management, or service transport.",
+    "Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT, or settings features.",
+    "A verified 1:1 ChatGPT mobile feature inventory or compatibility guarantee.",
+    "Runtime integrations with official, documented, or otherwise authorized service interfaces.",
+    "npm publication, release signing, or an enabled npm trusted publisher."
+  ],
+  "nextActions": [
+    "Apply the manual GitHub repository settings in docs/REPOSITORY_SETTINGS.md, especially main-branch protection and security controls.",
+    "Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external contributions or distributing the package.",
+    "Confirm availability and ownership of the @codexclai npm scope/package name, then configure npm trusted publishing for the release workflow.",
+    "Define a source-backed ChatGPT capability inventory and distinguish public interfaces, observed UI behavior, and inaccessible/private services.",
+    "Design and test the first stable client, transport, event, streaming, cancellation, and error contracts before implementing capabilities."
+  ],
+  "reference": {
+    "archive": "ChatGPT.zip (user-provided conversation attachment)",
+    "apk": "base.apk",
+    "sizeBytes": 101864095,
+    "sha256": "42291c2010897f940e1691f357bfffcb8d35ba7c329104240d4b26412d3eae15",
+    "evidenceLimit": "The ZIP contains one APK entry and the APK has a binary Android manifest and resource inventory. Its manifest metadata was not fully decoded in this environment; the archive timestamp does not prove that this is the latest public ChatGPT release."
+  }
+}

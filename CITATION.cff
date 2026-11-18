@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this project, cite the repository and the exact commit you used."
+title: "ChatJS"
+type: software
+repository-code: "https://github.com/codexclai/ChatJS"
+license: "LicenseRef-Proprietary-All-Rights-Reserved"
+version: "0.0.1"
+date-released: "2026-11-18"
+authors:
+  - name: "codexclai"

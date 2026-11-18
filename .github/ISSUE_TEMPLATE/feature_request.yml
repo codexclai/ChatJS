@@ -1,0 +1,33 @@
+name: Feature request
+description: Propose a capability or improvement for ChatJS.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and use case
+      description: What user problem should ChatJS solve?
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected behavior
+      description: Describe the intended developer-facing behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and references
+      description: Link current official documentation or describe observed behavior and its limits.
+    validations:
+      required: false
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints and risks
+      description: Mention platform, authentication, privacy, legal, or service dependencies.
+    validations:
+      required: false
