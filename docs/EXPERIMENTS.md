@@ -52,9 +52,3 @@ For each investigation include question, setup/method, actual result, conclusion
 - Android: moved Library item to /ChatJS-Archives/ChatJS-Android.zip and deleted old empty folder. Listing confirmed requested name/path and 54,869,202-byte size; re-materialization after move succeeded.
 - Windows: previous browser session held the full temporary MSIX, but file export permits at most 25 MiB. A 1 MiB test chunk exported; direct full 1,057,802,768-byte download failed. No complete Library transfer.
 - Conclusion: Android backup verified; Windows backup blocked. Keep official URL/findings. Never store a partial chunk under a complete installer name.
-
-
-### Private Library archive rename and Windows large-file transfer
-- Android: moved Library item to /ChatJS-Archives/ChatJS-Android.zip and deleted old empty folder. Listing confirmed requested name/path and 54,869,202-byte size; re-materialization after move succeeded.
-- Windows: previous browser session held the full temporary MSIX, but file export permits at most 25 MiB. A 1 MiB test chunk exported; direct full 1,057,802,768-byte download failed. No complete Library transfer.
-- Conclusion: Android backup verified; Windows backup blocked. Keep official URL/findings. Never store a partial chunk under a complete installer name.

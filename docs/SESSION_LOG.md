@@ -151,4 +151,4 @@ Specify and implement a local Work/Codex vertical slice: a caller-selected, path
 - Removed exact duplicate private-archive/documentation policy sections from `docs/DECISIONS.md`, duplicate archive-transfer experiment entry from `docs/EXPERIMENTS.md`, and a duplicated archive-retention paragraph from root `README.md`.
 - No runtime source, public API, dependency, binary or product-scope change was made. Android/MSIX binaries remain excluded from public Git; Windows MSIX retention remains blocked as documented in `docs/REFERENCE_DESKTOP.md`.
 - Next engineering priority remains the bounded, caller-selected, read-only local workspace contract in `docs/TODO.md`; do not skip its symlink/junction, traversal, size/count/depth, cancellation, concurrency and filesystem-race requirements.
-
+- Follow-up review found the archive-transfer experiment uses a third-level Markdown heading, so the first duplicate-section pass did not touch it. Removed the remaining exact duplicate subsection after comparing its full content; one canonical entry remains.
