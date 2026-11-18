@@ -1,73 +1,88 @@
 # ChatJS Capability Matrix
 
-**Current implementation status: foundation only.** Research does not mean implemented behavior. See [ChatGPT Capability and Interface Inventory](CHATGPT_CAPABILITY_INVENTORY.md) for APK evidence, public interface mapping and sources.
+**Current implementation status: foundation only.** Intended scope is inspired by ChatGPT mobile first and desktop Work/Codex. Research is not implementation. See [ChatGPT App Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md).
 
 ## Status definitions
-
-- **Implemented:** working code, user documentation, repeatable tests.
+- **Implemented:** working code, documentation, repeatable tests.
 - **Partial:** a defined subset exists; gaps are explicit.
-- **Research:** official interface or product behavior is being assessed.
-- **Planned:** desired scope known; implementation not started.
-- **Blocked:** legal, access, technical or evidence constraint prevents implementation.
-- **Not applicable:** outside the Node.js module's scope.
+- **Research:** product behavior or platform mechanism is being assessed.
+- **Planned:** desired scope known; implementation has not started.
+- **Blocked:** required engine, permission, platform or supported integration unavailable.
+- **Out of scope:** explicitly excluded.
 
-## Core runtime
+## Local Work/Codex foundations
 
-| Capability | Status | Evidence / boundary |
+| Capability | Status | Evidence / acceptance boundary |
 | --- | --- | --- |
-| Client construction and lifecycle | Partial | Foundation tests cover construction, status and close only |
-| Configuration and validation | Planned | No complete provider configuration |
-| API-key authentication | Planned | Public API documented; no ChatJS provider |
-| Sign in with ChatGPT plan usage | Research / eligibility unresolved | Open-source/local app path; ChatJS currently has an all-rights-reserved notice |
-| HTTP transport | Planned | Public documented endpoints only |
-| Streaming | Planned | Responses event stream documented; ChatJS stream contract absent |
-| Cancellation, timeout, retry | Planned | Must be specified and tested at transport boundary |
-| Concurrency and request isolation | Planned | Race, isolation and cleanup tests required |
-| Typed errors | Partial | Foundation error exists; provider taxonomy undefined |
-| Diagnostics | Planned | Local redacted diagnostics only; no telemetry or reporting |
+| Client lifecycle | Partial | Construction, status, close only |
+| Local workspace roots | Planned | Caller-selected directory; canonical root/path confinement |
+| File listing/reading | Planned | Bounded size/count, symlink policy, cancellation, typed errors |
+| Safe writes/diffs | Planned | Atomic writes, conflicts, symlink/race threat model, approval |
+| Local project context/instructions | Planned | Local configuration, explicit persistence |
+| Local memory store | Planned | Caller-owned location, retention/read/write/delete; not ChatGPT memory |
+| Task lifecycle/progress | Planned | Real state/events, pause/cancel, cleanup |
+| Command/process runner | Planned | No shell by default, argv separation, executable policy, timeout/cancel/output limits |
+| Git status/diff/review | Planned | Read-only first; no branches/worktrees |
+| Artifact generation | Planned | Real formats, integrity tests, justified dependencies |
+| Scheduled tasks | Planned | Explicit scheduler while host is running or user-configured service |
+| Approval gates | Planned | Explicit approval for writes, commands, desktop actions, external effects |
 
-## Model and conversation workflows
+## Mobile reference areas
 
-| Capability | Status | Public interface / evidence |
+| Product area | Status | Boundary |
 | --- | --- | --- |
-| Text generation | Research | Responses API; no ChatJS implementation |
-| Multi-turn application conversation | Research | Responses API / Conversations API or caller-managed history |
-| Access to ChatGPT consumer conversations or memory | Blocked / not exposed by documented plan-usage OAuth | No account-context grant |
-| Streaming output | Research | Responses API typed event stream |
-| Model discovery | Research | `GET /v1/models`; account-specific catalog |
-| Structured output | Research | Documented Responses feature |
-| Function calling / custom tools | Research | Public API; application executes and secures functions |
-| Web search | Research | Responses `web_search` |
-| File search | Research | Public API; unavailable in plan-usage preview |
-| Code Interpreter | Research | Public API; unavailable in plan-usage preview |
-| Computer use | Research | Public API; app supplies environment; unavailable in plan-usage preview |
-| Remote MCP / hosted connectors | Research | Public API; unavailable in plan-usage preview |
+| Chat/conversation containers | Planned | Local state; generated replies require an inference engine |
+| Streaming responses | Blocked on inference engine | No canned or simulated stream |
+| Custom instructions/profiles | Planned | Local profiles, not ChatGPT settings |
+| Saved memory | Planned | Explicit local store, not consumer memory |
+| Projects | Planned | Local workspaces/context, no ChatGPT sync |
+| File/image/video attachments | Planned | Local ingestion; model understanding requires inference |
+| Voice conversation | Blocked on speech/inference engine | Real engine and microphone permission required |
+| Live video/screen share | Research/platform adapter | Not portable Node.js core |
+| Search/research | Planned/adapter-based | Explicit retrieval/browser source; not ChatGPT Search |
+| Image generation/editing | Blocked on inference engine | No fake outputs |
+| Work tasks | Planned | Local orchestration, no cloud Work connection |
+| Mobile Remote Codex | Out of scope as ChatGPT integration | Could later build a distinct ChatJS remote-host adapter |
 
-## Multimodal and APK-indicated surfaces
+## Desktop Work reference areas
 
-| Capability | Status | Evidence / boundary |
+| Capability | Status | Boundary |
 | --- | --- | --- |
-| Image input / generation | Research | API input/generation documented; generation unavailable in plan-usage preview |
-| Audio / transcription / text-to-speech | Research | Audio APIs documented; transcription unavailable in plan-usage preview |
-| Real-time voice | Research | Realtime API; distinct from consumer app's private voice service |
-| Video / screen / camera | Research | Only specific documented API routes; Android declarations do not create Node permissions |
-| Files, attachments and preview | Research | Static APK indicators; public file API is a separate developer capability |
-| Image editing and text processing | Research | Static APK indicators; no parity guarantee |
-| Memory, custom instructions, library, projects | Research | Static APK indicators; no consumer memory/history access via plan-use OAuth |
-| Search, external data, Codex, remote sessions | Research | Static APK indicators; public API tools are separate |
-| Health, learning, family, finance, maps, shopping, wallet | Research | Static APK indicators; separate authorization needed for independent integrations |
-| Contacts, calendar, location, camera, microphone, phone, notifications | Research | Android OS permissions do not transfer to Node.js |
+| Long-running tasks/progress | Planned | Local task engine, no cloud Work connection |
+| Local files/folders | Planned | Explicit workspace and bounded operations |
+| Desktop app interaction | Research/platform adapter | Permission-gated OS-specific adapter |
+| Browser research | Research/adapter | User-configured browser/search, no implicit network |
+| Connected apps | Research/adapters | Explicit configuration, scoped consent, approvals |
+| Documents/spreadsheets/presentations/reports/sites | Planned | Genuine local artifact generation and tested formats |
+| Scheduled/repeating tasks | Planned | Explicit scheduler; no hidden process/reporting |
+| Voice task coordination | Blocked on speech/inference engine | No selected engine |
 
-## Platform and distribution
+## Desktop Codex reference areas
 
-| Capability | Status | Evidence |
+| Capability | Status | Boundary |
 | --- | --- | --- |
-| Node.js ESM and CommonJS | Partial | Foundation entry-point tests pass |
-| TypeScript declarations | Partial | Foundation declarations; full API types pending |
-| Windows, macOS, Linux | Planned | Full support matrix not defined |
-| Module archive | Partial | Exact archive allowlist and CI extraction tests |
-| API documentation | Partial | Root ChatJS.md describes current foundation only |
+| Local folders/repositories | Planned | Confined workspace |
+| Terminal/developer tools | Planned | Safe process runner and approvals |
+| Test execution | Planned | Bounded process/output/time |
+| Diff/review/apply changes | Planned | Human review and approval |
+| Multiple agent orchestration | Blocked on inference engine | No simulated agents |
+| Computer use | Research/platform adapter | Narrow OS permissions and approvals |
+| Remote control | Planned/separate design | ChatJS-owned protocol only |
+| Codex Cloud | Out of scope | ChatGPT-hosted environment |
+| Git worktrees/branch parallelism | Out of scope | Conflicts with main-only policy |
+
+## Explicitly out of scope
+
+Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.
+
+## Permanent product boundaries
+
+- No OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth/token sharing, private ChatGPT backends, or reuse of app credentials/cookies/session tokens.
+- No access claims for ChatGPT consumer chats, memory, Projects, custom GPTs, Work, Codex, Remote sessions, or Codex Cloud.
+- No fake generated output; no non-OpenAI inference engine is selected.
+- Node.js core only; native access requires justified optional adapters and explicit permissions.
+- Never create/delete/rename/switch branches or worktrees.
 
 ## Promotion rules
 
-An APK resource or documented upstream API does not make a capability Implemented. Promote only after ChatJS has real code, success/failure tests, cancellation/concurrency/security coverage where relevant, matching ESM/CommonJS exports and declarations, user documentation, and an evidence-backed limitations statement. Keep standard API-key access separate from Sign in with ChatGPT plan usage.
+Mark Implemented only after real code, success/failure tests, cancellation/concurrency/security coverage where relevant, ESM/CommonJS parity, accurate declarations, user docs and evidenced limitations.

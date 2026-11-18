@@ -4,23 +4,36 @@ This is the user-facing documentation for the **ChatJS Node.js module**. It is s
 
 ## Overview
 
-ChatJS is an independent Node.js module being developed to provide a comprehensive, modular implementation of observable ChatGPT capabilities and workflows.
+ChatJS is an independent Node.js module intended to implement useful capabilities inspired by **ChatGPT mobile first**, plus applicable **ChatGPT desktop Work and Codex** workflows.
 
-The goal is broad compatibility with ChatGPT mobile and related experiences wherever authorized interfaces and technical constraints allow. ChatJS is intended to be a cohesive Node.js library—not simply a thin API wrapper—with a consistent client, capability modules, asynchronous workflows, streaming, events, tools and multimodal support.
+ChatJS is a feature-reference project, not a client for the ChatGPT service. It does not connect to ChatGPT accounts, use OpenAI Platform APIs or API keys, use Sign in with ChatGPT OAuth, or access private ChatGPT endpoints/session data. It is not affiliated with, endorsed by, or sponsored by OpenAI.
 
-ChatJS is not affiliated with, endorsed by or sponsored by OpenAI.
+## Product scope
+
+Intended Node.js feature areas include:
+- local conversation and project containers, instructions, and opt-in memory;
+- explicit, confined local workspaces and bounded file operations;
+- Work-style task orchestration, progress, cancellation, and approval gates;
+- Codex-style local repository inspection, diffs, command/test execution, and reviewed file changes;
+- local artifact generation for genuinely supported document formats;
+- explicit browser, desktop, microphone, camera, and screen adapters only where a real supported Node.js/platform mechanism exists.
+
+Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features are explicitly out of scope.
+
+ChatJS cannot inherit Android app permissions from the reference APK. Mobile camera, microphone, video, and screen-sharing experiences require native host access; they are not automatically available to a portable Node.js module.
+
+No non-OpenAI inference engine has been selected. Model-powered responses, reasoning, code authoring, voice conversations, image understanding/generation, and autonomous agent decisions are not implemented and must not be simulated. Local deterministic Work/Codex tooling can be built independently.
 
 ## Current implementation
 
 The repository currently contains the initial foundation only. It provides:
-
-- CommonJS and ECMAScript module entry points.
-- A minimal client factory and constructor.
-- A typed base error.
-- Basic lifecycle state, open-state validation and idempotent close behavior.
+- CommonJS and ECMAScript module entry points;
+- a minimal client factory and constructor;
+- a typed base error;
+- basic lifecycle state, open-state validation, and idempotent close behavior;
 - TypeScript declarations.
 
-It does **not** currently authenticate with ChatGPT, connect to a ChatGPT service, send messages, stream responses, use tools, select models, upload files, handle images or audio, or implement other ChatGPT product features. Those features are planned or under research until implemented and verified.
+It does not currently implement local workspace, file, command, task, memory, voice, image, or desktop-control features.
 
 ## Installation
 
@@ -38,11 +51,8 @@ The exact module name is **ChatJS**. The project intentionally does not publish 
 
 ```js
 const ChatJS = require('ChatJS');
-
 const client = ChatJS.create();
-
 console.log(client.getStatus());
-
 client.close();
 ```
 
@@ -50,11 +60,8 @@ client.close();
 
 ```js
 import ChatJS from 'ChatJS';
-
 const client = ChatJS.create();
-
 console.log(client.getStatus());
-
 client.close();
 ```
 
@@ -62,13 +69,9 @@ client.close();
 
 ### ChatJS.create(options?)
 
-Creates and returns a ChatJS.Client.
+Creates and returns a ChatJS.Client. Options must be a plain object when supplied. The client keeps a shallow frozen copy. Invalid options throw ChatJS.Error with code CHATJS_INVALID_OPTIONS.
 
-- options must be a plain object when provided.
-- The client keeps a shallow, frozen copy of the options.
-- Invalid options throw ChatJS.Error with code CHATJS_INVALID_OPTIONS.
-
-Creating the current foundation client makes no network requests and collects no telemetry.
+Creating the foundation client makes no network requests and collects no telemetry.
 
 ### new ChatJS.Client(options?)
 
@@ -85,29 +88,19 @@ Returns a frozen status snapshot:
 }
 ```
 
-The status identifies the current implementation as a foundation scaffold. It does not imply that ChatGPT features are available.
+The status identifies the current implementation as a foundation scaffold. It does not imply that any ChatGPT-inspired feature is available.
 
 ### client.assertOpen()
 
-Returns the client when it is open. Throws ChatJS.Error with code CHATJS_CLIENT_CLOSED after the client has been closed.
+Returns the client when it is open. Throws ChatJS.Error with code CHATJS_CLIENT_CLOSED after close.
 
 ### client.close()
 
-Closes the client, emits one close event and removes event listeners. Repeated calls are safe and have no additional effect.
+Closes the client, emits one close event, and removes event listeners. Repeated calls are safe.
 
-### Events
+### Events and errors
 
-The client extends Node.js EventEmitter. The current foundation emits:
-
-| Event | Behavior |
-| --- | --- |
-| close | Emitted once when the client is closed |
-
-Future event payloads and ordering guarantees must be documented alongside their implementations.
-
-### Errors
-
-ChatJS.Error extends the built-in Error class and exposes a code property.
+The client extends Node.js EventEmitter and currently emits one close event. ChatJS.Error extends Error and exposes a code property.
 
 | Code | Meaning |
 | --- | --- |
@@ -115,70 +108,30 @@ ChatJS.Error extends the built-in Error class and exposes a code property.
 | CHATJS_INVALID_OPTIONS | Client options were not a plain object |
 | CHATJS_CLIENT_CLOSED | An operation requiring an open client was attempted after close |
 
-Errors must not expose credentials or private user content. The error catalogue will expand when real capabilities are implemented.
+Errors must not expose credentials or private user content. The error catalogue expands only when real capabilities are implemented.
 
 ## Module formats and TypeScript
 
-The same implementation backs both module systems.
-
-CommonJS:
-- ChatJS.Client
-- ChatJS.Error
-- ChatJS.create
-
-ESM named exports:
-- ChatJSClient
-- ChatJSError
-- createChatJS
-
-ESM default export:
-- ChatJS.Client
-- ChatJS.Error
-- ChatJS.create
-
-TypeScript declarations are provided in types/index.d.ts.
+CommonJS exposes ChatJS.Client, ChatJS.Error, and ChatJS.create. ESM exposes named exports ChatJSClient, ChatJSError, createChatJS and a default ChatJS object. TypeScript declarations are provided in types/index.d.ts.
 
 ## Distribution archive
 
-Build the module-only archive:
+Run:
 
 ```bash
 npm run archive
 ```
 
-This creates dist/ChatJS.tar.gz. The archive contains only:
-- package.json
-- ChatJS.md
-- README.md
-- LICENSE
-- src/index.cjs
-- src/index.mjs
-- types/index.d.ts
-
-It excludes project documentation, tests, GitHub configuration and the Android reference APK. GitHub Actions builds and verifies this archive, extracts it, tests CommonJS and ESM loading, and uploads it as a downloadable workflow artifact. It is a plain module distribution, not a numbered release.
-
-## Compatibility and access boundaries
-
-The ChatGPT mobile application may depend on private services, application-only credentials, account entitlements, platform integrations or internal protocols. A Node.js module cannot assume access to those systems.
-
-ChatJS prioritizes official, documented and otherwise authorized interfaces. It will not bypass authentication, access controls, rate limits, certificate checks or platform security. A visible mobile feature is not automatically available to third-party Node.js code.
-
-Compatibility claims must distinguish:
-- **Verified public behavior:** supported by an official documented interface or reproducible tests.
-- **Observed behavior:** seen in the reference application or supplied observations, but not established as a public integration contract.
-- **Planned or unknown:** desired, unimplemented or awaiting evidence.
-
-Do not claim full 1:1 compatibility until repeatable conformance tests substantiate it.
+This creates dist/ChatJS.tar.gz. The archive contains only package.json, ChatJS.md, README.md, LICENSE, src/index.cjs, src/index.mjs, and types/index.d.ts. It excludes project documentation, tests, GitHub configuration, and the Android reference APK. CI verifies the archive, extracts it, tests CommonJS/ESM loading, and uploads it as a workflow artifact. It is not a numbered release.
 
 ## Engineering and privacy principles
 
-- Keep the core cohesive, modular and dependency-light.
-- No telemetry, analytics, tracking, ads, profiling, hidden data collection, background reporting, phone-home or remote diagnostics.
-- Make no unsolicited network requests. Network access is reserved for explicit operations through documented, configured and authorized interfaces.
-- Use predictable async behavior, streaming, cancellation, timeouts, retries, concurrency and cleanup.
-- Use typed errors and validate inputs at system boundaries.
-- Protect credentials and private user data; do not log sensitive content by default.
-- Test real behavior, including success, failure, cancellation and concurrency.
-- Avoid fake feature support, canned responses, silent no-ops and misleading claims.
+- No OpenAI Platform API, API keys, Sign in with ChatGPT OAuth, private ChatGPT endpoints, or app session/cookie reuse.
+- No telemetry, analytics, tracking, ads, profiling, hidden data collection, background reporting, phone-home, or remote diagnostics.
+- No unsolicited network requests or automatic content uploads. External adapters must be explicit, configured, authorized, and scoped.
+- Predictable async behavior, cancellation, timeouts, retries, concurrency, and cleanup.
+- Validate file paths and command inputs; protect credentials and private user data.
+- No fake generated responses, silent no-ops, or misleading compatibility claims.
+- No Git branch/worktree creation; repository work stays on main.
 
-For engineering, architecture, feature tracking and project continuity, see the [ChatJS project documentation on GitHub](https://github.com/codexclai/ChatJS/tree/main/docs).
+For product evidence, architecture, capability status, and project continuity, see [the ChatJS project documentation](https://github.com/codexclai/ChatJS/tree/main/docs).

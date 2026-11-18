@@ -2,28 +2,23 @@
 
 Track unknowns and blockers that affect implementation or governance. Close an item only after the answer and supporting evidence are recorded.
 
-## Ownership, licensing and eligibility
+## Ownership and governance
+- [ ] **Legal ownership:** confirm the rights holder and obtain legal review of the all-rights-reserved notice before external contributions or distribution.
+- [ ] **Contribution model:** decide whether ChatJS remains proprietary or adopts a recognized license before inviting external contributors.
+- [ ] **GitHub security settings:** verify private vulnerability reporting, secret scanning, and push-protection availability. Do not configure branch protection, rulesets, or topics.
 
-- [ ] **Legal ownership:** confirm rights holder and obtain legal review of the all-rights-reserved notice before external contributions or distribution.
-- [ ] **Contribution model:** decide whether ChatJS remains proprietary or adopts an open-source license before inviting external contributors.
-- [ ] **Sign in with ChatGPT eligibility:** OpenAI documents plan-usage OAuth for open-source/locally hosted apps and directs paid or remotely hosted apps to an interest form. Does the owner intend to keep ChatJS proprietary, and should an eligibility question be submitted? Do not change LICENSE or assume eligibility without explicit owner direction.
+## Inference boundary
+- [ ] **Non-OpenAI inference strategy:** the owner has excluded OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, and private ChatGPT endpoints. What non-OpenAI inference engine, if any, is acceptable for model-powered chat, voice, image, and agent behavior? Until selected, do not implement or simulate generated responses.
+- [ ] **Local-model runtime:** assess a genuine local inference option only after the owner confirms that local models are in scope. Do not add an inference dependency pre-emptively.
 
-## Product feasibility
+## Node.js and platform scope
+- [ ] **Host platforms:** define which Node.js hosts must be supported first (Windows, macOS, Linux). Do not imply Node.js has direct Android camera/microphone/screen permissions.
+- [ ] **Desktop permissions:** define permission and approval policy before adding desktop-app control, browser automation, microphone, camera, or screen adapters.
+- [ ] **Remote host:** decide whether a ChatJS-owned remote desktop agent is worth building. It must use its own secure protocol and must not imitate ChatGPT Remote/Codex private sessions.
+- [ ] **External connectors:** determine whether user-configured third-party adapters are in scope, with least-privilege scopes and explicit approval.
 
-- [ ] **Capability inventory:** validate static APK indicators against observable product behavior where a lawful, non-invasive reference is available. Current static inspection and limitations are in CHATGPT_CAPABILITY_INVENTORY.md.
-- [ ] **Integration boundaries:** classify requested features as documented OpenAI API, eligible Sign in with ChatGPT, local implementation, user-authorized external adapter, or unavailable.
-- [ ] **Plan-usage route:** after resolving eligibility, decide whether plan-usage OAuth is in scope; keep it separate from API-key auth and honor preview restrictions.
-- [ ] **Mobile-only behavior:** document features that cannot be provided directly by Node.js without an external device, app, or separately authorized service.
-
-## Runtime and API
-
-- [ ] **First complete workflow:** design a documented Responses API workflow using caller-provided API credentials; specify transport, streaming, cancellation, errors, limits and cleanup before implementation.
-- [ ] **Credential handling:** define how callers provide and rotate credentials without hidden persistence, logging, or transmission outside the configured provider.
-- [ ] **Persistence:** decide whether API conversation state belongs in core or optional adapters, with explicit privacy and deletion semantics.
-- [ ] **Compatibility contract:** define a consistent way to report available, limited and unsupported capabilities.
-
-## Maintenance
-
-- [ ] **GitHub security settings:** verify the availability and current status of private vulnerability reporting, secret scanning and push protection. Do not configure branch protection, rulesets, or topics.
+## Product evidence
+- [ ] **Mobile UI validation:** validate selected APK indicators against observable behavior if a lawful reference session becomes available. Static manifest/resource evidence does not prove current UI availability.
+- [ ] **Desktop UI validation:** official documentation identifies Chat, Work, and Codex. A desktop installer is not required for scope research; request screenshots or a specific build only to validate a concrete OS interaction.
 
 Every open question should link to an actionable TODO and identify the evidence needed. Never silently turn an unknown into an assumption.

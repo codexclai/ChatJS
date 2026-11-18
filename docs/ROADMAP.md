@@ -1,60 +1,37 @@
 # ChatJS Roadmap
 
-This roadmap describes intended work, not current support. A feature is supported only when implementation, documentation, tests, and evidence exist.
+This roadmap describes intended work, not current support. A capability is supported only when implementation, documentation, tests, and evidence exist.
 
-## Repository and module foundation
+## Mobile-first feature foundation
 
-**Goal:** establish a clean, secure, maintainable Node.js project ready for feature work.
+**Goal:** implement useful ChatGPT mobile-inspired capabilities as independent Node.js behavior, without ChatGPT account/backend access.
 
-Deliverables:
-- ChatJS module with ESM and CommonJS entry points.
-- TypeScript declarations and built-in tests.
-- Conventional source, test, type, and documentation layout.
-- CI, documentation validation, and security checks.
-- Root ChatJS.md for module users.
-- A clean ChatJS.tar.gz module archive, verified and uploaded by CI.
-- Shared project memory, decisions, tasks, experiments, and cross-chat history.
+- Local conversation/project containers and explicit context.
+- User-controlled local instructions and optional memory.
+- File/image ingestion and safe local processing.
+- Search/research adapters invoked only on explicit calls.
+- Voice/multimodal support only after a real non-OpenAI inference engine and platform adapters are selected.
 
-## Product and compatibility research
+## Desktop Work and Codex foundation
 
-**Goal:** understand the observable feature surface and choose safe, supported implementation paths.
+**Goal:** implement local equivalents of useful Work/Codex workflows.
 
-Deliverables:
-- Dated inventory of ChatGPT mobile capabilities.
-- Evidence labels for official API, product documentation, observed UI behavior, and inaccessible/private behavior.
-- Compatibility classifications for local implementation, public-interface adapters, user-owned backends, external delegation, and unavailable features.
-- Capability contracts, event schemas, security boundaries, dependencies, and acceptance criteria.
-- Account, plan, region, and platform limitations where evidence exists.
+- Confined workspaces and bounded file operations.
+- Explicit task lifecycle, progress, cancellation, approvals.
+- Safe command and test execution.
+- Git inspection/diff/review without branch/worktree creation.
+- Local artifact generation with tested format support.
+- Optional browser/desktop-control adapters with explicit permissions.
+- ChatJS-owned remote-host access only after a concrete need and security design.
 
-## Core runtime
+## Inference boundary
 
-**Goal:** establish shared primitives used by all capabilities.
-
-Work areas:
-- Configuration and environment handling.
-- Client lifecycle and provider/transport adapters.
-- Authorized authentication abstraction.
-- Request scheduling, timeouts, retries, rate limits, and cancellation.
-- Typed errors, redaction, diagnostics, and local diagnostics with no telemetry or remote reporting.
-- Streaming protocol abstraction, async iterators, events, and backpressure.
-- Capability discovery and optional module lifecycle.
-
-## First complete workflow
-
-**Goal:** deliver one useful end-to-end workflow before broadening the feature surface.
-
-Candidate: initialize client → connect through an authorized interface → send a message → consume streaming output → cancel or finish → manage conversation state → handle typed failures.
-
-Acceptance requires integration tests against a documented and authorized interface, clear setup/troubleshooting docs, and no simulated success path.
-
-## Capability expansion
-
-Build independently testable groups such as conversations, models, tools, files, images, audio/voice, search, data analysis, memory, projects, personalization, settings, and platform adapters. Every group must have explicit dependencies and access boundaries.
+No OpenAI Platform API, API key, Sign in with ChatGPT OAuth, or private ChatGPT backend integration is permitted. No non-OpenAI inference engine has been selected. Do not implement fake generated answers or autonomous agents. Continue with useful deterministic local features until an acceptable model runtime is selected.
 
 ## Production readiness
 
-Focus on measured performance, memory, concurrency, reliability, supported platforms, security response, dependency governance, API documentation, and reproducible checks.
+Focus on measured performance, memory, concurrency, reliability, supported Node.js hosts, security boundaries, dependency governance, API documentation and reproducible checks.
 
-## Ongoing compatibility maintenance
+## Compatibility maintenance
 
-Track upstream behavior and official interface changes. Update the capability matrix and tests when evidence changes. Never claim broad compatibility without rerunning relevant conformance tests.
+Track reference product behavior using official product docs and lawful observations. Update the inventory when features change. Never infer Node.js capability from a mobile permission or APK resource.

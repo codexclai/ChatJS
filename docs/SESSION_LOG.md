@@ -77,3 +77,29 @@ Resolve legal ownership/licensing and Sign in with ChatGPT eligibility without c
 - All 9 tests passed; the uploaded ChatJS artifact is 5,910 bytes (artifact ID 14419396712).
 - CodeQL run 44286674156 completed successfully on the same commit.
 - Project-state JSON and generated PROJECT_STATE.md were checked for exact synchronization. The session-log update itself is a documentation-only commit and is followed by fresh CI/CodeQL validation.
+
+## 2026-11-18 — Owner clarification: mobile-first product scope and desktop Work/Codex
+
+### Direction superseding prior assumptions
+- Owner clarified ChatJS is a mobile-first Node.js implementation inspired by ChatGPT mobile, with applicable ChatGPT desktop Work and Codex capabilities.
+- Owner explicitly excluded OpenAI Platform APIs, OpenAI API keys, Sign in with ChatGPT OAuth/token sharing, and private ChatGPT backend endpoints. The earlier Responses API/API-key/OAuth direction is withdrawn; it was not implemented.
+- Owner explicitly excluded health/Health Connect, finance/banking, maps/navigation, shopping, wallet, and unrelated mobile permissions/features.
+- ChatJS must not claim access to ChatGPT account history, saved memory, Projects, custom GPTs, Work tasks, Codex sessions, Remote sessions, or Codex Cloud.
+- No non-OpenAI inference engine has been selected. Model-powered behavior must remain unimplemented rather than simulated.
+
+### Product research
+- Rechecked ChatGPT.zip in Project Sources; it remains present and contains base.apk.
+- Reviewed official current ChatGPT Work/Codex, new desktop app, Voice, Projects, and Codex documentation.
+- Documented desktop Chat/Work/Codex separation, permissioned local files/apps, cloud/local task-context distinction, scheduling concepts, desktop Codex local folders/repositories/terminals/developer tools, and mobile Remote access to supported desktop Codex sessions.
+- Documented mobile Voice Live versus Advanced boundary and the dated notice that Advanced/Standard are scheduled to retire December 11, 2026.
+- No desktop installer/executable is required for product-scope research; a local app/session may help later for a specific OS interaction test.
+
+### Scope decisions
+- Reclassified APK package indicators versus actual Node.js suitability.
+- Local workspaces, bounded file operations, task lifecycle, safe process execution, Git inspection/diffs, approvals, and local artifact generation are the first Node.js-aligned foundations.
+- Native microphone/camera/screen/desktop control requires explicit platform adapters; Android permissions do not transfer to Node.js.
+- Git worktrees and branch-based parallelism are excluded because the repository must remain on main only.
+- No runtime implementation or dependency was added in this scope correction.
+
+### Next task
+Specify and implement a local Work/Codex vertical slice: a caller-selected, path-confined workspace with bounded file operations. Define symlink/race handling, size/depth limits, cancellation, atomic writes, and tests before exposing the public API.

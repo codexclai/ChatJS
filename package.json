@@ -1,7 +1,7 @@
 {
   "name": "ChatJS",
   "private": true,
-  "description": "ChatJS — a comprehensive, modular Node.js library for ChatGPT-compatible capabilities and workflows.",
+  "description": "Independent Node.js module for mobile-first ChatGPT-style workflows and local desktop Work/Codex tooling.",
   "homepage": "https://github.com/codexclai/ChatJS#readme",
   "repository": {
     "type": "git",
