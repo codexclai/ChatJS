@@ -71,9 +71,9 @@ This creates `dist/ChatJS.tar.gz`. CI builds, verifies, smoke-tests, and uploads
 
 Every new chat in the ChatJS Project should read the repository's [AI Memory](https://github.com/codexclai/ChatJS/tree/main/docs/AI_MEMORY.md) and [Continuation Guide](https://github.com/codexclai/ChatJS/tree/main/docs/CONTINUATION.md), inspect the live repository, and resume from the [Task List](https://github.com/codexclai/ChatJS/tree/main/docs/TODO.md). Search ChatJS Project → Sources for `ChatGPT.zip` before requesting the Android reference again.
 
-## Quality principles
+## Quality and privacy principles
 
-No generic filler, bloatware, pointless dependencies, temporary scaffolding presented as finished work, fake feature support, or misleading compatibility claims. Favor deliberate engineering, a clean core, meaningful tests, and clear human-written documentation.
+No generic filler, bloatware, pointless dependencies, temporary scaffolding presented as finished work, fake feature support, or misleading compatibility claims. No telemetry, analytics, tracking, ads, profiling, hidden data collection, phone-home requests, background reporting, or remote diagnostics. Network calls must be necessary for an explicit operation through a documented, configured, authorized interface. Favor deliberate engineering, a clean core, meaningful tests, and clear human-written documentation.
 
 ## Rights and security
 
