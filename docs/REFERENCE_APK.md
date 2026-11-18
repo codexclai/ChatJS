@@ -13,9 +13,9 @@ Health/Health Connect, finance, maps/navigation, shopping, wallet, contacts, cal
 This was static inspection only. No emulator or interactive UI session was used; no DEX decompilation or proprietary source extraction was performed. Permissions do not prove grant/runtime use. Resource/module names do not prove visible availability, account entitlement or Node.js access. Complete mobile behavior and feature parity have not been verified.
 
 ## Private retention
-A verified copy of the original 54,869,202-byte ChatGPT.zip archive is stored in the owner's **personal ChatGPT Library** at:
+A verified copy of the original 54,869,202-byte ChatGPT.zip archive, renamed in Library to ChatJS-Android.zip, is stored in the owner's **personal ChatGPT Library** at:
 
-**/ChatJS-Reference-Archives/ChatGPT-Android.zip**
+**/ChatJS-Archives/ChatJS-Android.zip**
 
 It was uploaded from the supplied Project file and then successfully materialized back from Library storage, confirming that the retained copy is accessible. This is private user storage, not part of the public GitHub repository.
 
