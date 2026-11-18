@@ -13,23 +13,24 @@ Prepare codexclai/ChatJS as a maintainable Node.js project, establish its module
 - Established the ChatJS package scaffold, CommonJS and ESM entry points, TypeScript declarations, and minimal client lifecycle.
 - Added built-in tests for module loading, API behavior, invalid options, and client cleanup.
 - Added conventional README, LICENSE, security, support, contribution, code-of-conduct, issue-template, and GitHub workflow files.
-- Created /docs as the shared AI memory and knowledge base: state, tasks, session history, decisions, verified knowledge, experiments, open questions, capability tracking, architecture, roadmap, and continuation rules.
+- Created /docs as shared AI memory: state, tasks, session history, decisions, verified knowledge, experiments, open questions, capability tracking, architecture, roadmap, and continuation rules.
 - Added root ChatJS.md as the actual module's user/API documentation.
 - Added a dependency-free ChatJS.tar.gz builder, archive integrity test, CI extraction and ESM/CommonJS smoke tests, and workflow artifact delivery.
 - Recorded the user's confirmation that ChatGPT.zip in ChatJS Project → Sources was exported immediately after their Google Play update and was the latest build available to them at acquisition. It remains in Project Sources rather than the public GitHub repository.
-- Removed ChatJS product release numbering, the package version field, lockfiles, changelog/release machinery, checksum inventories, and npm registry publishing automation.
+- Removed ChatJS product release numbering, the package version field, lockfiles, release workflows, checksum inventories, and npm registry publishing automation.
 
-### Verified checks before the archive work
-- Initial CI passed on the current Node.js LTS runtime.
-- The initial built-in tests passed.
-- Generated project state and Markdown links passed CI.
-- ESM and CommonJS entry points were exercised.
+### Verification
+- The initial foundation CI run passed the original module tests and generated-documentation checks.
+- On the consolidated foundation commit, JavaScript syntax checks passed and the project-state generator reported synchronized output.
+- Local Markdown link validation passed across 25 Markdown files.
+- Eight of the nine tests passed; the archive-content test initially failed because it treated the valid top-level archive directory entry as a file.
+- The archive test was corrected to validate directory entries separately and compare all regular archive members byte-for-byte. The next CI run must verify this correction and the module extraction/load steps.
 
-### Pending verification
-- The distribution archive builder, archive content test, and CI smoke-test steps were added after the earlier successful CI run. They require a fresh CI execution.
-- GitHub repository description/topics, branch rules, and security settings are not changed by the content-writing connector. See REPOSITORY_SETTINGS.md.
+### Pending work
+- GitHub repository description/topics, branch protection, and security settings require manual owner configuration; see REPOSITORY_SETTINGS.md.
 - Proprietary ownership and the all-rights-reserved notice require legal review.
-- The source attachment should be searched under ChatJS Project → Sources in new chats.
+- The scaffold is not yet a working ChatGPT client. Feature implementation has not started.
+- New chats must search ChatJS Project → Sources for ChatGPT.zip before asking the user for another upload.
 
 ### Next task
-Search the Project Sources for ChatGPT.zip, research observable mobile features against current official documentation, and create a capability inventory with clear evidence and feasibility labels. Do not start private-service integration or claim unsupported 1:1 compatibility.
+Verify the corrected archive and CI artifact, then inspect ChatGPT.zip in ChatJS Project → Sources and prepare a source-backed capability inventory.

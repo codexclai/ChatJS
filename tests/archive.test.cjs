@@ -39,13 +39,21 @@ test('ChatJS distribution archive contains only the documented module files', ()
     const name = header.subarray(0, 100).toString('utf8').replace(/\0.*$/, '');
     const sizeText = header.subarray(124, 136).toString('ascii').replace(/\0.*$/, '').trim();
     const size = Number.parseInt(sizeText, 8);
+    const type = header[156];
 
     assert.ok(Number.isSafeInteger(size) && size >= 0, 'archive entry size is valid');
-    assert.ok(!entries.has(name), 'archive has no duplicate entry paths');
 
     const contentStart = offset + 512;
-    const contentEnd = contentStart + size;
 
+    if (type === '5'.charCodeAt(0)) {
+      assert.equal(size, 0, 'directory entries contain no file data');
+      offset = contentStart;
+      continue;
+    }
+
+    assert.ok(!entries.has(name), 'archive has no duplicate file paths');
+
+    const contentEnd = contentStart + size;
     entries.set(name, archive.subarray(contentStart, contentEnd));
     offset = contentStart + Math.ceil(size / 512) * 512;
   }

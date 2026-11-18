@@ -28,14 +28,15 @@ Never include secrets, credentials, private user data, or copied proprietary app
 
 - **Question:** can project state generate and validate the human-readable snapshot?
 - **Method:** render docs/PROJECT_STATE.md from docs/project-state.json and run the local Markdown link checker.
-- **Result:** the initial CI run reported synchronized state and all local links present across the documentation then committed.
-- **Conclusion:** verified for that repository state.
-- **Next:** keep the checks in CI and update links as docs change.
+- **Result:** the current CI run reported synchronized project state and all 25 Markdown files contained valid local targets.
+- **Conclusion:** verified for the committed repository state.
+- **Next:** keep both checks in CI.
 
 ### ChatJS distribution archive
 
 - **Question:** can a module-only ChatJS.tar.gz be built without a third-party archive dependency?
 - **Method:** create a USTAR archive using Node built-ins, gzip it, verify exact member names and file contents, then extract and smoke-test it in CI.
-- **Result:** the builder and test are prepared; the first CI execution after the archive work is pending.
-- **Conclusion:** pending CI verification.
-- **Next:** inspect the next CI run and fix archive or module-loading failures before marking complete.
+- **Initial CI result:** the archive was created, but the test initially counted the valid top-level `ChatJS/` directory header as an unwanted file.
+- **Correction:** the test now validates and skips directory entries, then compares every regular file in the archive byte-for-byte against its repository source.
+- **Current status:** awaiting the next CI run after the test correction.
+- **Next:** confirm the archive test, extraction, CommonJS load, ESM load, and artifact upload all succeed.
