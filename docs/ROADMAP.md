@@ -35,7 +35,7 @@ Work areas:
 - Client lifecycle and provider/transport adapters.
 - Authorized authentication abstraction.
 - Request scheduling, timeouts, retries, rate limits, and cancellation.
-- Typed errors, redaction, diagnostics, and privacy-preserving telemetry.
+- Typed errors, redaction, diagnostics, and local diagnostics with no telemetry or remote reporting.
 - Streaming protocol abstraction, async iterators, events, and backpressure.
 - Capability discovery and optional module lifecycle.
 
