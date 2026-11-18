@@ -8,10 +8,17 @@ const markdownFiles = [];
 
 function walk(directory) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    if (entry.name === 'node_modules' || entry.name === '.git') continue;
+    if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist') {
+      continue;
+    }
+
     const fullPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) walk(fullPath);
-    else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) markdownFiles.push(fullPath);
+
+    if (entry.isDirectory()) {
+      walk(fullPath);
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {
+      markdownFiles.push(fullPath);
+    }
   }
 }
 
@@ -25,27 +32,37 @@ for (const file of markdownFiles) {
   let match;
 
   while ((match = linkPattern.exec(source)) !== null) {
-    const rawTarget = match[1].trim();
-    if (!rawTarget || rawTarget.startsWith('#') || /^(https?:|mailto:|tel:)/i.test(rawTarget)) continue;
+    const target = match[1].trim();
 
-    const cleanTarget = decodeURIComponent(rawTarget.split('#')[0].split('?')[0]);
+    if (!target || target.startsWith('#') || /^(https?:|mailto:|tel:)/i.test(target)) {
+      continue;
+    }
+
+    const cleanTarget = decodeURIComponent(target.split('#')[0].split('?')[0]);
     if (!cleanTarget) continue;
 
     const resolved = path.resolve(path.dirname(file), cleanTarget);
+
     if (!resolved.startsWith(root + path.sep) && resolved !== root) {
-      failures.push(path.relative(root, file) + ': link escapes repository: ' + rawTarget);
+      failures.push(path.relative(root, file) + ': link escapes repository: ' + target);
       continue;
     }
 
     if (!fs.existsSync(resolved)) {
-      failures.push(path.relative(root, file) + ': missing local target: ' + rawTarget);
+      failures.push(path.relative(root, file) + ': missing local target: ' + target);
     }
   }
 }
 
 if (failures.length > 0) {
-  process.stderr.write('Broken local Markdown links:\n' + failures.map((item) => '- ' + item).join('\n') + '\n');
+  process.stderr.write(
+    'Broken local Markdown links:\n' +
+    failures.map((failure) => '- ' + failure).join('\n') +
+    '\n'
+  );
   process.exitCode = 1;
 } else {
-  process.stdout.write('Checked ' + markdownFiles.length + ' Markdown files; all local targets exist.\n');
+  process.stdout.write(
+    'Checked ' + markdownFiles.length + ' Markdown files; all local targets exist.\n'
+  );
 }

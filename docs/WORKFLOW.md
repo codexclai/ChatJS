@@ -1,71 +1,64 @@
-# Engineering Workflow
+# Development Workflow
 
 ## Start
 
-1. Synchronize the project context with the live GitHub repository.
-2. Read docs/CONTINUATION.md and the current state, task queue, capability matrix, decisions, and session log.
-3. Search ChatGPT Project Sources for ChatGPT.zip before requesting the reference APK again.
-4. Confirm the current branch and latest commit.
-5. Pick one high-priority task and define acceptance criteria before editing.
+1. Read docs/AI_MEMORY.md and docs/CONTINUATION.md.
+2. Inspect the live GitHub repository and read current state, tasks, decisions, knowledge, experiments, and history.
+3. Search ChatJS Project → Sources for ChatGPT.zip before requesting the reference APK again.
+4. Confirm the current branch, latest commit, and CI status.
+5. Choose one high-priority task and define acceptance criteria before editing.
 
 ## Research
 
-For product or compatibility questions:
-- Prefer current official documentation and source material.
-- Use dated sources and record the publication/access date.
-- Distinguish official API contracts, public product documentation, observed UI behavior, and inferred behavior.
-- Record unresolved questions rather than masking them with assumptions.
+- Prefer current official documentation and authoritative sources.
+- Record source links, dates, scope, and limitations.
+- Distinguish official API contracts, public product documentation, observed UI behavior, and inference.
+- Record unresolved questions rather than hiding uncertainty.
 - Check legal, privacy, security, platform, and plan limitations early.
 
 ## Implementation
 
-- Inspect relevant code and existing patterns first.
-- Keep a change cohesive and avoid unrelated refactors.
+- Inspect existing code and conventions.
+- Keep changes cohesive and avoid unrelated refactoring.
 - Use the smallest viable dependency set.
-- Make asynchronous behavior, cancellation, concurrency, and cleanup explicit.
-- Validate data at boundaries and keep secrets out of logs.
-- Provide stable error codes and useful safe messages.
+- Define asynchronous behavior, cancellation, concurrency, and cleanup.
+- Validate inputs and keep credentials out of logs.
+- Use stable errors and safe messages.
 - Keep optional features optional.
 
 ## Verification
 
-Run the complete project check before finalizing:
+Run the project check suite before finalizing:
 - JavaScript syntax checks.
-- Generated documentation synchronization check.
+- Generated project-state synchronization.
 - Local Markdown link validation.
-- Node built-in test suite.
-- Current supported Node.js LTS runtime CI.
+- Node.js built-in test suite.
+- ChatJS.tar.gz generation and archive-content tests.
+- GitHub CI extraction and ESM/CommonJS module-loading smoke tests.
 
-Add targeted tests for changed behavior. State clearly if any test was not run or depended on unavailable services.
+Add focused tests for changed behavior. State clearly if a test was not run or depends on an unavailable service.
 
-## Documentation synchronization
+## Documentation
 
-When implementation or decisions change:
-- update the capability matrix with status and evidence;
-- update API and architecture docs;
-- update TODO and roadmap;
-- add or amend a decision record;
-- update README and examples as appropriate;
-- update .project/state.json and regenerate docs/PROJECT_STATE.md;
-- append a dated session summary.
+When behavior or design changes:
+- update root ChatJS.md for public API and user-visible behavior;
+- update CAPABILITY_MATRIX.md with status and evidence;
+- update ARCHITECTURE.md and DECISIONS.md as applicable;
+- update TODO.md and ROADMAP.md;
+- update docs/project-state.json and regenerate PROJECT_STATE.md;
+- append a dated SESSION_LOG.md entry;
+- update KNOWLEDGE_BASE.md, EXPERIMENTS.md, and OPEN_QUESTIONS.md when relevant.
 
-CI verifies generated project-state documentation and local Markdown links. This prevents a known class of documentation drift; it does not automatically infer all semantic changes from source code. Authors remain responsible for updating the right documents.
+CI checks generated-state and broken-link drift, but authors remain responsible for semantic accuracy.
 
 ## Git hygiene
 
-- Prefer short, descriptive commits.
+- Prefer focused, descriptive commits.
 - Never force-push without explicit need and authorization.
 - Keep main protected after required checks are configured.
-- Review all changed files for secrets, binary artifacts, unrelated generated files, and license problems.
+- Review changes for secrets, binary artifacts, unrelated generated files, and licensing issues.
+- Do not commit dist/ChatJS.tar.gz; CI builds and uploads it as an artifact.
 
 ## Finish
 
-Record:
-- files changed and why;
-- implementation behavior and remaining gaps;
-- tests actually run and their results;
-- commit and pull request URLs;
-- open blockers or decisions;
-- next recommended action.
-
-The final handoff should be brief but concrete. The repository log must be detailed enough for a different chat or maintainer to resume.
+Record files changed, behavior and remaining gaps, tests actually run, commit/PR references, blockers, and the next task. The history must let a different chat resume without asking what happened.

@@ -11,10 +11,13 @@ test('package identity is exactly ChatJS and has no product version field', () =
   assert.equal(packageMetadata.private, true);
 });
 
-test('ChatJS exposes the client, error, and factory under its own name', () => {
+test('ChatJS exposes its client, error, and factory', () => {
   assert.equal(typeof ChatJS.Client, 'function');
   assert.equal(typeof ChatJS.Error, 'function');
   assert.equal(typeof ChatJS.create, 'function');
+  assert.equal(ChatJS.Client, ChatJS.ChatJSClient);
+  assert.equal(ChatJS.Error, ChatJS.ChatJSError);
+  assert.equal(ChatJS.create, ChatJS.createChatJS);
 });
 
 test('factory creates a client with an explicit foundation status', () => {
@@ -42,6 +45,7 @@ test('invalid constructor options produce a typed error', () => {
     () => new ChatJS.Client(null),
     (error) => error instanceof ChatJS.Error && error.code === 'CHATJS_INVALID_OPTIONS'
   );
+
   assert.throws(
     () => new ChatJS.Client(new Date()),
     (error) => error instanceof ChatJS.Error && error.code === 'CHATJS_INVALID_OPTIONS'
@@ -51,7 +55,10 @@ test('invalid constructor options produce a typed error', () => {
 test('close is idempotent and emits one close event', () => {
   const client = new ChatJS.Client();
   let closeCount = 0;
-  client.on('close', () => { closeCount += 1; });
+
+  client.on('close', () => {
+    closeCount += 1;
+  });
 
   client.close();
   client.close();

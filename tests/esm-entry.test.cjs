@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-test('ES module entry exposes the ChatJS default and named exports', async () => {
+test('ES module entry exposes named and default ChatJS exports', async () => {
   const api = await import('../src/index.mjs');
 
   assert.equal(typeof api.default.create, 'function');
@@ -12,6 +12,7 @@ test('ES module entry exposes the ChatJS default and named exports', async () =>
   assert.equal(typeof api.ChatJSError, 'function');
 
   const client = api.default.create();
+
   assert.equal(client.getStatus().state, 'initialized');
   client.close();
 });

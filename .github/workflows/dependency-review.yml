@@ -16,7 +16,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - name: Review dependencies
-        uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec
         with:
           fail-on-severity: high

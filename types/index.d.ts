@@ -36,6 +36,9 @@ declare const ChatJS: {
   readonly Client: typeof ChatJSClient;
   readonly Error: typeof ChatJSError;
   readonly create: typeof createChatJS;
+  readonly ChatJSClient: typeof ChatJSClient;
+  readonly ChatJSError: typeof ChatJSError;
+  readonly createChatJS: typeof createChatJS;
 };
 
 export { ChatJS };

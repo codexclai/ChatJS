@@ -5,12 +5,12 @@ labels: ["bug"]
 body:
   - type: markdown
     attributes:
-      value: "Do not include passwords, API keys, cookies, private conversations, or proprietary application assets."
+      value: "Do not include passwords, API keys, cookies, private conversations, or proprietary app assets."
   - type: input
     id: commit
     attributes:
       label: Git commit or repository link
-      placeholder: "Git commit or URL"
+      placeholder: "Commit reference or URL"
     validations:
       required: true
   - type: input
@@ -49,6 +49,6 @@ body:
     id: logs
     attributes:
       label: Sanitized logs
-      description: Remove all credentials, tokens, personal data, and private content.
+      description: Remove credentials, personal data, and private content.
     validations:
       required: false

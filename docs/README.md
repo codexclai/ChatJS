@@ -1,29 +1,35 @@
-# ChatJS Documentation
+# ChatJS Project Documentation
 
-This documentation is the durable operating manual for the ChatJS project, including when work moves between separate ChatGPT chats.
+This directory contains the persistent project knowledge and engineering handbook for ChatJS. It is shared memory for all chats working in the ChatJS Project.
+
+The actual Node.js module's user-facing documentation is the root-level [ChatJS.md](../ChatJS.md).
 
 ## Start here
 
-1. [Continuation guide](CONTINUATION.md) — mandatory reading at the beginning and end of every work session.
-2. [Project state](PROJECT_STATE.md) — generated snapshot of what exists, what does not, and what happens next.
-3. [Task queue](TODO.md) — prioritized, actionable work.
-4. [Roadmap](ROADMAP.md) — phased delivery plan.
-5. [Capability matrix](CAPABILITY_MATRIX.md) — broad ChatGPT feature inventory and explicit implementation status.
+1. [AI Memory](AI_MEMORY.md) — how project knowledge is preserved across chats.
+2. [Continuation Guide](CONTINUATION.md) — how to start, resume, and finish a work session.
+3. [Project State](PROJECT_STATE.md) — current snapshot generated from project-state.json.
+4. [Tasks](TODO.md) — prioritized work queue.
+5. [Session History](SESSION_LOG.md) — chronological record of completed work.
+
+## Project knowledge
+
+- [Knowledge Base](KNOWLEDGE_BASE.md) — verified facts, sources, and current understanding.
+- [Decisions](DECISIONS.md) — architectural and project decisions with rationale.
+- [Experiments](EXPERIMENTS.md) — investigation history, including failed and inconclusive attempts.
+- [Open Questions](OPEN_QUESTIONS.md) — unknowns, blockers, dependencies, and risks.
+- [Capability Matrix](CAPABILITY_MATRIX.md) — ChatGPT feature scope and implementation status.
+- [Roadmap](ROADMAP.md) — intended delivery sequence.
 
 ## Engineering references
 
-- [Architecture](ARCHITECTURE.md) — design principles, components, boundaries, and proposed interfaces.
-- [Workflow](WORKFLOW.md) — normal engineering lifecycle, testing, documentation, and cross-chat handoff.
-- [Decisions](DECISIONS.md) — architectural and project decisions with rationale.
-- [Reference APK](REFERENCE_APK.md) — provenance and safe use of ChatGPT.zip stored in the ChatJS Project's Sources in ChatGPT.
+- [Architecture](ARCHITECTURE.md) — module boundaries and technical principles.
+- [Development Workflow](WORKFLOW.md) — research, implementation, testing, and handoff.
+- [Reference APK](REFERENCE_APK.md) — provenance and safe use of ChatGPT.zip in ChatJS Project → Sources.
+- [Repository Settings](REPOSITORY_SETTINGS.md) — GitHub protections and manual setup steps.
+- [Governance](GOVERNANCE.md) — rights, contribution policy, and repository limitations.
+- [Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md) — compact instructions for the ChatJS Project's Instructions field.
 
-## Repository operations
+## Keeping documentation current
 
-- [Repository settings checklist](REPOSITORY_SETTINGS.md) — security, branch protection, metadata, and manual settings that could not be applied through the connector.
-- [Governance and rights](GOVERNANCE.md) — project ownership model, public visibility, contribution restrictions, and limitations of repository protection.
-- [Session log](SESSION_LOG.md) — chronological summary of completed work and discoveries.
-- [ChatGPT Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md) — instructions for the ChatJS Project's Instructions field.
-
-## Maintenance rule
-
-Documentation is part of the product. Every feature, behavior, compatibility claim, breaking change, security decision, unresolved limitation, and important experiment must be recorded where future maintainers can find it. The machine-readable project snapshot lives in .project/state.json; docs/PROJECT_STATE.md is generated from it and checked by CI.
+Update the canonical document whenever knowledge changes. Avoid duplicating the same information across multiple files. Update project-state.json and regenerate PROJECT_STATE.md. Append to SESSION_LOG.md at the end of every meaningful work session.

@@ -21,10 +21,11 @@
     }
   },
   "scripts": {
-    "lint": "node --check src/index.cjs && node --check src/index.mjs && node --check scripts/generate-project-state.cjs && node --check scripts/check-doc-links.cjs",
+    "lint": "node --check src/index.cjs && node --check src/index.mjs && node --check scripts/generate-project-state.cjs && node --check scripts/check-doc-links.cjs && node --check scripts/build-module-archive.cjs",
     "test": "node --test",
     "docs:sync": "node scripts/generate-project-state.cjs",
     "docs:check": "node scripts/generate-project-state.cjs --check && node scripts/check-doc-links.cjs",
-    "check": "npm run lint && npm run docs:check && npm test"
+    "archive": "node scripts/build-module-archive.cjs",
+    "check": "npm run lint && npm run docs:check && npm test && npm run archive"
   }
 }

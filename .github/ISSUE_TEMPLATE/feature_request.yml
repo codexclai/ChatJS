@@ -7,27 +7,27 @@ body:
     id: problem
     attributes:
       label: Problem and use case
-      description: What user problem should ChatJS solve?
+      description: What problem should ChatJS solve?
     validations:
       required: true
   - type: textarea
     id: behavior
     attributes:
       label: Expected behavior
-      description: Describe the intended developer-facing behavior.
+      description: Describe the developer-facing behavior.
     validations:
       required: true
   - type: textarea
     id: evidence
     attributes:
       label: Evidence and references
-      description: Link current official documentation or describe observed behavior and its limits.
+      description: Link current official sources or describe observed behavior and its limits.
     validations:
       required: false
   - type: textarea
     id: constraints
     attributes:
       label: Constraints and risks
-      description: Mention platform, authentication, privacy, legal, or service dependencies.
+      description: Mention access, platform, privacy, or service dependencies.
     validations:
       required: false

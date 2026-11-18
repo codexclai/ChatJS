@@ -1,50 +1,54 @@
-# ChatJS Task Queue
+# ChatJS Task List
 
-This is the live prioritized work queue. Keep tasks actionable. Mark items complete only after the repository contains the implementation and its tests.
+Use this as the single authoritative queue for work that remains open. Keep entries actionable and mark them complete only when implementation and verification support that status.
 
-## P0 — finish the repository foundation
+## P0 — Repository and project setup
 
-- [ ] Apply GitHub repository About metadata, topics, and manual protection/security settings in [REPOSITORY_SETTINGS.md](REPOSITORY_SETTINGS.md).
-- [ ] Confirm the actual legal rights holder and obtain legal review of the proprietary all-rights-reserved notice.
-- [ ] Decide whether the project will remain proprietary or adopt a recognized license before inviting contributors.
-- [ ] Confirm private vulnerability reporting, secret scanning, push protection, and branch protection are enabled where available.
+- [ ] Set the GitHub repository description and topics; apply and verify main-branch protection and available security settings using [Repository Settings](REPOSITORY_SETTINGS.md).
+- [ ] Confirm the rights holder and obtain legal review of the all-rights-reserved notice.
+- [ ] Decide whether the project remains proprietary or adopts a recognized license before inviting external contributors.
+- [ ] Verify private vulnerability reporting and secret scanning/push protection availability.
 
-## P1 — evidence-backed specification
+## P1 — Product and compatibility research
 
-- [ ] Search the ChatJS Project's Sources in ChatGPT for the user-supplied ChatGPT.zip and inspect its feature surfaces when the APK is available in the current environment.
-- [ ] Create a source-backed ChatGPT mobile capability inventory with dated public references and carefully separated observations.
-- [ ] Separate features visible in the Android reference from features available through supported public interfaces.
-- [ ] Document account requirements, plan gating, regional limits, platform differences, and unavailable/private backend dependencies.
-- [ ] Define compatibility labels: native, adapter-backed, user-supplied backend, externally delegated, and unavailable.
-- [ ] Review current official OpenAI platform documentation and terms before designing any integration.
-- [ ] Define explicit non-goals and constraints for features that cannot be provided directly by a Node.js module.
+- [ ] Search ChatJS Project → Sources for ChatGPT.zip and inspect it when available and relevant.
+- [ ] Create a source-backed inventory of observable ChatGPT mobile capabilities.
+- [ ] Separate visible application behavior from authorized programmatic interfaces.
+- [ ] Record account, plan, regional, and platform limits where supported by evidence.
+- [ ] Define compatibility categories: implemented locally, public-interface adapter, user-supplied backend, externally delegated, unavailable.
+- [ ] Review current official OpenAI platform documentation and terms before designing integrations.
+- [ ] Define explicit non-goals and limitations for features that cannot be provided directly by a Node.js module.
 
-## P1 — design the first stable runtime
+## P1 — Core runtime design
 
-- [ ] Write API requirements for configuration, client lifecycle, authorized service adapters, transport, and provider interfaces.
-- [ ] Specify streaming events, payloads, ordering, backpressure, cancellation, timeout, and reconnect behavior.
-- [ ] Specify normalized errors, stable codes, retryability, causes, and redaction.
+- [ ] Specify client configuration and lifecycle.
+- [ ] Define authorized provider and transport adapter contracts.
+- [ ] Specify streaming events, payloads, ordering, backpressure, cancellation, timeouts, and reconnection.
+- [ ] Define typed errors, stable codes, retryability, causes, and safe redaction.
 - [ ] Design concurrency, request isolation, rate-limit handling, and resource cleanup.
-- [ ] Decide whether persistence, caches, and storage adapters belong in core or optional modules.
+- [ ] Decide whether persistence, caching, and storage belong in core or optional adapters.
 - [ ] Add TypeScript declaration tests.
 
-## P2 — implement in complete vertical slices
+## P2 — Complete feature slices
 
-- [ ] Implement configuration and client lifecycle beyond the current foundation.
+- [ ] Extend client configuration and lifecycle beyond the foundation.
 - [ ] Implement an authorized transport/provider adapter against a documented interface.
-- [ ] Implement a complete conversation and message workflow with streaming and cancellation.
-- [ ] Add normalized model discovery and tool invocation abstractions.
-- [ ] Add file and attachment abstractions with safe MIME, size, path, and lifecycle rules.
-- [ ] Add privacy-preserving observability and deterministic integration fixtures.
+- [ ] Implement a complete conversation/message workflow with streaming and cancellation.
+- [ ] Add model discovery and tool invocation abstractions.
+- [ ] Add safe file and attachment handling.
+- [ ] Add image, audio, and voice capability abstractions where interfaces exist.
+- [ ] Add privacy-preserving diagnostics and deterministic integration fixtures.
+- [ ] Keep ChatJS.md synchronized with every public API change.
+- [ ] Keep ChatJS.tar.gz limited to and synchronized with the distributable module.
 
-## P3 — production quality
+## P3 — Production readiness
 
-- [ ] Add dependency/license reporting when external dependencies are introduced.
-- [ ] Add API reference generation and documentation quality checks.
-- [ ] Add performance and memory benchmarks with clear budgets.
-- [ ] Add operating-system compatibility checks where relevant.
-- [ ] Add maintainer, issue triage, and security-response procedures.
+- [ ] Add dependency/license review when third-party packages are introduced.
+- [ ] Add API reference generation and documentation checks where useful.
+- [ ] Add performance, memory, and concurrency benchmarks with measurable budgets.
+- [ ] Add supported-platform checks based on actual implementation requirements.
+- [ ] Document maintenance, support, and security-response practices.
 
-## Current work
+## Current position
 
-No ChatGPT feature implementation has started. The next technical task is the evidence-backed capability specification. Manual GitHub protections and legal review remain repository-owner tasks.
+The repository foundation and initial module scaffold exist, but ChatGPT feature implementation has not started. Next technical work is the source-backed capability inventory and feasibility analysis. Manual GitHub protection and legal review remain repository-owner actions.

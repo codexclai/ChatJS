@@ -1,78 +1,76 @@
-# GitHub Repository Settings Checklist
+# GitHub Repository Settings
 
 **Repository:** https://github.com/codexclai/ChatJS
 
-**Verified:** public repository, default branch main, connected account codexclai has admin-level permission.
+## Verified repository facts
 
-**Important limitation:** the GitHub connector used for this setup can inspect repository metadata and write repository contents, but does not expose repository About metadata, branch-protection, ruleset, or security-feature mutation. Those controls are therefore pending manual application. Do not claim they are active until verified.
-
-## Current verification
-
-On 2026-11-18, the GitHub repository metadata endpoint reported:
 - Visibility: public.
 - Default branch: main.
-- Repository description: empty.
-- Topics: none.
+- Connected GitHub account: codexclai, with admin-level repository permission.
 - Issues: enabled.
-- Discussions: disabled.
+- At the last inspection, repository description and topics were empty.
+- At the last inspection, no repository rulesets were returned.
+- The branch-protection read request was denied to the connected integration, so its state could not be verified.
 
-The rulesets endpoint returned an empty list. The branch-protection read endpoint returned HTTP 403 for the connected integration, so branch protection could not be inspected. No repository settings change is claimed to have been made by the connector.
+The GitHub connector used for repository content changes does not expose mutations for About metadata, branch protection/rulesets, or repository security features. Those settings remain manual. Do not say they are active until checked in GitHub.
 
-## About metadata
+## Repository description and topics
 
-Set the repository description to:
+Suggested description:
 
 > ChatJS — an independent, modular Node.js library for comprehensive ChatGPT-compatible capabilities and workflows.
 
-Suggested topics: nodejs, javascript, chatjs, chatgpt, ai, assistant, sdk, multimodal, voice, developer-tools.
+Suggested topics:
+- nodejs
+- javascript
+- chatjs
+- chatgpt
+- ai
+- assistant
+- sdk
+- multimodal
+- voice
+- developer-tools
 
-Keep the website blank until a real documentation site exists. The repository is already public and uses main as its default branch.
+Leave the website blank until a real documentation site exists.
 
 ## Protect main
 
-Create a ruleset targeting main:
+Create a branch ruleset targeting main:
 - Require pull requests before merge.
-- Require all review conversations resolved.
-- Require successful CI and documentation checks after they have run successfully at least once.
+- Require review conversations to be resolved.
+- Require successful CI checks after they have run successfully and their exact check names are known.
 - Block force pushes and branch deletion.
 - Require linear history only if it fits the chosen merge workflow.
-- Start with zero independent approvals while codexclai is the only maintainer; require one independent approval when another trusted maintainer joins.
-- Decide explicitly whether administrators may bypass for recovery.
-
-Do not enable required checks before the workflows have produced the corresponding successful status names.
+- While codexclai is the only maintainer, do not require an impossible independent approval. Require at least one independent approval after a trusted maintainer joins.
+- Decide explicitly whether administrators may bypass protections for recovery.
 
 ## Actions permissions
 
 - Set default workflow token permissions to read-only.
-- Keep permissions declared at the smallest job level.
-- Restrict workflows to GitHub-owned or explicitly approved actions where practical.
+- Keep each workflow's permissions at the smallest required scope.
 - Require approval for workflows from first-time contributors.
-- Review pinned action commit identifiers when updating workflow dependencies.
+- Restrict actions to GitHub-owned or explicitly approved actions where practical.
+- Keep third-party actions pinned to immutable commit references and review updates.
 
-## Security controls
+## Security features
 
-Enable or verify:
+Enable or verify where available:
 - Private vulnerability reporting.
 - Secret scanning and push protection.
-- Dependabot alerts and security updates.
 - Code scanning / CodeQL.
+- Dependabot security alerts.
 - Security policy visibility.
 - Branch protection and required checks.
 
-Availability may depend on GitHub plan and account configuration. Use the strongest available alternative when a feature is unavailable.
+Some features depend on GitHub plan and repository configuration. Use the strongest available alternative if a feature is unavailable.
 
 ## Issues and community
 
 Keep Issues enabled. Discussions are optional. Suggested labels: bug, enhancement, documentation, security, research, blocked, breaking-change.
 
-External code contributions remain paused while proprietary ownership and contributor terms are unsettled.
+External code contributions remain paused until legal ownership and contributor terms are settled.
 
-## Project package policy
+## Public repository limitations
 
-The Node module is named exactly ChatJS. It has a minimal package.json for Node.js resolution, no ChatJS product release numbering, no package version field, and no npm-registry publishing workflow. Install directly from GitHub using npm's Git dependency support.
-
-The only version key retained in a third-party tool configuration may be a mandatory configuration schema marker (for example, Dependabot's required schema version); it is not a ChatJS product version.
-
-## Repository protection limits
-
-A public GitHub repository cannot be made impossible to copy, fork, screenshot, mirror, or archive. Branch rules and access controls help prevent unauthorized changes; they do not guarantee that code cannot be copied or that legal rights are enforceable. Do not describe the repository as uncopyable.
+A public repository cannot be made impossible to copy, fork, screenshot, mirror, or archive. Branch rules, permissions, and legal rights can reduce risks and improve auditability, but they cannot make the repository technically uncopyable or guarantee a legal outcome.

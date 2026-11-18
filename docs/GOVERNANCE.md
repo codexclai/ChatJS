@@ -1,32 +1,36 @@
-# Project Governance and Rights
+# Governance and Rights
 
 ## Project identity
 
-ChatJS is an independent Node.js software project. It is intended to provide a broad and modular implementation of observable ChatGPT-related workflows where authorized interfaces and technical constraints permit.
+ChatJS is an independent Node.js project intended to provide a broad, modular implementation of observable ChatGPT-related workflows where authorized interfaces and technical constraints permit.
 
-ChatJS is not produced, sponsored, or endorsed by OpenAI. It must not use OpenAI branding in a way that suggests official status.
+ChatJS is not produced, sponsored, or endorsed by OpenAI. Do not use third-party marks in a way that suggests official status.
 
-## Public visibility and licensing
+## Public repository and rights
 
-The repository is public, but it is not currently open source. The LICENSE file reserves rights and identifies the repository's current proprietary intent. Public visibility alone is not a grant of an open-source license.
+The repository is public but currently uses the proprietary all-rights-reserved notice in LICENSE. Public visibility is not an open-source license and does not grant general permission to use, modify, or redistribute the code.
 
-Before external contributors are invited, the project owner must decide and document the rights holder, licensing model, contributor copyright and patent terms, contribution agreement requirements, and third-party notice policy.
+Before outside contributions are accepted, the project owner must confirm:
+- the legal rights holder;
+- the intended licensing model;
+- contributor copyright and patent terms;
+- whether a contributor agreement is needed;
+- third-party notices and attribution requirements.
 
-Do not casually accept outside contributions while ownership and license terms are unresolved. A pull request, fork, or public issue does not automatically settle copyright, patent, trademark, or redistribution policy.
+Do not casually accept outside code while ownership and contributor terms are unresolved.
 
-## Rights and attribution
+## Third-party material
 
-- Retain provenance of external code and documentation.
 - Review dependency licenses before adding runtime or development dependencies.
-- Keep third-party notices where legally required.
-- Never copy proprietary ChatGPT application assets, source code, or private service implementation into this repository.
-- Do not claim rights to OpenAI, ChatGPT, or other third-party names, logos, or marks.
+- Preserve required notices.
+- Do not copy proprietary ChatGPT application assets, source, or private service implementation into this repository.
+- Do not claim rights to OpenAI, ChatGPT, or other third-party names and marks.
 - Record the source and permitted use of every reference artifact.
 
 ## Maintainer responsibilities
 
-The repository owner should review permissions and branch rules regularly, protect credentials and user data, handle security reports privately, require tests and documentation for changes, and maintain clear compatibility claims.
+Protect repository permissions and credentials, handle security reports privately, require tests and docs, review dependencies, and maintain honest compatibility claims.
 
 ## Limits
 
-A proprietary notice and GitHub settings do not make the repository impossible to copy or guarantee legal outcomes. This document is an operational policy, not legal advice. Obtain qualified legal advice for ownership, contributor rights, licensing, trademark usage, and distribution.
+A proprietary notice and GitHub settings do not make a public repository uncopyable or guarantee legal enforceability. This is an operational policy, not legal advice. Seek qualified legal advice for ownership, contribution terms, licensing, and distribution.

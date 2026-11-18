@@ -7,6 +7,7 @@ class ChatJSError extends Error {
     super(message, options.cause === undefined ? undefined : { cause: options.cause });
     this.name = 'ChatJSError';
     this.code = options.code || 'CHATJS_ERROR';
+
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ChatJSError);
     }
@@ -19,12 +20,15 @@ class ChatJSClient extends EventEmitter {
   constructor(options = {}) {
     super();
 
+    const prototype = options !== null && typeof options === 'object'
+      ? Object.getPrototypeOf(options)
+      : undefined;
+
     if (
       options === null ||
       typeof options !== 'object' ||
       Array.isArray(options) ||
-      (Object.getPrototypeOf(options) !== Object.prototype &&
-        Object.getPrototypeOf(options) !== null)
+      (prototype !== Object.prototype && prototype !== null)
     ) {
       throw new ChatJSError('ChatJS options must be a plain object.', {
         code: 'CHATJS_INVALID_OPTIONS'
@@ -51,6 +55,7 @@ class ChatJSClient extends EventEmitter {
         code: 'CHATJS_CLIENT_CLOSED'
       });
     }
+
     return this;
   }
 
@@ -72,5 +77,8 @@ function createChatJS(options) {
 module.exports = Object.freeze({
   Client: ChatJSClient,
   Error: ChatJSError,
-  create: createChatJS
+  create: createChatJS,
+  ChatJSClient,
+  ChatJSError,
+  createChatJS
 });

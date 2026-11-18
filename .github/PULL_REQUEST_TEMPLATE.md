@@ -4,21 +4,22 @@ Describe the change and why it is needed.
 
 ## Implementation
 
-List the important implementation details and public behavior changes.
+List the important implementation details and user-visible behavior changes.
 
 ## Verification
 
 - [ ] Tests added or updated.
-- [ ] npm run check passes locally.
+- [ ] `npm run check` passes.
 - [ ] Current supported Node.js LTS compatibility considered.
-- [ ] Documentation, capability matrix, and project state updated where applicable.
+- [ ] Root ChatJS.md and relevant project docs updated.
+- [ ] ChatJS.tar.gz archive contents and module loading verified when relevant.
 - [ ] No secrets, private user data, APK files, or copied proprietary assets included.
 - [ ] Dependency and license impact reviewed.
 
 ## Compatibility and risks
 
-Describe limitations, migration needs, and any known risks.
+Describe limitations, migration needs, and known risks.
 
 ## Evidence
 
-Link official documentation, issue references, tests, or reproducible observations.
+Link authoritative documentation, issues, tests, or reproducible observations.
