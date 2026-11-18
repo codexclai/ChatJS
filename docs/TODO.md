@@ -17,7 +17,8 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [x] Exclude health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions/features.
 - [x] Permanently exclude OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, private backends and app session access.
 - [x] Document that the owner intends to clear Project Sources and that committed inventories are the durable reference.
-- [x] Copy the Android ZIP to the owner's private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip and verify successful re-materialization.
+- [x] Move and rename Android archive in private Library to /ChatJS-Archives/ChatJS-Android.zip; verify listing and re-materialization.
+- [ ] Retain Windows MSIX privately as ChatJS-Windows.zip (or preserve .msix format) when transfer supports files above 25 MiB; current attempt blocked.
 - [ ] Validate a specific mobile/desktop UI interaction only if the owner later asks for a concrete behavior comparison.
 
 ## P1 — Local Work/Codex runtime design
@@ -50,6 +51,6 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 
 ## Current position
 
-ChatJS remains a Node.js foundation with no product feature implementation. Its reference scope is mobile-first ChatGPT functionality plus applicable desktop Work and Codex. No OpenAI Platform API, API key, OAuth/token-sharing flow, private ChatGPT backend, or app session integration is in scope. Health/finance/maps/shopping and unrelated Android permissions are excluded. Permitted Android and Windows package findings are committed in REFERENCE_APK.md and REFERENCE_DESKTOP.md; original binaries are not retained in Git. The owner intends to clear Project Sources after this inventory is committed. The next engineering slice is a genuine local workspace for Work/Codex workflows; model-powered behavior remains unimplemented until a non-OpenAI inference engine is selected.
+ChatJS remains a Node.js foundation with no product feature implementation. Its reference scope is mobile-first ChatGPT functionality plus applicable desktop Work and Codex. No OpenAI Platform API, API key, OAuth/token-sharing flow, private ChatGPT backend, or app session integration is in scope. Health/finance/maps/shopping and unrelated Android permissions are excluded. Permitted Android and Windows package findings are committed in REFERENCE_APK.md and REFERENCE_DESKTOP.md; original binaries are not retained in Git. Android archive is in Library at /ChatJS-Archives/ChatJS-Android.zip; Windows MSIX is not retained and its URL is in REFERENCE_DESKTOP.md. Owner intends to clear Project Sources; deletion is not confirmed. The next engineering slice is a genuine local workspace for Work/Codex workflows; model-powered behavior remains unimplemented until a non-OpenAI inference engine is selected.
 
 Never create branches or worktrees. Keep all work on main.
