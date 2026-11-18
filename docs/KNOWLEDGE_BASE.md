@@ -1,54 +1,57 @@
 # ChatJS Knowledge Base
 
-Index of durable technical, product, compatibility, security and research knowledge gathered across ChatJS chats.
+Index of durable product, technical, compatibility, security and research knowledge gathered across ChatJS chats.
 
 ## Evidence labels
 - **Verified:** confirmed by current code/tests or authoritative documentation.
-- **Observed:** static indicator in the supplied APK or direct observation; not proof of user-visible behavior/API access.
-- **Inferred:** plausible, not independently confirmed.
+- **Observed:** static indicator in a supplied package or direct observation; not proof of UI availability or API access.
+- **Inferred:** plausible but not independently confirmed.
 - **Planned:** desired behavior, not implemented.
 - **Blocked:** required engine, permission, platform or supported integration unavailable.
-- **Out of scope:** explicitly excluded by the owner.
+- **Out of scope:** explicitly excluded by owner.
 
 ## Current project facts
 
 | Topic | Current understanding | Evidence |
 | --- | --- | --- |
-| Product/module | ChatJS; Node.js only; CommonJS, ESM and TypeScript | Owner direction/repository |
+| Product/module | ChatJS; Node.js only; CommonJS, ESM, TypeScript | Owner direction/repository |
 | Product reference | ChatGPT mobile first; applicable desktop Work and Codex | Owner direction and official product docs |
 | Repository | codexclai/ChatJS; public; default branch main | Live GitHub |
-| Branch inventory | Exactly one branch, main | GitHub branch search, 2026-11-18 |
+| Branch inventory | One branch, main | GitHub branch search, 2026-11-18 |
 | Branch policy | Never create/delete/rename/switch branches or worktrees | Explicit owner requirement |
 | Privacy | Zero telemetry, tracking, hidden collection, background reporting, phone-home and unsolicited network calls | Explicit owner direction |
-| Integration boundary | No OpenAI Platform APIs, keys, Sign in with ChatGPT OAuth, private backends, or app session/cookie reuse | Explicit owner direction |
+| Integration boundary | No OpenAI Platform APIs, keys, Sign in with ChatGPT OAuth, private backends or app session/cookie reuse | Explicit owner direction |
 | Inference engine | No non-OpenAI engine selected | OPEN_QUESTIONS.md |
 | Runtime status | Minimal lifecycle foundation only; no ChatGPT feature implemented | Source and CI |
-| Android reference | ChatGPT.zip in Project Sources; user says latest Google Play build available to them at acquisition | User-confirmed provenance |
-| APK evidence | Static manifest/resource indicators; no emulator/UI or DEX decompilation | CHATGPT_CAPABILITY_INVENTORY.md |
-| Desktop product reference | Desktop separates ChatGPT Chat/Work and Codex; Work can use permissioned local files/apps; Codex uses local folders/repos/terminals/dev tools | Official Help Center sources in inventory |
+| Android reference | ChatGPT.zip supplied privately; user says latest Google Play build available at acquisition | User-confirmed provenance |
+| Android evidence | Static manifest/resource indicators; no emulator/UI or DEX decompilation | REFERENCE_APK.md |
+| Windows reference | Supplied x64 MSIX downloaded and statically inspected on 2026-11-18; not installed or executed | REFERENCE_DESKTOP.md |
+| Windows package identity | Appx identity OpenAI.Codex, x64, display name ChatGPT; embedded Electron package identifies Codex | MSIX manifest and ASAR package metadata |
+| Desktop components observed | Separate Codex executable, command runner, code-mode host, sandbox service/setup, bundled Node runtime, PTY/ConPTY, browser native host, computer-use, plugins/skills, Explorer integration, URI handler and document associations | REFERENCE_DESKTOP.md |
 | Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
+| Source retention | Owner intends to clear Project Sources; committed reference inventories are durable | Owner direction; REFERENCE_APK.md and REFERENCE_DESKTOP.md |
 | Product documentation | Root ChatJS.md | Repository |
 | Distribution | ChatJS.tar.gz built, verified, extracted and smoke-tested in CI | Workflow evidence |
 
 ## Current product-reference evidence — 2026-11-18
 
-See [ChatGPT App Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md) for scope and evidence.
+See [ChatGPT App Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md), [Android reference](REFERENCE_APK.md), and [Windows desktop package inventory](REFERENCE_DESKTOP.md).
 
-- Desktop app exposes ChatGPT (Chat or Work) and a separate Codex view. Desktop Work can use local files and desktop apps with permission; task context may still be stored in cloud while work runs locally. [Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex), [new desktop app](https://help.openai.com/en/articles/20001276-moving-to-the-new-chatgpt-desktop-app).
-- Work can research, analyze, create documents/spreadsheets/presentations/reports/Sites and run scheduled/event-triggered/change-monitoring tasks, subject to permissions and approvals. [Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex).
-- Codex is a separate desktop experience for local folders, repositories, terminals and developer tools. Supported desktop Codex tasks can be reached from the mobile Remote tab; this is not mobile-native Codex or Codex Cloud. [Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex).
-- Current Voice docs distinguish Live, Advanced and Standard. Live lacks video/screen sharing; eligible mobile Advanced sessions support them. Advanced and Standard are scheduled to retire December 11, 2026. [Voice](https://help.openai.com/en/articles/20001274-chatgpt-voice).
-- Projects group chats, files and instructions and use project context. ChatJS local projects are separate data. [Projects](https://help.openai.com/en/articles/10169521-projects-in-chatgpt).
+- Desktop separates ChatGPT Chat/Work and Codex. Work can use local files and apps with permission; task context may still be stored in the cloud when work runs locally. [Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex), [new desktop app](https://help.openai.com/en/articles/20001276-moving-to-the-new-chatgpt-desktop-app).
+- Desktop Codex supports local folders, repositories, terminals and developer tools. Windows package metadata additionally indicates separate Codex execution, command runner, sandbox, PTY, browser native-host, computer-use, plugin/skill, Explorer and file-association components.
+- Mobile Voice docs distinguish Live, Advanced and Standard; the page says Advanced and Standard are scheduled to retire December 11, 2026. [Voice](https://help.openai.com/en/articles/20001274-chatgpt-voice).
+- Projects group chats, files and instructions in ChatGPT; ChatJS local projects are separate data. [Projects](https://help.openai.com/en/articles/10169521-projects-in-chatgpt).
 
-These sources are product-reference evidence only. They do not authorize ChatJS to call OpenAI services or access consumer-app data.
+These sources describe ChatGPT's app product only. They do not authorize ChatJS to call OpenAI services or access consumer account data.
 
 ## Canonical research locations
 
 | Domain | Canonical location |
 | --- | --- |
-| Product scope and feature mapping | CHATGPT_CAPABILITY_INVENTORY.md |
+| Product scope and features | CHATGPT_CAPABILITY_INVENTORY.md |
+| Android package evidence | REFERENCE_APK.md |
+| Windows desktop package evidence | REFERENCE_DESKTOP.md |
 | Implementation status | CAPABILITY_MATRIX.md |
-| Android provenance | REFERENCE_APK.md and Project Sources |
 | Architecture/local Node.js boundaries | ARCHITECTURE.md |
 | Actual public API | Root ChatJS.md and types/index.d.ts |
 | Security/privacy | SECURITY.md and ARCHITECTURE.md |
