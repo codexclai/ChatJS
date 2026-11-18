@@ -29,7 +29,7 @@ Index of durable product, technical, compatibility, security and research knowle
 | Windows package identity | Appx identity OpenAI.Codex, x64, display name ChatGPT; embedded Electron package identifies Codex | MSIX manifest and ASAR package metadata |
 | Desktop components observed | Separate Codex executable, command runner, code-mode host, sandbox service/setup, bundled Node runtime, PTY/ConPTY, browser native host, computer-use, plugins/skills, Explorer integration, URI handler and document associations | REFERENCE_DESKTOP.md |
 | Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
-| Source retention | Android ZIP backed up privately in ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip; Windows MSIX can be re-fetched from recorded official URL; owner intends to clear Sources | Library listing and successful re-materialization; REFERENCE_APK.md and REFERENCE_DESKTOP.md |
+| Source retention | Android ZIP backed up and re-materialized from Library at /ChatJS-Archives/ChatJS-Android.zip; Windows MSIX not retained due 25 MiB export cap; official URL/findings retained; owner intends to clear Sources | Library listing and successful re-materialization; REFERENCE_APK.md and REFERENCE_DESKTOP.md |
 | Product documentation | Root ChatJS.md | Repository |
 | Distribution | ChatJS.tar.gz built, verified, extracted and smoke-tested in CI | Workflow evidence |
 
@@ -57,6 +57,9 @@ These sources describe ChatGPT's app product only. They do not authorize ChatJS 
 | Security/privacy | SECURITY.md and ARCHITECTURE.md |
 | Decisions | DECISIONS.md |
 | Open questions/tasks | OPEN_QUESTIONS.md and TODO.md |
+
+## Documentation completeness
+Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs during the same session. Update affected references; never imply invisible monitoring.
 
 ## Research format
 
