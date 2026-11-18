@@ -29,7 +29,7 @@ Index of durable product, technical, compatibility, security and research knowle
 | Windows package identity | Appx identity OpenAI.Codex, x64, display name ChatGPT; embedded Electron package identifies Codex | MSIX manifest and ASAR package metadata |
 | Desktop components observed | Separate Codex executable, command runner, code-mode host, sandbox service/setup, bundled Node runtime, PTY/ConPTY, browser native host, computer-use, plugins/skills, Explorer integration, URI handler and document associations | REFERENCE_DESKTOP.md |
 | Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
-| Source retention | Owner intends to clear Project Sources; committed reference inventories are durable | Owner direction; REFERENCE_APK.md and REFERENCE_DESKTOP.md |
+| Source retention | Android ZIP backed up privately in ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip; Windows MSIX can be re-fetched from recorded official URL; owner intends to clear Sources | Library listing and successful re-materialization; REFERENCE_APK.md and REFERENCE_DESKTOP.md |
 | Product documentation | Root ChatJS.md | Repository |
 | Distribution | ChatJS.tar.gz built, verified, extracted and smoke-tested in CI | Workflow evidence |
 
