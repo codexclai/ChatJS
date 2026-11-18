@@ -46,6 +46,7 @@
 26. Moved Android archive to private Library /ChatJS-Archives/ChatJS-Android.zip, deleted old folder, verified new listing and re-materialized renamed 54,869,202-byte file.
 27. Recorded Windows MSIX retention attempt and blocker: browser export caps at 25 MiB; 1 MiB test succeeded but full 1,057,802,768-byte transfer was not achieved.
 28. Made contemporaneous canonical documentation of meaningful requirements, decisions, actions, file changes, tests, failures, limits and handoffs a permanent workflow requirement.
+29. Restored cross-chat context; verified that the live branch inventory contains only main, checked current CI/CodeQL results, confirmed the private Library Android archive path and size, and consolidated duplicate repository documentation.
 
 ## Not implemented
 

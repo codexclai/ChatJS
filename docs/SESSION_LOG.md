@@ -139,3 +139,16 @@ Specify and implement a local Work/Codex vertical slice: a caller-selected, path
 - Updated Project Instructions, AI Memory, Continuation, Android/Desktop references, TODO, Knowledge Base and workflow.
 - Owner requires comprehensive contemporaneous documentation. Canonical workflow records available meaningful requirements, decisions, research, actions, files, tests, failures, limits, blockers and handoffs, without claiming invisible monitoring.
 - Owner intends to clear Project Sources; deletion is not confirmed.
+
+## 2026-11-18 — Cross-chat context restoration and archive/instruction handoff
+
+- Owner reaffirmed the required private archive folder name `ChatJS-Archives`, requested complete copy/paste-ready ChatGPT Project Instructions, and requires meaningful project work—including Library/reference handling—to be documented contemporaneously and carried forward between chats.
+- Inspected the live public repository before continuing. Branch listing contained exactly one branch, `main`; current HEAD at inspection was `f1ec13ba581c2afc289b0695e5762e0eda360b44`. No issues or pull requests were returned by the repository searches.
+- Verified the private Library folder listing contains `/ChatJS-Archives/ChatJS-Android.zip`, MIME type `application/zip`, size 54,869,202 bytes. This verifies the current Library record, not a fresh re-materialization in this session.
+- The current conversation file listing returned no attached items. This does not establish whether ChatGPT Project → Sources were cleared; that remains unconfirmed and must not be represented as complete.
+- Verified the committed `docs/CHATGPT_PROJECT_INSTRUCTIONS.md` is 5,611 characters, below the previously established 6,000-character Project Instructions field limit. It records the main-only rule, private archive location, required reading, evidence labels, contemporaneous documentation, privacy/security constraints and session finish requirements. The exact committed content is to be supplied to the owner for pasting into the Project Instructions field; the field itself was not edited from this session.
+- Verified pre-update workflows on the inspected HEAD: CI run 44294288693 succeeded and CodeQL run 44294288642 succeeded. Documentation cleanup below triggers fresh checks; do not infer their result until observed.
+- Removed exact duplicate private-archive/documentation policy sections from `docs/DECISIONS.md`, duplicate archive-transfer experiment entry from `docs/EXPERIMENTS.md`, and a duplicated archive-retention paragraph from root `README.md`.
+- No runtime source, public API, dependency, binary or product-scope change was made. Android/MSIX binaries remain excluded from public Git; Windows MSIX retention remains blocked as documented in `docs/REFERENCE_DESKTOP.md`.
+- Next engineering priority remains the bounded, caller-selected, read-only local workspace contract in `docs/TODO.md`; do not skip its symlink/junction, traversal, size/count/depth, cancellation, concurrency and filesystem-race requirements.
+
