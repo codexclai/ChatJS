@@ -33,3 +33,6 @@ The actual Node.js module's user-facing documentation is the root-level [ChatJS.
 ## Keeping documentation current
 
 Update the canonical document whenever knowledge changes. Avoid duplicating the same information across multiple files. Update project-state.json and regenerate PROJECT_STATE.md. Append to SESSION_LOG.md at the end of every meaningful work session.
+## Capability research
+
+- [ChatGPT Capability and Interface Inventory](CHATGPT_CAPABILITY_INVENTORY.md) — static APK indicators, authorized interface mapping, plan-usage constraints, and evidence limits.
