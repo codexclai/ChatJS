@@ -1,24 +1,25 @@
 # ChatJS Open Questions
 
-Track unknowns and blockers that affect implementation or governance. Close an item only after the answer and supporting evidence are recorded.
+Track unknowns and blockers. Close an item only after its answer and evidence are recorded.
 
 ## Ownership and governance
-- [ ] **Legal ownership:** confirm the rights holder and obtain legal review of the all-rights-reserved notice before external contributions or distribution.
-- [ ] **Contribution model:** decide whether ChatJS remains proprietary or adopts a recognized license before inviting external contributors.
-- [ ] **GitHub security settings:** verify private vulnerability reporting, secret scanning, and push-protection availability. Do not configure branch protection, rulesets, or topics.
+- [ ] Confirm the rights holder and obtain legal review of the all-rights-reserved notice.
+- [ ] Decide whether ChatJS remains proprietary or adopts a recognized license before inviting contributors.
+- [ ] Verify private vulnerability reporting, secret scanning and push-protection availability.
 
 ## Inference boundary
-- [ ] **Non-OpenAI inference strategy:** the owner has excluded OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, and private ChatGPT endpoints. What non-OpenAI inference engine, if any, is acceptable for model-powered chat, voice, image, and agent behavior? Until selected, do not implement or simulate generated responses.
-- [ ] **Local-model runtime:** assess a genuine local inference option only after the owner confirms that local models are in scope. Do not add an inference dependency pre-emptively.
+- [ ] **Non-OpenAI inference:** owner excluded OpenAI Platform APIs, keys, Sign in with ChatGPT OAuth and private endpoints. What non-OpenAI engine, if any, is acceptable for generated chat, voice, image and agent behavior? Until selected, do not simulate generated output.
+- [ ] **Local models:** assess a genuine local inference option only after confirming local models are in scope. Do not add an inference dependency pre-emptively.
 
 ## Node.js and platform scope
-- [ ] **Host platforms:** define which Node.js hosts must be supported first (Windows, macOS, Linux). Do not imply Node.js has direct Android camera/microphone/screen permissions.
-- [ ] **Desktop permissions:** define permission and approval policy before adding desktop-app control, browser automation, microphone, camera, or screen adapters.
-- [ ] **Remote host:** decide whether a ChatJS-owned remote desktop agent is worth building. It must use its own secure protocol and must not imitate ChatGPT Remote/Codex private sessions.
-- [ ] **External connectors:** determine whether user-configured third-party adapters are in scope, with least-privilege scopes and explicit approval.
+- [ ] Define priority host platforms (Windows, macOS, Linux).
+- [ ] Define approvals before desktop-app control, browser automation, microphone, camera or screen adapters.
+- [ ] Decide whether a ChatJS-owned remote desktop host is worthwhile; use its own protocol and authentication, never ChatGPT Remote/Codex sessions.
+- [ ] Decide whether user-configured third-party connectors are in scope and define least-privilege consent.
 
-## Product evidence
-- [ ] **Mobile UI validation:** validate selected APK indicators against observable behavior if a lawful reference session becomes available. Static manifest/resource evidence does not prove current UI availability.
-- [ ] **Desktop UI validation:** official documentation identifies Chat, Work, and Codex. A desktop installer is not required for scope research; request screenshots or a specific build only to validate a concrete OS interaction.
+## Product evidence and source retention
+- [ ] Validate specific mobile/desktop UI interactions only if the owner asks for a concrete behavior comparison and an authorized reference session is available.
+- [ ] The owner intends to clear ChatGPT Project → Sources after this inspection. Do not claim deletion is complete until confirmed. Future work should use committed reference records and must not request old binaries merely to repeat the inventory.
+- [ ] Request a different desktop installer only if the owner explicitly asks for a build comparison or a specific OS behavior test.
 
-Every open question should link to an actionable TODO and identify the evidence needed. Never silently turn an unknown into an assumption.
+Every open question must link to an actionable TODO and identify the evidence needed. Never silently turn an unknown into an assumption.
