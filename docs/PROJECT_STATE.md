@@ -9,8 +9,8 @@
 | Project | ChatJS |
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
-| Phase | Mobile-first product scope and local Work/Codex design |
-| Status | The intended ChatGPT mobile-first and desktop Work/Codex feature scope is documented; runtime remains a foundation with no product features implemented. |
+| Phase | Mobile and desktop package research complete; local Work/Codex design |
+| Status | Mobile-first ChatGPT and desktop Work/Codex product references are documented. The runtime remains a foundation with no product features implemented. |
 | Default branch | main |
 | Last reviewed | 2026-11-18 |
 | Runtime policy | Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system. |
@@ -39,6 +39,9 @@
 19. Reviewed current ChatGPT Work/Codex, desktop app, Voice, Projects and Codex documentation as product-reference evidence.
 20. Reclassified ChatJS as mobile-first with applicable desktop Work/Codex capabilities; removed OpenAI API/key/OAuth integration from product scope.
 21. Explicitly excluded health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permission domains.
+22. Downloaded and statically inspected the user-supplied Windows x64 MSIX manifest and Electron/ASAR directory metadata without installing or executing it.
+23. Recorded Windows Codex, command runner, code-mode host, sandbox, terminal, browser/native-host, computer-use, plugin/skill, shell and file-association observations in docs/REFERENCE_DESKTOP.md.
+24. Updated future-chat continuity and Project Instructions to rely on committed mobile/desktop findings instead of repeatedly requesting reference binaries.
 
 ## Not implemented
 
@@ -50,18 +53,18 @@
 
 ## Next actions
 
-1. Specify the local workspace security contract: root selection, path confinement, symlink/junction behavior, limits, cancellation, atomic writes and concurrent-mutation threat model.
-2. Implement and test a confined local workspace with bounded file operations as the first Work/Codex vertical slice.
+1. Specify the read-only local workspace contract: explicit root selection, path confinement, symlink/junction policy, file/count/depth limits, cancellation, concurrency and filesystem race limitations.
+2. Implement and test a confined, bounded read-only workspace as the first deterministic Work/Codex vertical slice.
 3. Specify a safe process runner with explicit executable/argv, no shell by default, approval policy, timeout/cancellation, output limits and cleanup.
 4. Resolve whether a non-OpenAI inference engine is in scope; do not implement or simulate model-powered behavior until one is selected.
 5. Verify availability and status of private vulnerability reporting, secret scanning and push protection.
 
 ## Reference artifact
 
-- Source: ChatGPT.zip in ChatJS Project → Sources in ChatGPT
+- Source: Owner-supplied ChatGPT.zip Android reference and ChatGPT-x64.msix Windows desktop URL.
 - Acquisition: The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.
-- Availability: The Project Source was found and the ZIP contains one base.apk. Static manifest and high-level packaged resource/module inspection is documented in docs/REFERENCE_APK.md.
-- Evidence limit: Inspection was static only; no emulator, interactive UI session, or DEX decompilation was performed. Package declarations/resource names are indicators, not proof of current UI, entitlement, or Node.js access. Desktop scope is based on official product documentation, not a desktop binary.
+- Availability: Android ZIP and Windows x64 MSIX were available during inspection. Permitted observations are preserved in docs/REFERENCE_APK.md and docs/REFERENCE_DESKTOP.md; neither official binary is retained in Git. The owner intends to clear Project Sources; deletion is not confirmed.
+- Evidence limit: Android inspection was static manifest/resource metadata only. Windows inspection was static MSIX manifest, ZIP listing and Electron ASAR directory metadata only; the app was not installed/launched, its signature was not verified, and no proprietary code/assets were extracted or copied. Package observations do not prove complete UI behavior or supported Node.js interfaces.
 
 ## Continuity
 
