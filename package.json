@@ -1,10 +1,7 @@
 {
-  "name": "@codexclai/chatjs",
-  "version": "0.0.1",
-  "description": "An independent, modular Node.js foundation for comprehensive ChatGPT-compatible capabilities and workflows.",
-  "private": false,
-  "license": "UNLICENSED",
-  "author": "codexclai",
+  "name": "ChatJS",
+  "private": true,
+  "description": "ChatJS — a comprehensive, modular Node.js library for ChatGPT-compatible capabilities and workflows.",
   "homepage": "https://github.com/codexclai/ChatJS#readme",
   "repository": {
     "type": "git",
@@ -13,19 +10,6 @@
   "bugs": {
     "url": "https://github.com/codexclai/ChatJS/issues"
   },
-  "keywords": [
-    "chatjs",
-    "chatgpt",
-    "nodejs",
-    "javascript",
-    "ai",
-    "assistant",
-    "sdk",
-    "multimodal",
-    "voice",
-    "tools",
-    "compatibility"
-  ],
   "main": "./src/index.cjs",
   "module": "./src/index.mjs",
   "types": "./types/index.d.ts",
@@ -34,30 +18,13 @@
       "types": "./types/index.d.ts",
       "import": "./src/index.mjs",
       "require": "./src/index.cjs"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "src/",
-    "types/",
-    "docs/",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md"
-  ],
-  "engines": {
-    "node": ">=22.14.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
+    }
   },
   "scripts": {
     "lint": "node --check src/index.cjs && node --check src/index.mjs && node --check scripts/generate-project-state.cjs && node --check scripts/check-doc-links.cjs",
     "test": "node --test",
     "docs:sync": "node scripts/generate-project-state.cjs",
     "docs:check": "node scripts/generate-project-state.cjs --check && node scripts/check-doc-links.cjs",
-    "check": "npm run lint && npm run docs:check && npm test",
-    "prepack": "npm run check"
+    "check": "npm run lint && npm run docs:check && npm test"
   }
 }

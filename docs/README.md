@@ -1,6 +1,6 @@
 # ChatJS Documentation
 
-This documentation is designed to be the durable operating manual for the project, including when work moves between separate ChatGPT conversations.
+This documentation is the durable operating manual for the ChatJS project, including when work moves between separate ChatGPT chats.
 
 ## Start here
 
@@ -15,14 +15,14 @@ This documentation is designed to be the durable operating manual for the projec
 - [Architecture](ARCHITECTURE.md) — design principles, components, boundaries, and proposed interfaces.
 - [Workflow](WORKFLOW.md) — normal engineering lifecycle, testing, documentation, and cross-chat handoff.
 - [Decisions](DECISIONS.md) — architectural and project decisions with rationale.
-- [Reference APK](REFERENCE_APK.md) — provenance, inventory, evidence limits, and permitted use of the user-supplied Android artifact.
+- [Reference APK](REFERENCE_APK.md) — provenance and safe use of ChatGPT.zip stored in the ChatJS Project's Sources in ChatGPT.
 
 ## Repository operations
 
 - [Repository settings checklist](REPOSITORY_SETTINGS.md) — security, branch protection, metadata, and manual settings that could not be applied through the connector.
 - [Governance and rights](GOVERNANCE.md) — project ownership model, public visibility, contribution restrictions, and limitations of repository protection.
-- [Session log](SESSION_LOG.md) — append-only summary of completed work and important discoveries.
-- [ChatGPT Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md) — compact prompt to paste into the ChatGPT Project settings.
+- [Session log](SESSION_LOG.md) — chronological summary of completed work and discoveries.
+- [ChatGPT Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md) — instructions for the ChatJS Project's Instructions field.
 
 ## Maintenance rule
 

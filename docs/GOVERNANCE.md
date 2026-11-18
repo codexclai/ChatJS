@@ -8,34 +8,24 @@ ChatJS is not produced, sponsored, or endorsed by OpenAI. It must not use OpenAI
 
 ## Public visibility and licensing
 
-The repository is public, but it is not currently open source. The LICENSE file reserves rights and identifies the repository's current proprietary intent. The package metadata uses UNLICENSED to avoid implying a standard license.
+The repository is public, but it is not currently open source. The LICENSE file reserves rights and identifies the repository's current proprietary intent. Public visibility alone is not a grant of an open-source license.
 
-Before external contributors are invited, the project owner must make a durable choice among:
-- remaining proprietary and using a properly reviewed contributor agreement;
-- adopting a recognized open-source license with clear ownership and contribution terms; or
-- using a dual-licensing or source-available model reviewed by counsel.
+Before external contributors are invited, the project owner must decide and document the rights holder, licensing model, contributor copyright and patent terms, contribution agreement requirements, and third-party notice policy.
 
-Do not casually accept outside contributions while ownership and license terms are unresolved. A pull request, fork, or public issue does not automatically settle the project's copyright, patent, trademark, or redistribution policy.
+Do not casually accept outside contributions while ownership and license terms are unresolved. A pull request, fork, or public issue does not automatically settle copyright, patent, trademark, or redistribution policy.
 
 ## Rights and attribution
 
-- Retain the provenance of every external code or documentation contribution.
+- Retain provenance of external code and documentation.
 - Review dependency licenses before adding runtime or development dependencies.
 - Keep third-party notices where legally required.
 - Never copy proprietary ChatGPT application assets, source code, or private service implementation into this repository.
-- Do not claim rights to the OpenAI, ChatGPT, or other third-party names, logos, or marks.
+- Do not claim rights to OpenAI, ChatGPT, or other third-party names, logos, or marks.
 - Record the source and permitted use of every reference artifact.
 
 ## Maintainer responsibilities
 
-The repository owner should:
-- review permissions and branch rules regularly;
-- protect credentials and user data;
-- review security reports privately;
-- require tests and documentation for changes;
-- use signed releases and verifiable provenance where possible;
-- document breaking changes and deprecations;
-- keep the roadmap and capability claims honest.
+The repository owner should review permissions and branch rules regularly, protect credentials and user data, handle security reports privately, require tests and documentation for changes, and maintain clear compatibility claims.
 
 ## Limits
 

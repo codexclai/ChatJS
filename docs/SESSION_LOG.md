@@ -1,31 +1,29 @@
 # Session Log
 
-This log is chronological. Append a new dated entry for each meaningful work session; do not rewrite history. Use actual dates and commit links.
+Append a new dated entry for each meaningful work session. Preserve older entries.
 
-## 2026-11-18 — Repository bootstrap
+## 2026-11-18 — Repository foundation
 
 ### Goals
-Prepare codexclai/ChatJS as a durable, documented Node.js project ready for implementation and for continuity across ChatGPT chats.
+Prepare codexclai/ChatJS as a durable, documented Node.js project ready for implementation and continuity across ChatGPT chats.
 
 ### Completed
 - Confirmed the public GitHub repository and connected account's admin-level permission.
 - Verified that the repository began empty and uses main as its default branch.
-- Created the README and repository foundation files.
-- Added the proposed scoped package metadata, ESM/CommonJS entry points, TypeScript declaration scaffold, and Node built-in test suite.
-- Added structured project state and generated-state documentation validation.
-- Added architecture, roadmap, capability matrix, APK reference, repository governance, and cross-chat continuation docs.
-- Prepared GitHub Actions CI, CodeQL, dependency review, documentation validation, Dependabot, and npm Trusted Publishing release automation.
-- Recorded the APK archive inventory and SHA-256; did not commit the APK or copy app assets.
+- Created the README, ChatJS-named package foundation, ESM/CommonJS entry points, TypeScript declarations, client lifecycle scaffold, and built-in tests.
+- Added generated project state, documentation checks, architecture, roadmap, capability matrix, APK provenance, governance, and cross-chat continuation docs.
+- Added GitHub Actions CI, documentation validation, CodeQL, dependency review, GitHub Actions dependency automation, issue templates, and repository policies.
+- The user confirms ChatGPT.zip in the ChatJS Project's Sources in ChatGPT was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time. The archive remains a Project Source and is not committed to the public repository.
+- Removed ChatJS product release numbering, package version fields, lockfiles, changelog/version machinery, checksum inventory, and npm registry publishing automation as requested.
 
-### Evidence and caveats
-- The supplied archive contains exactly one base.apk entry of 101,864,095 uncompressed bytes; SHA-256: 42291c2010897f940e1691f357bfffcb8d35ba7c329104240d4b26412d3eae15.
-- The APK includes AndroidManifest.xml as binary XML and 4,987 archive entries. Detailed version metadata was not decoded; latest-release status is not verified.
-- GitHub connector access confirms admin permission, but the connector did not expose repository metadata, branch protection, ruleset, or security-settings mutation. Those items remain manual.
-- The proprietary all-rights-reserved notice is a provisional operational choice and requires legal review.
-- npm package ownership/name and Trusted Publisher configuration are not verified. No package has been published.
+### Limitations
+- GitHub repository About metadata, branch rules, and security controls remain manual because the connector does not expose their mutation actions.
+- The proprietary all-rights-reserved notice is an operational choice and still needs legal review.
+- The scaffold is not yet a working ChatGPT client. Feature implementation has not started.
+- New chats must search the ChatJS Project's Sources in ChatGPT for ChatGPT.zip before asking the user for another upload.
 
 ### Validation
-The scaffold was authored and committed through the GitHub connector. Run CI on the repository and record the actual workflow results before treating the bootstrap as fully verified. Do not claim that local checks passed until they have actually run.
+The repository files were committed through the GitHub connector. The runtime checks and GitHub workflows must be verified from actual results before claiming CI success.
 
 ### Next
-Apply repository settings and legal/package prerequisites, then build the source-backed ChatGPT mobile capability specification before implementing the first complete API slice.
+Apply GitHub protections and legal review, then build the evidence-backed ChatGPT capability specification before implementing the first complete workflow.

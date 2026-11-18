@@ -10,8 +10,8 @@ List the important implementation details and public behavior changes.
 
 - [ ] Tests added or updated.
 - [ ] npm run check passes locally.
-- [ ] Supported Node.js compatibility considered.
-- [ ] Documentation, capability matrix, TODO, and changelog updated where applicable.
+- [ ] Current supported Node.js LTS compatibility considered.
+- [ ] Documentation, capability matrix, and project state updated where applicable.
 - [ ] No secrets, private user data, APK files, or copied proprietary assets included.
 - [ ] Dependency and license impact reviewed.
 

@@ -2,50 +2,36 @@
 
 ## Provenance
 
-The user attached an archive named ChatGPT.zip to this ChatJS project conversation. The archive was inspected locally for its container and APK inventory. The repository stores this note and checksum only; the APK itself is deliberately not committed to this public repository.
+The user keeps an archive named **ChatGPT.zip** in the **ChatJS Project's Sources in ChatGPT**. The user confirms that it was exported immediately after updating ChatGPT through Google Play and identifies it as the latest build available to them at the time it was supplied.
 
-| Item | Observed value |
-| --- | --- |
-| Uploaded archive name | ChatGPT.zip |
-| Archive contents | One entry: base.apk |
-| APK uncompressed size | 101,864,095 bytes |
-| ZIP compressed size of APK entry | 54,869,072 bytes |
-| APK SHA-256 | 42291c2010897f940e1691f357bfffcb8d35ba7c329104240d4b26412d3eae15 |
-| ZIP entry timestamp | 2026-11-18 05:04 |
-| APK container entries | 4,987 |
-| Android manifest | Present; binary XML |
-| Manifest size | 118,712 bytes |
+Treat it as the user's current Google Play reference build. This acquisition provenance is user-confirmed; it is not an independently verified claim about the latest global release.
 
-The archive date and user description identify the file the user supplied, but do not independently establish that it is the latest publicly released ChatGPT mobile version. The manifest's version metadata was not fully decoded in this environment. Do not state a version name, version code, package identifier, signing identity, or release channel until those facts are obtained from a suitable tool and recorded with evidence.
+## Where the artifact lives
 
-## Inventory observations
+The archive is retained in the ChatJS Project's Sources in ChatGPT, not in the public GitHub repository.
 
-- The archive contains Android application package content, not Node.js source code.
-- It contains Android resource directories and Compose Multiplatform resource paths.
-- A path inventory found 1,434 entries under assets/composeResources/com.openai, 1,609 entries under assets/, and 2,337 entries under res/.
-- No entries were listed under lib/ in the ZIP inventory.
-- The APK contains META-INF third-party notices and license files. Their presence indicates bundled third-party components; it does not grant ChatJS rights to copy those components.
-- The manifest is a binary Android XML document. Raw strings from it are not sufficient to decode the full manifest accurately.
+At the beginning of each new ChatJS chat, search the Project Sources for ChatGPT.zip before asking the user to attach it again. Use the available Project file/source retrieval tools to locate and inspect it when relevant. A source may be visible to the Project without being mounted as a local file; only materialize or download it when direct binary inspection is necessary.
 
-These are inventory facts, not a complete feature audit. Resource names and strings, even if extracted later, should not be treated as proof that a feature is enabled, available to every user, or supported through a public API.
+Do not copy the APK into the public repository:
+- it is a proprietary third-party application binary;
+- placing it in a public repository would redistribute the application;
+- a large APK adds noise and weight to the source repository;
+- the ChatJS Project Sources provide the reference archive independently of the code repository.
 
 ## Intended use
 
-Use the APK as a high-level reference for:
-- identifying product areas to investigate;
-- comparing visible navigation and interaction patterns when the user provides observations or screenshots;
-- identifying localization coverage and resource organization;
-- creating a dated checklist of user-visible behavior to test independently.
+Use the APK as a high-level product reference for identifying areas to investigate, navigation concepts, visible interactions, resource coverage, and user-observable behavior. Keep notes separate from implementation.
 
-## Restrictions and safety
+Any feature discovered from the APK must be labelled as observed behavior until supported independently by public documentation, an authorized interface, or reproducible tests. An application resource or UI label is not evidence that the feature is accessible to a Node.js module.
 
-- Do not copy app source, compiled code, images, icons, fonts, proprietary strings, or other assets into ChatJS.
-- Do not commit, host, or redistribute the APK.
-- Do not attempt to bypass authentication, entitlement checks, certificate validation, or service access controls.
-- Do not represent private application internals as stable public API.
-- Avoid decompilation or extraction of proprietary implementation code. Prefer official documentation, user-observable behavior, and independent implementation.
-- Record any future observation with date, platform, app version if verified, account/plan context if relevant, steps, expected result, actual result, evidence type, and confidence.
+## Boundaries
 
-## Future reinspection
+- Do not publish, redistribute, or commit the APK.
+- Do not copy proprietary source, compiled application implementation, icons, fonts, strings, or other assets into ChatJS.
+- Do not bypass authentication, entitlement checks, certificate validation, or service access controls.
+- Prefer official documentation, authorized interfaces, and independent implementations.
+- Record observations in neutral terms without claiming that private implementation details are stable APIs.
 
-If a future session needs the APK, first check whether the attachment is still available and verify the SHA-256 against the value above. If it is unavailable, report that limitation rather than reconstructing or guessing its contents. If the file changes, update this document and project state with a new checksum and provenance record.
+## Future sessions
+
+The ChatJS Project Sources are the durable home for the reference APK. Every new chat must search there first. Ask the user to reattach the archive only when it is genuinely missing or inaccessible and a task requires direct APK inspection.

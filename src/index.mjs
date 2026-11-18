@@ -1,8 +1,7 @@
-import api from './index.cjs';
+import ChatJS from './index.cjs';
 
-export const ChatJSClient = api.ChatJSClient;
-export const ChatJSError = api.ChatJSError;
-export const createChatJS = api.createChatJS;
-export const version = api.version;
+export const ChatJSClient = ChatJS.Client;
+export const ChatJSError = ChatJS.Error;
+export const createChatJS = ChatJS.create;
 
-export default api;
+export default ChatJS;

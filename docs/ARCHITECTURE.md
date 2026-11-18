@@ -33,7 +33,7 @@ Feature groups should be independent modules with explicit dependencies and cont
 
 ### State and storage adapters
 
-Persistence is opt-in and pluggable. Avoid silently persisting tokens, prompts, files, or conversation content. Define retention, encryption, serialization, versioning, and deletion semantics before implementing durable storage.
+Persistence is opt-in and pluggable. Avoid silently persisting tokens, prompts, files, or conversation content. Define retention, encryption, serialization, migration, and deletion semantics before implementing durable storage.
 
 ### Observability layer
 
@@ -43,7 +43,7 @@ Structured diagnostics, metrics, tracing hooks, and logs should be opt-in or pri
 
 - Client lifecycle: initialization, readiness, close, idempotent cleanup.
 - Async operations: Promise behavior, AbortSignal support, timeouts, retries, and cleanup.
-- Streaming: typed events, monotonic ordering where guaranteed, backpressure, cancellation, terminal events, and partial failures.
+- Streaming: typed events, ordering guarantees, backpressure, cancellation, terminal events, and partial failures.
 - Errors: stable codes, retryability, causes, safe messages, and redaction.
 - Concurrency: per-client isolation, request-scoped context, shared resource ownership, and race behavior.
 - Compatibility: explicit capability flags and evidence-backed support labels.
@@ -51,7 +51,7 @@ Structured diagnostics, metrics, tracing hooks, and logs should be opt-in or pri
 
 ## Node.js compatibility
 
-The initial minimum is Node.js 22.14.0. CI targets Node.js 22, 24, and 26. The active LTS target on the project review date is 26. Reassess the support matrix against the official Node.js release schedule during maintenance.
+CI tracks the current supported Node.js LTS runtime dynamically. The support target is reviewed against the official Node.js release schedule during maintenance rather than frozen to a ChatJS-specific runtime number.
 
 Use platform-native APIs where stable and appropriate. Avoid unnecessary polyfills and dependencies. Any runtime-specific behavior must be isolated and tested.
 

@@ -2,7 +2,7 @@
 
 ## Scope
 
-This policy covers the ChatJS source code and project-controlled workflows in this repository. It does not make claims about the security of OpenAI services, third-party providers, user systems, or external infrastructure.
+This policy covers ChatJS source code and project-controlled workflows. It does not make claims about the security of OpenAI services, third-party providers, user systems, or external infrastructure.
 
 ## Reporting a vulnerability
 
@@ -11,7 +11,7 @@ This policy covers the ChatJS source code and project-controlled workflows in th
 Use the repository's GitHub Security tab and private vulnerability reporting / private advisory mechanism when available. If private reporting is not enabled, contact the repository owner through a private channel available from the GitHub profile and ask for a secure reporting route. Do not include exploit details in a public issue.
 
 Include, where safe:
-- affected commit, tag, or version;
+- affected Git commit or source location;
 - impact and realistic attack prerequisites;
 - minimal reproduction steps;
 - proof-of-concept that does not expose real users or data;
@@ -28,7 +28,7 @@ The project is not yet a staffed security-response program and cannot promise a 
 
 - Least-privilege GitHub Actions permissions.
 - Pinned third-party workflow actions.
-- Automated dependency review and Dependabot updates.
+- Automated dependency review and GitHub Actions dependency updates.
 - CodeQL scanning.
 - No hard-coded secrets or tokens.
 - Redacted diagnostics and no raw prompt/output logging by default.
@@ -36,6 +36,4 @@ The project is not yet a staffed security-response program and cannot promise a 
 - Tests for authentication, authorization, cancellation, concurrency, and error paths as applicable.
 - No bypass of service access controls or platform security.
 
-## Supported versions
-
-Only versions explicitly listed in the release documentation will receive security support. At bootstrap, no production release has been published.
+No production release has been published.

@@ -7,16 +7,16 @@ body:
     attributes:
       value: "Do not include passwords, API keys, cookies, private conversations, or proprietary application assets."
   - type: input
-    id: version
+    id: commit
     attributes:
-      label: ChatJS version or commit
-      placeholder: "0.0.1 or commit SHA"
+      label: Git commit or repository link
+      placeholder: "Git commit or URL"
     validations:
       required: true
   - type: input
     id: node
     attributes:
-      label: Node.js version
+      label: Node.js runtime
       placeholder: "node --version"
     validations:
       required: true

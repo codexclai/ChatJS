@@ -21,32 +21,39 @@ This file records durable decisions. Amend an entry when evidence changes; do no
 **Status:** provisional; legal review required  
 **Decision:** keep GitHub visibility public and use an all-rights-reserved notice rather than granting a broad open-source license at bootstrap.  
 **Reason:** the owner requested a public repository with the most restrictive practical rights reservation.  
-**Consequences:** the project is not described as open source; external contributions and package publication are held pending ownership and legal review. Repository visibility and the notice do not prevent copying.
+**Consequences:** the project is not described as open source; external contributions are on hold pending ownership and legal review.
 
 ## ADR-0004 — ESM and CommonJS support
 
 **Status:** accepted for bootstrap  
-**Decision:** expose both ESM and CommonJS entry points backed by one CommonJS implementation module, plus TypeScript declarations.  
+**Decision:** expose both ESM and CommonJS entry points backed by one implementation module, plus TypeScript declarations.  
 **Reason:** broad Node.js module compatibility is a project goal and duplicated implementations would drift.  
 **Consequences:** tests must cover both entry points and their exported API must remain aligned.
 
-## ADR-0005 — Supported Node.js baseline
+## ADR-0005 — Current Node.js LTS compatibility
 
-**Status:** accepted for bootstrap; review each release cycle  
-**Decision:** require Node.js 22.14.0 or newer and test 22, 24, and 26 in CI.  
-**Reason:** these are the supported LTS lines relevant to the project review date; Node.js 26 is Active LTS as of 2026-11-18.  
-**Consequences:** update the matrix from the official Node.js release schedule, not from assumptions.
+**Status:** accepted; review continuously  
+**Decision:** CI follows the current supported Node.js LTS runtime dynamically. Do not pin the project to a ChatJS product release or runtime patch number.  
+**Reason:** runtime compatibility should follow Node.js support, not introduce a ChatJS versioning system.  
+**Consequences:** recheck the official Node.js release schedule as part of maintenance.
 
-## ADR-0006 — Repository as cross-chat memory
+## ADR-0006 — Repository and Project Sources as cross-chat memory
 
 **Status:** accepted  
-**Decision:** the GitHub repository and its state / task / session / decision documents are the durable source of truth across ChatGPT chats.  
+**Decision:** GitHub documents and ChatGPT Project Sources are the durable memory across chats.  
 **Reason:** separate chats do not guarantee shared conversational history.  
-**Consequences:** every session reads the continuation protocol and persists meaningful discoveries, decisions, work, and next actions.
+**Consequences:** every session reads the continuation protocol and searches the ChatJS Project's Sources in ChatGPT for ChatGPT.zip before requesting another upload.
 
 ## ADR-0007 — APK as high-level reference only
 
 **Status:** accepted  
-**Decision:** retain a checksum and high-level inventory note, not the APK or its assets, in the public repository.  
-**Reason:** the supplied app artifact is proprietary and its timestamp alone does not prove latest-release status.  
-**Consequences:** no APK binary, proprietary source, compiled implementation, or copied assets are committed.
+**Decision:** keep the APK in ChatGPT Project Sources, not in the public GitHub repository.  
+**Reason:** the supplied app artifact is proprietary; committing it publicly would redistribute the app.  
+**Consequences:** future sessions search Project Sources before requesting a new upload; no APK binary, proprietary source, compiled implementation, or copied assets are committed.
+
+## ADR-0008 — No ChatJS product versioning system
+
+**Status:** accepted  
+**Decision:** do not create ChatJS product versions, release tags, version automation, lockfiles, changelog/version machinery, checksums, or npm registry publishing. The exact module name is ChatJS.  
+**Reason:** the user explicitly requires the product and Node module to remain simply ChatJS without a separate versioning system.  
+**Consequences:** Git commits remain normal source-control history; CI follows the supported Node.js LTS line without creating ChatJS releases.

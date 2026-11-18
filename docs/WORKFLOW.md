@@ -2,10 +2,11 @@
 
 ## Start
 
-1. Synchronize the local mental model with the live repository through the GitHub connector.
+1. Synchronize the project context with the live GitHub repository.
 2. Read docs/CONTINUATION.md and the current state, task queue, capability matrix, decisions, and session log.
-3. Confirm the exact branch and latest commit.
-4. Pick one high-priority task and define its acceptance criteria before editing.
+3. Search ChatGPT Project Sources for ChatGPT.zip before requesting the reference APK again.
+4. Confirm the current branch and latest commit.
+5. Pick one high-priority task and define acceptance criteria before editing.
 
 ## Research
 
@@ -18,7 +19,7 @@ For product or compatibility questions:
 
 ## Implementation
 
-- Inspect the relevant code and existing patterns first.
+- Inspect relevant code and existing patterns first.
 - Keep a change cohesive and avoid unrelated refactors.
 - Use the smallest viable dependency set.
 - Make asynchronous behavior, cancellation, concurrency, and cleanup explicit.
@@ -33,9 +34,9 @@ Run the complete project check before finalizing:
 - Generated documentation synchronization check.
 - Local Markdown link validation.
 - Node built-in test suite.
-- Package dry run and supported Node.js matrix in CI.
+- Current supported Node.js LTS runtime CI.
 
-Add targeted tests for the changed behavior. State clearly if any test was not run or depended on unavailable services.
+Add targeted tests for changed behavior. State clearly if any test was not run or depended on unavailable services.
 
 ## Documentation synchronization
 
@@ -44,7 +45,7 @@ When implementation or decisions change:
 - update API and architecture docs;
 - update TODO and roadmap;
 - add or amend a decision record;
-- update package docs and changelog as appropriate;
+- update README and examples as appropriate;
 - update .project/state.json and regenerate docs/PROJECT_STATE.md;
 - append a dated session summary.
 
@@ -54,9 +55,8 @@ CI verifies generated project-state documentation and local Markdown links. This
 
 - Prefer short, descriptive commits.
 - Never force-push without explicit need and authorization.
-- Keep the main branch protected after required checks are configured.
-- Review all staged changes for secrets, binary artifacts, unrelated generated files, and license problems.
-- Do not publish or create a release until the release prerequisites are satisfied.
+- Keep main protected after required checks are configured.
+- Review all changed files for secrets, binary artifacts, unrelated generated files, and license problems.
 
 ## Finish
 
@@ -66,6 +66,6 @@ Record:
 - tests actually run and their results;
 - commit and pull request URLs;
 - open blockers or decisions;
-- the next recommended action.
+- next recommended action.
 
-The final user-facing handoff should be brief but concrete. The repository log must be detailed enough for a different chat or maintainer to resume.
+The final handoff should be brief but concrete. The repository log must be detailed enough for a different chat or maintainer to resume.

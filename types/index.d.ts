@@ -5,7 +5,6 @@ export interface ChatJSOptions {
 export interface ChatJSStatus {
   readonly state: 'initialized' | 'closed';
   readonly implementationStatus: 'foundation-only';
-  readonly version: string;
 }
 
 export interface ChatJSErrorOptions {
@@ -32,13 +31,12 @@ export class ChatJSClient {
 }
 
 export function createChatJS(options?: ChatJSOptions): ChatJSClient;
-export const version: string;
 
 declare const ChatJS: {
-  ChatJSClient: typeof ChatJSClient;
-  ChatJSError: typeof ChatJSError;
-  createChatJS: typeof createChatJS;
-  version: typeof version;
+  readonly Client: typeof ChatJSClient;
+  readonly Error: typeof ChatJSError;
+  readonly create: typeof createChatJS;
 };
 
+export { ChatJS };
 export default ChatJS;

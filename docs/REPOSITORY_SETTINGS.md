@@ -1,85 +1,66 @@
 # GitHub Repository Settings Checklist
 
-**Repository:** https://github.com/codexclai/ChatJS  
-**Current verified facts:** public repository, default branch main, connected user codexclai has admin permission, initial repository size was zero.  
-**Settings mutation status:** pending manual application. The GitHub connector used for this setup can inspect repository metadata and write repository contents, but does not expose repository metadata, branch-protection, ruleset, or security-feature mutation actions. No setting below is claimed to be enabled unless subsequently verified.
+**Repository:** https://github.com/codexclai/ChatJS
 
-## 1. About metadata
+**Verified:** public repository, default branch main, connected account codexclai has admin-level permission.
 
-Open the repository Settings or About panel and set:
+**Important limitation:** the GitHub connector used for this setup can inspect repository metadata and write repository contents, but does not expose repository About metadata, branch-protection, ruleset, or security-feature mutation. Those controls are therefore pending manual application. Do not claim they are active until verified.
 
-- **Description:** Independent, modular Node.js project for building a comprehensive ChatGPT-compatible capabilities and workflow ecosystem.
-- **Website:** leave blank until an official project documentation site exists.
-- **Topics:** nodejs, javascript, chatjs, chatgpt, ai, assistant, sdk, multimodal, voice, developer-tools.
-- **Default branch:** main.
-- **Visibility:** Public (already verified).
+## About metadata
 
-Do not imply the package is an official OpenAI SDK or a 1:1 implementation before its compatibility claims have been proven.
+Set the repository description to:
 
-## 2. Protect main
+> ChatJS — an independent, modular Node.js library for comprehensive ChatGPT-compatible capabilities and workflows.
 
-Create a branch ruleset or branch protection rule targeting main.
+Suggested topics: nodejs, javascript, chatjs, chatgpt, ai, assistant, sdk, multimodal, voice, developer-tools.
 
-Recommended protections:
-- Require a pull request before merging.
-- Require all conversations to be resolved.
-- Require status checks from the CI workflow: test (22), test (24), and test (26), after those checks have appeared successfully at least once.
-- Require branches to be up to date before merging, if the resulting workflow is acceptable.
-- Block force pushes.
-- Block branch deletion.
-- Require linear history if it does not disrupt the chosen merge workflow.
-- Do not permit bypass by default; decide explicitly whether repository administrators may bypass in an emergency.
-- Start with zero required approvals while codexclai is the only maintainer; require at least one independent approval after another trusted maintainer is added. A single-owner repository cannot provide a meaningful independent review.
+Keep the website blank until a real documentation site exists. The repository is already public and uses main as its default branch.
 
-Avoid enabling a rule that prevents the owner from merging or repairing a broken workflow before the required checks exist.
+## Protect main
 
-## 3. Repository and Actions permissions
+Create a ruleset targeting main:
+- Require pull requests before merge.
+- Require all review conversations resolved.
+- Require successful CI and documentation checks after they have run successfully at least once.
+- Block force pushes and branch deletion.
+- Require linear history only if it fits the chosen merge workflow.
+- Start with zero independent approvals while codexclai is the only maintainer; require one independent approval when another trusted maintainer joins.
+- Decide explicitly whether administrators may bypass for recovery.
 
-- Set Actions workflow default token permissions to read repository contents.
-- Require workflows to declare the smallest additional permissions at job level.
-- Restrict actions to GitHub-owned actions and explicitly approved actions where practical.
-- Enable approval for workflows from first-time contributors.
-- Disable unnecessary GitHub Actions write permissions.
-- Review the pinned commit SHAs in every workflow whenever updating an action.
-- Keep Dependabot enabled for npm and GitHub Actions.
+Do not enable required checks before the workflows have produced the corresponding successful status names.
 
-## 4. Security features
+## Actions permissions
+
+- Set default workflow token permissions to read-only.
+- Keep permissions declared at the smallest job level.
+- Restrict workflows to GitHub-owned or explicitly approved actions where practical.
+- Require approval for workflows from first-time contributors.
+- Review pinned action commit identifiers when updating workflow dependencies.
+
+## Security controls
 
 Enable or verify:
 - Private vulnerability reporting.
-- Secret scanning.
-- Push protection for secrets.
+- Secret scanning and push protection.
 - Dependabot alerts and security updates.
-- Code scanning / CodeQL results.
+- Code scanning / CodeQL.
 - Security policy visibility.
 - Branch protection and required checks.
 
-Some security features may depend on plan and repository configuration. If a feature is unavailable, record that limitation and use the strongest available alternative.
+Availability may depend on GitHub plan and account configuration. Use the strongest available alternative when a feature is unavailable.
 
-## 5. Discussions, issues, and labels
+## Issues and community
 
-- Keep Issues enabled.
-- Discussions are optional; enable only if active community support is planned.
-- Add labels such as bug, enhancement, documentation, security, research, blocked, good first issue, and breaking change.
-- Review issue templates before allowing external contributions. Under the current proprietary notice, external code contributions are not yet accepted.
+Keep Issues enabled. Discussions are optional. Suggested labels: bug, enhancement, documentation, security, research, blocked, breaking-change.
 
-## 6. npm publishing
+External code contributions remain paused while proprietary ownership and contributor terms are unsettled.
 
-Before publishing:
-1. Confirm the npm account controls the codexclai scope and the package name is available.
-2. Create the package on npm without publishing a release token into GitHub.
-3. Configure the npm Trusted Publisher to point to GitHub Actions, repository codexclai/ChatJS, and workflow release.yml. Match the exact branch/environment requirements configured on npm.
-4. Ensure public package visibility and OIDC/provenance requirements are correct.
-5. Test a release only after legal ownership, license, security, and package metadata are approved.
+## Project package policy
 
-The release workflow is prepared for OIDC. It is not proof that npm Trusted Publishing is already configured.
+The Node module is named exactly ChatJS. It has a minimal package.json for Node.js resolution, no ChatJS product release numbering, no package version field, and no npm-registry publishing workflow. Install directly from GitHub using npm's Git dependency support.
 
-## 7. What “untouchable” can and cannot mean
+The only version key retained in a third-party tool configuration may be a mandatory configuration schema marker (for example, Dependabot's required schema version); it is not a ChatJS product version.
 
-A public GitHub repository cannot be made impossible to copy, fork, screenshot, mirror, or archive. GitHub permissions, branch rules, code review, signed commits, and security controls reduce unauthorized changes and improve auditability; they do not prevent all copying or guarantee legal enforceability.
+## Repository protection limits
 
-The all-rights-reserved notice is deliberately restrictive but does not make code technically uncopyable. GitHub's terms and applicable law still apply. Do not describe the repository as uncopyable or legally protected beyond the actual rights and settings that have been verified.
-
-## Verification record
-
-After applying settings, record the date, actor, exact settings, and a fresh verification result in docs/SESSION_LOG.md and .project/state.json. Re-read repository metadata and branch rules rather than assuming a save action succeeded.
+A public GitHub repository cannot be made impossible to copy, fork, screenshot, mirror, or archive. Branch rules and access controls help prevent unauthorized changes; they do not guarantee that code cannot be copied or that legal rights are enforceable. Do not describe the repository as uncopyable.

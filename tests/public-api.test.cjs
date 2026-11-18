@@ -2,23 +2,35 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { ChatJSClient, ChatJSError, createChatJS, version } = require('../src/index.cjs');
+const ChatJS = require('../src/index.cjs');
+const packageMetadata = require('../package.json');
+
+test('package identity is exactly ChatJS and has no product version field', () => {
+  assert.equal(packageMetadata.name, 'ChatJS');
+  assert.equal(Object.hasOwn(packageMetadata, 'version'), false);
+  assert.equal(packageMetadata.private, true);
+});
+
+test('ChatJS exposes the client, error, and factory under its own name', () => {
+  assert.equal(typeof ChatJS.Client, 'function');
+  assert.equal(typeof ChatJS.Error, 'function');
+  assert.equal(typeof ChatJS.create, 'function');
+});
 
 test('factory creates a client with an explicit foundation status', () => {
-  const client = createChatJS();
+  const client = ChatJS.create();
 
-  assert.ok(client instanceof ChatJSClient);
+  assert.ok(client instanceof ChatJS.Client);
   assert.deepEqual(client.getStatus(), {
     state: 'initialized',
-    implementationStatus: 'foundation-only',
-    version
+    implementationStatus: 'foundation-only'
   });
   assert.equal(client.closed, false);
   client.close();
 });
 
-test('client accepts an options object and preserves a shallow read-only snapshot', () => {
-  const client = new ChatJSClient({ featureFlags: ['experimental'] });
+test('client accepts a plain options object and freezes its shallow snapshot', () => {
+  const client = new ChatJS.Client({ featureFlags: ['experimental'] });
 
   assert.deepEqual(client.options, { featureFlags: ['experimental'] });
   assert.equal(Object.isFrozen(client.options), true);
@@ -27,13 +39,17 @@ test('client accepts an options object and preserves a shallow read-only snapsho
 
 test('invalid constructor options produce a typed error', () => {
   assert.throws(
-    () => new ChatJSClient(null),
-    (error) => error instanceof ChatJSError && error.code === 'CHATJS_INVALID_OPTIONS'
+    () => new ChatJS.Client(null),
+    (error) => error instanceof ChatJS.Error && error.code === 'CHATJS_INVALID_OPTIONS'
+  );
+  assert.throws(
+    () => new ChatJS.Client(new Date()),
+    (error) => error instanceof ChatJS.Error && error.code === 'CHATJS_INVALID_OPTIONS'
   );
 });
 
 test('close is idempotent and emits one close event', () => {
-  const client = new ChatJSClient();
+  const client = new ChatJS.Client();
   let closeCount = 0;
   client.on('close', () => { closeCount += 1; });
 
@@ -42,22 +58,17 @@ test('close is idempotent and emits one close event', () => {
 
   assert.equal(client.closed, true);
   assert.equal(closeCount, 1);
-  assert.deepEqual(client.getStatus().state, 'closed');
+  assert.equal(client.getStatus().state, 'closed');
 });
 
 test('assertOpen returns the client while open and rejects use after close', () => {
-  const client = new ChatJSClient();
+  const client = new ChatJS.Client();
 
   assert.equal(client.assertOpen(), client);
   client.close();
 
   assert.throws(
     () => client.assertOpen(),
-    (error) => error instanceof ChatJSError && error.code === 'CHATJS_CLIENT_CLOSED'
+    (error) => error instanceof ChatJS.Error && error.code === 'CHATJS_CLIENT_CLOSED'
   );
-});
-
-test('the package version is a non-empty string', () => {
-  assert.equal(typeof version, 'string');
-  assert.match(version, /^\d+\.\d+\.\d+/);
 });

@@ -1,6 +1,6 @@
 # Support
 
-ChatJS is currently in repository bootstrap and pre-implementation.
+ChatJS is currently in repository foundation and pre-implementation.
 
 ## Where to ask
 
@@ -11,11 +11,11 @@ ChatJS is currently in repository bootstrap and pre-implementation.
 ## Before opening an issue
 
 Include:
-- Node.js version and operating system;
-- ChatJS package version or commit SHA;
+- Node.js runtime and operating system;
+- the relevant Git commit or repository link;
 - minimal reproduction and expected/actual behavior;
 - relevant sanitized error output;
-- whether the problem reproduces on the supported Node.js LTS matrix.
+- whether the problem reproduces on the current supported Node.js LTS runtime.
 
 Do not include API keys, passwords, cookies, personal information, private messages, APK files, or proprietary application assets.
 

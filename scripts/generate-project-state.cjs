@@ -12,15 +12,12 @@ function renderProjectState(data) {
   const rows = [
     ['Project', data.project],
     ['Repository', data.repository],
-    ['Package', data.package],
-    ['Package version', data.packageVersion],
+    ['Node module name', data.moduleName],
     ['Phase', data.phase],
     ['Status', data.status],
     ['Default branch', data.defaultBranch],
     ['Last reviewed', data.lastReviewed],
-    ['Minimum Node.js', data.node.minimum],
-    ['CI Node.js lines', data.node.ci.join(', ')],
-    ['Active LTS line', data.node.activeLts]
+    ['Runtime policy', data.runtimePolicy]
   ];
 
   const lines = [
@@ -48,10 +45,9 @@ function renderProjectState(data) {
   data.nextActions.forEach((item, index) => lines.push((index + 1) + '. ' + item));
 
   lines.push('', '## Reference artifact', '');
-  lines.push('- Source archive: ' + data.reference.archive);
-  lines.push('- APK entry: ' + data.reference.apk);
-  lines.push('- APK size: ' + data.reference.sizeBytes + ' bytes');
-  lines.push('- SHA-256: ' + data.reference.sha256);
+  lines.push('- Source: ' + data.reference.source);
+  lines.push('- Acquisition: ' + data.reference.acquisition);
+  lines.push('- Availability: ' + data.reference.availability);
   lines.push('- Evidence limit: ' + data.reference.evidenceLimit);
   lines.push('', '## Continuity rule', '');
   lines.push('The repository is the durable source of truth across chats. Follow docs/CONTINUATION.md and update the state, task queue, decisions, and session log whenever the project changes.');

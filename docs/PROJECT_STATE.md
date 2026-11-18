@@ -8,25 +8,22 @@
 | --- | --- |
 | Project | ChatJS |
 | Repository | codexclai/ChatJS |
-| Package | @codexclai/chatjs |
-| Package version | 0.0.1 |
-| Phase | Repository bootstrap and pre-implementation |
+| Node module name | ChatJS |
+| Phase | Repository foundation and pre-implementation |
 | Status | Foundation scaffold; feature implementation has not started |
 | Default branch | main |
 | Last reviewed | 2026-11-18 |
-| Minimum Node.js | 22.14.0 |
-| CI Node.js lines | 22, 24, 26 |
-| Active LTS line | 26 |
+| Runtime policy | Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system. |
 
 ## Completed foundation work
 
 1. Confirmed the public GitHub repository codexclai/ChatJS and its empty starting state.
 2. Created the repository overview and independence / compatibility boundary notices.
-3. Established ESM and CommonJS package entry points and initial TypeScript declarations.
-4. Added a minimal lifecycle foundation and built-in Node.js test coverage.
+3. Established the ChatJS-named ESM and CommonJS package entry points and TypeScript declarations.
+4. Added a minimal client lifecycle foundation and built-in Node.js test coverage.
 5. Added machine-readable project state and generated documentation synchronization.
-6. Prepared CI, documentation validation, CodeQL, dependency review, Dependabot, and npm OIDC release workflows.
-7. Recorded the supplied Android APK provenance without publishing or copying the APK into the repository.
+6. Prepared CI, documentation validation, CodeQL, dependency review, and GitHub Actions dependency automation.
+7. Recorded that the user-supplied Play Store APK is the current reference build according to the user's direct confirmation; the source remains in the ChatJS Project's Sources in ChatGPT and is not copied into the public repository.
 
 ## Not implemented yet
 
@@ -34,23 +31,20 @@
 - Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT, or settings features.
 - A verified 1:1 ChatGPT mobile feature inventory or compatibility guarantee.
 - Runtime integrations with official, documented, or otherwise authorized service interfaces.
-- npm publication, release signing, or an enabled npm trusted publisher.
 
 ## Immediate next actions
 
 1. Apply the manual GitHub repository settings in docs/REPOSITORY_SETTINGS.md, especially main-branch protection and security controls.
-2. Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external contributions or distributing the package.
-3. Confirm availability and ownership of the @codexclai npm scope/package name, then configure npm trusted publishing for the release workflow.
-4. Define a source-backed ChatGPT capability inventory and distinguish public interfaces, observed UI behavior, and inaccessible/private services.
-5. Design and test the first stable client, transport, event, streaming, cancellation, and error contracts before implementing capabilities.
+2. Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external code contributions.
+3. Define a source-backed ChatGPT capability inventory and distinguish public interfaces, observed UI behavior, and inaccessible/private services.
+4. Design and test the first stable client, transport, event, streaming, cancellation, and error contracts before implementing capabilities.
 
 ## Reference artifact
 
-- Source archive: ChatGPT.zip (user-provided conversation attachment)
-- APK entry: base.apk
-- APK size: 101864095 bytes
-- SHA-256: 42291c2010897f940e1691f357bfffcb8d35ba7c329104240d4b26412d3eae15
-- Evidence limit: The ZIP contains one APK entry and the APK has a binary Android manifest and resource inventory. Its manifest metadata was not fully decoded in this environment; the archive timestamp does not prove that this is the latest public ChatGPT release.
+- Source: ChatGPT.zip in the ChatJS Project's Sources in ChatGPT
+- Acquisition: The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.
+- Availability: The APK is stored in ChatGPT Project Sources, not GitHub. New chats must search Project Sources before asking the user to reattach it.
+- Evidence limit: The user-provided Google Play acquisition provenance is recorded. Future chats must inspect the actual source file when available and must not claim inspection if it is inaccessible.
 
 ## Continuity rule
 

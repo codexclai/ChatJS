@@ -1,7 +1,6 @@
 'use strict';
 
 const { EventEmitter } = require('node:events');
-const packageMetadata = require('../package.json');
 
 class ChatJSError extends Error {
   constructor(message, options = {}) {
@@ -20,7 +19,13 @@ class ChatJSClient extends EventEmitter {
   constructor(options = {}) {
     super();
 
-    if (options === null || typeof options !== 'object' || Array.isArray(options)) {
+    if (
+      options === null ||
+      typeof options !== 'object' ||
+      Array.isArray(options) ||
+      (Object.getPrototypeOf(options) !== Object.prototype &&
+        Object.getPrototypeOf(options) !== null)
+    ) {
       throw new ChatJSError('ChatJS options must be a plain object.', {
         code: 'CHATJS_INVALID_OPTIONS'
       });
@@ -36,8 +41,7 @@ class ChatJSClient extends EventEmitter {
   getStatus() {
     return Object.freeze({
       state: this.#closed ? 'closed' : 'initialized',
-      implementationStatus: 'foundation-only',
-      version: packageMetadata.version
+      implementationStatus: 'foundation-only'
     });
   }
 
@@ -66,8 +70,7 @@ function createChatJS(options) {
 }
 
 module.exports = Object.freeze({
-  ChatJSClient,
-  ChatJSError,
-  createChatJS,
-  version: packageMetadata.version
+  Client: ChatJSClient,
+  Error: ChatJSError,
+  create: createChatJS
 });

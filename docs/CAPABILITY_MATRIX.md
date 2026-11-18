@@ -4,7 +4,7 @@
 
 ## Status vocabulary
 
-- **Implemented:** shipped code, documented behavior, and passing tests exist.
+- **Implemented:** working code, documented behavior, and passing tests exist.
 - **Partial:** a specific subset is implemented and the gaps are listed.
 - **Research:** behavior and access path are being investigated.
 - **Planned:** desired scope is identified, but design or implementation has not started.
@@ -82,28 +82,26 @@
 | Capability | Status | Acceptance evidence |
 | --- | --- | --- |
 | Saved memory | Research | Read/write/delete contract, user control, privacy |
-| Custom instructions | Planned | Versioned settings model |
+| Custom instructions | Planned | Typed settings model |
 | Projects and project files | Planned | Workspace and file-scoping contract |
 | Custom GPTs / specialized assistants | Research | Publicly supported configuration and execution path |
 | Tasks and reminders | Research | Scheduling and notification delivery boundary |
 | Conversation organization | Planned | Folders, pins, archive, and labels where supported |
-| User settings | Planned | Versioned read/write schema |
+| User settings | Planned | Typed read/write schema |
 | Accessibility preferences | Planned | Settings and behavior conformance |
 | Language and localization | Planned | Locale and fallback tests |
 | Sync across devices | Research | Server-owned state and conflict semantics |
 
-## Platform, delivery, and operations
+## Platform and operations
 
 | Capability | Status | Acceptance evidence |
 | --- | --- | --- |
 | Node.js ESM and CommonJS | Partial | Foundation entry-point tests |
 | TypeScript types | Partial | Foundation declarations; full API types pending |
-| Windows, macOS, and Linux | Planned | CI matrix and runtime compatibility tests |
+| Windows, macOS, and Linux | Planned | CI and runtime compatibility tests |
 | Package size and dependency budgets | Planned | Measured packed size and dependency policy |
-| Semantic versioning and changelog | Planned | Release automation and migration tests |
-| SBOM and provenance | Planned | Generated artifacts and verification |
 | API documentation | Planned | Generated reference and docs quality checks |
 
 ## Tracking rules
 
-For every row promoted to Partial or Implemented, update the code links, source/evidence, test references, platform and Node.js support, known gaps, and version introduced. Re-evaluate claims whenever upstream behavior or access requirements change.
+For every row promoted to Partial or Implemented, update the code links, source/evidence, test references, supported platforms, known gaps, and relevant commit references. Re-evaluate claims whenever upstream behavior or access requirements change.
