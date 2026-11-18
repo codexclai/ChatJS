@@ -93,3 +93,16 @@ The owner intends to clear ChatGPT Project → Sources after this review. This i
 Future sessions must use this file and the capability inventory; do not ask the owner for the MSIX merely to repeat inspection. The supplied URL is retained above for an explicitly requested comparison/reinspection. Do not claim Sources are empty until the owner confirms deletion.
 
 The public ChatJS repository retains product observations and independent requirements, **not** official application binaries, proprietary implementation code, private plugin bundles or app assets.
+
+
+## Private archive transfer status — 2026-11-18
+
+The owner requested a private Library copy named ChatJS-Windows.zip under /ChatJS-Archives. This is **not completed**. The source is a 1,057,802,768-byte MSIX; preserve its .msix format if retaining the installer directly.
+
+- The earlier browser VM held the downloaded MSIX for static inspection.
+- Browser file export refuses files larger than 25 MiB. A 1 MiB test chunk was exported; this does not establish a viable full transfer.
+- Direct container download of the full URL failed.
+- No complete Windows file was uploaded to Library, Project Sources or GitHub. No partial chunks are represented as a complete archive.
+- Re-fetch the official URL above when needed and when an authorized large-file transfer path is available. Do not ask the owner to upload it manually unless tool-based options are exhausted and the owner agrees.
+
+Android backup is verified at **/ChatJS-Archives/ChatJS-Android.zip**. Project Sources deletion remains unconfirmed.
