@@ -115,3 +115,15 @@ Specify and implement a local Work/Codex vertical slice: a caller-selected, path
 - The owner intends to clear ChatGPT Project → Sources after this review. This records intention only; never claim Sources are empty until the owner confirms it.
 - Original Android APK and Windows MSIX are not committed to the public repo. Permitted, independently authored observations and implementation implications are the durable reference.
 - Next: define a secure read-only local workspace contract and implement it as the first deterministic Work/Codex feature.
+
+
+## 2026-11-18 — Android archive preserved in private Library
+
+- Created the personal Library folder /ChatJS-Reference-Archives.
+- Copied the supplied ChatGPT.zip archive (54,869,202 bytes) into /ChatJS-Reference-Archives/ChatGPT-Android.zip from the existing imported file snapshot.
+- Verified the Library listing showed ChatGPT-Android.zip (54,869,202 bytes, application/zip).
+- Re-materialized that exact Library file back into the working container successfully. This confirms the retained copy is accessible independently of Project Sources.
+- Updated future-chat instructions to use this personal Library path; do not request the owner to attach ChatGPT.zip again merely to repeat inspection.
+- The Windows MSIX (1,057,802,768 bytes) is not retained as a binary. Its exact official URL and static package findings remain in docs/REFERENCE_DESKTOP.md for an explicitly requested future re-download/comparison.
+- Neither proprietary binary is committed to public GitHub. The public repo retains independently authored observations, package metadata and implementation requirements.
+- The owner intends to clear Project Sources; actual deletion is not confirmed by this session.
