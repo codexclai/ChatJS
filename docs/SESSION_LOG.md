@@ -39,3 +39,33 @@ Append dated entries for meaningful work. Preserve chronology and actual results
 
 ### Next task
 Inspect ChatGPT.zip from ChatJS Project → Sources and build an evidence-backed inventory of observable ChatGPT mobile capabilities and authorized programmatic interfaces.
+ 
+## 2026-11-18 — Static APK inventory and public interface research
+
+### Live repository checks
+- Confirmed default branch main and branch search returned only main.
+- Confirmed no Dependabot configuration or branch-generating update workflow remains.
+- Confirmed GitHub About description is already set to: ChatJS — an independent, production-focused Node.js library for comprehensive ChatGPT-compatible capabilities and workflows.
+- Confirmed no open issues or pull requests.
+- Latest pre-research-change CI run on main (44213974367) passed; latest CodeQL run (44213974407) passed. Documentation changes in this session trigger fresh checks.
+
+### Reference APK inspection
+- Located ChatGPT.zip in ChatJS Project → Sources and confirmed it contains one base.apk entry.
+- Inspected the Android binary manifest and high-level packaged resource/module names statically.
+- Recorded indicators for conversations/streaming, voice/audio, attachments/file preview, image/text processing, search/data sources, code/remote sessions, personalization/projects, health, learning, family, finance, maps, shopping, wallet and Android device integration.
+- No emulator/UI session, DEX decompilation, proprietary source extraction, or asset copying was performed. Static package indicators are not proof of active UI behavior, entitlement, granted permissions or public API support.
+
+### Official interface research
+- Verified OpenAI recommends the public Responses API for new integrations.
+- Verified the Assistants API shut down on August 26, 2026; new integration work must not target it.
+- Documented the distinct Sign in with ChatGPT OAuth/plan-usage route, its open-source/local app scope, and its current preview limitations.
+- Recorded that plan usage does not expose consumer ChatGPT conversation history or account context. ChatJS's all-rights-reserved notice means OSS eligibility must not be assumed.
+- Accepted Responses API as the public integration foundation for new OpenAI model-backed workflows; authentication paths remain separate.
+
+### Scope and implementation status
+- No runtime source code, dependencies, package metadata, branch settings or unrelated files were changed in this research unit.
+- No ChatGPT feature is implemented yet. Capability statuses remain explicit about research vs implementation.
+- GitHub repository description is set. No repository topics or branch protection/rulesets were added.
+
+### Next task
+Resolve legal ownership/licensing and Sign in with ChatGPT eligibility without changing LICENSE automatically. In parallel, specify a complete API-key Responses provider slice: credential ownership/redaction, explicit fetch destination, streaming/backpressure/cancellation, timeout/retry rules, typed errors, concurrency isolation and cleanup. Only then implement and test a narrow real text workflow.
