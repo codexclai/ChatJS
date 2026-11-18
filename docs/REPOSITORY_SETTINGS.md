@@ -2,51 +2,28 @@
 
 **Repository:** https://github.com/codexclai/ChatJS
 
-## Verified repository facts
+## Verified facts
+- Public repository; default branch main.
+- The full branches endpoint returns only main.
+- Branch protection/rulesets are not wanted by the owner.
+- Repository topics are not wanted.
+- GitHub About description is unset. The connected GitHub tools do not expose a description-write operation.
 
-- Visibility: public.
-- Default branch: main.
-- Connected GitHub account: codexclai, with admin-level repository permission.
-- Issues: enabled.
-- The complete GitHub branches endpoint currently returns only main; its protected field is false.
-- The repository API currently returns description=null and topics=[].
-- No repository rulesets were returned. The separate branch-protection read request was denied to the connected integration.
+## GitHub About description
+Paste this exact text into the repository About → Description field:
 
-The user explicitly does **not** want repository topics or branch protection/rulesets configured. Do not create a ruleset or spend time proposing one. The permanent project workflow is main-only: never create, delete, rename, switch to or publish another branch. If an unexpected branch appears, report it; never delete or modify it.
+> An independent Node.js library for building ChatGPT-compatible capabilities and workflows.
 
-## Repository description
+Do not add topics. Leave the website blank until a real documentation site exists.
 
-Set this description in the GitHub repository About panel:
+## Permanent branch policy
+Only main is permitted. Never create, delete, rename, switch to, or check out another branch/worktree. Never enable branch-generating bots or automation, including Dependabot update PRs. Commit directly to main with non-force fast-forward updates. If another branch appears through external action, report it and do not modify or delete it.
 
-> An independent Node.js project building comprehensive ChatGPT-compatible capabilities through verified, authorized interfaces.
+Branch protection/rulesets and topics are explicitly not requested; do not configure or propose them.
 
-Do not add repository topics. Leave the website blank until a real documentation site exists.
+## Relevant automation
+- CI validates the real source/tests, builds the module archive, and smoke-tests CommonJS/ESM loading.
+- CodeQL scans JavaScript/TypeScript source.
+- Dependency Review checks dependency changes in proposed pull requests.
 
-The GitHub connector used for repository content changes does not expose About metadata mutations. The repository description therefore remains a manual owner-side change unless a suitable authorized settings control becomes available.
-
-## Actions permissions
-
-- Set default workflow token permissions to read-only.
-- Keep each workflow's permissions at the smallest required scope.
-- Require approval for workflows from first-time contributors.
-- Restrict actions to GitHub-owned or explicitly approved actions where practical.
-- Keep third-party actions pinned to immutable commit references and review updates.
-
-## Security features
-
-Enable or verify where available:
-- Private vulnerability reporting.
-- Secret scanning and push protection.
-- Code scanning / CodeQL.
-- Dependabot security alerts.
-- Security policy visibility.
-
-Some features depend on GitHub plan and repository configuration. Use the strongest available alternative if a feature is unavailable.
-
-## Issues and contributions
-
-Keep Issues enabled. Discussions are optional. External code contributions remain paused until legal ownership and contributor terms are settled.
-
-## Public repository limitations
-
-A public repository cannot be made impossible to copy, fork, screenshot, mirror or archive. Legal rights and repository permissions cannot guarantee technical uncopyability or a legal outcome.
+Do not add update bots, release workflows, npm publishing, product version automation, or automation that opens update PRs or creates branches. Do not add GitHub apps/settings without a concrete ChatJS need.
