@@ -8,9 +8,9 @@ Treat this as the user's current Google Play reference build. This is user-confi
 
 ## Storage and access
 
-The archive is kept in the ChatJS Project's Sources, not in the public GitHub repository.
+The archive is kept in ChatJS Project Sources, not in the public GitHub repository.
 
-At the start of every ChatJS chat, search Project Sources for ChatGPT.zip before asking the user to attach it again. Use the available Project/Files tools to inspect the existing source when relevant. A Project Source may be available without being mounted as a local file; materialize it only when direct binary inspection is necessary.
+At the beginning of every ChatJS chat, search Project Sources for ChatGPT.zip before asking the user to attach it again. In the current setup session, the Project-backed source was found and its original bytes were made available for inspection. Its ZIP directory contained one entry named base.apk. This confirms the source archive layout only; the APK's Android resources and visible product feature surfaces have not yet been analyzed.
 
 Do not add the APK to the public repository:
 - it is a proprietary third-party application binary;

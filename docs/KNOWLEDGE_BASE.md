@@ -17,14 +17,16 @@ Index of durable technical, product, compatibility, security, and research knowl
 | Product and module name | ChatJS | Explicit user direction and repository |
 | Repository | codexclai/ChatJS; public; main branch | Live GitHub |
 | Runtime | Node.js; ESM and CommonJS; TypeScript declarations | Source code |
-| Implementation status | Initial foundation only; no ChatGPT service integration | Code and tests |
+| Implementation status | Initial foundation only; no ChatGPT service integration | Code and current CI |
 | Independence | Not affiliated with OpenAI | Project policy |
 | Reference APK | ChatGPT.zip in ChatJS Project → Sources; user says exported immediately after Google Play update and latest for them at acquisition | User-confirmed provenance; REFERENCE_APK.md |
+| Project Source availability | ChatGPT.zip was found as a Project-backed file and materialized in this session; ZIP contains one base.apk entry | Current Project file listing and ZIP inventory |
+| APK inspection status | ZIP structure checked; APK internals and user-visible feature inventory not yet inspected | Current session log |
 | APK handling | Project Source only; not stored in the public repository | Governance decision |
 | Product versioning | No ChatJS release numbers/tags, package version field, or npm publishing | Explicit user direction |
 | Product/API manual | Root ChatJS.md | Repository |
 | Shared project memory | /docs and docs/project-state.json | AI_MEMORY.md |
-| Distribution | ChatJS.tar.gz; built and tested by project scripts/CI | Archive builder and tests |
+| Distribution | ChatJS.tar.gz; built, verified, extracted, and loaded in CI | Current successful workflow |
 
 ## Knowledge areas
 

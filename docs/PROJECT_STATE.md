@@ -10,7 +10,7 @@
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
 | Phase | Repository foundation and pre-implementation |
-| Status | Repository foundation scaffold and automated ChatJS module archive in place; feature implementation has not started. |
+| Status | Repository foundation, cross-chat memory, and verified module archive pipeline are in place; ChatGPT feature implementation has not started. |
 | Default branch | main |
 | Last reviewed | 2026-11-18 |
 | Runtime policy | Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system. |
@@ -25,29 +25,31 @@
 5. Added /docs as shared AI memory, knowledge base, task list, history, decisions, experiments, open questions, and project handbook.
 6. Added root-level ChatJS.md as canonical end-user/API documentation, separate from /docs.
 7. Added a dependency-free ChatJS.tar.gz builder, archive integrity test, CI extraction/load smoke tests, and workflow artifact delivery.
-8. Recorded the user's confirmation that ChatGPT.zip in ChatJS Project → Sources is their latest Google Play APK at acquisition time; the source remains in Project Sources and is not copied into the public repository.
-9. Removed ChatJS product version numbering, package version fields, lockfiles, release workflows, checksum inventories, and npm registry publishing.
+8. Located and materialized ChatGPT.zip from ChatJS Project → Sources; confirmed the archive contains the base.apk reference binary and did not copy it into GitHub.
+9. Verified GitHub CI on the current Node.js LTS: all 9 tests passed, generated state was synchronized, all 25 Markdown files passed local-link validation, ChatJS.tar.gz was built and integrity-checked, and its extracted CommonJS and ESM imports both loaded successfully.
+10. Verified the CodeQL workflow completed successfully.
+11. Removed ChatJS product release numbering, package version fields, lockfiles, release workflows, checksum inventories, and npm registry publishing.
 
 ## Not implemented
 
 - ChatGPT authentication, account/session management, or service transport.
 - Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT, or settings features.
-- A verified 1:1 ChatGPT mobile feature inventory or compatibility guarantee.
+- A source-backed and verified 1:1 ChatGPT mobile feature inventory or compatibility guarantee.
 - Runtime integrations with official, documented, or otherwise authorized service interfaces.
 
 ## Next actions
 
 1. Apply the manual GitHub repository description, topics, main-branch protection, and security settings in docs/REPOSITORY_SETTINGS.md.
 2. Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external code contributions.
-3. Define a source-backed ChatGPT capability inventory using official sources and observations from ChatGPT.zip in ChatJS Project → Sources.
+3. Inspect ChatGPT.zip's base.apk reference and build a source-backed ChatGPT capability inventory, separating observed application behavior from authorized programmatic interfaces.
 4. Design and test the first stable client, transport, event, streaming, cancellation, and error contracts before implementing capabilities.
 
 ## Reference artifact
 
 - Source: ChatGPT.zip in ChatJS Project → Sources in ChatGPT
 - Acquisition: The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.
-- Availability: The APK is stored in ChatJS Project Sources, not GitHub. New chats must search Project Sources before asking the user to reattach it.
-- Evidence limit: The user-provided Google Play acquisition provenance is recorded. Future chats must inspect the actual source file when available and must not claim inspection if it is inaccessible.
+- Availability: The Project Source was found and its original ZIP bytes were made available in this session. The ZIP contains one base.apk entry. New chats must search Project Sources before asking the user to reattach it.
+- Evidence limit: The user's Google Play acquisition provenance is recorded. Only the ZIP entry layout has been inventoried so far; APK internals and feature surfaces have not yet been analyzed. Future chats must inspect the actual source file when available and must not claim deeper inspection if it has not occurred.
 
 ## Continuity
 
