@@ -17,6 +17,7 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [x] Exclude health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions/features.
 - [x] Permanently exclude OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, private backends and app session access.
 - [x] Document that the owner intends to clear Project Sources and that committed inventories are the durable reference.
+- [x] Copy the Android ZIP to the owner's private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip and verify successful re-materialization.
 - [ ] Validate a specific mobile/desktop UI interaction only if the owner later asks for a concrete behavior comparison.
 
 ## P1 — Local Work/Codex runtime design
