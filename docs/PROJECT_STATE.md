@@ -10,7 +10,7 @@
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
 | Phase | Repository foundation and pre-implementation |
-| Status | Repository foundation, cross-chat memory, and verified module archive pipeline are in place; ChatGPT feature implementation has not started. |
+| Status | Repository setup, shared memory and the module archive pipeline are in place; ChatGPT feature implementation has not started. |
 | Default branch | main |
 | Last reviewed | 2026-11-18 |
 | Runtime policy | Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system. |
@@ -19,30 +19,32 @@
 ## Completed work
 
 1. Established the public GitHub repository codexclai/ChatJS as the project workspace.
-2. Created conventional Node.js source, types, tests, scripts, and GitHub automation structure.
+2. Created conventional Node.js source, types, tests, scripts and GitHub automation structure.
 3. Established ChatJS-named CommonJS and ESM entry points and TypeScript declarations.
 4. Added a minimal client lifecycle foundation and built-in Node.js test coverage.
-5. Added /docs as shared AI memory, knowledge base, task list, history, decisions, experiments, open questions, and project handbook.
+5. Added /docs as shared AI memory, knowledge base, task list, history, decisions, experiments, open questions and project handbook.
 6. Added root-level ChatJS.md as canonical end-user/API documentation, separate from /docs.
-7. Added a dependency-free ChatJS.tar.gz builder, archive integrity test, CI extraction/load smoke tests, and workflow artifact delivery.
+7. Added a dependency-free ChatJS.tar.gz builder, archive integrity test, CI extraction/load smoke tests and workflow artifact delivery.
 8. Located and materialized ChatGPT.zip from ChatJS Project → Sources; confirmed the archive contains the base.apk reference binary and did not copy it into GitHub.
 9. Verified GitHub CI on the current Node.js LTS: all 9 tests passed, generated state was synchronized, all 25 Markdown files passed local-link validation, ChatJS.tar.gz was built and integrity-checked, and its extracted CommonJS and ESM imports both loaded successfully.
 10. Verified the CodeQL workflow completed successfully.
-11. Removed ChatJS product release numbering, package version fields, lockfiles, release workflows, checksum inventories, and npm registry publishing.
+11. Removed ChatJS product release numbering, package version fields, lockfiles, release workflows, checksum inventories and npm registry publishing.
+12. Verified the complete paginated repository branch search currently returns only main.
+13. Recorded permanent constraints: main-only with no branch creation/deletion, no branch-protection/topics setup, no product telemetry/tracking/hidden data collection, and no unrelated or pretend functionality.
 
 ## Not implemented
 
-- ChatGPT authentication, account/session management, or service transport.
-- Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT, or settings features.
+- ChatGPT authentication, account/session management or service transport.
+- Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT or settings features.
 - A source-backed and verified 1:1 ChatGPT mobile feature inventory or compatibility guarantee.
-- Runtime integrations with official, documented, or otherwise authorized service interfaces.
+- Runtime integrations with official, documented or otherwise authorized service interfaces.
 
 ## Next actions
 
-1. Apply the manual GitHub repository description, topics, main-branch protection, and security settings in docs/REPOSITORY_SETTINGS.md.
+1. Set the GitHub repository description to the wording in docs/REPOSITORY_SETTINGS.md; do not add topics or branch protection.
 2. Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external code contributions.
 3. Inspect ChatGPT.zip's base.apk reference and build a source-backed ChatGPT capability inventory, separating observed application behavior from authorized programmatic interfaces.
-4. Design and test the first stable client, transport, event, streaming, cancellation, and error contracts before implementing capabilities.
+4. Design and test the first stable client, transport, event, streaming, cancellation and error contracts before implementing capabilities.
 
 ## Reference artifact
 
