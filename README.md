@@ -65,7 +65,7 @@ This creates `dist/ChatJS.tar.gz`. CI builds, verifies, smoke-tests, and uploads
 - `scripts/` — documentation checks and distribution build.
 - `ChatJS.md` — module/API documentation.
 - `docs/` — persistent project knowledge, AI memory, tasks, decisions, experiments, and history.
-- `.github/` — issue templates, dependency automation, and CI/security workflows.
+- `.github/` — focused issue templates and CI/security workflows.
 
 ## Project continuity
 
