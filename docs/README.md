@@ -25,6 +25,6 @@ This directory contains persistent project knowledge and the engineering handboo
 ## Engineering handbook
 - [Architecture](ARCHITECTURE.md), [Workflow](WORKFLOW.md), [Repository Settings](REPOSITORY_SETTINGS.md), [Governance](GOVERNANCE.md), [Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md).
 
-The owner intends to clear ChatGPT Project → Sources after this review. Committed records are the durable permitted references; official APK/MSIX binaries are not stored here. Do not claim Source deletion until confirmed.
+Private retention: Android archive is in Library at /ChatJS-Archives/ChatJS-Android.zip. Windows MSIX is not retained; URL/findings are in REFERENCE_DESKTOP.md. Neither binary is in Git. Owner intends to clear Project Sources; deletion is not confirmed. Do not claim Source deletion until confirmed.
 
-Update canonical records when knowledge changes; update project-state.json and regenerate PROJECT_STATE.md; append SESSION_LOG.md for each meaningful session.
+Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs. Correct references; update project-state.json/PROJECT_STATE.md and append SESSION_LOG.md.
