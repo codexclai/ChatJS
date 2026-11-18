@@ -1,54 +1,56 @@
 # ChatJS Task List
 
-Use this as the single authoritative queue for remaining work. Keep entries actionable and mark them complete only when implementation and verification support that status.
+Use this as the single authoritative queue for remaining work. Keep tasks actionable and mark them complete only when evidence supports completion.
 
-## P0 — Ownership and repository setup
+## P0 — Ownership and eligibility
 
-- [ ] Set the GitHub repository description to the wording in [Repository Settings](REPOSITORY_SETTINGS.md). Do not add topics or branch protection/rulesets.
 - [ ] Confirm the rights holder and obtain legal review of the all-rights-reserved notice.
-- [ ] Decide whether the project remains proprietary or adopts a recognized license before inviting external contributors.
-- [ ] Verify private vulnerability reporting, secret scanning and push protection availability.
+- [ ] Decide whether ChatJS remains proprietary or adopts an open-source license before inviting external contributors.
+- [ ] Resolve whether ChatJS can qualify for Sign in with ChatGPT plan usage under its chosen licensing/hosting model. Do not change the license or assume eligibility.
+- [ ] Verify private vulnerability reporting, secret scanning, and push-protection availability.
 
 ## P1 — Product and compatibility research
 
-- [ ] Search ChatJS Project → Sources for ChatGPT.zip and inspect it when available and relevant.
-- [ ] Create a source-backed inventory of observable ChatGPT mobile capabilities.
-- [ ] Separate visible application behavior from authorized programmatic interfaces.
-- [ ] Record account, plan, regional and platform limits where evidence supports them.
-- [ ] Define compatibility categories: implemented locally, public-interface adapter, user-supplied backend, externally delegated, unavailable.
-- [ ] Review current official OpenAI platform documentation and terms before designing integrations.
-- [ ] Define non-goals and limitations for features unavailable to a Node.js module.
+- [x] Locate ChatGPT.zip in ChatJS Project → Sources and inspect available static package metadata without redistributing proprietary material.
+- [x] Record high-level Android manifest/resource indicators and the limits of static-only inspection.
+- [x] Separate APK package indicators from documented, authorized Node.js interfaces.
+- [x] Map major product areas to current official API routes and note account/plan/preview restrictions.
+- [x] Review current official OpenAI documentation for supported integration paths.
+- [x] Record capability classifications and do not assume access to ChatGPT consumer conversations or memory.
+- [ ] Validate selected APK-indicated product surfaces against observable behavior where a lawful reference session is available.
 
 ## P1 — Core runtime design
 
-- [ ] Specify client configuration and lifecycle.
-- [ ] Define authorized provider and transport adapter contracts.
-- [ ] Specify streaming events, payloads, ordering, backpressure, cancellation, timeouts and reconnection.
-- [ ] Define typed errors, stable codes, retryability, causes and safe redaction.
-- [ ] Design concurrency, request isolation, rate-limit handling and resource cleanup.
-- [ ] Decide whether persistence, caching and storage belong in core or optional adapters.
+- [ ] Specify client configuration, lifecycle, and validation.
+- [ ] Define explicit caller-provided API-key configuration and credential redaction/rotation behavior.
+- [ ] Define the authorized Responses API provider and Node.js transport contract.
+- [ ] Specify typed streaming events, payloads, ordering, backpressure, cancellation, timeout, and cleanup.
+- [ ] Define typed errors, stable codes, retryability, causes, and safe redaction.
+- [ ] Design concurrency, request isolation, rate-limit handling, and resource cleanup.
+- [ ] Decide whether API conversation persistence belongs in core or optional adapters.
 - [ ] Add TypeScript declaration tests.
 
 ## P2 — Complete feature slices
 
-- [ ] Extend client configuration and lifecycle beyond the foundation.
-- [ ] Implement an authorized transport/provider adapter against a documented interface.
-- [ ] Implement a complete conversation/message workflow with streaming and cancellation.
-- [ ] Add model discovery and tool invocation abstractions where authorized interfaces exist.
-- [ ] Add safe file and attachment handling.
-- [ ] Add image, audio and voice capability implementations where authorized interfaces exist.
-- [ ] Add regression tests proving shipped runtime has no telemetry, tracking or unsolicited network requests.
+- [ ] Implement an authorized Responses API provider as a complete, tested vertical slice.
+- [ ] Implement a real text conversation workflow with streaming and cancellation.
+- [ ] Add model discovery and function calling where documented interfaces permit them.
+- [ ] Add safe file and attachment handling with explicit storage/deletion semantics.
+- [ ] Add image, audio, and voice implementations only where supported by the chosen auth route.
+- [ ] Add regression tests proving the shipped runtime has no telemetry, tracking, or unsolicited network requests.
 - [ ] Keep ChatJS.md synchronized with every public API change.
 - [ ] Keep ChatJS.tar.gz limited to and synchronized with the distributable module.
 
 ## P3 — Production readiness
 
-- [ ] Review dependency necessity, security and licensing whenever dependencies are introduced.
+- [ ] Review dependency necessity, security, and licensing whenever dependencies are introduced.
 - [ ] Add API reference generation and documentation checks only where useful.
-- [ ] Add performance, memory and concurrency benchmarks with measurable budgets.
+- [ ] Add performance, memory, and concurrency benchmarks with measurable budgets.
 - [ ] Add supported-platform checks based on actual implementation requirements.
-- [ ] Document maintenance, support and security-response practices.
+- [ ] Document maintenance and security-response practices.
 
 ## Current position
 
-The repository foundation, cross-chat memory and module archive pipeline exist. ChatGPT feature implementation has not started. The branch listing currently contains only main, and the project has a permanent main-only/no-branch-creation-or-deletion policy. No telemetry or unrelated functionality is wanted. The next technical work is source-backed capability and interface research. Ownership/legal review and the repository description remain owner-side tasks.
+The repository foundation and module archive pipeline are established. Static APK package indicators and the current documented OpenAI integration surface have been inventoried, but no ChatGPT feature is implemented. OpenAI's Responses API is the chosen public foundation for new model-backed work. Sign in with ChatGPT plan-usage eligibility remains unresolved because the repository currently uses an all-rights-reserved notice. The repository has only main; branch-generating dependency automation is removed. No telemetry or unrelated functionality is wanted.
+
+The next technical task is to specify and implement a narrow API-key Responses workflow only after defining credential handling, streaming/cancellation, errors, timeouts, concurrency, and cleanup. Do not implement plan-usage OAuth until eligibility is resolved.
