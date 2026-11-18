@@ -82,3 +82,14 @@ Record durable project and technical decisions with rationale.
 ## Separate product documentation and project memory
 **Status:** accepted  
 **Decision:** root ChatJS.md documents the actual Node.js module; /docs is the persistent project handbook.
+
+
+## Private reference archive policy
+**Status:** accepted, Windows transfer pending  
+**Decision:** retain Android source in personal Library at /ChatJS-Archives/ChatJS-Android.zip. Never put official APK/MSIX binaries in public Git. Keep the Windows official URL and findings; claim private backup only after verifying the complete file.  
+**Consequences:** Android verified. Windows transfer is blocked by the 25 MiB browser export limit; do not claim retention.
+
+## Canonical documentation completeness
+**Status:** accepted; permanent workflow requirement  
+**Decision:** record meaningful requirements, decisions, research, actions, changed files, verification, failures, limits, blockers and handoffs in canonical docs during the same session. Correct affected references.  
+**Consequences:** preserve chronology/evidence; do not claim invisible monitoring or unsupported facts.
