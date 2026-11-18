@@ -3,7 +3,7 @@
 ## Start
 1. Read AI_MEMORY.md and CONTINUATION.md.
 2. Inspect live main, complete branch list, latest commit/tree, issues/PRs, CI and TODO.
-3. Use REFERENCE_APK.md and REFERENCE_DESKTOP.md as retained evidence. Do not request original binaries merely to repeat inspection; the owner intends to clear Project Sources.
+3. Use REFERENCE_APK.md and REFERENCE_DESKTOP.md as evidence. Android archive: Library /ChatJS-Archives/ChatJS-Android.zip. Windows MSIX is not retained; use its official URL when needed. Do not request original binaries merely to repeat inspection; the owner intends to clear Project Sources.
 4. Work only on main. Never create/delete/rename/switch branches or worktrees. Do not configure/propose branch protection, rulesets or repository topics.
 5. Choose one high-priority task and define acceptance criteria.
 
@@ -14,6 +14,9 @@
 - No non-OpenAI inference engine is selected; never fake generated answers, agents, voice or image generation.
 - Exclude health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions.
 - Node.js does not inherit Android permissions. Desktop/mobile device access needs a specific platform adapter and explicit approval.
+
+## Persistent documentation
+Record meaningful requirements, decisions, research/sources, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs. Update affected references, state JSON/generated Markdown, TODO and chronological session log. Distinguish verified, intended and blocked; never claim invisible monitoring or unperformed work.
 
 ## Research
 - Prefer current official product and Node.js/OS documentation.
