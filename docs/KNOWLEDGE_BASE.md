@@ -5,7 +5,7 @@ Index of durable technical, product, compatibility, security and research knowle
 ## Evidence labels
 
 - **Verified:** confirmed by current code/tests or authoritative documentation.
-- **Observed:** seen in the reference application or reported directly by the user, but not an API guarantee.
+- **Observed:** static indicator in the supplied APK or directly reported by the user; not an API guarantee.
 - **Inferred:** plausible, not independently confirmed.
 - **Planned:** desired behavior, not implemented.
 - **Blocked:** inaccessible or prevented by a known constraint.
@@ -15,43 +15,50 @@ Index of durable technical, product, compatibility, security and research knowle
 | Topic | Current understanding | Evidence |
 | --- | --- | --- |
 | Product and module name | ChatJS | Explicit user direction and repository |
-| Repository | codexclai/ChatJS; public; main is the default branch | Live GitHub |
-| Branch inventory | Exactly one branch, main; branch API reports protected=false | Complete GitHub branches endpoint, 2026-11-18 |
-| Repository About | Description unset; topics list empty | GitHub repository API, 2026-11-18 |
-| Branch/ruleset policy | Never create/delete other branches; no branch-protection/rulesets or topics setup | Explicit user direction; repository API inspection |
+| Repository | codexclai/ChatJS; public; default branch main | Live GitHub |
+| Branch inventory | Exactly one branch, main | GitHub branch search, 2026-11-18 |
+| Repository About | Description set as documented in REPOSITORY_SETTINGS.md; no topics by request | Live GitHub metadata and owner instruction |
+| Branch/ruleset policy | Never create/delete/rename/switch branches; no branch protection/rulesets or topics setup | Explicit user direction |
 | Runtime | Node.js; ESM and CommonJS; TypeScript declarations | Source code |
-| Current runtime network behavior | Foundation client makes no network requests; package declares no runtime dependencies | Current src entry points and package.json |
-| Product privacy policy | No product telemetry, tracking, hidden collection, phone-home or remote diagnostics | Explicit user direction; DECISIONS.md and ARCHITECTURE.md |
-| Implementation status | Initial foundation only; no ChatGPT service integration | Code and current CI |
+| Runtime network behavior | Foundation makes no network requests; no third-party runtime dependencies | Source and package.json |
+| Privacy | Zero telemetry, tracking, hidden collection, background reporting or phone-home | Explicit user direction |
+| Implementation status | Initial foundation only; no ChatGPT service integration | Source and CI |
 | Independence | Not affiliated with OpenAI | Project policy |
-| Reference APK | ChatGPT.zip in ChatJS Project → Sources; user says exported immediately after Google Play update and latest for them at acquisition | User-confirmed provenance; REFERENCE_APK.md |
-| Project Source availability | ChatGPT.zip was found as a Project-backed file and materialized in this session; ZIP contains one base.apk entry | Current Project file listing and ZIP inventory |
-| APK inspection status | ZIP structure checked; APK internals and user-visible feature inventory not yet inspected | Current session log |
-| APK handling | Project Source only; not stored in the public repository | Governance decision |
-| Product versioning | No ChatJS release numbers/tags, package version field or npm publishing | Explicit user direction |
+| Reference APK | Project Source; user says latest Google Play build available to them at acquisition | User-confirmed provenance; REFERENCE_APK.md |
+| APK inspection | Static manifest and high-level asset/module names; no emulator/UI test or DEX decompilation | CHATGPT_CAPABILITY_INVENTORY.md |
+| APK handling | Project Source only; not public repository | Governance decision |
+| Product versioning | No ChatJS release numbering/tags, package version field or npm publishing | Explicit user direction |
 | Product/API manual | Root ChatJS.md | Repository |
 | Shared project memory | /docs and docs/project-state.json | AI_MEMORY.md |
-| Distribution | ChatJS.tar.gz; built, verified, extracted and loaded in CI | Successful workflow run |
+| Distribution | ChatJS.tar.gz built, verified, extracted and smoke-tested in CI | Workflow run |
 
-## Knowledge areas
+## Verified public-interface research — 2026-11-18
+
+See [ChatGPT Capability and Interface Inventory](CHATGPT_CAPABILITY_INVENTORY.md) for evidence, limitations, feature mapping and source links.
+
+- OpenAI recommends Responses API for new integrations. Assistants API shut down on August 26, 2026; do not use it for new work. Sources: [Responses migration](https://developers.openai.com/api/docs/guides/migrate-to-responses), [Assistants migration](https://developers.openai.com/api/docs/assistants/migration).
+- Responses API documents streaming, model discovery, multimodal input, function calling, web search, file search, Code Interpreter, computer use and remote MCP. Each has distinct permissions, model support and data-lifecycle requirements.
+- Sign in with ChatGPT plan usage is a separate OAuth route, not ordinary API-key auth. OpenAI documents it for open-source and locally hosted apps; paid or remotely hosted apps are directed to an interest form. It does not provide consumer ChatGPT conversations or account context. Sources: [overview](https://developers.openai.com/siwc/token-sharing-open-source), [quickstart](https://developers.openai.com/siwc/quickstart).
+- Plan-usage preview requires HTTP Responses requests to set `store:false` and `stream:true`, send complete context and avoid persistent conversation references. Image generation, file search, Code Interpreter, native computer use, hosted MCP/connectors, Files upload, audio/video input and transcription are unsupported. See [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations).
+- ChatJS has an all-rights-reserved notice. Public visibility does not establish open-source eligibility. Keep the question open.
+
+## Research areas and canonical locations
 
 | Domain | Canonical location | Record |
 | --- | --- | --- |
-| Product feature scope | CAPABILITY_MATRIX.md and focused research pages | Observable behavior, platform differences, evidence, feasibility |
-| Official integrations | Focused research pages linked here | Current APIs, authentication, restrictions, limits |
-| Android reference | REFERENCE_APK.md and ChatJS Project Sources | Provenance, flows, confidence |
-| Node.js/runtime | ARCHITECTURE.md | Runtime APIs, supported LTS behavior, platform differences |
+| Product feature scope | CAPABILITY_MATRIX.md and CHATGPT_CAPABILITY_INVENTORY.md | APK indicators, API mapping and feasibility |
+| Official integrations | CHATGPT_CAPABILITY_INVENTORY.md | Interfaces, auth, restrictions and limits |
+| Android reference | REFERENCE_APK.md and Project Sources | Provenance, static indicators, confidence |
+| Node.js/runtime | ARCHITECTURE.md | Runtime APIs and contracts |
 | Public module API | Root ChatJS.md and types/index.d.ts | Exports, inputs, outputs, events, errors |
-| Security/privacy | SECURITY.md and ARCHITECTURE.md | Trust boundaries, sensitive data, threat handling and zero-telemetry policy |
-| Distribution | Root ChatJS.md and CI workflow | ChatJS.tar.gz contents and smoke tests |
-| Repository governance | GOVERNANCE.md and REPOSITORY_SETTINGS.md | Rights, owner settings and operational limits |
+| Security/privacy | SECURITY.md and ARCHITECTURE.md | Trust boundaries and zero telemetry |
+| Distribution | Root ChatJS.md and CI | ChatJS.tar.gz and smoke tests |
+| Repository governance | GOVERNANCE.md and REPOSITORY_SETTINGS.md | Rights, license and owner decisions |
 
 ## Research record format
 
-Record the question, why it matters, conclusion and evidence label, source URL or repository path, source publication/access date, scope, limitations, conflicting evidence, confidence, implementation consequence and related TODO/decision.
-
-Prefer authoritative current sources for changing product, API, legal, platform and runtime facts. Community sources can help discover behavior but do not replace official contracts.
+Record question, conclusion, evidence label, source URL or path, access date, scope, limitations, confidence, implementation consequence and related TODO/decision. Prefer current authoritative sources for changing product, API, legal, platform and runtime facts.
 
 ## Maintenance
 
-When new evidence changes a decision, capability assessment or task priority, update the canonical document and append a session-history entry. Do not leave durable knowledge only in chat prose.
+When evidence changes a decision, capability assessment or task priority, update the canonical document and append a session-history entry. Do not leave durable knowledge only in chat prose.

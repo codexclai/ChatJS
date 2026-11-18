@@ -6,7 +6,7 @@ Record durable project and technical decisions with rationale. Update an existin
 
 **Status:** accepted  
 **Decision:** ChatJS is a reusable Node.js module, not an Android app or browser-only UI.  
-**Rationale:** the product is intended to expose ChatGPT-compatible workflows through a Node.js API.  
+**Rationale:** expose ChatGPT-compatible workflows through documented and authorized interfaces.  
 **Consequences:** platform-specific behavior must sit behind adapters.
 
 ## Evidence-backed compatibility
@@ -14,74 +14,88 @@ Record durable project and technical decisions with rationale. Update an existin
 **Status:** accepted  
 **Decision:** compatibility claims require evidence and repeatable tests.  
 **Rationale:** private endpoints, account entitlements, platform services and app internals cannot be assumed to be accessible.  
-**Consequences:** distinguish verified public behavior, observations, and planned/unknown features. Never claim 1:1 without a conformance suite.
+**Consequences:** distinguish verified public behavior, static APK indicators, and planned/unknown features. Never claim 1:1 without conformance tests.
+
+## Responses API as the OpenAI integration foundation
+
+**Status:** accepted for new OpenAI model-backed integrations  
+**Decision:** use the documented public Responses API as the default interface for new OpenAI model-backed workflows. Do not build on the retired Assistants API or private ChatGPT consumer-app endpoints.  
+**Rationale:** OpenAI recommends Responses for new projects and shut down Assistants API on August 26, 2026.  
+**Consequences:** build a narrow provider adapter against public endpoints. Treat model/tool support, permissions, retention, pricing and rate limits as runtime concerns. This does not mean anything is implemented.
+
+## Distinct authentication routes
+
+**Status:** accepted boundary; implementation unresolved  
+**Decision:** keep developer API-key auth separate from Sign in with ChatGPT identity and optional plan-usage OAuth. Do not silently fall back between them or treat ChatGPT subscription usage as ordinary API credit.  
+**Rationale:** these are different documented authorization flows. Plan usage does not expose consumer ChatGPT conversations or account context.  
+**Consequences:** an API-key provider can be designed independently. Do not implement plan-usage OAuth until legal/open-source eligibility and the registration flow are confirmed. ChatJS has an all-rights-reserved notice; public visibility does not make it open source.
 
 ## Single-branch repository workflow
 
 **Status:** accepted; permanent user requirement  
-**Decision:** the repository contains only main. All work is committed directly to main. Never create, delete, rename, switch to or publish another branch, and never invoke branch/ref creation or deletion operations. Do not configure branch protection/rulesets or repository topics.  
-**Rationale:** explicit user direction to keep the repository on one branch and avoid unnecessary GitHub setup.  
-**Consequences:** every chat checks the complete branch listing and works only on main. If an unexpected branch appears, report it; never delete or modify it.
+**Decision:** repository contains only main. Commit directly to main. Never create, delete, rename, switch to or publish another branch; never invoke branch/ref creation or deletion operations. Do not configure branch protection/rulesets or repository topics.  
+**Rationale:** explicit user direction.  
+**Consequences:** check live branches each chat. Report unexpected branches; never delete or modify them.
 
 ## No product telemetry or hidden collection
 
 **Status:** accepted; permanent user requirement  
-**Decision:** do not include product telemetry, analytics, tracking, ads, profiling, hidden data collection, phone-home requests, background reporting, remote diagnostics or telemetry dependencies.  
-**Rationale:** the user explicitly requires zero telemetry and no covert data collection.  
-**Consequences:** no usage data is transmitted. Network requests exist only when needed for an explicit user-requested operation and only to a documented, configured, authorized service. Local error handling does not transmit data.
+**Decision:** no telemetry, analytics, tracking, ads, profiling, hidden collection, phone-home, background reporting, remote diagnostics or telemetry dependencies.  
+**Rationale:** explicit zero-telemetry requirement.  
+**Consequences:** no usage data transmitted. Network calls only for explicit operations to configured, documented, authorized services.
 
 ## No pretend features or unrelated bloat
 
 **Status:** accepted; permanent user requirement  
-**Decision:** no fake, canned, predefined, hardcoded, demo-only, placeholder, no-op or test-mock functionality in the shipped runtime. No bloatware, pointless dependencies, filler or unrelated features/files.  
-**Rationale:** the user requires genuine, complete functionality and a focused project.  
-**Consequences:** test fixtures remain isolated to tests; every shipped feature must be implemented, tested, documented and honestly represented.
+**Decision:** no fake, canned, predefined, hardcoded, demo-only, placeholder, no-op or test-mock runtime behavior. No bloatware, pointless dependencies, filler or unrelated files/features.  
+**Rationale:** require genuine, complete functionality.  
+**Consequences:** test fixtures remain tests-only; every feature is implemented, tested, documented and represented honestly.
 
 ## Public repository with proprietary rights notice
 
 **Status:** provisional; legal review required  
-**Decision:** keep the repository public and use an all-rights-reserved notice rather than automatically granting a broad open-source license.  
-**Rationale:** the owner asked for the strongest practical rights reservation on a public repository.  
-**Consequences:** do not accept external code contributions until ownership and contributor terms are settled. Public visibility and a notice do not prevent copying.
+**Decision:** keep the repository public with an all-rights-reserved notice rather than automatically granting a broad open-source license.  
+**Rationale:** owner requested a strong rights reservation.  
+**Consequences:** do not accept external code contributions until ownership and contributor terms are settled. Do not assume eligibility for the open-source Sign in with ChatGPT plan-usage route.
 
 ## ESM and CommonJS
 
-**Status:** accepted for the initial package  
-**Decision:** expose ESM and CommonJS entry points backed by one implementation, with TypeScript declarations.  
-**Rationale:** broad Node.js module compatibility is a product goal and duplicated implementations would drift.  
-**Consequences:** test both module systems and keep their exports aligned.
+**Status:** accepted for initial package  
+**Decision:** expose ESM and CommonJS entry points backed by one implementation with TypeScript declarations.  
+**Rationale:** broad Node.js compatibility without duplicated implementations.  
+**Consequences:** test both systems and keep exports aligned.
 
 ## Current Node.js LTS
 
 **Status:** accepted; review during maintenance  
 **Decision:** CI follows the currently supported Node.js LTS runtime.  
-**Rationale:** runtime compatibility should follow Node.js support rather than create a ChatJS product runtime version scheme.  
-**Consequences:** update CI using the official Node.js release schedule.
+**Rationale:** compatibility follows Node.js support, not a ChatJS product version system.  
+**Consequences:** review against the official Node.js release schedule.
 
 ## GitHub and Project Sources as cross-chat memory
 
 **Status:** accepted  
-**Decision:** the GitHub repository and ChatJS Project Sources are durable project memory across separate ChatGPT chats.  
-**Rationale:** chats do not guarantee shared conversational history, while committed docs and Project Sources can persist.  
-**Consequences:** every chat follows AI_MEMORY.md and searches ChatJS Project → Sources for ChatGPT.zip.
+**Decision:** repository and ChatJS Project Sources are durable project memory across chats.  
+**Rationale:** committed docs and Project Sources persist.  
+**Consequences:** every chat follows AI_MEMORY.md and searches Project Sources for ChatGPT.zip.
 
 ## APK as a private reference source
 
 **Status:** accepted  
-**Decision:** keep ChatGPT.zip in ChatJS Project → Sources, not in the public GitHub repository.  
-**Rationale:** the APK is a proprietary third-party app binary and public repository storage would redistribute it.  
-**Consequences:** inspect it only when the Project Source is actually available; never commit the APK or copy proprietary assets/code.
+**Decision:** keep ChatGPT.zip in Project Sources, not the public repository.  
+**Rationale:** proprietary third-party binary must not be redistributed.  
+**Consequences:** never commit the APK or copy proprietary assets/code.
 
 ## No ChatJS product versioning
 
 **Status:** accepted  
-**Decision:** do not introduce ChatJS product versions, release tags, version automation, lockfiles, changelog machinery, checksums or npm registry publishing. The module name is exactly ChatJS.  
+**Decision:** no ChatJS product versions, release tags, version automation, lockfiles, changelogs, checksums or npm publishing. Module name is exactly ChatJS.  
 **Rationale:** explicit user requirement.  
-**Consequences:** normal Git commit history remains; the minimal package.json has no product version field; CI tracks the current Node.js LTS.
+**Consequences:** normal Git history remains; package.json has no product version field; CI follows current Node.js LTS.
 
 ## Separate product documentation and project memory
 
 **Status:** accepted  
-**Decision:** root ChatJS.md documents the actual Node.js module; /docs is the shared project memory and engineering handbook.  
-**Rationale:** users need API documentation while project chats need persistent knowledge and workflow records.  
-**Consequences:** keep product-facing content and project-maintenance knowledge separate.
+**Decision:** root ChatJS.md documents the actual Node.js module; /docs is the project memory and handbook.  
+**Rationale:** user documentation and engineering continuity have different purposes.  
+**Consequences:** keep them separate.
