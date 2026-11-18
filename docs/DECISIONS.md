@@ -13,8 +13,29 @@ Record durable project and technical decisions with rationale. Update an existin
 
 **Status:** accepted  
 **Decision:** compatibility claims require evidence and repeatable tests.  
-**Rationale:** private endpoints, account entitlements, platform services, and app internals cannot be assumed to be accessible.  
+**Rationale:** private endpoints, account entitlements, platform services and app internals cannot be assumed to be accessible.  
 **Consequences:** distinguish verified public behavior, observations, and planned/unknown features. Never claim 1:1 without a conformance suite.
+
+## Single-branch repository workflow
+
+**Status:** accepted; permanent user requirement  
+**Decision:** the repository contains only main. All work is committed directly to main. Never create, delete, rename, switch to or publish another branch, and never invoke branch/ref creation or deletion operations. Do not configure branch protection/rulesets or repository topics.  
+**Rationale:** explicit user direction to keep the repository on one branch and avoid unnecessary GitHub setup.  
+**Consequences:** every chat checks the complete branch listing and works only on main. If an unexpected branch appears, report it; never delete or modify it.
+
+## No product telemetry or hidden collection
+
+**Status:** accepted; permanent user requirement  
+**Decision:** do not include product telemetry, analytics, tracking, ads, profiling, hidden data collection, phone-home requests, background reporting, remote diagnostics or telemetry dependencies.  
+**Rationale:** the user explicitly requires zero telemetry and no covert data collection.  
+**Consequences:** no usage data is transmitted. Network requests exist only when needed for an explicit user-requested operation and only to a documented, configured, authorized service. Local error handling does not transmit data.
+
+## No pretend features or unrelated bloat
+
+**Status:** accepted; permanent user requirement  
+**Decision:** no fake, canned, predefined, hardcoded, demo-only, placeholder, no-op or test-mock functionality in the shipped runtime. No bloatware, pointless dependencies, filler or unrelated features/files.  
+**Rationale:** the user requires genuine, complete functionality and a focused project.  
+**Consequences:** test fixtures remain isolated to tests; every shipped feature must be implemented, tested, documented and honestly represented.
 
 ## Public repository with proprietary rights notice
 
@@ -54,7 +75,7 @@ Record durable project and technical decisions with rationale. Update an existin
 ## No ChatJS product versioning
 
 **Status:** accepted  
-**Decision:** do not introduce ChatJS product versions, release tags, version automation, lockfiles, changelog machinery, checksums, or npm registry publishing. The module name is exactly ChatJS.  
+**Decision:** do not introduce ChatJS product versions, release tags, version automation, lockfiles, changelog machinery, checksums or npm registry publishing. The module name is exactly ChatJS.  
 **Rationale:** explicit user requirement.  
 **Consequences:** normal Git commit history remains; the minimal package.json has no product version field; CI tracks the current Node.js LTS.
 
