@@ -21,13 +21,13 @@ Persistent engineering partner for **ChatJS**.
 - Microphone/camera/screen/desktop control requires a justified adapter and explicit permission. Android permissions do not transfer to Node.js.
 
 ## Reference archives
-- Android backup: personal ChatGPT Library **/ChatJS-Archives/ChatJS-Android.zip**. Verified at 54,869,202 bytes and re-materialized after rename/move. Check this path; do not ask for the original Source upload again.
-- Windows source: https://persistent.oaistatic.com/codex-app-prod/ChatGPT-x64.msix. Findings: docs/REFERENCE_DESKTOP.md. The 1,057,802,768-byte MSIX is NOT in Library or Git. Browser export caps at 25 MiB; only a 1 MiB test transfer succeeded. Re-fetch only when needed and a viable private transfer exists.
-- Owner intends to clear Project Sources. Do not claim Sources are empty until confirmed.
-- Never commit official APK/MSIX, proprietary assets/code, private bundles, credentials, tokens or private protocols. Preserve independent findings only.
+- At each chat start, search Project Sources for ChatGPT.zip, then personal Library **/ChatJS-Archives**. Verified backup: **/ChatJS-Archives/ChatJS-Android.zip** (54,869,202 bytes; re-materialized). Use Sources when available, otherwise Library; do not request repeat uploads for old research. Do not claim Library-to-Sources transfer unless done.
+- Requested Windows name: ChatJS-Windows.zip. Source is a 1,057,802,768-byte MSIX: https://persistent.oaistatic.com/codex-app-prod/ChatGPT-x64.msix; findings: docs/REFERENCE_DESKTOP.md. No full file is retained: 25 MiB export cap, 1 MiB test only, full download failed. Never treat partial data as a backup or relabel MSIX bytes .zip; preserve .msix if fully retained privately.
+- Owner intends to clear Project Sources; deletion is unconfirmed. An empty chat-attachment listing does not prove Sources are empty.
+- Never commit official APK/MSIX, proprietary assets/code, private bundles, credentials, tokens or private protocols to public Git. Keep originals in private Library/Sources and independent findings in Git.
 
 ## Restore every chat
-Read all canonical docs listed in docs/AI_MEMORY.md plus root ChatJS.md. Inspect live main, all branches, recent commits/tree, issues/PRs and CI. Live main and latest owner direction take precedence.
+Read required docs listed in docs/AI_MEMORY.md and root ChatJS.md. Inspect live main, branches, commits/tree, issues/PRs and CI. Live main and latest owner direction win.
 
 ## Git — absolute
 - **main is the only permitted branch.**
@@ -49,9 +49,9 @@ Read all canonical docs listed in docs/AI_MEMORY.md plus root ChatJS.md. Inspect
 ## Evidence and docs
 - Label claims Verified, Observed, Inferred, Planned, Blocked or Out of scope. Package indicators do not prove Node.js support; no 1:1 claims without repeatable evidence.
 - Root ChatJS.md is the user/API manual; /docs is persistent engineering memory.
-- During each meaningful session, record available requirements, decisions, research/sources, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs. Correct affected references, preserve chronology, avoid conflicting duplicates; never leave durable knowledge only in chat.
-- Update project-state.json and regenerate PROJECT_STATE.md; update TODO, SESSION_LOG and relevant docs. Keep source URLs, dates, evidence and limits.
-- This documents information actually available; it does not imply invisible monitoring of other chats/apps.
+- Each session, record meaningful requirements, decisions, sources/dates, Sources/Library paths/names/sizes/moves/verification, findings, actions/files, tests/CI, failures, limits/risks/blockers and handoffs in canonical docs.
+- Update references, preserve chronology, remove duplicates, and leave no durable knowledge only in chat. Update project-state.json; regenerate PROJECT_STATE.md; update TODO, SESSION_LOG and affected docs.
+- Record meaningful available facts, not trivial tool calls, speculation, secrets or hidden reasoning. Never imply invisible monitoring or claim unverified work.
 
 ## Finish each meaningful session
 Complete a coherent task; run npm run check; build/inspect ChatJS.tar.gz; verify CI where possible; inspect tree/branches; commit on main; record actual results, commit, blockers and next task. Never claim checks passed unless observed.

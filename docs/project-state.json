@@ -37,7 +37,8 @@
     "Moved Android archive to private Library /ChatJS-Archives/ChatJS-Android.zip, deleted old folder, verified new listing and re-materialized renamed 54,869,202-byte file.",
     "Recorded Windows MSIX retention attempt and blocker: browser export caps at 25 MiB; 1 MiB test succeeded but full 1,057,802,768-byte transfer was not achieved.",
     "Made contemporaneous canonical documentation of meaningful requirements, decisions, actions, file changes, tests, failures, limits and handoffs a permanent workflow requirement.",
-    "Restored cross-chat context; verified that the live branch inventory contains only main, checked current CI/CodeQL results, confirmed the private Library Android archive path and size, and consolidated duplicate repository documentation."
+    "Restored cross-chat context; verified that the live branch inventory contains only main, checked current CI/CodeQL results, confirmed the private Library Android archive path and size, and consolidated duplicate repository documentation.",
+    "Revised the ChatGPT Project Instructions record and supplied a 5,9xx-character version for the ChatGPT Project Instructions field; clarified Sources-first/Library-fallback archive handling and the unretained Windows MSIX limitation."
   ],
   "notImplemented": [
     "Local workspace, file, command/process, task, memory, artifact, browser, desktop-control or remote-host capabilities.",
