@@ -55,6 +55,7 @@ Then inspect the live main branch, branch list, recent commits, working code, op
 | Successful and failed investigations | EXPERIMENTS.md | Reproducible experiment history |
 | Unknowns, blockers, risks | OPEN_QUESTIONS.md | Actionable unresolved items |
 | Feature status | CAPABILITY_MATRIX.md | Truthful implementation inventory |
+| Capability research | CHATGPT_CAPABILITY_INVENTORY.md | Static APK evidence, public API mapping, eligibility and limitations |
 | Intended delivery sequence | ROADMAP.md | Future plans, not support claims |
 | Technical design | ARCHITECTURE.md | Module design and constraints |
 | Development process | WORKFLOW.md | Normal engineering lifecycle |
