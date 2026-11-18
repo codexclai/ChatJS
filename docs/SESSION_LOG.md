@@ -127,3 +127,15 @@ Specify and implement a local Work/Codex vertical slice: a caller-selected, path
 - The Windows MSIX (1,057,802,768 bytes) is not retained as a binary. Its exact official URL and static package findings remain in docs/REFERENCE_DESKTOP.md for an explicitly requested future re-download/comparison.
 - Neither proprietary binary is committed to public GitHub. The public repo retains independently authored observations, package metadata and implementation requirements.
 - The owner intends to clear Project Sources; actual deletion is not confirmed by this session.
+
+
+## 2026-11-18 — Archive consolidation and documentation completeness
+
+- Created private Library folder /ChatJS-Archives.
+- Moved Android archive from /ChatJS-Reference-Archives/ChatGPT-Android.zip to /ChatJS-Archives/ChatJS-Android.zip; deleted old empty folder.
+- Verified Library listing: exact name/path, 54,869,202 bytes. Re-materialized moved file successfully to /mnt/data/chatjs-android-final-check/ChatJS-Android.zip.
+- Windows request: owner wants private ChatJS-Windows.zip. Original is a 1,057,802,768-byte MSIX; changing extension alone would not produce a ZIP or preserve installer format.
+- Transfer investigation: browser VM held prior download; browser file export caps at 25 MiB. A 1 MiB test chunk exported, but full direct container download failed. No complete Windows file was copied to Library, Sources or Git. Blocked; official URL/static inventory remain in REFERENCE_DESKTOP.md.
+- Updated Project Instructions, AI Memory, Continuation, Android/Desktop references, TODO, Knowledge Base and workflow.
+- Owner requires comprehensive contemporaneous documentation. Canonical workflow records available meaningful requirements, decisions, research, actions, files, tests, failures, limits, blockers and handoffs, without claiming invisible monitoring.
+- Owner intends to clear Project Sources; deletion is not confirmed.
