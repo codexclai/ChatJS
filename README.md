@@ -58,6 +58,8 @@ Every new ChatJS session should read [AI Memory](https://github.com/codexclai/Ch
 
 Android backup is retained privately at `/ChatJS-Archives/ChatJS-Android.zip`. Windows MSIX is not retained; its official URL/findings are in `docs/REFERENCE_DESKTOP.md`. Neither binary is in public Git. Project Sources deletion is not confirmed.
 
+Android backup is retained privately at `/ChatJS-Archives/ChatJS-Android.zip`. Windows MSIX is not retained; its official URL/findings are in `docs/REFERENCE_DESKTOP.md`. Neither binary is in public Git. Project Sources deletion is not confirmed.
+
 Use the committed [Android reference](https://github.com/codexclai/ChatJS/blob/main/docs/REFERENCE_APK.md) and [Windows desktop reference](https://github.com/codexclai/ChatJS/blob/main/docs/REFERENCE_DESKTOP.md). The owner intends to clear Project Sources; do not request the original binaries merely to repeat completed inspection. Do not claim deletion until confirmed.
 
 ## Quality, privacy and rights
