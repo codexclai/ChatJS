@@ -9,8 +9,8 @@
 | Project | ChatJS |
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
-| Phase | Public-interface research and pre-implementation |
-| Status | Repository foundation and static Android/API capability research are documented; ChatGPT feature implementation has not started. |
+| Phase | Mobile-first product scope and local Work/Codex design |
+| Status | The intended ChatGPT mobile-first and desktop Work/Codex feature scope is documented; runtime remains a foundation with no product features implemented. |
 | Default branch | main |
 | Last reviewed | 2026-11-18 |
 | Runtime policy | Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system. |
@@ -36,28 +36,32 @@
 16. Inspected the reference APK manifest and high-level resource/module names statically; documented scope and limitations without redistributing the APK.
 17. Created a capability inventory separating static APK indicators from official, authorized Node.js interfaces.
 18. Reviewed current OpenAI developer documentation, selected Responses API as the new-integration foundation, and documented the Assistants API shutdown and Sign in with ChatGPT preview restrictions.
+19. Reviewed current ChatGPT Work/Codex, desktop app, Voice, Projects and Codex documentation as product-reference evidence.
+20. Reclassified ChatJS as mobile-first with applicable desktop Work/Codex capabilities; removed OpenAI API/key/OAuth integration from product scope.
+21. Explicitly excluded health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permission domains.
 
 ## Not implemented
 
-- ChatGPT authentication, account/session management or service transport.
-- Conversation, message, streaming, model, tool, multimodal, voice, memory, project, GPT or settings features in ChatJS.
-- Access to users' ChatGPT consumer conversation history, memory or other account context.
-- Hands-on verification of every ChatGPT mobile UI surface or a 1:1 compatibility guarantee.
-- Sign in with ChatGPT plan-usage OAuth; eligibility is unresolved because the repository currently carries an all-rights-reserved notice.
+- Local workspace, file, command/process, task, memory, artifact, browser, desktop-control or remote-host capabilities.
+- Generated chat responses, reasoning, code authoring, autonomous agents, voice conversation, image understanding or image generation; no non-OpenAI inference engine has been selected.
+- Access to ChatGPT consumer account chats, saved memory, Projects, custom GPTs, cloud Work tasks, Codex sessions, Remote sessions or Codex Cloud.
+- Native Android camera, microphone, screen-sharing and other app permissions in the portable Node.js core.
+- Hands-on validation of every mobile/desktop UI feature or a 1:1 compatibility guarantee.
 
 ## Next actions
 
-1. Resolve legal ownership, licensing and eligibility for Sign in with ChatGPT plan usage; do not change the license without explicit owner direction.
-2. Specify a complete API-key Responses provider contract covering credentials, transport, streaming, cancellation, backpressure, timeouts, retries, errors, concurrency and cleanup.
-3. Implement and test one narrow, real Responses text workflow only after the contract is defined.
-4. Verify the availability and status of private vulnerability reporting, secret scanning and push protection.
+1. Specify the local workspace security contract: root selection, path confinement, symlink/junction behavior, limits, cancellation, atomic writes and concurrent-mutation threat model.
+2. Implement and test a confined local workspace with bounded file operations as the first Work/Codex vertical slice.
+3. Specify a safe process runner with explicit executable/argv, no shell by default, approval policy, timeout/cancellation, output limits and cleanup.
+4. Resolve whether a non-OpenAI inference engine is in scope; do not implement or simulate model-powered behavior until one is selected.
+5. Verify availability and status of private vulnerability reporting, secret scanning and push protection.
 
 ## Reference artifact
 
 - Source: ChatGPT.zip in ChatJS Project → Sources in ChatGPT
 - Acquisition: The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.
-- Availability: ChatGPT.zip was found in Project Sources and contains one base.apk. Static inspection of the binary manifest and high-level resource/module names was completed and documented.
-- Evidence limit: Inspection was static only; no emulator or interactive UI session, DEX decompilation, or code/resource extraction was performed. Package declarations and resource names are indicators, not proof of active UI, account entitlement, granted permission, or public Node.js API access.
+- Availability: The Project Source was found and the ZIP contains one base.apk. Static manifest and high-level packaged resource/module inspection is documented in docs/REFERENCE_APK.md.
+- Evidence limit: Inspection was static only; no emulator, interactive UI session, or DEX decompilation was performed. Package declarations/resource names are indicators, not proof of current UI, entitlement, or Node.js access. Desktop scope is based on official product documentation, not a desktop binary.
 
 ## Continuity
 
