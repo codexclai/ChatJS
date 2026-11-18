@@ -6,6 +6,18 @@
 
 **Important limitation:** the GitHub connector used for this setup can inspect repository metadata and write repository contents, but does not expose repository About metadata, branch-protection, ruleset, or security-feature mutation. Those controls are therefore pending manual application. Do not claim they are active until verified.
 
+## Current verification
+
+On 2026-11-18, the GitHub repository metadata endpoint reported:
+- Visibility: public.
+- Default branch: main.
+- Repository description: empty.
+- Topics: none.
+- Issues: enabled.
+- Discussions: disabled.
+
+The rulesets endpoint returned an empty list. The branch-protection read endpoint returned HTTP 403 for the connected integration, so branch protection could not be inspected. No repository settings change is claimed to have been made by the connector.
+
 ## About metadata
 
 Set the repository description to:

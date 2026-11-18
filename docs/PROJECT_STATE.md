@@ -10,20 +10,22 @@
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
 | Phase | Repository foundation and pre-implementation |
-| Status | Foundation scaffold; feature implementation has not started |
+| Status | Foundation scaffold complete; repository-owner security settings and legal review pending; feature implementation has not started. |
 | Default branch | main |
 | Last reviewed | 2026-11-18 |
 | Runtime policy | Track the current supported Node.js LTS runtime in CI; do not maintain a ChatJS product release or versioning system. |
 
 ## Completed foundation work
 
-1. Confirmed the public GitHub repository codexclai/ChatJS and its empty starting state.
+1. Confirmed the public GitHub repository codexclai/ChatJS and its initially empty state.
 2. Created the repository overview and independence / compatibility boundary notices.
-3. Established the ChatJS-named ESM and CommonJS package entry points and TypeScript declarations.
+3. Established ChatJS-named ESM and CommonJS entry points and TypeScript declarations.
 4. Added a minimal client lifecycle foundation and built-in Node.js test coverage.
-5. Added machine-readable project state and generated documentation synchronization.
-6. Prepared CI, documentation validation, CodeQL, dependency review, and GitHub Actions dependency automation.
-7. Recorded that the user-supplied Play Store APK is the current reference build according to the user's direct confirmation; the source remains in the ChatJS Project's Sources in ChatGPT and is not copied into the public repository.
+5. Added machine-readable project state, generated documentation synchronization, and local Markdown link validation.
+6. Added GitHub Actions CI, documentation validation, CodeQL, dependency review, GitHub Actions dependency automation, issue templates, and repository policies.
+7. Verified the current Node.js LTS CI job passed all 8 tests and the documentation/link check passed across 20 Markdown files.
+8. Recorded the user's confirmation that ChatGPT.zip in the ChatJS Project's Sources in ChatGPT is their latest Google Play APK at acquisition time; the source remains in Project Sources and is not copied to the public repository.
+9. Removed ChatJS product version numbering, package version fields, lockfiles, changelog/citation metadata, APK checksums, and npm registry publishing automation.
 
 ## Not implemented yet
 
@@ -34,8 +36,8 @@
 
 ## Immediate next actions
 
-1. Apply the manual GitHub repository settings in docs/REPOSITORY_SETTINGS.md, especially main-branch protection and security controls.
-2. Confirm the legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external code contributions.
+1. Apply the manual GitHub repository About metadata, main-branch protection, and security controls described in docs/REPOSITORY_SETTINGS.md.
+2. Confirm the actual legal rights holder and obtain legal review of the proprietary all-rights-reserved notice before accepting external code contributions.
 3. Define a source-backed ChatGPT capability inventory and distinguish public interfaces, observed UI behavior, and inaccessible/private services.
 4. Design and test the first stable client, transport, event, streaming, cancellation, and error contracts before implementing capabilities.
 
@@ -43,7 +45,7 @@
 
 - Source: ChatGPT.zip in the ChatJS Project's Sources in ChatGPT
 - Acquisition: The user reports that the APK was exported immediately after updating ChatGPT from Google Play and is the latest build available to them at acquisition time.
-- Availability: The APK is stored in ChatGPT Project Sources, not GitHub. New chats must search Project Sources before asking the user to reattach it.
+- Availability: The APK is stored in the ChatJS Project's Sources in ChatGPT, not GitHub. New chats must search Project Sources before asking the user to reattach it.
 - Evidence limit: The user-provided Google Play acquisition provenance is recorded. Future chats must inspect the actual source file when available and must not claim inspection if it is inaccessible.
 
 ## Continuity rule
