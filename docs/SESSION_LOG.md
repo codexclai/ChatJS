@@ -13,7 +13,7 @@ Apply the user's latest permanent constraints to ChatJS, update the Project Inst
 - Recorded the permanent policy: work directly on main; never create, delete, rename, switch to or publish other branches; do not configure branch protection/rulesets or repository topics.
 - Added the zero-telemetry policy: no analytics, tracking, ads, profiling, hidden collection, background reporting, phone-home requests, remote diagnostics or telemetry dependencies.
 - Explicitly prohibited fake, canned, predefined, demo-only, placeholder, no-op or mock runtime behavior, and prohibited bloatware, filler and unrelated additions. Test fixtures must remain test-only.
-- Updated docs/CHATGPT_PROJECT_INSTRUCTIONS.md, AI_MEMORY.md, CONTINUATION.md, WORKFLOW.md, REPOSITORY_SETTINGS.md, TODO.md, ARCHITECTURE.md, docs/README.md, root ChatJS.md, project-state.json and generated PROJECT_STATE.md.
+- Updated docs/CHATGPT_PROJECT_INSTRUCTIONS.md, AI_MEMORY.md, CONTINUATION.md, WORKFLOW.md, REPOSITORY_SETTINGS.md, TODO.md, ARCHITECTURE.md, docs/README.md, root README.md and ChatJS.md, project-state.json and generated PROJECT_STATE.md.
 - Recorded permanent decisions in DECISIONS.md.
 - Inspected the current package manifest and runtime entry points: no runtime dependencies are declared and the current foundation client makes no network requests.
 - Kept the Google Play reference APK outside the public repository.
