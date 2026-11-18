@@ -8,11 +8,11 @@
 - Default branch: main.
 - Connected GitHub account: codexclai, with admin-level repository permission.
 - Issues: enabled.
-- The current paginated branch search returned only main; the next page was empty.
-- At the last inspection, repository description and topics were empty.
-- No repository rulesets were returned. The branch-protection read request was denied to the connected integration, so its state could not be verified.
+- The complete GitHub branches endpoint currently returns only main; its protected field is false.
+- The repository API currently returns description=null and topics=[].
+- No repository rulesets were returned. The separate branch-protection read request was denied to the connected integration.
 
-The user explicitly does **not** want repository topics or branch protection/rulesets configured. Do not create a ruleset or spend time proposing one. The permanent project workflow is main-only: never create, delete, rename, switch to or publish another branch. If an unexpected branch appears, report it; never delete it.
+The user explicitly does **not** want repository topics or branch protection/rulesets configured. Do not create a ruleset or spend time proposing one. The permanent project workflow is main-only: never create, delete, rename, switch to or publish another branch. If an unexpected branch appears, report it; never delete or modify it.
 
 ## Repository description
 
