@@ -1,99 +1,54 @@
-# ChatGPT App Capability Inventory — Mobile First, Desktop Included
+# ChatGPT Client Implementation Inventory — Mobile and Desktop
 
-**Reviewed:** 2026-11-18. ChatJS is an independent Node.js feature implementation inspired by ChatGPT mobile first, plus applicable desktop Work and Codex experiences. This is a product-reference map, not a connection to ChatGPT's backend.
+**Reviewed:** 2026-11-20. ChatJS is one general-purpose Node.js module intended to adapt the actual client-side systems and workflows of official ChatGPT mobile and desktop (including Work/Codex).
 
-## Permanent integration boundaries
+This inventory is a guide to the supplied client implementation material and the intended Node.js adaptation. It is not a claim that the present foundation already supports the listed features.
 
-- No OpenAI Platform APIs, OpenAI API keys, Sign in with ChatGPT OAuth/token sharing, private ChatGPT backend endpoints, or extraction/reuse of ChatGPT app credentials, cookies, tokens, or session state.
-- Official product documentation is used only to understand reference features. It is not a ChatJS integration contract.
-- ChatJS does not access the user's ChatGPT account chats, memory, Projects, custom GPTs, connected apps, Work tasks, Codex sessions, or Codex Cloud.
-- Node.js does not inherit Android app permissions. Native phone/desktop features require optional, explicit platform adapters; a native Android companion app is not currently in scope.
-- No non-OpenAI inference engine has been selected. Do not fake generated answers, reasoning, voice conversation, image generation, code authoring, or autonomous agents. Implement real local functions that do not require a model.
+## Product definition
 
-## Evidence
+ChatJS is not a list of feature-name lookalikes, not a replacement model provider, and not a recreation of ChatGPT's server. The target is the real ChatGPT client experience, with the client-side implementation adapted to Node.js.
 
-The supplied Android ZIP contained one base.apk. Inspection was static and limited to the binary manifest and high-level packaged resource/module names. Package names/permissions are **Observed package indicators** only, not proof of feature availability or Node.js access. The original is not retained in Git; see [REFERENCE_APK.md](REFERENCE_APK.md).
+Do not treat the lack of public developer documentation for a client interface as proof that the interface does not exist. The shipped application code is the primary technical evidence for request construction, payloads, connection/transport, authentication/session behavior, client state, and workflows.
 
-Current product references:
-- [ChatGPT Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)
-- [Moving to the new ChatGPT desktop app](https://help.openai.com/en/articles/20001276-moving-to-the-new-chatgpt-desktop-app)
-- [ChatGPT Voice](https://help.openai.com/en/articles/20001274-chatgpt-voice)
-- [Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt)
-- [ChatGPT release notes](https://help.openai.com/en/articles/6825453-chatgpt-release-notes)
-- [Using Codex with your ChatGPT plan](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
+ChatJS must be general-purpose across different Node.js applications and environments. The portable core must not assume a particular phone, computer, operating system, camera, microphone, screen, browser, or deployment.
 
-These describe current product behavior, not supported ChatJS interfaces. Availability varies by plan, account, workspace, region, app build, and permissions.
+## Reference package status
 
-## Mobile-first features and Node.js suitability
+### Android
 
-| Product area | App reference | ChatJS suitability |
+The personal Library archive `/ChatJS-Archives/ChatJS-Android.zip` contains the full extracted APK payload: all 4,987 APK entries, including ten DEX files and 121 compiled Valdi modules, plus resources/notices, a README, and a structured path/size/CRC inventory. The 59,454,036-byte ZIP has 4,989 entries and passed CRC testing on 2026-11-20. See [REFERENCE_APK.md](REFERENCE_APK.md).
+
+The compiled payload contains actual client implementation material. Source-level DEX/Valdi analysis, request tracing, auth/session tracing, and behavioral tests are not yet recorded complete.
+
+### Windows
+
+The MSIX inspection recorded Electron/Node/Chromium, ChatGPT and Codex executables, an ASAR app bundle, command-runner/code-mode-host components, sandbox/PTY, browser/native-host, computer-use, plugin/skill, shell and file integration. The owner has deferred Windows archive work. The current Library ZIP is metadata-only; a prior chat recorded a larger remote extracted archive with incomplete transfer to Library, not reverified in this session. See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md).
+
+## Client implementation areas to investigate
+
+| Area | Evidence to collect from the actual clients | Node.js adaptation |
 | --- | --- | --- |
-| Chat/conversations | Compose messages, threads, history, continue conversations | Local conversation containers are possible. Generated replies require an inference engine. ChatGPT account history is unavailable to ChatJS. |
-| Instructions and memory | Custom instructions, saved memory, project context | Local profiles and opt-in local memory are possible; they are not ChatGPT account settings or memory. |
-| Projects | Group chats, files, instructions, and context | Local project/workspace objects are a strong Node.js fit; no ChatGPT project sync. |
-| Attachments | Files, images, supported video uploads | Local ingestion, metadata, conversion, and file operations are possible. Model-based understanding needs an inference engine. |
-| Images | Image input and image tools | Local image plumbing is possible; understanding/generation needs an inference engine. |
-| Voice | Live voice; eligible mobile Advanced mode supports camera/video and screen sharing | Requires a real speech engine and host permissions; not portable Node.js core. |
-| Search/research | Search and long research workflows | Explicit retrieval/browser adapters are possible; not ChatGPT Search or Deep Research. |
-| Work on mobile | Longer tasks, connected apps/files, artifacts, continued text task | Local task orchestration/artifact generation is possible. ChatGPT cloud Work and its credentials are not accessible. |
-| Remote desktop coding | Mobile Remote tab reaches supported Codex sessions on a connected desktop | ChatJS could build its own remote-host protocol; it cannot join ChatGPT Remote or read private sessions. |
+| Networking | Endpoint/request creation, headers, payload shape, content types, compression, transport setup | Client-compatible transport and request builder |
+| Authentication | Sign-in steps, session establishment/refresh, authorization state, secure credential lifecycle | Legitimate user-authorized auth/session adapter |
+| Conversations | Thread identifiers/state, message serialization, streaming, error and retry behavior | Typed conversation client and async stream |
+| Context and instructions | Context assembly, profile/instruction precedence, memory-related requests/state | General context and instruction model |
+| Projects | Project data structures, attachments, instructions, context transfer | Project/resource API |
+| Files and attachments | Upload/download payloads, metadata, multipart/formats, previews | File ingestion and client-compatible payload layer |
+| Images and video | Input formats, metadata, processing requests, result structure | Node.js image/video processing and service adapter |
+| Voice | Audio formats, streaming/chunking, turn lifecycle, cancellation | Audio stream adapter; host audio capture remains optional |
+| Search and research | Request structures, tools, sources, citations, task state | Search/research client workflow |
+| Tools and plugins | Tool descriptors, invocation/result schemas, approvals | Typed tool/plugin system |
+| Work and tasks | Task creation, progress, files, artifacts, scheduling/continuation | Local/remote task model where evidenced |
+| Desktop/Codex | Workspaces, commands, PTY, sandbox, browser, computer-use, review | Portable local APIs with optional host integrations |
 
-### Voice detail
+## Host-neutral design
 
-The current Voice help page distinguishes Live, Advanced, and Standard. Live does not support live video or screen sharing; eligible mobile Advanced sessions do. The page states Advanced and Standard are scheduled to retire on **December 11, 2026**. See [ChatGPT Voice](https://help.openai.com/en/articles/20001274-chatgpt-voice). This is changing product behavior, not a reason to copy a legacy protocol.
+Core APIs must be reusable without a phone/desktop device or hardware. If the caller's host offers a camera, microphone, screen, browser, desktop-control API, or another facility, an optional adapter may integrate it. The package itself must not assume or request those facilities on behalf of every consumer.
 
-## Desktop Work
+## Not implemented yet
 
-The new desktop app separates ChatGPT (Chat or Work) from Codex. Work supports research, analysis, documents, spreadsheets, presentations, reports, and Sites. When permitted, desktop Work can use local files and desktop apps with permission. Cloud Work chats sync across devices; local work runs on the desktop, but task context may still be stored in the cloud.
-
-Work has scheduling concepts: run once, repeat, trigger on supported events, or monitor for changes. App permissions and approval requirements still apply.
-
-| Work capability | Node.js implementation path |
-| --- | --- |
-| Long-running tasks | Local task lifecycle, progress, pause/resume/cancel, explicit approval gates |
-| Local files | Caller-selected workspace roots, bounded operations, safe paths |
-| Desktop apps | Optional OS adapter with explicit user permission |
-| Browser/research | Explicit browser/retrieval adapter; no hidden browsing or network |
-| Connected apps | User-configured scoped adapters; never reuse ChatGPT credentials |
-| Deliverables | Local artifact generation with tested format support |
-| Scheduling | Explicit caller-managed scheduler; stopped Node process cannot continue work |
-| Voice coordination | Only after a real speech engine and host permission contract exist |
-
-## Windows desktop package observations
-
-The supplied Windows x64 MSIX was downloaded and statically inspected on 2026-11-18. The manifest identifies the ChatGPT Windows app and a separate Codex executable. Electron ASAR/package metadata and file listing indicate a bundled Node.js runtime, command runner, code-mode host, Windows sandbox service/setup, PTY/ConPTY components, browser native-host, computer-use components, plugin/skill directories, Explorer context-menu integration for opening a project in Codex, a codex: URI handler, document/spreadsheet associations, and programmatic screen-capture capability declarations. The app was not installed/executed; no code/assets were extracted. The MSIX itself is not retained in Git.
-
-See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md) for package metadata, observations, limitations and independent implementation implications.
-
-## Desktop Codex
-
-Codex is a separate desktop view for local folders, repositories, terminals, and developer tools. Desktop also documents voice, remote control, review/approval flows, and cloud coding environments.
-
-| Codex capability | Node.js implementation path |
-| --- | --- |
-| Local projects | Explicit confined workspaces |
-| File read/search/edit | Validated paths, size limits, safe writes and tests |
-| Commands and tests | Process runner with executable/argv separation, timeouts, cancellation, output limits and approval; no shell by default |
-| Git inspection | Read-only status/diff/log operations initially |
-| Review/apply changes | Diff model, explicit human approval, atomic writes |
-| Multiple agents | Only after selecting a real inference engine; never simulate |
-| Computer use | Optional OS adapter with narrow permissions and approvals |
-| Remote host | A ChatJS-owned protocol; not ChatGPT Remote/Codex protocol |
-| Codex Cloud | Out of scope; ChatGPT-hosted environment |
-| Git worktrees/branch parallelism | Excluded because it conflicts with main-only policy |
+The current ChatJS repository is foundation-only. Actual ChatGPT service connection, authentication/session handling, request transport, conversation features, files, voice, images, Work tasks, and Codex integrations are not implemented. No end-to-end compatibility claims are made.
 
 ## Explicit exclusions
 
-Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions are **not ChatJS features**, even if the APK declares related modules or permissions. Camera, microphone, and screen capture may only be considered as narrowly scoped, explicitly approved host adapters.
-
-## Feasibility classes
-
-1. **Local Node.js:** workspaces, bounded file operations, local project context/instructions, opt-in memory, task lifecycle, process execution, local search, diffs, artifact generation.
-2. **Requires inference:** generation, reasoning, summarization, code authoring/review, voice conversation, image understanding/generation, agent decisions. No engine selected; OpenAI APIs/keys excluded.
-3. **Requires platform adapter:** microphone/camera/screen, desktop-app control, notifications, browser automation.
-4. **Requires separate authorized integration:** third-party apps or ChatJS-owned remote-host access with explicit configuration and scopes.
-5. **Unavailable through ChatJS:** ChatGPT account chats/memory/Projects/GPTs, cloud Work, private Codex/Remote sessions, Codex Cloud.
-
-## First implementation slice
-
-Start with local Work/Codex foundations: a confined local workspace, bounded file operations, explicit task lifecycle, and safe command execution. These do not require a model. A desktop installer is not needed for this scope research; an installed app or screenshot may help later to test a specific OS interaction.
+Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.

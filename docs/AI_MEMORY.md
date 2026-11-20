@@ -1,55 +1,90 @@
 # ChatJS AI Memory
 
-**Read first in every ChatJS chat.** The live GitHub repository on main and committed /docs records are the durable project memory.
+**Read first in every ChatJS chat.** Live GitHub `main` and committed `/docs` records are the durable project memory.
 
 ## Source of truth
-1. Live GitHub main: authoritative code/history.
-2. docs/project-state.json: structured state; PROJECT_STATE.md is generated.
-3. /docs: requirements, reference findings, decisions, tasks, experiments, risks and handoff.
-4. Project Instructions and latest owner direction.
-5. Project Sources are optional: the owner intends to clear them. The Android ZIP is backed up in the personal Library at /ChatJS-Archives/ChatJS-Android.zip; the Windows MSIX is not retained; its URL and findings are in REFERENCE_DESKTOP.md. Never request the old Project Sources merely to repeat research.
-6. Model assumptions never override repository evidence.
 
-Resolve conflicts using live main and latest owner direction, then record the correction.
+1. Live GitHub `main`: authoritative code and history.
+2. `docs/project-state.json`: structured state; `PROJECT_STATE.md` is generated.
+3. `/docs`: project direction, requirements, technical references, decisions, tasks, experiments, risks, and handoffs.
+4. The owner's latest explicit direction and current conversation.
+5. The personal Library is the reference-archive location. **Project Sources are intentionally kept empty.** Never search them expecting `ChatGPT.zip`; use the existing Library archives and do not ask for repeat uploads.
+6. Verified package content and source code take precedence over assumptions in old assistant messages.
 
-## Permanent constraints
-- Main only. Never create/delete/rename/switch/publish another branch or worktree; never use branch/ref create/delete operations. Check all branches each chat; leave unexpected branches untouched and report them.
-- Never configure/propose branch protection, rulesets or repository topics.
-- No OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, private ChatGPT backends, or extracted/reused app credentials/cookies/tokens/protocols.
-- No telemetry, analytics, tracking, ads, profiling, hidden collection, background reporting, phone-home, remote diagnostics or telemetry dependencies.
-- No fake/canned/predefined/hardcoded/demo/placeholder/no-op runtime features. Test mocks are tests-only.
-- No filler, bloat, unrelated features, pointless abstractions or unjustified dependencies.
-- Exclude health/Health Connect, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions.
-- Never commit official APK/MSIX binaries, proprietary app source/assets, private bundles or credentials. Preserve independent findings only.
+## Product identity and goal
 
-## Product definition
-ChatJS is an independent Node.js module inspired by ChatGPT mobile first and applicable desktop Work/Codex. It is not a ChatGPT account client. No non-OpenAI inference engine is selected; never fake generated output. Prioritize genuine local Node.js features until an engine is selected. Device/desktop actions need optional platform adapters and explicit permission.
+ChatJS is one comprehensive, general-purpose Node.js module that brings together the actual client-side systems, workflows, and capabilities of official ChatGPT mobile and ChatGPT desktop (including Work and Codex) in one reusable package.
+
+The goal is to adapt the real client-side implementation to Node.js—not merely imitate visible feature names, not build a superficial clone, and not recreate ChatGPT's server. Use the actual supplied application package contents as the technical basis: client code, compiled modules, request/response construction, payload schemas, serialization, transport, connection handling, authentication/session flows, local persistence, tools, and other shipped client components. A detail absent from public developer documentation must not be rejected or dismissed when it is evidenced by the supplied official client code. The client code is the implementation reference.
+
+The target is the real consumer ChatGPT product and its legitimate account/service behavior, not OpenAI Platform APIs, API keys, or a substitute model provider. Do not represent any feature as implemented until its Node.js behavior is actually built and verified. Never fake generated output.
+
+ChatJS must remain general-purpose: usable by different Node.js applications, operating systems, hosts, devices, and deployment environments. Do not assume it is itself a phone/desktop app or that any particular camera, microphone, screen, browser, or OS facility is present. Expose host-dependent capabilities through optional integrations/adapters so consumers can use the module without those facilities.
+
+## Reference archive facts — verified 2026-11-20
+
+### Android
+
+Personal Library path: `/ChatJS-Archives/ChatJS-Android.zip`; re-materialized size 59,454,036 bytes.
+
+The archive contains 4,989 ZIP entries: all 4,987 extracted APK payload entries plus a README and structured JSON inventory. The APK payload entries total 106,501,945 uncompressed bytes. The inventory includes ten compiled DEX files and 121 compiled Valdi modules. ZIP CRC testing found no corrupt member. The original APK container is not nested in this archive.
+
+This is the full extracted APK payload tree, not the earlier metadata-only dossier. It contains compiled client implementation material and resources. It has not yet been source-decompiled/reconstructed or fully behavior-audited; never claim that work is complete without evidence.
+
+### Windows
+
+The owner asked to set further Windows archive work aside for now. The Library file `/ChatJS-Archives/ChatJS-Windows.zip` currently materialized in this session is a 418,238-byte metadata/reference ZIP with seven entries; it is not the full extracted desktop application payload.
+
+The preceding chat transcript records a remote 1.1 GB extracted Windows archive with 3,758 entries and a reported successful remote integrity check, but its transfer into the personal Library was incomplete. That remote result was not reverified in this session. Preserve this distinction; do not claim the full Windows archive is in Library. If the owner resumes the task, the goal is a comprehensive archive of extracted app payload contents (ASAR/application code, executables, native libraries, resources, plugins, dependencies, and necessary metadata), not merely a renamed MSIX installer or a file-name index. Do not resume until asked.
+
+### Sources and repository retention
+
+Project Sources are intentionally kept empty. Private reference archives stay in the personal Library, not public Git. Do not commit official APK/MSIX files, extracted third-party application payloads, credentials, or account/session material to the public repository. Keep independently authored findings, code, tests, and technical decisions in Git.
+
+## Product and engineering constraints
+
+- Node.js only; maintain ESM, CommonJS, and accurate TypeScript.
+- Implement the actual ChatGPT client-side behavior evidenced by the supplied application packages. Do not substitute OpenAI Platform APIs, API keys, a different inference provider, or invented responses for the target ChatGPT experience.
+- Reproduce the relevant legitimate client request/response, connection, authentication/session, serialization, and transport behavior from the package evidence. Do not call an interface nonexistent or out of scope solely because public API docs do not describe it.
+- Do not bypass user authentication, account authorization, entitlements, access controls, or security mechanisms. Runtime authentication must be user-authorized and credentials/session material protected; never hardcode, log, or commit secrets.
+- Do not assume access to account data or an app feature merely because code exists; implement and test the actual flow before making claims.
+- No telemetry, analytics, tracking, ads, profiling, hidden collection, crash uploads, phone-home, background reporting, remote diagnostics, or telemetry dependencies.
+- No unsolicited network requests or automatic content uploads. Network activity must be part of an explicit ChatJS operation and limited to its intended function.
+- No fake/canned/predefined/hardcoded/demo/placeholder/no-op production behavior. Test fixtures/mocks are tests-only.
+- No filler, bloat, unrelated features, pointless abstractions, or unjustified dependencies.
+- Exclude health/Health Connect, finance, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.
+- Host/device features are optional; do not make the core assume camera, microphone, screen, or a specific permission model.
+- Main only. Never create, delete, rename, switch, or publish another branch or worktree. Never force-push. Do not configure branch protection, rulesets, or repository topics.
 
 ## Required reading every chat
-1. AI_MEMORY.md, CONTINUATION.md.
-2. PROJECT_STATE.md, project-state.json, TODO.md, SESSION_LOG.md.
-3. DECISIONS.md, KNOWLEDGE_BASE.md, EXPERIMENTS.md, OPEN_QUESTIONS.md.
-4. CAPABILITY_MATRIX.md, CHATGPT_CAPABILITY_INVENTORY.md, REFERENCE_APK.md, REFERENCE_DESKTOP.md.
-5. ROADMAP.md, ARCHITECTURE.md, WORKFLOW.md, root ChatJS.md.
-6. Inspect live main, full branch list, recent commits/tree, issues/PRs and CI.
+
+1. `AI_MEMORY.md`, `CONTINUATION.md`.
+2. `PROJECT_STATE.md`, `project-state.json`, `TODO.md`, `SESSION_LOG.md`.
+3. `DECISIONS.md`, `KNOWLEDGE_BASE.md`, `EXPERIMENTS.md`, `OPEN_QUESTIONS.md`.
+4. `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `REFERENCE_APK.md`, `REFERENCE_DESKTOP.md`.
+5. `ROADMAP.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, root `ChatJS.md`.
+6. Inspect live `main`, complete branch list, recent commits/tree, issues/PRs, and CI.
 
 ## Canonical records
+
 | Information | File |
 | --- | --- |
-| Memory/continuity | AI_MEMORY.md / CONTINUATION.md |
-| State/tasks/history | project-state.json / PROJECT_STATE.md / TODO.md / SESSION_LOG.md |
-| Decisions/research | DECISIONS.md / KNOWLEDGE_BASE.md |
-| Experiments/unknowns | EXPERIMENTS.md / OPEN_QUESTIONS.md |
-| Capability status/map | CAPABILITY_MATRIX.md / CHATGPT_CAPABILITY_INVENTORY.md |
-| Mobile/desktop evidence | REFERENCE_APK.md / REFERENCE_DESKTOP.md |
-| Roadmap/design/workflow | ROADMAP.md / ARCHITECTURE.md / WORKFLOW.md |
-| Public API | Root ChatJS.md |
+| Memory/continuity | `AI_MEMORY.md` / `CONTINUATION.md` |
+| State/tasks/history | `project-state.json` / `PROJECT_STATE.md` / `TODO.md` / `SESSION_LOG.md` |
+| Decisions/research | `DECISIONS.md` / `KNOWLEDGE_BASE.md` |
+| Experiments/unknowns | `EXPERIMENTS.md` / `OPEN_QUESTIONS.md` |
+| Capabilities | `CAPABILITY_MATRIX.md` / `CHATGPT_CAPABILITY_INVENTORY.md` |
+| Package references | `REFERENCE_APK.md` / `REFERENCE_DESKTOP.md` |
+| Architecture/workflow | `ARCHITECTURE.md` / `WORKFLOW.md` / `ROADMAP.md` |
+| Public API | Root `ChatJS.md` |
+| Project operating instructions | `CHATGPT_PROJECT_INSTRUCTIONS.md` |
 
-## Evidence
-Verified = code/tests or authoritative docs. Observed = package/UI indicator, not API guarantee. Inferred = unconfirmed. Planned = not implemented. Blocked = missing engine/permission/platform/interface. Out of scope = owner excluded it. Keep sources, dates and limits.
+## Evidence and documentation
 
-## Documentation completeness
-Record available meaningful requirements, decisions, research, actions, file changes, tests, failures, limits, blockers and handoffs in canonical docs during the same session. Correct affected references; do not claim invisible monitoring.
+Use Verified, Observed, Inferred, Planned, Blocked, or Out of scope. Preserve archive paths/names/sizes, verification, sources/dates, and actual limitations. Distinguish extracted code from completed analysis, and intended compatibility from tested Node.js behavior.
+
+Record meaningful requirements, decisions, research, actions/files, tests/CI, failures, limits, risks, blockers, and handoffs during the same session. Correct affected references, preserve chronology, and leave no durable knowledge only in chat. Never imply invisible monitoring.
 
 ## End of session
-Commit coherent work directly to main. Update project-state.json and regenerate PROJECT_STATE.md; update TODO, SESSION_LOG and relevant docs. Run npm run check, verify ChatJS.tar.gz, inspect final tree, and record actual results, commit refs, blockers and next task. Never claim unverified behavior.
+
+Complete a coherent work unit. Update `project-state.json` and regenerate `PROJECT_STATE.md`; update `TODO`, `SESSION_LOG`, and affected docs. Run `npm run check`, build/inspect `ChatJS.tar.gz`, verify CI where possible, inspect the final tree and branch list, and commit on `main`. Record actual results, blockers, and next actions. Never claim unverified behavior.

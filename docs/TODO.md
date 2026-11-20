@@ -2,55 +2,56 @@
 
 Use this as the single authoritative queue. Mark tasks complete only when evidence supports completion.
 
-## P0 — Ownership and governance
+## P0 — Continuity and governance
+
 - [ ] Confirm rights holder and obtain legal review of the all-rights-reserved notice.
-- [ ] Decide whether ChatJS remains proprietary or adopts a recognized license before inviting external contributors.
-- [ ] Verify private vulnerability reporting, secret scanning and push-protection availability.
+- [ ] Decide whether ChatJS remains proprietary or adopts a recognized license before inviting contributors.
+- [ ] Verify private vulnerability reporting, secret scanning, and push-protection availability.
+- [ ] Owner: update GitHub About description to the approved wording in `REPOSITORY_SETTINGS.md`; the available GitHub integration can update repository files but not repository metadata.
 
-## P1 — Product scope and references
-- [x] Locate and statically inspect the supplied Android package without redistributing it.
-- [x] Record mobile manifest/resource observations and inspection limits.
-- [x] Review current ChatGPT mobile, desktop Work and Codex product references.
-- [x] Download and statically inspect the supplied Windows x64 MSIX manifest and package structure without installing or executing it.
-- [x] Record Windows Codex, command runner, sandbox, terminal, browser/native-host, computer-use, plugin/skill, shell and file-integration observations.
-- [x] Separate ChatGPT product-reference features from Node.js implementations and account-only services.
-- [x] Exclude health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions/features.
-- [x] Permanently exclude OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, private backends and app session access.
-- [x] Document that the owner intends to clear Project Sources and that committed inventories are the durable reference.
-- [x] Move and rename Android archive in private Library to /ChatJS-Archives/ChatJS-Android.zip; verify listing and re-materialization.
-- [ ] Retain Windows MSIX privately as ChatJS-Windows.zip (or preserve .msix format) when transfer supports files above 25 MiB; current attempt blocked.
-- [ ] Validate a specific mobile/desktop UI interaction only if the owner later asks for a concrete behavior comparison.
+## P1 — Actual client implementation research
 
-## P1 — Local Work/Codex runtime design
-- [ ] Define the local workspace contract: root selection, path confinement, symlink/junction behavior, file size/count limits, cancellation, atomic writes and concurrent-mutation threat model.
-- [ ] Define read/write/search/diff operations and concurrent filesystem mutation handling.
-- [ ] Define command execution: explicit executable/argv, no shell by default, approval policy, cwd confinement, timeout, cancellation, output limits and process cleanup.
-- [ ] Define task lifecycle/progress: queued, running, waiting for approval, completed, failed, cancelled.
-- [ ] Define local project instructions and optional memory storage/deletion.
-- [ ] Define the inference boundary; no model-powered features until a real non-OpenAI engine is selected.
-- [ ] Add TypeScript declaration tests.
+- [x] Preserve the full extracted Android APK payload in the private Library archive.
+- [x] Verify Android archive entry count, payload inventory, and ZIP integrity.
+- [x] Record Android DEX and Valdi module counts and analysis limitations.
+- [x] Document that Project Sources are intentionally kept empty.
+- [ ] Audit selected DEX/Valdi modules to identify application architecture, service request builders, transport, authentication/session handling, and payload schemas.
+- [ ] Build a source-path-to-behavior map for conversations, streaming, files, Projects, voice, images, search/tools, and other client workflows.
+- [ ] Document actual dependencies and Node.js portability for each major client component.
+- [ ] Define a repeatable client behavior test plan and capture verified request/response examples without storing personal account data.
+- [ ] Windows extracted-payload archive work is deferred by the owner; resume only when asked.
+
+## P1 — General-purpose Node.js integration design
+
+- [ ] Define the client factory/configuration/lifecycle API for different host applications.
+- [ ] Define the real ChatGPT client connection and legitimate authentication/session lifecycle.
+- [ ] Define request/response transport, streaming/backpressure, cancellation, timeouts, retry policy, concurrency, and typed errors from client evidence.
+- [ ] Define reusable conversation/thread/context/project models.
+- [ ] Define instruction/profile precedence and explicit local persistence/memory behavior.
+- [ ] Define file/attachment ingestion, format handling, size limits, and cleanup.
+- [ ] Define optional host adapters without requiring specific camera/microphone/screen or OS support.
+- [ ] Add TypeScript declaration and ESM/CommonJS contract tests.
 
 ## P2 — Complete feature slices
-- [ ] Implement a confined local workspace with bounded file operations as the first Work/Codex vertical slice.
-- [ ] Implement safe command execution and test-running as a separately reviewed slice.
-- [ ] Implement explicit task orchestration, progress, cancellation and approval gates.
-- [ ] Add local project context and opt-in memory.
-- [ ] Add tested document/spreadsheet/presentation writers only where justified.
-- [ ] Add optional browser, desktop, microphone, camera or screen adapters only after platform permission design.
-- [ ] Add a ChatJS-owned remote-host protocol only if needed; never reuse ChatGPT Remote credentials/protocol.
-- [ ] Keep ChatJS.md synchronized with public API changes.
-- [ ] Keep ChatJS.tar.gz limited to the distributable module.
-- [ ] Add regressions proving no telemetry, hidden collection or unsolicited network traffic ships.
+
+- [ ] Implement a genuine ChatGPT client connection and authentication flow based on verified client behavior.
+- [ ] Implement conversation send/receive/stream with real ChatGPT service responses.
+- [ ] Implement project/context/instruction handling.
+- [ ] Implement file and attachment workflows using observed client request formats.
+- [ ] Implement Work/Codex task, workspace, command, approval, Git review, and artifact workflows.
+- [ ] Add optional voice/image/video and host integrations only where actual client and host evidence supports them.
+- [ ] Add security/regression tests for auth lifecycle, secret redaction, cancellation, concurrency, timeouts, and no unsolicited traffic.
 
 ## P3 — Production readiness
-- [ ] Review dependency necessity, security and licensing whenever dependencies are introduced.
+
+- [ ] Review dependency necessity, security, and licensing whenever dependencies are introduced.
 - [ ] Add API reference generation only where useful.
-- [ ] Add performance, memory and concurrency benchmarks with measurable budgets.
+- [ ] Add performance, memory, and concurrency benchmarks with measurable budgets.
 - [ ] Define supported Node.js hosts from actual implementation requirements.
 - [ ] Document maintenance and security-response practices.
 
 ## Current position
 
-ChatJS remains a Node.js foundation with no product feature implementation. Its reference scope is mobile-first ChatGPT functionality plus applicable desktop Work and Codex. No OpenAI Platform API, API key, OAuth/token-sharing flow, private ChatGPT backend, or app session integration is in scope. Health/finance/maps/shopping and unrelated Android permissions are excluded. Permitted Android and Windows package findings are committed in REFERENCE_APK.md and REFERENCE_DESKTOP.md; original binaries are not retained in Git. Android archive is in Library at /ChatJS-Archives/ChatJS-Android.zip; Windows MSIX is not retained and its URL is in REFERENCE_DESKTOP.md. Owner intends to clear Project Sources; deletion is not confirmed. The next engineering slice is a genuine local workspace for Work/Codex workflows; model-powered behavior remains unimplemented until a non-OpenAI inference engine is selected.
+ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Android's full extracted APK payload archive is retained and verified in personal Library at `/ChatJS-Archives/ChatJS-Android.zip`. Project Sources are intentionally empty. Windows extracted-payload archive work is deferred; the current Library ZIP is metadata-only, while a previous chat recorded a larger remote archive whose transfer was incomplete and whose status is not currently reverified.
 
-Never create branches or worktrees. Keep all work on main.
+Never create branches or worktrees. Keep all repository work on main.

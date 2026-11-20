@@ -1,108 +1,57 @@
-# ChatGPT Desktop Reference — Windows MSIX Package Inventory
+# ChatGPT Desktop Reference — Windows Client Package and Extracted Payload Status
 
-**Inspection date:** 2026-11-18  
-**User-supplied URL:** https://persistent.oaistatic.com/codex-app-prod/ChatGPT-x64.msix  
-**Method:** downloaded to temporary browser storage; inspected HTTP metadata, ZIP/MSIX listing, AppxManifest.xml, and Electron ASAR directory metadata. The package was **not installed or executed**.
+**User-supplied source:** https://persistent.oaistatic.com/codex-app-prod/ChatGPT-x64.msix  
+**Package inspection:** 2026-11-18  
+**Current archive status:** Windows work deliberately deferred at the owner's request on 2026-11-20.
 
-## Package metadata
+## Package metadata and observations previously recorded
 
-The URL returned HTTP 200; downloaded size was **1,057,802,768 bytes** (about 1.06 GB). Response Last-Modified: 2026-11-14; content type: application/vnd.ms-appx.
+The supplied x64 MSIX returned HTTP 200 and the earlier inspection recorded a downloaded size of 1,057,802,768 bytes, Last-Modified 2026-11-14, and content type `application/vnd.ms-appx`.
 
 Appx manifest:
 - Display name: **ChatGPT**
 - Publisher display name: **OpenAI**
 - Package identity: **OpenAI.Codex**
 - Architecture: **x64**
-- Appx version: **26.1111.2228.0**
+- Appx version recorded at inspection: **26.1111.2228.0**
 - Target family: **Windows.Desktop**
-- Minimum Windows version: **10.0.19041.0**
-- Maximum tested Windows version: **10.0.26100.0**
 
-Embedded app/resources/app.asar metadata separately identifies package openai-codex-electron, product name Codex, metadata version 26.1111.21308. These independent fields are not a ChatJS version or proof this was the globally latest app build.
+Embedded `app/resources/app.asar` metadata separately identified the Electron/Codex application package. AppxSignature.p7x and AppxBlockMap.xml were present; signature verification was not recorded.
 
-AppxSignature.p7x and AppxBlockMap.xml were present. Signature verification was not performed.
+The package structure previously showed Electron/Chromium, ChatGPT and separate Codex executables, a bundled Node runtime, command runner/code-mode host, Windows sandbox service/setup, PTY/ConPTY, browser/native-host, computer-use, plugin/skill, shell integration, file associations, and screen-capture capability declarations. These are client-package observations, not proof every feature is active for every account or already available in ChatJS.
 
-## Desktop application structure observed
+## The intended Windows reference archive
 
-The package has an Electron/Chromium structure:
-- ChatGPT.exe is the declared Windows full-trust app entry point.
-- A separate Codex.exe is present.
-- Chromium runtime files, resources/app.asar, and webview UI resources are packaged.
-- ASAR top-level entries: .vite, native-menu-locales, node_modules, package.json, webview.
-- A bundled Node.js runtime is present under resources/cua_node.
-- Dedicated Codex and computer-use executables/support are present.
+The owner's requirement is to preserve the useful extracted desktop application contents—not merely retain the original MSIX, rename MSIX bytes to `.zip`, or create a file-name index. When resumed, the archive should capture the actual application payload needed for engineering analysis, including the ASAR application bundle and its contents, shipped JavaScript, executables, DLLs/native libraries, Node modules/dependencies, plugins/skills, resources, manifests, notices, and related metadata.
 
-These are package observations, not proof of every feature or permission behavior.
+The purpose is to study the desktop client's actual local and service-connected behavior and reproduce applicable client-side systems in ChatJS. The server-side ChatGPT implementation is not part of the target.
 
-## Codex, terminal, sandbox and developer tools
+## Last recorded remote extraction — prior conversation, not reverified here
 
-Relevant package paths/names:
-- resources/codex.exe and resources/codex — Codex runtime components.
-- resources/codex-command-runner.exe — command runner.
-- resources/codex-code-mode-host.exe and companion path — code-mode host.
-- resources/codex-windows-sandbox-service.exe and resources/codex-windows-sandbox-setup.exe — Windows sandbox service/setup.
-- resources/cua_node/bin/node.exe and node_repl.exe — bundled Node runtime and REPL.
-- node-pty components including ConPTY/PTY bindings — terminal support.
-- better-sqlite3 native binding — local database dependency.
-- resources/rg.exe and resources/rg — ripgrep executables.
-- resources/tectonic/tectonic.exe — document/typesetting tool.
+The supplied `Chat-1.json` conversation records a previous assistant report that a remote extracted Windows ZIP had:
+- approximately 1.1 GB compressed size;
+- 3,758 entries;
+- the ASAR application bundle, executables, libraries, resources, dependencies, and other extracted payload;
+- a reported successful remote integrity check;
+- SHA-256 reported as `3961a94aa6229564ba0eac5fd4fc22f1e40b4568b00b85c333bb0bbe1d510507`.
 
-The manifest declares a packaged service named CodexSandboxService.OpenAI.Codex running as LocalSystem and a separate command-runner app. This is evidence the official Windows app uses dedicated sandbox/process infrastructure. It is **not** a recommendation for ChatJS to create a LocalSystem service. ChatJS must prefer least privilege, explicit user approval, and confined workspaces.
+The same handoff explicitly said transfer into the personal Library was incomplete. These are prior-chat recorded results, not independently reverified in this session. Do not claim this archive is currently retained in Library.
 
-**Independent ChatJS implications:** local workspace/file APIs; explicit task/process lifecycle; executable+argv process invocation; approval/deadline/output limits; terminal support only with justified licensed platform-compatible dependencies; read-only Git inspection/diffs; reviewed writes; deterministic artifacts. Do not claim the local implementation is official Codex.
+## Current Library file verified 2026-11-20
 
-## Windows shell and file integration observed
+The personal Library item `/ChatJS-Archives/ChatJS-Windows.zip` was re-materialized in this session and has:
+- size: 418,238 bytes;
+- seven ZIP entries;
+- contents: README, third-party notices, AppxManifest.xml, ASAR file index, dependency catalog, manifest summary, and MSIX file index;
+- 3,847,303 uncompressed bytes across those seven entries;
+- ZIP CRC test: no corrupt member.
 
-Manifest entries include:
-- Explorer context-menu verb OpenProjectInCodex on directories.
-- codex: URI protocol handler.
-- chatgpt-desktop.exe execution alias.
-- .skill file association.
-- .csv, .docx, .pptx, .tsv, .xls, .xlsm, .xlsx file associations.
-- Separate Chrome native-host application entry.
-- Disabled-by-default ChatGPT startup task.
-- Programmatic graphics-capture capability declarations.
+This is a metadata/reference ZIP, **not** the reported 1.1 GB extracted application payload archive. The distinction must be preserved.
 
-These indicate shell, file, browser-extension/native-messaging, and capture integrations in the official app. A ChatJS adapter must be independent, opt-in, least-privilege and tested. Do not reuse private protocols or register the same identifiers.
+## Owner instruction — pause Windows work
 
-## Browser, computer-use, plugins and skills
+The owner explicitly asked in the 2026-11-20 chat to finish the other project corrections first and set the Windows archive work aside. Do not resume download, extraction, archive transfer, or Library replacement unless the owner asks.
 
-Package resource directories include:
-- bundled plugin and plugin-signature trees;
-- skill resources;
-- browser plugin and Chrome native-host resources;
-- computer-use and unified-computer-use plugins;
-- Codex app tools;
-- deep-research, LaTeX and visualization plugin packages;
-- browser/desktop-control support within the bundled Node runtime.
+## Public repository boundary
 
-The package contains hundreds of plugin/resource entries and thousands of bundled runtime entries. Only package paths/directory names were inspected. Plugin source, signature payloads, bundled docs, implementation code and assets were not extracted or copied.
-
-Possible independent Node.js capabilities, subject to real implementation/security review: browser adapter with explicit browser selection; computer-use adapter with scoped approvals/visible actions; local skill/plugin manifest with validation and declared permissions; deterministic visualization/artifact generation. Research/agent reasoning needs a selected non-OpenAI inference/retrieval engine. Do not copy the official browser extension, host, plugins, private APIs or protocols.
-
-## Privilege boundaries and limitations
-
-The Appx manifest declares full-trust execution, unvirtualized resources, packaged/local-system services, internet client access and programmatic graphics-capture capabilities. Startup task is disabled by default. These are official package permissions and do not transfer to ChatJS. Do not request admin/LocalSystem, capture screens, register global protocols, install browser extensions or start background services without a distinct feature design and explicit user approval.
-
-This was static inspection only: the Windows app was not installed, launched, signed into, or interacted with. Appx signature presence was observed but not cryptographically verified. No app code, executable, DLL, asset, plugin bundle, native library, private doc, token, cookie or service was extracted, executed or copied. No private backend was contacted.
-
-## Retention and future chats
-
-The owner intends to clear ChatGPT Project → Sources after this review. This independently authored inventory preserves the useful permitted package findings and implications. The original 1.06 GB installer is not retained in the repository.
-
-Future sessions must use this file and the capability inventory; do not ask the owner for the MSIX merely to repeat inspection. The supplied URL is retained above for an explicitly requested comparison/reinspection. Do not claim Sources are empty until the owner confirms deletion.
-
-The public ChatJS repository retains product observations and independent requirements, **not** official application binaries, proprietary implementation code, private plugin bundles or app assets.
-
-
-## Private archive transfer status — 2026-11-18
-
-The owner requested a private Library copy named ChatJS-Windows.zip under /ChatJS-Archives. This is **not completed**. The source is a 1,057,802,768-byte MSIX; preserve its .msix format if retaining the installer directly.
-
-- The earlier browser VM held the downloaded MSIX for static inspection.
-- Browser file export refuses files larger than 25 MiB. A 1 MiB test chunk was exported; this does not establish a viable full transfer.
-- Direct container download of the full URL failed.
-- No complete Windows file was uploaded to Library, Project Sources or GitHub. No partial chunks are represented as a complete archive.
-- Re-fetch the official URL above when needed and when an authorized large-file transfer path is available. Do not ask the owner to upload it manually unless tool-based options are exhausted and the owner agrees.
-
-Android backup is verified at **/ChatJS-Archives/ChatJS-Android.zip**. Project Sources deletion remains unconfirmed.
+Keep original application packages and extracted third-party application payload archives in the owner's private Library, not public Git. Commit independently authored findings, technical analysis, and ChatJS implementation. Preserve provenance and license notices. Do not publish account credentials, cookies, tokens, or user session data.

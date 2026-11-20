@@ -3,32 +3,42 @@
 Every ChatJS conversation continues the same repository and shared project memory.
 
 ## Start
-1. Read AI_MEMORY.md.
-2. Inspect live main, full branch list, tree, recent commits, issues/PRs and CI.
-3. Read state, TODO, session history, decisions, knowledge, experiments and open questions.
-4. Read capability matrix/inventory, Android/desktop reference records, roadmap, architecture and workflow.
-5. Read root ChatJS.md before public API changes.
-6. Choose the highest-priority actionable TODO after reviewing decisions and experiments.
 
-The owner intends to clear ChatGPT Project → Sources. The Android archive is retained in personal Library at /ChatJS-Archives/ChatJS-Android.zip. The Windows MSIX is not retained in Library; its URL and findings are in REFERENCE_DESKTOP.md. Do not request the old Project Source files merely to repeat completed research. Do not claim Sources are empty until owner confirms. Ask for a new build only for an explicitly requested comparison/test.
+1. Read `AI_MEMORY.md`.
+2. Inspect live `main`, complete branch list, tree, recent commits, issues/PRs, CI, and TODO.
+3. Read state, session history, decisions, knowledge, experiments, and open questions.
+4. Read capability matrix/inventory, Android/desktop reference records, roadmap, architecture, and workflow.
+5. Read root `ChatJS.md` before public API changes.
+6. Resume the highest-priority actionable work; do not return only a plan.
 
-## Product boundary
-ChatJS is Node.js-only, mobile-first, with applicable desktop Work/Codex. It is not a ChatGPT account client. No OpenAI APIs, API keys, Sign in with ChatGPT OAuth, private backends or app credential/session reuse. No non-OpenAI inference engine is selected; never fake generated output.
-Exclude health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions. Device/desktop access needs explicit platform adapters and user permission.
+## Product direction
 
-## Branch rule
-Only main. Commit directly to existing main. Never create, delete, rename, switch to, publish or work in another branch/worktree; never invoke branch/ref creation/deletion. Check all branches; leave unexpected branches untouched and report them. Do not configure/propose branch protection, rulesets or topics.
+ChatJS is one comprehensive, general-purpose Node.js module bringing together the real client-side systems and workflows of official ChatGPT mobile and desktop (Work/Codex). It is not a device-specific app, a feature-name imitation, a replacement model provider, or a recreation of ChatGPT's server.
 
-## Documentation rule
-Record available meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs during the same session. Correct references and preserve chronology. Never claim invisible monitoring or unsupported facts.
+Use the actual shipped client code and package contents as the primary technical basis, including request/response construction, schemas, transport, connection/auth/session flows, local persistence, modules, tools, and resources. Do not prohibit a client interface merely because public developer documentation does not describe it. The server-side code that is not shipped in the clients is not needed to reproduce the client behavior.
 
-## Continue means work
-Resume the highest-priority actionable task; do not return a generic plan. Complete a coherent work unit, test, update canonical docs and commit to main. If blocked, document the exact blocker.
+The Node.js package must be usable by different hosts and applications. Do not assume a particular device, operating system, camera, microphone, screen, browser, or deployment model. Such capabilities are optional integrations when the consuming environment supports them.
 
-## Quality and evidence
-No telemetry, tracking, hidden collection, background reporting, phone-home, unsolicited network traffic, fake features, bloat or unrelated changes. Never bypass authentication, access controls, rate limits, TLS or platform security.
-Distinguish Verified, Observed, Inferred, Planned, Blocked and Out of scope. App features/package names do not prove Node.js support. No 1:1 claims without repeatable tests.
+Current implementation remains foundation-only. Never present intended scope or research as implemented behavior.
 
-## Engineering and finish
-Define validation, async semantics, cancellation, timeouts, concurrency, backpressure, limits, errors and cleanup. Treat filesystem/process operations as security-sensitive. Keep ESM/CommonJS parity and accurate declarations.
-Update project-state.json and regenerate PROJECT_STATE.md; update TODO, SESSION_LOG and relevant docs. Run npm run check and verify ChatJS.tar.gz. Record exact files, results, commit, blockers and next task. Never create/delete branches.
+## Reference archives
+
+Project Sources are intentionally kept empty. Use the personal Library archives; do not ask for repeat uploads.
+
+- Android: `/ChatJS-Archives/ChatJS-Android.zip`, 59,454,036 bytes, 4,989 ZIP entries, complete extraction of all 4,987 APK payload entries plus README and structured inventory. Ten DEX files and 121 Valdi modules are recorded. ZIP integrity passed on 2026-11-20.
+- Windows: set aside by the owner. The current Library `ChatJS-Windows.zip` is metadata-only (418,238 bytes, seven entries). A preceding chat recorded a 1.1 GB/3,758-entry extracted archive in a remote workspace with transfer to Library incomplete; that remote archive was not reverified in this session. Do not resume Windows work unless asked.
+
+## Operating rules
+
+- Work only on existing `main`. Never create, delete, rename, switch, or publish branches/worktrees. Never force-push. Never configure branch protection, rulesets, or topics.
+- No telemetry, tracking, hidden collection, background reporting, phone-home, remote diagnostics, or unsolicited content upload.
+- Do not hardcode, log, or commit credentials or user session material. Preserve legitimate user authentication and authorization; do not bypass access controls or entitlements.
+- No fake runtime behavior, canned output, bloat, unrelated features, or unjustified dependencies.
+- Keep ESM/CommonJS parity and accurate TypeScript declarations.
+- Exclude health, finance, maps, navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions.
+
+## Documentation and finish
+
+Record meaningful requirements, decisions, sources/dates, actions, changed files, tests, failures, limits, blockers, and handoffs in canonical docs. Correct affected references and preserve chronology. Update `project-state.json` and regenerate `PROJECT_STATE.md`; update TODO and the chronological session log.
+
+Run `npm run check`, build/inspect the module archive, verify CI where possible, inspect the final tree and branch list, and commit directly to the existing `main` branch using a non-force fast-forward update. Record actual results; never claim unverified work.

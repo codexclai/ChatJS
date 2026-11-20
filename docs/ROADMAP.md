@@ -1,37 +1,38 @@
 # ChatJS Roadmap
 
-This roadmap describes intended work, not current support. A capability is supported only when implementation, documentation, tests, and evidence exist.
+This roadmap describes intended work, not current support. A capability is supported only when implementation, documentation, tests, and end-to-end evidence exist.
 
-## Mobile-first feature foundation
+## 1. Complete the real client implementation research
 
-**Goal:** implement useful ChatGPT mobile-inspired capabilities as independent Node.js behavior, without ChatGPT account/backend access.
+- Audit the extracted Android DEX and Valdi modules to identify client application layers and request/payload construction.
+- Trace the actual ChatGPT connection, transport, streaming, authentication/session, and refresh behavior in the supplied client code.
+- Map conversation, context, project, instructions, memory, file, image, voice, search, tool, Work, and desktop flows.
+- Record source locations, schemas, dependencies, host requirements, and exact verified behavior.
+- Keep server-side systems not shipped in the client package outside the reconstruction scope.
 
-- Local conversation/project containers and explicit context.
-- User-controlled local instructions and optional memory.
-- File/image ingestion and safe local processing.
-- Search/research adapters invoked only on explicit calls.
-- Voice/multimodal support only after a real non-OpenAI inference engine and platform adapters are selected.
+Windows desktop archive work is paused at the owner's request. Resume it only when explicitly asked.
 
-## Desktop Work and Codex foundation
+## 2. Build the ChatGPT client integration for Node.js
 
-**Goal:** implement local equivalents of useful Work/Codex workflows.
+Use the verified client behavior as the source of truth. Implement the real request/response, connection, authentication/session, streaming, error, and data-model behavior in Node.js. Do not substitute OpenAI Platform APIs/keys, a different model provider, or fake outputs.
 
-- Confined workspaces and bounded file operations.
-- Explicit task lifecycle, progress, cancellation, approvals.
-- Safe command and test execution.
-- Git inspection/diff/review without branch/worktree creation.
-- Local artifact generation with tested format support.
-- Optional browser/desktop-control adapters with explicit permissions.
-- ChatJS-owned remote-host access only after a concrete need and security design.
+Define secure credential/session handling, cancellation, timeouts, backpressure, concurrency, retries, redaction, and cleanup. Preserve the legitimate user authentication/authorization flow.
 
-## Inference boundary
+## 3. Build portable package APIs
 
-No OpenAI Platform API, API key, Sign in with ChatGPT OAuth, or private ChatGPT backend integration is permitted. No non-OpenAI inference engine has been selected. Do not implement fake generated answers or autonomous agents. Continue with useful deterministic local features until an acceptable model runtime is selected.
+- Conversation/thread/context and project models.
+- Instructions, profiles, and explicit persistence/memory.
+- File/attachment ingestion and processing.
+- Streaming and asynchronous task primitives.
+- Work/Codex workspace, file, process, Git, review, approval, and artifact workflows.
+- Optional host adapters for facilities not universally available in Node.js.
 
-## Production readiness
+## 4. General-purpose host behavior
 
-Focus on measured performance, memory, concurrency, reliability, supported Node.js hosts, security boundaries, dependency governance, API documentation and reproducible checks.
+Keep the package reusable across applications, Node.js environments, OSes, and deployment styles. Camera, microphone, screen, browser, and desktop interaction must remain optional integrations rather than assumed core hardware.
 
-## Compatibility maintenance
+## 5. Production readiness
 
-Track reference product behavior using official product docs and lawful observations. Update the inventory when features change. Never infer Node.js capability from a mobile permission or APK resource.
+Focus on correctness, tests, measurable performance, memory/concurrency limits, reliable cancellation/cleanup, Node.js host compatibility, security, dependency governance, accurate API docs, and reproducible checks.
+
+No fake features or version/release automation.

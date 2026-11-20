@@ -1,7 +1,7 @@
 {
   "name": "ChatJS",
   "private": true,
-  "description": "Independent Node.js module for mobile-first ChatGPT-style workflows and local desktop Work/Codex tooling.",
+  "description": "General-purpose Node.js module unifying ChatGPT mobile and desktop client workflows.",
   "homepage": "https://github.com/codexclai/ChatJS#readme",
   "repository": {
     "type": "git",

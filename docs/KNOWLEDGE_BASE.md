@@ -1,70 +1,66 @@
 # ChatJS Knowledge Base
 
-Index of durable product, technical, compatibility, security and research knowledge gathered across ChatJS chats.
+Index of durable product, technical, compatibility, security, and research knowledge gathered across ChatJS chats.
 
 ## Evidence labels
-- **Verified:** confirmed by current code/tests or authoritative documentation.
-- **Observed:** static indicator in a supplied package or direct observation; not proof of UI availability or API access.
+
+- **Verified:** confirmed by current code/tests, authoritative documentation, or successful archive verification.
+- **Observed:** found directly in supplied package content or a prior recorded tool observation; not automatically verified runtime behavior.
 - **Inferred:** plausible but not independently confirmed.
-- **Planned:** desired behavior, not implemented.
-- **Blocked:** required engine, permission, platform or supported integration unavailable.
+- **Planned:** desired, not implemented.
+- **Blocked:** a necessary engine, toolchain, host interface, or test environment is unavailable.
 - **Out of scope:** explicitly excluded by owner.
 
 ## Current project facts
 
 | Topic | Current understanding | Evidence |
 | --- | --- | --- |
-| Product/module | ChatJS; Node.js only; CommonJS, ESM, TypeScript | Owner direction/repository |
-| Product reference | ChatGPT mobile first; applicable desktop Work and Codex | Owner direction and official product docs |
+| Product/module | One general-purpose Node.js module named ChatJS | Owner direction/repository |
+| Product target | Actual client-side behavior of official ChatGPT mobile and desktop Work/Codex | Recovered Chat.json and Chat-1.json; latest owner corrections |
+| Server scope | Reproduce client behavior; no need to recreate server-side ChatGPT infrastructure | Explicit owner direction |
+| Client protocols | Request/response, transport, authentication/session, and payload behavior in the shipped clients are in-scope engineering references | Explicit owner direction; source audit still pending |
+| Integration status | Real ChatGPT service connection is not implemented in current foundation | Current repository source |
+| Host model | Portable Node.js core; optional host-specific integrations | Explicit owner direction |
 | Repository | codexclai/ChatJS; public; default branch main | Live GitHub |
-| Branch inventory | One branch, main | GitHub branch search, 2026-11-18 |
-| Branch policy | Never create/delete/rename/switch branches or worktrees | Explicit owner requirement |
-| Privacy | Zero telemetry, tracking, hidden collection, background reporting, phone-home and unsolicited network calls | Explicit owner direction |
-| Integration boundary | No OpenAI Platform APIs, keys, Sign in with ChatGPT OAuth, private backends or app session/cookie reuse | Explicit owner direction |
-| Inference engine | No non-OpenAI engine selected | OPEN_QUESTIONS.md |
-| Runtime status | Minimal lifecycle foundation only; no ChatGPT feature implemented | Source and CI |
-| Android reference | ChatGPT.zip supplied privately; user says latest Google Play build available at acquisition | User-confirmed provenance |
-| Android evidence | Static manifest/resource indicators; no emulator/UI or DEX decompilation | REFERENCE_APK.md |
-| Windows reference | Supplied x64 MSIX downloaded and statically inspected on 2026-11-18; not installed or executed | REFERENCE_DESKTOP.md |
-| Windows package identity | Appx identity OpenAI.Codex, x64, display name ChatGPT; embedded Electron package identifies Codex | MSIX manifest and ASAR package metadata |
-| Desktop components observed | Separate Codex executable, command runner, code-mode host, sandbox service/setup, bundled Node runtime, PTY/ConPTY, browser native host, computer-use, plugins/skills, Explorer integration, URI handler and document associations | REFERENCE_DESKTOP.md |
+| Branch inventory | Only main at check on 2026-11-20 | GitHub branch API |
+| Privacy | No telemetry, tracking, hidden collection, background reporting, phone-home, or unsolicited content upload | Explicit owner requirement |
+| Android archive | Full extracted APK payload ZIP in personal Library, 59,454,036 bytes, ZIP CRC test passed | Materialized Library copy, 2026-11-20 |
+| Android payload | 4,987 APK entries; ten DEX files; 121 Valdi modules; 4,989 ZIP entries incl README/inventory | Embedded inventory and ZIP listing |
+| Android analysis | Payload extraction complete; DEX/Valdi source reconstruction and request/behavior tracing not complete | Reference record |
+| Windows archive | Current Library ZIP metadata-only: seven entries, 418,238 bytes; prior chat reports larger remote archive, Library transfer incomplete | Current materialization + Chat-1 transcript |
+| Sources | Project Sources intentionally kept empty | Latest owner direction, 2026-11-20 |
 | Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
-| Source retention | Android ZIP backed up and re-materialized from Library at /ChatJS-Archives/ChatJS-Android.zip; Windows MSIX not retained due 25 MiB export cap; official URL/findings retained; owner intends to clear Sources | Library listing and successful re-materialization; REFERENCE_APK.md and REFERENCE_DESKTOP.md |
-| Product documentation | Root ChatJS.md | Repository |
-| Distribution | ChatJS.tar.gz built, verified, extracted and smoke-tested in CI | Workflow evidence |
+| Public API manual | Root ChatJS.md | Repository |
+| Distribution | ChatJS.tar.gz built and checked by npm/CI workflow | Script/CI workflow |
 
-## Current product-reference evidence — 2026-11-18
+## Client-package understanding
 
-See [ChatGPT App Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md), [Android reference](REFERENCE_APK.md), and [Windows desktop package inventory](REFERENCE_DESKTOP.md).
+The Android archive is the extracted APK payload, not a metadata summary. It contains compiled DEX and Valdi modules, assets, manifest/configuration data, schemas, and notices. Source-level decompilation and request-flow tracing remain open.
 
-- Desktop separates ChatGPT Chat/Work and Codex. Work can use local files and apps with permission; task context may still be stored in the cloud when work runs locally. [Work and Codex](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex), [new desktop app](https://help.openai.com/en/articles/20001276-moving-to-the-new-chatgpt-desktop-app).
-- Desktop Codex supports local folders, repositories, terminals and developer tools. Windows package metadata additionally indicates separate Codex execution, command runner, sandbox, PTY, browser native-host, computer-use, plugin/skill, Explorer and file-association components.
-- Mobile Voice docs distinguish Live, Advanced and Standard; the page says Advanced and Standard are scheduled to retire December 11, 2026. [Voice](https://help.openai.com/en/articles/20001274-chatgpt-voice).
-- Projects group chats, files and instructions in ChatGPT; ChatJS local projects are separate data. [Projects](https://help.openai.com/en/articles/10169521-projects-in-chatgpt).
-
-These sources describe ChatGPT's app product only. They do not authorize ChatJS to call OpenAI services or access consumer account data.
+The Windows MSIX package previously showed Electron/Node/Codex, an ASAR bundle, sandbox, terminal, browser/computer-use, plugins/skills, and shell integration. The full extracted archive is not currently verified in Library. The owner asked to defer further Windows work.
 
 ## Canonical research locations
 
 | Domain | Canonical location |
 | --- | --- |
-| Product scope and features | CHATGPT_CAPABILITY_INVENTORY.md |
-| Android package evidence | REFERENCE_APK.md |
-| Windows desktop package evidence | REFERENCE_DESKTOP.md |
+| Client feature map | CHATGPT_CAPABILITY_INVENTORY.md |
+| Android extracted payload | REFERENCE_APK.md |
+| Windows package/retention | REFERENCE_DESKTOP.md |
 | Implementation status | CAPABILITY_MATRIX.md |
-| Architecture/local Node.js boundaries | ARCHITECTURE.md |
-| Actual public API | Root ChatJS.md and types/index.d.ts |
+| Architecture and protocols | ARCHITECTURE.md |
+| Public API | Root ChatJS.md and types/index.d.ts |
 | Security/privacy | SECURITY.md and ARCHITECTURE.md |
 | Decisions | DECISIONS.md |
 | Open questions/tasks | OPEN_QUESTIONS.md and TODO.md |
 
 ## Documentation completeness
-Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs during the same session. Update affected references; never imply invisible monitoring.
+
+Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers, and handoffs in canonical docs. Update all affected references and generated state. Never imply invisible monitoring.
 
 ## Research format
 
-Record question, conclusion, evidence label, source URL/path, access date, scope, limitations, confidence, implementation consequence and related TODO/decision. Prefer current authoritative sources for changing product behavior, Node.js, security and operating-system interfaces.
+Record question, conclusion, evidence label, source path/date, access date, scope, limitations, confidence, implementation consequence, and related TODO/decision. Keep extracted package content, source-level analysis, observed behavior, and tested Node.js implementation separate.
 
 ## Maintenance
 
-When evidence changes a decision, capability assessment or task priority, update the canonical document and append a session-history entry. Never leave durable requirements or results only in chat prose.
+When evidence changes a decision, capability assessment, or task priority, update the canonical document and append a session-history entry. Never leave durable knowledge only in chat prose.

@@ -3,52 +3,48 @@
 Chronological record of meaningful technical experiments and product research, including successful, failed, inconclusive, and withdrawn directions.
 
 ## Record format
-For each investigation include question, setup/method, actual result, conclusion, limitations and follow-up. Never include secrets, private user data or copied proprietary app material.
+
+For each investigation include question, setup/method, actual result, conclusion, limitations, and follow-up. Never record credentials, session secrets, or personal account content.
 
 ## Repository foundation
 
 ### CommonJS and ESM entry points
+
 - Method: built-in Node test runner requires CJS and imports ESM.
-- Result: CI passed ESM/default exports and archive extraction/loading for both formats.
+- Result: prior CI passed both formats and archive extraction/loading for the foundation.
 - Conclusion: verified for foundation only.
 - Next: preserve parity tests as exports expand.
 
 ### Generated docs and archive
-- Method: generate PROJECT_STATE.md from project-state.json; validate local Markdown links; build USTAR+gzip with Node built-ins; verify exact allowlist/content; extract and smoke-test.
+
+- Method: generate PROJECT_STATE.md from project-state.json; validate local Markdown links; build USTAR+gzip with Node built-ins; verify allowlist/content; extract and smoke-test.
 - Initial issue: archive test treated ChatJS/ directory entry as a file. Corrected to skip validated directory entries and compare file content.
-- Result: CI built 7 distributable files; archive integrity, extraction, CJS/ESM tests and artifact upload passed.
-- Conclusion: verified for foundation package.
+- Result: prior CI passed archive integrity, extraction, CJS/ESM tests and artifact upload.
+- Conclusion: verified for the foundation package.
 - Next: keep checks and allowlist.
 
-## Product-reference research
+## Client reference research
 
-### Android package
-- Method: privately supplied ChatGPT.zip was inspected; confirmed one base.apk; reviewed Android binary manifest and high-level resource/module names.
-- Result: package indicators for conversation/streaming, voice/read-aloud, attachments, image/text processing, search/data, code/remote session, memory/settings, instructions and Projects.
-- Limit: static inspection only; no emulator/UI or DEX decompilation. Permissions/resources do not prove active UI, entitlement or Node.js access.
-- Conclusion: Observed indicators only. Health, finance, maps, shopping, wallet and unrelated permissions are excluded by owner direction.
-- Next: use REFERENCE_APK.md; do not request original merely to repeat inspection.
+### Android APK extraction
 
-### Windows desktop MSIX
-- Source: user-supplied ChatGPT-x64.msix URL.
-- Method: downloaded to temporary browser storage; inspected HTTP metadata, MSIX listing, AppxManifest.xml, Electron ASAR header/directory names and package metadata. No app installation or execution.
-- Observed: ChatGPT Windows x64 package identity; ChatGPT.exe and separate Codex.exe; Electron/Chromium; bundled Node; command runner/code-mode host; Windows sandbox service/setup; node-pty/ConPTY; browser native host; computer-use executables; plugin/skill resources; Explorer context-menu, codex: protocol, .skill and document/spreadsheet associations, screen-capture declarations.
-- Limits: signature presence noted but not verified; no implementation code, binaries, plugins, docs or assets extracted/copied.
-- Conclusion: local workspace, task/process, terminal, sandbox, browser/computer-use, skills, shell integration and artifacts deserve independent ChatJS designs. No private protocol or official service integration is authorized.
-- Next: use REFERENCE_DESKTOP.md; re-download only for an owner-requested comparison.
+- Source: owner-supplied ChatGPT.zip containing base.apk.
+- Result: personal Library archive `/ChatJS-Archives/ChatJS-Android.zip` contains the complete extraction of 4,987 APK payload entries plus README and JSON inventory (4,989 ZIP entries total), 59,454,036 bytes.
+- Inventory: 106,501,945 uncompressed payload bytes, ten DEX files, 121 compiled Valdi modules.
+- Verification: ZIP CRC test passed 2026-11-20.
+- Limitation: source-level DEX/Valdi analysis, request tracing, auth/session tracing, and behavioral tests are not complete.
+- Follow-up: inspect selected modules and record source paths, payload models, request transport, and client behavior.
 
-### OpenAI service/API route withdrawn
-- Initial exploration reviewed Responses API and Sign in with ChatGPT as possible routes.
-- Owner explicitly excluded OpenAI Platform APIs, keys, OAuth and private ChatGPT backends.
-- No runtime integration or credentials were added. Do not revive this route unless the owner changes the requirement.
+### Windows MSIX extraction and archive status
 
-### Desktop Work/Codex mapping
-- Official product docs describe desktop Chat/Work/Codex, permissioned local files/apps, local folders, repositories, terminals and developer tools; mobile Remote can reach supported desktop Codex sessions.
-- ChatJS conclusion: implement local workspace/file/process/task/artifact foundations independently. ChatGPT cloud Work, account data, private Codex/Remote sessions and Codex Cloud are unavailable.
-- Next: implement a confined local workspace before adding command execution.
+- Prior inspection: AppxManifest.xml, package listing, Electron ASAR metadata, and component paths/names.
+- Prior Chat-1 transcript reported a remote extracted ZIP of about 1.1 GB and 3,758 entries, with a SHA-256 value and successful remote integrity check. Transfer to the personal Library was incomplete.
+- Current Library item `ChatJS-Windows.zip` was materialized on 2026-11-20: 418,238 bytes, seven entries, metadata/indexes/notices only.
+- Conclusion: current Library item is not the full application payload archive. The larger remote result is not reverified in this session.
+- Follow-up: explicitly deferred at the owner's request; do not resume unless asked.
 
+### Earlier mistaken scope and superseded integration exclusions
 
-### Private Library archive rename and Windows large-file transfer
-- Android: moved Library item to /ChatJS-Archives/ChatJS-Android.zip and deleted old empty folder. Listing confirmed requested name/path and 54,869,202-byte size; re-materialization after move succeeded.
-- Windows: previous browser session held the full temporary MSIX, but file export permits at most 25 MiB. A 1 MiB test chunk exported; direct full 1,057,802,768-byte download failed. No complete Library transfer.
-- Conclusion: Android backup verified; Windows backup blocked. Keep official URL/findings. Never store a partial chunk under a complete installer name.
+- Earlier project records incorrectly described ChatJS as a local-only feature reference and prohibited studying or implementing the real ChatGPT client service connection.
+- The owner corrected this in Chat.json and Chat-1.json: the client-side implementation material in the supplied packages is exactly what ChatJS must use; reproducing the client does not require server-side source.
+- Current direction: implement the real consumer ChatGPT client behavior from the shipped code, including requests, payloads, transport, and legitimate auth/session flows. Do not substitute OpenAI Platform APIs/keys or fake/model output.
+- This entry supersedes the earlier "no ChatGPT account client/private backend" assumptions. Protect user authorization and credentials; no bypassing access controls or secret leakage.

@@ -1,24 +1,37 @@
 # ChatJS
 
-**ChatJS** is an independent Node.js module inspired by ChatGPT mobile first, with applicable desktop Work and Codex workflows.
+**ChatJS** is a general-purpose Node.js module intended to bring together the real client-side systems and workflows of official ChatGPT mobile and ChatGPT desktop (including Work and Codex) in one reusable package.
 
-> **Current status:** initial foundation only. No ChatGPT-style application features have been implemented yet.
->
-> **Integration boundary:** no OpenAI Platform APIs, API keys, Sign in with ChatGPT OAuth, private ChatGPT backends, or ChatGPT account access.
->
-> **Independence:** ChatJS is not affiliated with, endorsed by, or sponsored by OpenAI.
+The purpose is to adapt the actual ChatGPT client behavior to Node.js—not merely list familiar features or substitute a different model service. ChatJS does not recreate ChatGPT's server. It is an independent project, not affiliated with or endorsed by OpenAI.
 
-## Intended scope
-Real Node.js implementations of local conversations/context, projects, confined workspaces/files, task orchestration, command/test execution, repository inspection, diffs/review, approvals and local artifacts. Voice, image understanding/generation, reasoning and autonomous agents require a real non-OpenAI inference engine, which is not selected.
+> **Current implementation:** foundation only. The repository currently provides module entry points, a minimal client lifecycle, a base error, and TypeScript declarations. The actual ChatGPT client integration and the broader workflows remain to be implemented.
 
-Health/Health Connect, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permissions are out of scope. Node.js does not inherit mobile permissions.
+## Product direction
 
-## Install from GitHub
+ChatJS is one package usable from different Node.js applications, operating systems, hosts, devices, and deployment environments. It is not itself a specific mobile or desktop app, and it must not assume a particular camera, microphone, screen, browser, or OS API exists.
+
+Use the actual supplied application package contents as the engineering reference: shipped JavaScript and compiled modules, request/response construction, payload schemas, serialization, transport, connection and authentication/session flows, local persistence, tools, dependencies, and resources. Client interfaces evidenced by the application code must not be dismissed merely because public developer documentation does not describe them. The target is the real consumer ChatGPT experience, not OpenAI Platform API/key integration or a replacement model provider.
+
+Optional host-specific facilities belong behind integrations so consumers can use the portable package without particular hardware or OS capabilities.
+
+## Reference archives
+
+The Android personal Library archive at `/ChatJS-Archives/ChatJS-Android.zip` contains the full extracted APK payload: all 4,987 APK entries, ten compiled DEX files, 121 compiled Valdi modules, resources, notices, README, and structured inventory. It contains actual compiled client implementation material, not merely a metadata list. The 59,454,036-byte ZIP passed integrity testing on 2026-11-20. See [the Android reference](docs/REFERENCE_APK.md).
+
+The owner has asked to set the remaining Windows archive work aside for now. The current Library `ChatJS-Windows.zip` is a seven-entry metadata/reference archive, not the full extracted desktop payload. A preceding chat recorded a larger remote extracted archive whose transfer into Library was incomplete; that remote result is not reverified in this session. See [the desktop reference](docs/REFERENCE_DESKTOP.md).
+
+Project Sources are intentionally kept empty. Use personal Library archives and committed reference records; do not ask for repeat uploads. Never put official app packages or extracted third-party payloads into public Git.
+
+## Current API
+
+Install from GitHub:
+
 ```bash
 npm install github:codexclai/ChatJS
 ```
 
 CommonJS:
+
 ```js
 const ChatJS = require('ChatJS');
 const client = ChatJS.create();
@@ -27,6 +40,7 @@ client.close();
 ```
 
 ES modules:
+
 ```js
 import ChatJS from 'ChatJS';
 const client = ChatJS.create();
@@ -34,7 +48,10 @@ console.log(client.getStatus());
 client.close();
 ```
 
+These examples exercise the foundation only; they do not imply that the ChatGPT connection or planned workflows are already implemented.
+
 ## Development
+
 Use a supported Node.js LTS runtime.
 
 ```bash
@@ -42,25 +59,24 @@ npm run check
 npm run archive
 ```
 
-CI builds, verifies, extracts, smoke-tests and uploads dist/ChatJS.tar.gz as a workflow artifact.
+CI checks the project, builds and verifies `dist/ChatJS.tar.gz`, extracts it, smoke-tests CommonJS/ESM loading, and uploads it as a workflow artifact.
 
 ## Repository layout
-- src/ — module implementation.
-- types/ — TypeScript declarations.
-- tests/ — automated tests.
-- scripts/ — checks and archive builder.
-- ChatJS.md — canonical user/API manual.
-- docs/ — persistent project knowledge and engineering memory.
-- .github/ — focused issue templates and CI/security workflows.
+
+- `src/` — module implementation.
+- `types/` — TypeScript declarations.
+- `tests/` — automated tests.
+- `scripts/` — checks and the module archive builder.
+- `ChatJS.md` — canonical user/API manual.
+- `docs/` — persistent engineering memory and technical records.
+- `.github/` — focused CI and security workflows.
 
 ## Project continuity
-Every new ChatJS session should read [AI Memory](https://github.com/codexclai/ChatJS/blob/main/docs/AI_MEMORY.md), [Continuation Guide](https://github.com/codexclai/ChatJS/blob/main/docs/CONTINUATION.md), and [TODO](https://github.com/codexclai/ChatJS/blob/main/docs/TODO.md).
 
-Android backup is retained privately at `/ChatJS-Archives/ChatJS-Android.zip`. Windows MSIX is not retained; its official URL/findings are in `docs/REFERENCE_DESKTOP.md`. Neither binary is in public Git. Project Sources deletion is not confirmed.
+Start future work with [AI Memory](docs/AI_MEMORY.md), [Continuation](docs/CONTINUATION.md), and [TODO](docs/TODO.md). Use the [Android extracted-payload reference](docs/REFERENCE_APK.md) and [Windows desktop reference](docs/REFERENCE_DESKTOP.md) as technical evidence. Keep observed client code separate from completed analysis and tested Node.js behavior.
 
-Use the committed [Android reference](https://github.com/codexclai/ChatJS/blob/main/docs/REFERENCE_APK.md) and [Windows desktop reference](https://github.com/codexclai/ChatJS/blob/main/docs/REFERENCE_DESKTOP.md). The owner intends to clear Project Sources; do not request the original binaries merely to repeat completed inspection. Do not claim deletion until confirmed.
+## Engineering, privacy and rights
 
-## Quality, privacy and rights
-No fake features, filler, bloatware, unjustified dependencies, unrelated domains, telemetry, tracking, hidden collection, phone-home or remote diagnostics. External access must be explicit, configured, authorized and necessary. All Git work stays on main; never create/delete/switch branches or worktrees.
+No fake features, filler, bloat, unjustified dependencies, telemetry, tracking, hidden collection, phone-home, or remote diagnostics. Do not make unsolicited network requests or upload content automatically. Protect user data and credentials, and preserve legitimate account authentication and authorization. All Git work stays on `main`; never create branches or worktrees.
 
-The public repository carries a proprietary all-rights-reserved notice. Public visibility does not grant permission to reuse or redistribute code. See LICENSE, SECURITY.md and docs/GOVERNANCE.md.
+The public repository carries a proprietary all-rights-reserved notice. Public visibility does not grant permission to reuse or redistribute code. See `LICENSE`, `SECURITY.md`, and `docs/GOVERNANCE.md`.

@@ -1,30 +1,34 @@
 # ChatJS Project Documentation
 
-This directory contains persistent project knowledge and the engineering handbook. The user-facing module manual is root-level [ChatJS.md](../ChatJS.md).
+This directory contains persistent project memory and the engineering handbook. The user-facing module manual is root-level [ChatJS.md](../ChatJS.md). The concise assistant operating instructions for the ChatGPT Project Instructions field are in [CHATGPT_PROJECT_INSTRUCTIONS.md](CHATGPT_PROJECT_INSTRUCTIONS.md); that file is not a duplicate of this handbook.
 
 ## Start
-1. [AI Memory](AI_MEMORY.md) — continuity and permanent constraints.
-2. [Continuation](CONTINUATION.md) — session protocol and “Continue”.
+
+1. [AI Memory](AI_MEMORY.md) — current product direction, durable requirements, required reading.
+2. [Continuation](CONTINUATION.md) — session protocol and resume behavior.
 3. [Project State](PROJECT_STATE.md) — generated snapshot from project-state.json.
 4. [Tasks](TODO.md) — priority queue.
 5. [Session History](SESSION_LOG.md) — chronological record.
 
 ## Product and engineering knowledge
-- [Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md) — mobile-first references and desktop Work/Codex mapping.
+
+- [Client Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md) — actual mobile/desktop client systems to investigate and adapt.
 - [Capability Matrix](CAPABILITY_MATRIX.md) — actual implementation status.
-- [Knowledge Base](KNOWLEDGE_BASE.md) — facts, sources and technical notes.
+- [Knowledge Base](KNOWLEDGE_BASE.md) — facts, sources, and technical notes.
 - [Decisions](DECISIONS.md) — owner requirements and design rationale.
-- [Experiments](EXPERIMENTS.md) — successful, failed and withdrawn investigations.
-- [Open Questions](OPEN_QUESTIONS.md) — unresolved issues.
+- [Experiments](EXPERIMENTS.md) — successful, failed, and superseded investigations.
+- [Open Questions](OPEN_QUESTIONS.md) — unresolved implementation questions.
 - [Roadmap](ROADMAP.md) — intended sequence.
 
 ## Reference evidence
-- [Android package record](REFERENCE_APK.md) — static mobile manifest/resource observations and limits.
-- [Windows desktop MSIX record](REFERENCE_DESKTOP.md) — package identity, Electron/Node/Codex/sandbox/browser/shell observations and implementation implications.
+
+- [Android extracted payload](REFERENCE_APK.md) — full extracted APK payload, compiled modules, verification, and analysis status.
+- [Windows desktop package](REFERENCE_DESKTOP.md) — MSIX observations and full-payload archive handoff/deferred status.
 
 ## Engineering handbook
-- [Architecture](ARCHITECTURE.md), [Workflow](WORKFLOW.md), [Repository Settings](REPOSITORY_SETTINGS.md), [Governance](GOVERNANCE.md), [Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md).
 
-Private retention: Android archive is in Library at /ChatJS-Archives/ChatJS-Android.zip. Windows MSIX is not retained; URL/findings are in REFERENCE_DESKTOP.md. Neither binary is in Git. Owner intends to clear Project Sources; deletion is not confirmed. Do not claim Source deletion until confirmed.
+[Architecture](ARCHITECTURE.md), [Workflow](WORKFLOW.md), [Repository Settings](REPOSITORY_SETTINGS.md), [Governance](GOVERNANCE.md), and [ChatGPT Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md).
 
-Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers and handoffs in canonical docs. Correct references; update project-state.json/PROJECT_STATE.md and append SESSION_LOG.md.
+Private reference archives are held in personal Library under `/ChatJS-Archives`. Project Sources are intentionally empty. The Android extracted payload ZIP is verified; Windows archive work is deferred.
+
+Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers, and handoffs in canonical docs. Keep state JSON and generated Markdown synchronized; append SESSION_LOG.
