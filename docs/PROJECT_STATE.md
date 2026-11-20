@@ -56,6 +56,7 @@
 36. Committed the clarified ChatJS direction and synchronized 23 repository files on main (commit 56b5c543fcea2cb7f3ddcf9273a6f80b1b2c4857); npm run check passed with 9 tests, 24 Markdown files, generated-state sync, and a 6,521-byte seven-file ChatJS.tar.gz; GitHub CI run 44742483920 succeeded.
 37. Restored the pre-existing chronological session log, corrected contribution guidance, and verified the final documentation snapshot: npm run check passed with 9 tests, 24 Markdown files, generated-state sync, and a 6,521-byte seven-file distribution archive; CI run 44742773789 succeeded.
 38. Performed a first-pass Zstandard decompression/string scan of selected Android Valdi modules and documented actual ChatGPT client account/session, bearer transport, model/chat-requirements, conversation/SSE streaming, file upload, history, image gallery, and Library client components/request paths in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+39. Expanded the dedicated ChatGPT Project Instructions text to 4,728 characters with the actual ChatJS client-integration goal and Project operating workflow, remaining separate from the repository handbook.
 
 ## Not implemented
 

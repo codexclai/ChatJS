@@ -226,3 +226,10 @@ The GitHub About description was not changed because the available GitHub integr
 - Observed file upload/process/Estuary paths, conversation history/pins/download, image gallery/bootstrap, and Library file/node/bookmark/directory APIs.
 - Detailed module names, paths, headers, and remaining limitations are recorded in `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
 - This is evidence that the package contains actual client-side service and session implementation material. It is not full Valdi/DEX reconstruction, complete request/response schemas, or a working Node.js ChatGPT integration. The `oai-telemetry` string was observed in request metadata but its semantics are unknown; the zero-telemetry rule remains in force.
+
+
+## 2026-11-20 — Final Project Instructions field refinement
+
+- Expanded the dedicated `docs/CHATGPT_PROJECT_INSTRUCTIONS.md` from generic continuity guidance into a copy/paste-ready Project operating guide that captures ChatJS's actual client-integration goal, general-purpose Node.js architecture, private Library/Sources status, main-only workflow, credential/security rules, exclusions, documentation synchronization, and finish checks.
+- Kept the file separate from the full engineering handbook and below the previously used 6,000-character Project Instructions field limit (4,728 characters).
+- The Project Instructions field inside ChatGPT itself is not remotely editable through the available GitHub repository actions; owner must paste the committed text into the ChatGPT Project settings field.
