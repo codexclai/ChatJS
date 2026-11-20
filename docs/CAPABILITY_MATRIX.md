@@ -25,9 +25,9 @@
 
 | Capability | Status | Evidence / acceptance boundary |
 | --- | --- | --- |
-| Client request/response construction | Research | Trace actual request-building logic and payload schemas from supplied client packages |
-| Connection and transport | Research | Trace the shipped client transport/streaming behavior |
-| Authentication and session lifecycle | Research | Identify and reproduce the legitimate client sign-in/session flow; protect user credentials |
+| Client request/response construction | Research (first-pass module evidence) | Generated API clients and request paths observed in Android Valdi modules; full call graphs and body schemas remain open |
+| Connection and transport | Research (first-pass module evidence) | Bearer transport, WebSocket integration, SSE clients, and stream processors observed; exact runtime state machine remains open |
+| Authentication and session lifecycle | Research (first-pass module evidence) | Native/encrypted credential store and sign-in/session service identifiers observed; exact flow and Node.js host compatibility remain open |
 | Chat conversations and streaming | Planned | Use actual ChatGPT client behavior; no canned/fake responses |
 | Files and attachments | Research/Planned | Trace supported client payloads and real Node.js processing |
 | Projects/instructions/context | Research/Planned | Reproduce relevant client models and state behavior |

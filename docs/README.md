@@ -23,6 +23,7 @@ This directory contains persistent project memory and the engineering handbook. 
 ## Reference evidence
 
 - [Android extracted payload](REFERENCE_APK.md) — full extracted APK payload, compiled modules, verification, and analysis status.
+- [Android client protocol findings](ANDROID_CLIENT_PROTOCOL_FINDINGS.md) — first-pass authentication/session, transport, conversation/streaming, upload, history, image-gallery, and Library evidence.
 - [Windows desktop package](REFERENCE_DESKTOP.md) — MSIX observations and full-payload archive handoff/deferred status.
 
 ## Engineering handbook

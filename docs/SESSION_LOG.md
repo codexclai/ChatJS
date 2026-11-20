@@ -215,3 +215,14 @@ The GitHub About description was not changed because the available GitHub integr
 - Second documentation/history commit: `e769397a504a17e5609f9c8926c46b85b6a44e09`.
 - The second commit's GitHub CI run `44742773789` completed successfully. CodeQL run `44742773904` was still in progress at the last status check; do not report it as passed until confirmed.
 - Re-ran `npm run check` against the second commit's main snapshot: exit 0; 24 Markdown files passed local-link checks; generated state synchronized; all 9 Node tests passed; archive built with seven distributable files at 6,521 bytes and its listing was inspected.
+
+
+## 2026-11-20 — Android client protocol findings from compiled Valdi modules
+
+- Performed a first-pass static scan of selected Zstandard-compressed Android `.valdimodule` files extracted from the verified personal Library archive.
+- Observed real client authentication/session services (`SessionAuthenticatedAccountService`, `OAIRequestCredential`, `OAINativeCredential`, `OAICredentialStore`, `OAIBearerAPIService`), generated account-check/model/chat-requirements APIs, bearer and account headers, trusted-origin checks, secure credential-store implementations, and first-party sign-in/session lifecycle identifiers.
+- Observed client transport and conversation modules (`OAIAuthenticatedTransport`, `WebSocketSession`, `ChatGPTDirectResponseClient`, `ChatGPTConversationTransportAdapter`), conversation request paths, explicit device-integrity provider, and sentinel/chat-requirements headers.
+- Observed SSE/direct/polling stream modules, event decoder/processor, message deltas, reasoning/DIL/entity event strings, resume/handoff identifiers, and message completion.
+- Observed file upload/process/Estuary paths, conversation history/pins/download, image gallery/bootstrap, and Library file/node/bookmark/directory APIs.
+- Detailed module names, paths, headers, and remaining limitations are recorded in `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+- This is evidence that the package contains actual client-side service and session implementation material. It is not full Valdi/DEX reconstruction, complete request/response schemas, or a working Node.js ChatGPT integration. The `oai-telemetry` string was observed in request metadata but its semantics are unknown; the zero-telemetry rule remains in force.

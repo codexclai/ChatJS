@@ -48,3 +48,12 @@ For each investigation include question, setup/method, actual result, conclusion
 - The owner corrected this in Chat.json and Chat-1.json: the client-side implementation material in the supplied packages is exactly what ChatJS must use; reproducing the client does not require server-side source.
 - Current direction: implement the real consumer ChatGPT client behavior from the shipped code, including requests, payloads, transport, and legitimate auth/session flows. Do not substitute OpenAI Platform APIs/keys or fake/model output.
 - This entry supersedes the earlier "no ChatGPT account-client integration" assumptions. Protect user authorization and credentials; no bypassing access controls or secret leakage.
+
+
+### Android Valdi client protocol scan — 2026-11-20
+
+- Method: extracted selected `.valdimodule` members from the full Android ZIP, decompressed their Zstandard frames, and inspected embedded module identifiers and strings.
+- Observed: generated account-check and model/chat-requirements API clients; account/session services; bearer/account transport headers; native/encrypted credential-store components; WebSocket and authenticated transport; conversation direct-response adapter; SSE/direct/polling streaming clients, processors, event decoder and handoff/resume strings; file upload/process/Estuary requests; conversation history/pins/download; image gallery/bootstrap; Library file/node/bookmark/directory clients.
+- Request path/module/header details are recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+- Conclusion: the Android package contains real client-side request, session, transport and service implementation material; it is not just a feature-name list.
+- Limits: static decompressed string/structure scan only. Full method/call-graph reconstruction, exact serialized bodies and response schemas, credential/session lifecycle, device-integrity/Sentinel behavior, SSE state transitions, upload signing/retry logic and live account tests remain outstanding.

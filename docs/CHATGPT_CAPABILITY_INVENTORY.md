@@ -24,6 +24,10 @@ The compiled payload contains actual client implementation material. Source-leve
 
 The MSIX inspection recorded Electron/Node/Chromium, ChatGPT and Codex executables, an ASAR app bundle, command-runner/code-mode-host components, sandbox/PTY, browser/native-host, computer-use, plugin/skill, shell and file integration. The owner has deferred Windows archive work. The current Library ZIP is metadata-only; a prior chat recorded a larger remote extracted archive with incomplete transfer to Library, not reverified in this session. See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md).
 
+## First-pass Android protocol findings
+
+See [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md) for observed authentication/session components, bearer headers, model/chat-requirements APIs, conversation and SSE streaming, uploads, history, image-gallery, and Library request paths. These are static module-string findings, not complete source reconstruction or end-to-end behavior verification.
+
 ## Client implementation areas to investigate
 
 | Area | Evidence to collect from the actual clients | Node.js adaptation |

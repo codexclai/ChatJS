@@ -29,7 +29,7 @@ Personal Library path: `/ChatJS-Archives/ChatJS-Android.zip`; re-materialized si
 
 The archive contains 4,989 ZIP entries: all 4,987 extracted APK payload entries plus a README and structured JSON inventory. The APK payload entries total 106,501,945 uncompressed bytes. The inventory includes ten compiled DEX files and 121 compiled Valdi modules. ZIP CRC testing found no corrupt member. The original APK container is not nested in this archive.
 
-This is the full extracted APK payload tree, not the earlier metadata-only dossier. It contains compiled client implementation material and resources. It has not yet been source-decompiled/reconstructed or fully behavior-audited; never claim that work is complete without evidence.
+This is the full extracted APK payload tree, not the earlier metadata-only dossier. It contains compiled client implementation material and resources. A first-pass Zstandard-decompressed Valdi module scan is recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; it identifies real account/session, bearer transport, chat-requirements, conversation/streaming, upload, history, image-gallery, and Library components/request paths. Full method-level reconstruction and behavior tracing remain incomplete.
 
 ### Windows
 
@@ -61,7 +61,7 @@ Project Sources are intentionally kept empty. Private reference archives stay in
 1. `AI_MEMORY.md`, `CONTINUATION.md`.
 2. `PROJECT_STATE.md`, `project-state.json`, `TODO.md`, `SESSION_LOG.md`.
 3. `DECISIONS.md`, `KNOWLEDGE_BASE.md`, `EXPERIMENTS.md`, `OPEN_QUESTIONS.md`.
-4. `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `REFERENCE_APK.md`, `REFERENCE_DESKTOP.md`.
+4. `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`, `REFERENCE_APK.md`, `REFERENCE_DESKTOP.md`.
 5. `ROADMAP.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, root `ChatJS.md`.
 6. Inspect live `main`, complete branch list, recent commits/tree, issues/PRs, and CI.
 
@@ -74,7 +74,7 @@ Project Sources are intentionally kept empty. Private reference archives stay in
 | Decisions/research | `DECISIONS.md` / `KNOWLEDGE_BASE.md` |
 | Experiments/unknowns | `EXPERIMENTS.md` / `OPEN_QUESTIONS.md` |
 | Capabilities | `CAPABILITY_MATRIX.md` / `CHATGPT_CAPABILITY_INVENTORY.md` |
-| Package references | `REFERENCE_APK.md` / `REFERENCE_DESKTOP.md` |
+| Package/protocol findings | `REFERENCE_APK.md` / `ANDROID_CLIENT_PROTOCOL_FINDINGS.md` / `REFERENCE_DESKTOP.md` |
 | Architecture/workflow | `ARCHITECTURE.md` / `WORKFLOW.md` / `ROADMAP.md` |
 | Public API | Root `ChatJS.md` |
 | Project operating instructions | `CHATGPT_PROJECT_INSTRUCTIONS.md` |

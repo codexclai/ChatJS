@@ -4,6 +4,8 @@ Track unknowns and blockers. Close an item only after its answer and evidence ar
 
 ## ChatGPT client implementation
 
+A first-pass static Valdi module scan is documented in [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md). It identifies the client account/session services, bearer transport, model/chat-requirements APIs, conversation/SSE pipeline, upload clients, history, image-gallery, and Library modules. Exact method-level behavior remains to be traced.
+
 - [ ] Which DEX/Valdi modules implement request construction, endpoint selection, transport, streaming, and response parsing?
 - [ ] What is the exact client authentication/sign-in/session/refresh lifecycle, and how can it be implemented for a Node.js consumer while preserving account authorization and credential security?
 - [ ] Which message/conversation/project/file/voice/image/search/tool payload schemas and state machines are present in the shipped clients?

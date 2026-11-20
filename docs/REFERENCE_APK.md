@@ -51,4 +51,4 @@ The extracted payload archive is stored in the owner's personal Library at **`/C
 
 Do not put the official APK, extracted third-party payload, bundled assets/code, credentials, tokens, or account/session material into the public GitHub repository. Preserve useful independent research and the ChatJS implementation in Git.
 
-See [ChatGPT Client Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md), [Capability Matrix](CAPABILITY_MATRIX.md), and [Windows Desktop Reference](REFERENCE_DESKTOP.md).
+See [Android Client Protocol Findings](ANDROID_CLIENT_PROTOCOL_FINDINGS.md), [ChatGPT Client Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md), [Capability Matrix](CAPABILITY_MATRIX.md), and [Windows Desktop Reference](REFERENCE_DESKTOP.md).

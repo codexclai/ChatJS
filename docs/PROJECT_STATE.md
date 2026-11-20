@@ -55,6 +55,7 @@
 35. Confirmed the current Library ChatJS-Windows.zip is a 418,238-byte, seven-entry metadata/reference ZIP, not the full desktop payload. A prior chat recorded a larger remote extracted archive whose Library transfer was incomplete; current status not reverified. Owner deferred further Windows work.
 36. Committed the clarified ChatJS direction and synchronized 23 repository files on main (commit 56b5c543fcea2cb7f3ddcf9273a6f80b1b2c4857); npm run check passed with 9 tests, 24 Markdown files, generated-state sync, and a 6,521-byte seven-file ChatJS.tar.gz; GitHub CI run 44742483920 succeeded.
 37. Restored the pre-existing chronological session log, corrected contribution guidance, and verified the final documentation snapshot: npm run check passed with 9 tests, 24 Markdown files, generated-state sync, and a 6,521-byte seven-file distribution archive; CI run 44742773789 succeeded.
+38. Performed a first-pass Zstandard decompression/string scan of selected Android Valdi modules and documented actual ChatGPT client account/session, bearer transport, model/chat-requirements, conversation/SSE streaming, file upload, history, image gallery, and Library client components/request paths in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
 
 ## Not implemented
 
@@ -66,19 +67,20 @@
 
 ## Next actions
 
-1. Inspect selected Android DEX and Valdi modules to map client architecture, request builders, payload schemas, transport, authentication/session handling, and workflows.
-2. Define the general-purpose ChatJS client configuration, connection/session lifecycle, request/response, streaming/backpressure, cancellation, timeout, concurrency, retry, and error contracts from the actual client evidence.
-3. Implement and test the first real ChatGPT client connection and conversation send/receive/stream workflow without Platform API substitution or fake responses.
-4. Map project/context/instructions, file/attachment, voice/image, search/tools, Work, and Codex client flows and prioritize complete Node.js adaptations.
-5. Define the portable core and optional host adapter contracts so consumers are not required to have any particular device, OS, camera, microphone, screen, or browser.
-6. Continue the Windows extracted-payload archive only when the owner explicitly asks to resume the deferred work.
+1. Perform deeper method-level analysis of Android account-check, model/chat-requirements, conversation, upload, history, image-gallery, and Library clients; map exact call graphs and serialized request/response schemas.
+2. Trace first-party sign-in, bearer credential renewal/revocation, encrypted credential storage, account binding, and device-integrity/Sentinel requirements without bypassing them.
+3. Trace direct/polling SSE streaming, event schemas, handoff/resume tokens, reasoning/tool/message completion events, and cancellation behavior.
+4. Define general-purpose ChatJS client configuration, connection/session lifecycle, transport, streaming/backpressure, cancellation, timeouts, concurrency, retries, and typed errors from client evidence.
+5. Implement and test the first real ChatGPT client connection and conversation send/receive/stream workflow without Platform API substitution or fake responses.
+6. Map project/context/instructions, file/attachment, voice/image, search/tools, Work, and Codex client flows for Node.js adaptation.
+7. Resume Windows extracted-payload archive work only when the owner explicitly asks.
 
 ## Reference artifact
 
 - Source: Owner-supplied ChatGPT.zip Android APK and ChatGPT-x64.msix Windows desktop package; recovered conversation exports Chat.json and Chat-1.json document the owner's requirements and prior Windows archive handoff.
 - Acquisition: The owner reported the Android APK was exported immediately after a Google Play update and was the latest version available to them at acquisition. The Windows x64 MSIX was supplied via the official package URL recorded in docs/REFERENCE_DESKTOP.md.
 - Availability: Android: personal Library /ChatJS-Archives/ChatJS-Android.zip, 59,454,036 bytes; 4,989 ZIP entries including all 4,987 extracted APK payload files plus README and JSON inventory; CRC test passed 2026-11-20. The payload inventory records ten DEX files and 121 compiled Valdi modules. Windows: current Library /ChatJS-Archives/ChatJS-Windows.zip is a 418,238-byte, seven-entry metadata/reference ZIP, not the extracted desktop payload. Chat-1.json records a prior remote ~1.1 GB, 3,758-entry extracted archive with a reported integrity check, but transfer into Library was incomplete and the remote archive was not reverified in this session. Windows work is paused at the owner's request. Project Sources are intentionally kept empty.
-- Evidence limit: Android payload extraction and ZIP integrity are verified; source-level DEX/Valdi reconstruction, request/transport/auth/session tracing, interactive UI audit, and end-to-end Node.js behavior are not yet complete. Client packages contain client-side code, not ChatGPT server code that is not shipped with the app; recreating the server is not the goal. Windows full-payload archive is deferred and is not verified in Library. Neither official source package nor extracted third-party payload is in public Git.
+- Evidence limit: Android full payload extraction and ZIP integrity are verified. A first-pass Zstandard-decompressed Valdi scan identified actual client account/session services, bearer transport, model/chat-requirements APIs, conversation and SSE streaming components, file uploads, history, image gallery, and Library paths. Full method-level reconstruction, call graphs, exact request/response schemas, device-integrity behavior, and end-to-end Node.js account tests remain incomplete. Windows full-payload archive work is deferred; current Library ZIP is metadata-only, while the larger remote archive recorded in Chat-1.json was not reverified.
 
 ## Continuity
 

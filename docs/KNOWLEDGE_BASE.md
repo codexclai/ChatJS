@@ -26,12 +26,16 @@ Index of durable product, technical, compatibility, security, and research knowl
 | Privacy | No telemetry, tracking, hidden collection, background reporting, phone-home, or unsolicited content upload | Explicit owner requirement |
 | Android archive | Full extracted APK payload ZIP in personal Library, 59,454,036 bytes, ZIP CRC test passed | Materialized Library copy, 2026-11-20 |
 | Android payload | 4,987 APK entries; ten DEX files; 121 Valdi modules; 4,989 ZIP entries incl README/inventory | Embedded inventory and ZIP listing |
-| Android analysis | Payload extraction complete; DEX/Valdi source reconstruction and request/behavior tracing not complete | Reference record |
+| Android analysis | Payload extraction complete; first-pass Valdi protocol strings/components mapped; full call graphs, exact schemas, and behavior tracing remain open | ANDROID_CLIENT_PROTOCOL_FINDINGS.md |
 | Windows archive | Current Library ZIP metadata-only: seven entries, 418,238 bytes; prior chat reports larger remote archive, Library transfer incomplete | Current materialization + Chat-1 transcript |
 | Sources | Project Sources intentionally kept empty | Latest owner direction, 2026-11-20 |
 | Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
 | Public API manual | Root ChatJS.md | Repository |
 | Distribution | ChatJS.tar.gz built and checked by npm/CI workflow | Script/CI workflow |
+
+## First-pass Android client protocol findings
+
+A static Zstandard decompression/string scan of selected Valdi modules found generated account-check and model/chat-requirements API clients; bearer/account headers; native/encrypted credential-store components; first-party sign-in/session lifecycle identifiers; an explicit device-integrity provider; direct/polling SSE stream components and handoff/resume identifiers; file upload/process/Estuary paths; conversation history, pins and downloads; image bootstrap/recent image generation; and Library file/node/bookmark/directory paths. Exact source-level behavior remains to be traced. See [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md).
 
 ## Client-package understanding
 
