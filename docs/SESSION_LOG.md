@@ -206,3 +206,12 @@ The GitHub About description was not changed because the available GitHub integr
 - The Android extracted payload is preserved, but DEX/Valdi source-level analysis, request/auth/session tracing, and end-to-end ChatGPT connection tests have not been performed.
 - The Windows remote archive reported by the prior conversation was not reverified in this session; its transfer into personal Library was incomplete. The current Library Windows ZIP is metadata-only. Windows work remains paused.
 - The actual ChatGPT client connection and major workflows remain unimplemented; the repository runtime is foundation-only.
+
+
+## 2026-11-20 — Preserve chronology and finalize documentation checks
+
+- Restored the complete pre-existing chronological session history rather than leaving only the current session entry. The earlier Nov 18 directions remain as historical records; the current Nov 20 ChatGPT-client integration direction supersedes their local-only/account-client exclusions.
+- Updated `CONTRIBUTING.md` so its public contribution guidance protects credentials, account/session secrets, and personal information without treating client interfaces present in the supplied packages as out of scope. It now says the application packages are valid technical references for independent ChatJS implementation, subject to third-party rights and notices.
+- Second documentation/history commit: `e769397a504a17e5609f9c8926c46b85b6a44e09`.
+- The second commit's GitHub CI run `44742773789` completed successfully. CodeQL run `44742773904` was still in progress at the last status check; do not report it as passed until confirmed.
+- Re-ran `npm run check` against the second commit's main snapshot: exit 0; 24 Markdown files passed local-link checks; generated state synchronized; all 9 Node tests passed; archive built with seven distributable files at 6,521 bytes and its listing was inspected.

@@ -54,6 +54,7 @@
 34. Verified Project Sources are intentionally kept empty per the owner's explicit instruction.
 35. Confirmed the current Library ChatJS-Windows.zip is a 418,238-byte, seven-entry metadata/reference ZIP, not the full desktop payload. A prior chat recorded a larger remote extracted archive whose Library transfer was incomplete; current status not reverified. Owner deferred further Windows work.
 36. Committed the clarified ChatJS direction and synchronized 23 repository files on main (commit 56b5c543fcea2cb7f3ddcf9273a6f80b1b2c4857); npm run check passed with 9 tests, 24 Markdown files, generated-state sync, and a 6,521-byte seven-file ChatJS.tar.gz; GitHub CI run 44742483920 succeeded.
+37. Restored the pre-existing chronological session log, corrected contribution guidance, and verified the final documentation snapshot: npm run check passed with 9 tests, 24 Markdown files, generated-state sync, and a 6,521-byte seven-file distribution archive; CI run 44742773789 succeeded.
 
 ## Not implemented
 

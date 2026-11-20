@@ -6,7 +6,7 @@ Thank you for taking an interest in ChatJS.
 
 The repository is public, but the current LICENSE is a proprietary all-rights-reserved notice. Project ownership and external-contributor terms have not yet completed legal review. For that reason, **external code contributions are not currently being accepted**.
 
-You may still open an issue to report a reproducible problem, suggest a capability, request documentation clarification, or share public sources. Do not include credentials, private account data, proprietary source, APK files, or copyrighted app assets.
+You may still open an issue to report a reproducible problem, suggest a capability, request documentation clarification, or share public sources. Do not include credentials, account/session secrets, personal account data, original APK/MSIX files, or third-party copyrighted assets.
 
 ## Before code contributions are opened
 
@@ -27,7 +27,7 @@ When code contributions are invited, every change must:
 3. update API references, examples, capability status, and project documentation;
 4. pass the project check suite on the supported Node.js LTS runtime;
 5. avoid new dependencies unless their necessity, security, maintenance, and license are reviewed;
-6. avoid secrets, personal information, private endpoints, and copied proprietary application material;
+6. avoid credentials, account/session secrets, personal information, and copied third-party application payloads in public changes. The supplied official client packages are valid technical references for studying and independently implementing ChatJS behavior; preserve third-party notices and verify the rights basis before copying their contents into public Git;
 7. preserve ESM/CommonJS parity and TypeScript declaration accuracy.
 
 Keep changes focused and explain compatibility or security trade-offs.
