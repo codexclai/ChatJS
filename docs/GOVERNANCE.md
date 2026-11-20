@@ -23,7 +23,7 @@ Do not casually accept outside code while ownership and contributor terms are un
 
 - Review dependency licenses before adding runtime or development dependencies.
 - Preserve required notices.
-- Do not copy proprietary ChatGPT application assets, source, or private service implementation into this repository.
+- Do not commit official application packages or third-party application payload/code/assets to this public repository unless their license explicitly permits it. Preserve the private reference archives in the owner's Library; use them as technical source material and keep independently authored ChatJS implementation in Git.
 - Do not claim rights to OpenAI, ChatGPT, or other third-party names and marks.
 - Record the source and permitted use of every reference artifact.
 

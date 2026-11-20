@@ -47,4 +47,4 @@ For each investigation include question, setup/method, actual result, conclusion
 - Earlier project records incorrectly described ChatJS as a local-only feature reference and prohibited studying or implementing the real ChatGPT client service connection.
 - The owner corrected this in Chat.json and Chat-1.json: the client-side implementation material in the supplied packages is exactly what ChatJS must use; reproducing the client does not require server-side source.
 - Current direction: implement the real consumer ChatGPT client behavior from the shipped code, including requests, payloads, transport, and legitimate auth/session flows. Do not substitute OpenAI Platform APIs/keys or fake/model output.
-- This entry supersedes the earlier "no ChatGPT account client/private backend" assumptions. Protect user authorization and credentials; no bypassing access controls or secret leakage.
+- This entry supersedes the earlier "no ChatGPT account-client integration" assumptions. Protect user authorization and credentials; no bypassing access controls or secret leakage.

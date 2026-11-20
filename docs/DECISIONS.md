@@ -76,3 +76,8 @@ Record durable project and technical decisions with rationale. Preserve supersed
 ## Canonical documentation completeness
 **Status:** accepted; permanent workflow requirement  
 **Decision:** record meaningful requirements, decisions, research, actions, changed files, verification, failures, limits, blockers, and handoffs in canonical docs during the same session. Update affected references and generated state while preserving chronology.
+
+
+## No ChatJS product versioning
+**Status:** accepted  
+**Decision:** no product versions/tags, release numbering or automation, lockfiles, changelogs, package version fields, checksum inventories, or npm publishing. The package name remains exactly `ChatJS`.
