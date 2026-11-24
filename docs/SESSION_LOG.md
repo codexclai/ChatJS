@@ -758,3 +758,12 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Trace who emits `Lkmk0`, the meaning of its integer/detail payload and the `Llnp0` reason mapping; trace the coordinator's resulting session state to see whether a distinct request client follows.
 - Locate the real Android guest create/refresh HTTP request and composer prepare/send transport separately; do not misattribute LocationCookieInitializer's URL constants or Files API operations.
 - Continue Windows Work Local and Android Work Cloud as separate first-party client surfaces.
+
+## 2026-11-25 — Conversation-recovery trace verification
+
+- The conversation coordinator trace is documentation-only. No production JavaScript/TypeScript, public API, dependencies, or tests changed.
+- Exact commit `97864ca192fd12538dc6efd755b7f417bf272567` passed `npm run check` under Node.js 22.23.2/npm 10.9.8: syntax checks passed, generated `PROJECT_STATE.md` synchronized, all 27 Markdown local links resolved, and node:test passed 23/23.
+- The package build generated `dist/ChatJS.tar.gz` (10,633 bytes; SHA-256 `06e344023dd4b6e741232c0c5956a407b7c0aabb188c4ac57c28057d6403e847`). gzip/tar integrity passed; the archive contains exactly eight intended distribution files. Extracted CommonJS and ESM entry-point smoke tests both loaded and returned `{ state: 'initialized', implementationStatus: 'foundation-only' }`.
+- GitHub CI run `45483713918` succeeded on this source commit. CodeQL run `45483714123` was still in progress at the time of this entry; it is not claimed as passed here.
+- Repository inspection showed only `main`, no open issues and no open pull requests.
+- Android source findings remain static evidence only: no real guest HTTP create/refresh request, successful server guest session, composer transport, or ChatJS ChatGPT capability has been implemented.
