@@ -120,3 +120,11 @@ A second local guest-start caller is observed through Lej6.invoke → La991.G(Lo
 ## 2026-11-24 — Correction: actual La991.G guest-start event variant
 
 The local guest-start coroutine is dispatched by an `Lt891` event, not by W891.a. The W891.a path reads current Lw4h0 state through Lcq41.e and returns. Lt891 dispatches Lmuz0 label 9 → Lgs31.b → Lau31.G. Candidate creators are Lq20.invoke (payload 5) and the selector-18 Ldo1 path hosted by Lp1w/Le2w.e (payload 6 under a null-Lh70 branch); both forward via generic Function1 callbacks, and neither is proven connected to the current La991 instance. The marker remains instrumentation, not telemetry. Actual server create/refresh and composer-send routes remain unknown; no runtime capability status changes.
+
+
+## 2026-11-25 — Lt891 callback source boundary
+
+- `Lt891(5)`: emitted by `Lq20.invoke`; its generic `Function1` is supplied at either `Llal1.h` or `Lej10.c`. The WebView-host call is entered through `Ljpc.invoke`; the other `Llal1.h` callers are `Lj20.invoke`, `Lss.invoke`, `Lt07.invoke`, and `Ly641.a`.
+- `Lt891(6)`: emitted by `Ldo1.invoke` selector case 18; callback is forwarded by `Lp1w`, supplied to `Le2w.e`, and carried by `Le2w.j` from parent `Le2w.c` ConversationSidebar rendering inputs.
+- The ultimate callback implementations and meanings of payload values 5 and 6 remain unknown. Static scans found no direct method-id or method-handle reference to `La991.G` outside its own definition. Neither candidate is proven to target the same coordinator instance, and the action-29 welcome path remains separate.
+- These are Android DEX research findings only. No authenticated/guest transport, server-side guest creation, conversation send, or Work capability has been implemented.

@@ -348,3 +348,16 @@ Two Lt891 construction sites are currently observed:
 The event producer(s), meaning of payload values 5 and 6, and concrete callback wiring into the La991 instance are still open. Do not claim that the ConversationSidebar or WebView path necessarily starts a guest session. The welcome CTA action-29/login-child flow remains separate; no evidence yet connects it to either Lt891 producer. The associated ChatgptClientMarkerUserSessionBootstrapRequestType is instrumentation, not a ChatJS telemetry field.
 
 **Evidence boundary:** static method/call-site inspection of selected DEX methods and generated coroutine/lambda code; this is not a complete decompilation or runtime trace. No HTTP client, route, request body, or server-issued guest token is exposed by this branch. Guest create/refresh and composer-send protocols remain unknown.
+
+
+## 2026-11-25 — Upstream callback ownership for the Lt891 guest-start candidates
+
+A targeted caller/constructor pass followed the generic callbacks that carry the two observed `Lt891` values one layer above their emitters:
+
+- The WebView-side `Lq20` callback is supplied at construction. Its two observed constructor sites are `Llal1.h` and `Lej10.c`. In the `Lej10.c` route, the first `Function1` is passed by its caller `Ljpc.invoke`, which forwards captured callback values from generic object fields. The separate `Llal1.h` callers are `Lj20.invoke`, `Lss.invoke`, `Lt07.invoke`, and `Ly641.a`. These identify callback provenance through UI wrappers, not the ultimate callback implementation.
+- The ConversationSidebar-side callback is passed as a `Function1` input to `Le2w.e`, then stored by `Lp1w` and forwarded into `Ldo1`. `Le2w.e` is reached by the `Ll1w` and `Lq1w` recomposition wrappers created from `Le2w.j`. The callback parameter is supplied through the parent `Le2w.j` inputs; `Le2w.j` is called from `Lx0w.invoke` and `Lm1w.invoke`, with `Lx0w` created by `Le2w.c`. This narrows ownership to a parent ConversationSidebar callback parameter, but its concrete target is opaque.
+- A static reference scan of all ten supplied base-APK DEX files found no call-site method reference and no method-handle entry to `La991.G(Louf0;)` outside its own definition. The only field with declared type `La991` is `Lz891.q`. This does not exclude reflection or dynamically supplied behavior, but the inspected DEX does not statically bind either candidate `Function1` to this `La991` instance.
+- Integer values 5 and 6 remain opaque constructor payloads in the `Lt891` value object. Their business meaning, the exact callback implementations, and any relationship to welcome CTA action-29 remain unverified. Do not infer that WebView or ConversationSidebar necessarily starts a guest session.
+- The established local state path remains only: `La991.G(Lt891)` → `Lmuz0` branch 9 → `Lgs31.b` → `Lau31.G`. The inspected branch and SessionManager methods do not reveal the server-side guest-create HTTP request or guest composer route.
+
+**Evidence boundary:** method/field reference and constructor-call analysis across the ten DEX files using the purpose-built partial scanner; no full decompilation, runtime callback observation, or live network operation. No ChatJS behavior is implemented by these findings.

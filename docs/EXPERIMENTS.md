@@ -205,3 +205,15 @@ This is a second event-gated caller of the local anonymous-session start transit
 A finer instruction-level decode corrects the previous La991.G branch summary: equality with Lw891.a routes the current Lw4h0 value through Lcq41.e and returns. The branch that launches Lmuz0 label 9 is a separate `instance-of Lt891` test. That coroutine invokes La991.R1, reads Lt891.a, constructs an Llnp0 value and calls Lgs31.b → Lau31.G. This is a local SessionManager guest-start path, not the guest HTTP create operation.
 
 Two Lt891 constructor paths are observed. Lq20.invoke emits Lt891(5) through a captured Function1; Lq20 is constructed by Llal1.h and Lej10.c, with the ultimate callback target unresolved. Ldo1.invoke selector case 18 can emit Lt891(6) through a captured Function1 when its inspected Lh70 value is null; this callback is constructed from Lp1w.invoke, and Lp1w is constructed by Le2w.e (a UI component containing the ConversationSidebar label). These callsites are candidates only: neither callback is proven to reach the particular La991.G instance at runtime. The event's producer/semantics, values 5/6, and link to the welcome CTA action-29 path remain unknown. The marker name observed in the coroutine is instrumentation and excluded from ChatJS. No guest HTTP create/refresh or composer-send schema was found.
+
+
+## 2026-11-25 — Upstream callback ownership for Lt891 candidate events
+
+Followed the two generic `Function1` callback paths from their emitters to the enclosing Android UI callers:
+
+- `Lq20` receives its callback at construction; callsites are `Llal1.h` and `Lej10.c`. The WebView-host route `Lej10.c` receives the callback from `Ljpc.invoke`, which forwards captured object fields. The separate `Llal1.h` callers are `Lj20.invoke`, `Lss.invoke`, `Lt07.invoke`, and `Ly641.a`.
+- The `Ldo1` callback is passed by `Lp1w`; `Lp1w` stores the `Function1` supplied to `Le2w.e`. That composable is called by `Ll1w`/`Lq1w` wrappers created from `Le2w.j`; parent callsites include `Lx0w.invoke` and `Lm1w.invoke`, with `Lx0w` created in `Le2w.c`.
+- Both callbacks remain generic parent UI parameters. Across all ten DEX files, no direct method reference or method-handle entry to `La991.G(Louf0;)` exists outside its definition; the only declared field of type `La991` is `Lz891.q`. Reflection or dynamic behavior was not ruled out, so this is a static-evidence boundary, not proof of runtime impossibility.
+- `Lt891(5)` and `Lt891(6)` payload semantics and the ultimate `Function1` implementations remain unknown. The welcome CTA action-29/login-child path is still separate. Neither candidate establishes the guest HTTP create/refresh or composer-send protocol.
+
+The next static target is the callback argument supplied by the parent `Llal1.h`/WebView wrappers and by the `Le2w.c`/ConversationSidebar rendering inputs; retain the unresolved status unless an actual callback implementation is recovered.

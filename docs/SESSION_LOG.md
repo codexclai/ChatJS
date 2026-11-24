@@ -608,3 +608,25 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Resolve the callback owners for both Lt891 constructors and establish whether either reaches the La991 instance. Keep the welcome action-29 flow separate until an actual connection appears.
 - Continue the preference writer/population trace, then identify exact guest HTTP create/refresh and composer-send request builders.
 - Continue Windows Work Local and Android Work Cloud as independent client implementations; Codex CLI/app-server stays reference-only.
+
+
+## 2026-11-25 — Upstream callback ownership for Lt891 guest-start candidates
+
+### Source findings
+- Followed the generic callback used by `Lq20.invoke` one layer upstream. `Lq20` has two observed constructor sites: `Llal1.h` and `Lej10.c`. The `Llal1.h` callers are `Lj20.invoke`, `Lss.invoke`, `Lt07.invoke`, and `Ly641.a`. In the WebView-host route, `Lej10.c` receives its first `Function1` from caller `Ljpc.invoke`, which forwards captured values from generic object fields.
+- Followed the `Ldo1.invoke` selector-case-18 callback through `Lp1w` and `Le2w.e`. Its `Function1` comes from the parent ConversationSidebar rendering path: `Le2w.j`, recomposition wrappers `Ll1w`/`Lq1w`, and parent `Le2w.c`/`Lx0w` inputs. This maps upstream UI callback parameters but not the final callback implementation.
+- Scanned all ten base-APK DEX files for references to `La991.G(Louf0;)`: no call-site method-id reference and no method-handle entry exists outside the method's own definition. The only field with declared type `La991` is `Lz891.q`. This static scan does not rule out reflection or dynamically supplied behavior; neither generic callback is proven to target this coordinator.
+- Integer values 5 and 6 in `Lt891` remain opaque. No semantic meaning is assigned and no connection to welcome CTA action-29 is established. The `Lt891` event branch's established local path remains `Lmuz0` label 9 → `Lgs31.b` → `Lau31.G`; it still does not reveal the guest HTTP create/refresh route or guest composer send client.
+
+### Canonical records updated
+- Updated Android protocol findings, experiments, knowledge base, open questions, TODO, capability matrix/inventory, AI memory, continuation, root ChatJS status, structured project state, generated project state and this session log.
+
+### Verification and limits
+- Live `main` at the start of this slice: `bb4f0319cb7b7b722d6855d6a04946d0f68cf75b`. Only `main` existed, with no open issues or pull requests. Parent CI run `45461107985` and CodeQL run `45461107883` passed.
+- No production JavaScript/TypeScript, tests, dependencies or package API were modified. This was static source inspection only; no HTTP request was made and no guest session was created.
+- Local `npm run check` and archive inspection will be run against a fresh current-main checkout before publication; no local verification result is claimed yet.
+
+### Handoff
+- Trace the concrete callback implementations behind `Llal1.h`/WebView `Ljpc` and the parent `Le2w.c`/ConversationSidebar parameters; assign no meaning to payload 5/6 unless the consuming callback is recovered.
+- Continue the welcome PreferenceStore writer/population trace, then locate actual guest HTTP create/refresh and composer prepare/send clients separately.
+- Keep Android Work Cloud and Windows Work Local separate, with no Codex CLI/app-server runtime dependency.
