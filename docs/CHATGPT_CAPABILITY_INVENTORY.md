@@ -110,3 +110,8 @@ A method-level DEX pass now follows the welcome CTA beyond its click closure:
 - The flow model includes Lwnk0 values Login, Signup and CombinedLoginSignup. The navigation/entry-point model Lfh8 includes multiple login surfaces such as Modal, FullScreen, LoginPage, AnonymousSideBar, LoginMenu, LandingScreen, WelcomeDisclosure and AccountSelector. These are login/onboarding UI-flow types, not guest-create protocol names.
 
 **Conclusion and evidence boundary:** the welcome CTA click is traced into the login-child/onboarding coordinator, which reads current local auth/guest session state and processes login-flow events using local SessionManager synchronization/state reconciliation. The trace does not prove that action 29 invokes the initial anonymous-session fallback Lgs31.b → Lau31.G, creates a new guest session, or sends a server request. That initial fallback remains a separate observed path. The actual guest create/refresh HTTP operation and anonymous composer prepare/send routes remain unidentified. Preference population for Lzlh1/Lylh1 also remains unresolved. No ChatJS runtime behavior is implemented by this source research.
+
+
+## 2026-11-24 — Separate event-gated guest-start caller
+
+A second local guest-start caller is observed through Lej6.invoke → La991.G(Louf0) → Lmuz0 branch 9 → Lgs31.b → Lau31.G. Its event producer and eligibility condition are not identified, and it is not linked to the welcome CTA action-29 path. The associated ChatgptClientMarkerUserSessionBootstrapRequestType marker is client instrumentation and excluded from ChatJS. Guest HTTP create/refresh and composer send remain unverified; no runtime capability status changes.

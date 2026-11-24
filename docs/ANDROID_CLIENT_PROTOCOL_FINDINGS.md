@@ -318,3 +318,17 @@ A method-level DEX pass now follows the welcome CTA beyond its click closure:
 - The flow model includes Lwnk0 values Login, Signup and CombinedLoginSignup. The navigation/entry-point model Lfh8 includes multiple login surfaces such as Modal, FullScreen, LoginPage, AnonymousSideBar, LoginMenu, LandingScreen, WelcomeDisclosure and AccountSelector. These are login/onboarding UI-flow types, not guest-create protocol names.
 
 **Conclusion and evidence boundary:** the welcome CTA click is traced into the login-child/onboarding coordinator, which reads current local auth/guest session state and processes login-flow events using local SessionManager synchronization/state reconciliation. The trace does not prove that action 29 invokes the initial anonymous-session fallback Lgs31.b → Lau31.G, creates a new guest session, or sends a server request. That initial fallback remains a separate observed path. The actual guest create/refresh HTTP operation and anonymous composer prepare/send routes remain unidentified. Preference population for Lzlh1/Lylh1 also remains unresolved. No ChatJS runtime behavior is implemented by this source research.
+
+
+## 2026-11-24 — Separate event-gated SessionManager guest-start path
+
+A further DEX call-site trace found another caller of the initial anonymous-session start wrapper, separate from the welcome CTA action-29/login-child path:
+
+- Lej6.invoke() constructs La991, passing its current Lks31 AuthSession wrapper, a Lw4h0 state-flow dependency, a Function0 callback and other login/session dependencies.
+- La991.G(Louf0) compares the incoming event with the observed Lw891.a event value and evaluates a Lcq41.e condition. The matching branch launches the generated Lmuz0 coroutine with branch value 9.
+- Branch 9 handles a client marker identified in the DEX as protobuf_analytics_events/v1/ChatgptClientMarkerUserSessionBootstrapRequestType, invokes the La991.R1 Function0 callback, and calls Lgs31.b(...). The Lgs31.b wrapper delegates to Lau31.G(...), the SessionManager's initial anonymous-start transition.
+- This establishes a second event-gated call path into the local SessionManager guest-start operation. The producer/meaning of the Louf0 event and the Lcq41.e eligibility condition are not recovered. The DEX trace does not connect this event to the separate welcome CTA action-29 → Lgs10 → Ltu10 → Lqik0 → Lnik0 path.
+- The previously inspected Lau31.G implementation still leads through a coroutine mutex, local model/session/feature evaluation, local state resolution and DataStore transition. This additional caller does not reveal an HTTP client, guest-create route, request body, server-issued guest token or composer-send endpoint.
+- The ChatgptClientMarkerUserSessionBootstrapRequestType value is client instrumentation. ChatJS must not transmit or reproduce it as telemetry.
+
+**Evidence boundary:** this is static DEX evidence from selected method and call-site inspection using a purpose-built partial bytecode scanner, not a full decompilation or complete call graph. The trigger's semantic name, event producer, relationship to welcome CTA, and server-side guest creation remain unknown. Do not merge the two UI/event paths or infer a network request from the marker name.

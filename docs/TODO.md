@@ -91,4 +91,4 @@ Never create branches or worktrees. Keep all repository work on main.
 
 
 - [ ] Trace the writer/population source for WelcomeLanguageEnrollment / Lzlh1 / Lylh1, including the source of guestCtaCopy, local seed vs remote fetch, cache/update conditions and feature gates.
-- [ ] Trace which action-29 login-child coordinator branch, if any, reaches the separate Lgs31.b → Lau31.G initial guest fallback; the observed path currently reads local session state and handles login-flow events through Lau31.i/Lxs31.
+- [ ] Trace the producer/meaning of the Louf0 event and Lcq41.e gate consumed by La991.G, and determine whether the separate action-29/login-child path emits it. Keep it distinct from the observed Lej6 → La991.G → Lmuz0 branch 9 → Lgs31.b → Lau31.G local guest-start path until a concrete event connection is found.
