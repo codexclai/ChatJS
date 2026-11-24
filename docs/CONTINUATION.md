@@ -118,3 +118,8 @@ Two candidate Lt891 constructor sites are found: `Lq20.invoke` emits `Lt891(5)` 
 ### Android Lt891 parent callback boundary — 2026-11-25
 
 The next trace is now at the parent callback inputs. `Lq20` emits `Lt891(5)`; its generic `Function1` is supplied by `Llal1.h` callers (`Lj20`, `Lss`, `Lt07`, `Ly641`) or the WebView-host `Lej10.c` via `Ljpc.invoke`. `Ldo1` emits `Lt891(6)` through `Lp1w` → `Le2w.e` → `Le2w.j` and parent `Le2w.c` ConversationSidebar inputs. A scan of all ten DEX files found no direct method-id or method-handle reference to `La991.G` outside its own definition; dynamically supplied behavior remains unverified. Do not infer callback targets or payload semantics. The established guest-start path is local `Lt891` branch → `Lmuz0` label 9 → `Lgs31.b` → `Lau31.G`; server HTTP create/refresh and guest composer routes remain unknown.
+
+
+### Android generic ViewModel callback dispatch — 2026-11-25
+
+`La991` extends `Lv6a`; `Lv6a.H(Louf0)` invokes virtual `G(Louf0)`. Do not treat absence of direct references to `La991.G` as proof that generic callbacks cannot reach it. Generated `Le6` captures a `Lv6a` and calls `H`, but its observed creation is in Composer / FreeThinkingGaugeNuxHost. The WebView `Lq20` callback and ConversationSidebar `Ldo1` callback remain generic parent Function1 parameters with no proven binding to that `Le6` or the same `La991` receiver. Continue from the actual callback objects and receiver bindings; keep payload values 5/6 opaque and do not connect them to welcome CTA without evidence. The only confirmed Lt891 path remains local SessionManager coordination; guest HTTP creation and composer send remain unknown.

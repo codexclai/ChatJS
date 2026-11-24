@@ -656,3 +656,26 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Resolve the concrete Function1 callback implementations/receivers for Lt891(5) and Lt891(6); investigate dynamic wiring carefully because the static ten-DEX scan found no La991.G method-id or method-handle references outside the method itself.
 - Trace welcome PreferenceStore population, then exact guest HTTP create/refresh and composer prepare/send clients independently.
 - Continue Windows Work Local and Android Work Cloud as separate direct ChatGPT client workflows; Codex CLI/app-server remains source reference only.
+
+
+## 2026-11-25 — Android virtual ViewModel bridge and callback receiver boundary
+
+### Source findings
+- Confirmed `La991` extends `Lv6a`; base method `Lv6a.H(Louf0)` invokes virtual `G(Louf0)` on its receiver. A generic callback capturing a La991 instance through this base method can dynamically dispatch to `La991.G`.
+- Located generated `Le6` Function1: its constructor captures a `Lv6a`; its `invoke` calls `Lv6a.H`. The observed creation site is `Lgbs.e` under the `Composer` label; it is passed to `Lzx1.l` / `FreeThinkingGaugeNuxHost`. This verifies the generic dispatch pattern but not that the object is supplied to the candidate WebView or ConversationSidebar callbacks.
+- The WebView callback passed to `Lq20` through `Lej10.c` is a parent Function1 forwarded by `Ljpc.invoke`. The alternative `Lq20` construction through `Llal1.h` has callers including `Ly641.a` / `Lyi1.J`, with the latter carrying the UI label `SettingsWorkspaceListItem`. The `Ldo1` Function1 remains a parent callback carried through `Le2w.c`, `Lx0w`/`Lm1w`, `Le2w.j`, `Le2w.e` and `Lp1w` for `ConversationSidebarContent`.
+- There is still no direct call-site method-id or method-handle reference to `La991.G` outside its definition in the ten DEX files, but this is not evidence against dynamic dispatch through `Lv6a.H`. The actual callback object and receiver binding to the same La991 instance remain unknown.
+- The confirmed `Lt891` branch still does only local SessionManager startup/state coordination through `Lmuz0` branch 9 → `Lgs31.b` → `Lau31.G`. No guest HTTP create/refresh route, request/response schema or composer send route was recovered. The welcome CTA action-29/login-child path remains separate.
+
+### Canonical records updated
+- Updated Android protocol findings, experiments, knowledge base, open questions, TODO, capability matrix/inventory, AI memory, continuation, root ChatJS status, structured state, generated state and this session log.
+
+### Verification and limits
+- Live `main` at the start of this slice: `fed4eff6d0f1a10eb0bae0f0c7b44ba9052b2b16`. Parent CI `45464456049` and CodeQL `45464455961` passed on the parent-verified head `7a6812ae3c15bd9d7405996986da20e4d0a04db9`.
+- No production JavaScript/TypeScript, tests, dependencies or public APIs were modified. This was static method/callsite inspection only; no live ChatGPT network call or guest-session creation occurred.
+- Full local `npm run check` and archive inspection will be performed against the resulting commit before closeout; no local result is claimed yet.
+
+### Handoff
+- Continue from the parent callback objects and resolve their actual receivers (especially `Lv6a.H` capture); keep Lt891 payload meanings and the welcome CTA connection unknown until recovered.
+- Continue the welcome PreferenceStore writer/population trace, then identify guest HTTP create/refresh and composer prepare/send builders separately.
+- Keep Android Work Cloud and Windows Work Local separate; no Codex CLI/app-server runtime dependency.

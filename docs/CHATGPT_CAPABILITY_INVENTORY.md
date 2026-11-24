@@ -128,3 +128,8 @@ The local guest-start coroutine is dispatched by an `Lt891` event, not by W891.a
 - `Lt891(6)`: emitted by `Ldo1.invoke` selector case 18; callback is forwarded by `Lp1w`, supplied to `Le2w.e`, and carried by `Le2w.j` from parent `Le2w.c` ConversationSidebar rendering inputs.
 - The ultimate callback implementations and meanings of payload values 5 and 6 remain unknown. Static scans found no direct method-id or method-handle reference to `La991.G` outside its own definition. Neither candidate is proven to target the same coordinator instance, and the action-29 welcome path remains separate.
 - These are Android DEX research findings only. No authenticated/guest transport, server-side guest creation, conversation send, or Work capability has been implemented.
+
+
+## 2026-11-25 — Virtual callback dispatch correction
+
+`Lv6a.H(Louf0)` invokes virtual `G(Louf0)`, and `La991` extends `Lv6a`; generic intent callbacks can therefore reach `La991.G` when bound to that instance. The known `Le6` Function1 implementation captures a `Lv6a` and calls `H`, but its observed construction is in Composer / FreeThinkingGaugeNuxHost. No callsite proves that the WebView `Lq20` or ConversationSidebar `Ldo1` callback receives this exact bridge or captures the same `La991` receiver. The earlier direct-reference scan cannot rule out dynamic dispatch. Server guest create/refresh and composer send remain unimplemented and untraced.

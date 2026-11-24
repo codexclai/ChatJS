@@ -136,3 +136,6 @@ The Android integrity SDK uses a 300-second local TOO_MANY_REQUESTS cooldown and
 
 
 - Android guest-start callback research (2026-11-25): `Lq20.invoke` forwards `Lt891(5)` through a generic `Function1` supplied by `Llal1.h` callers or the WebView-host `Lej10.c`/`Ljpc.invoke` path. `Ldo1.invoke` selector case 18 forwards `Lt891(6)` through `Lp1w` → `Le2w.e` → `Le2w.j` and parent `Le2w.c` ConversationSidebar inputs. Their callback implementations and payload meanings remain unknown. No direct method-id or method-handle reference to `La991.G` exists outside its definition in the ten DEX files; this does not exclude dynamic behavior. Keep the event paths unconnected to the coordinator and welcome CTA until proven.
+
+
+- Android callback evidence correction (2026-11-25): `La991` extends `Lv6a`; `Lv6a.H(Louf0)` dispatches virtually to `G(Louf0)`, so a generic callback can reach `La991.G` if it captures that receiver. `Le6` implements this bridge but is observed under Composer / FreeThinkingGaugeNuxHost, not statically connected to the WebView or ConversationSidebar event callbacks. Their actual receiver bindings remain unknown. No guest HTTP create/refresh or composer send protocol is identified.
