@@ -97,4 +97,5 @@ Never create branches or worktrees. Keep all repository work on main.
 
 - [ ] Check the candidate Lt891 parent callbacks for a captured `La991` receiver via the generic `Lv6a.H(Louf0)` virtual-dispatch bridge. The known `Le6` bridge is created in Composer / FreeThinkingGaugeNuxHost and is not proven to be the callback supplied to either the WebView or ConversationSidebar.
 
-- [ ] Trace the serialized `Lnlh1` welcome-presentation model writer/source and the remote/cache path for `guestCtaCopy`, independently of the now-traced local `Lylh1` / `welcome_language_opportunity` enrollment record writer (`Ltl30` → `Lcmh1` → `Lzyv0.m`).
+- [ ] Trace the Statsig SDK remote config refresh/cache path for the named welcome_* parameters used by Lxr10.h(Lof70) to build Lplh1 (serializer Lnlh1), including remote payload, cache expiry and offline/default precedence.
+- [ ] Trace the upstream Statsig configuration refresh/cache path for the Android welcome welcome_* parameters. Named declarations are mapped in the DEX findings; remote refresh endpoint, cache policy, and offline/default precedence remain unknown. Exclude SDK exposure/analytics reporting from ChatJS.

@@ -94,7 +94,7 @@ The Lr10 anonymous-session-labelled local profile is consumed by QrLoginApi Lqz8
 Correction to the Android DEX dependency map: Lof70 is the Statsig/experimentation interface (Lmx71 StatsigManager / Lbu70 FakeExperimentManager), not an auth/session provider. Lau31.F calls Lof70.G for feature/experiment evaluation. The unauthenticated refresh error path in Lis31 reads a local snapshot and calls Lau31.u for local state transition. The separate Lau31.n → Ldt31 → Lsk8/Ld7x chain is AuthSession/SessionLogin credential-backed DPoP/token work. These do not establish the missing guest-session HTTP create request.
 
 
-The Android welcome UI has a separate guest-presentation model: Lnlh1 contains guestCtaCopy and CTA/display flags; WelcomeLanguageEnrollment reads its Lylh1 value through local PreferenceStore Lzlh1; Lvlh1 records anonymous_welcome; Lxr10 maps the copy/flags into welcome/composer UI state under feature gates. This confirms a guest-welcome presentation/configuration surface, but not its population source, click callback, SessionManager action or guest HTTP protocol.
+The Android welcome UI has a separate guest-presentation model: Lplh1 (generated serializer Lnlh1) contains guestCtaCopy and CTA/display flags; WelcomeLanguageEnrollment reads its Lylh1 value through local PreferenceStore Lzlh1; Lvlh1 records anonymous_welcome; Lxr10 maps the copy/flags into welcome/composer UI state under feature gates. This confirms a guest-welcome presentation/configuration surface, but not its population source, click callback, SessionManager action or guest HTTP protocol.
 
 
 ## 2026-11-24 — Welcome CTA action-29 path into login-child coordinator
@@ -137,3 +137,7 @@ The local guest-start coroutine is dispatched by an `Lt891` event, not by W891.a
 ## 2026-11-25 — Welcome enrollment preference writer traced
 
 The Android local preference key is `welcome_language_opportunity` (`Le7f1` → `Lap6`, serializer `Lxlh1`) with default `Lylh1(null, false, null)`. `Lvlh1.c` launches `Ltl30`, which reads the current `Lylh1`, evaluates Statsig-derived `Lplh1`, gathers locale/app/install context, builds `Lcmh1`, and persists an updated `Lylh1` via `Lzyv0.m` / `Lhi41` branch 19 / `Lylh1.a`. This is a local enrollment record, not a guest session or message request. The serialized `Lnlh1` guest-presentation model and its `guestCtaCopy` source remain separate and untraced; no implementation status changes.
+
+## 2026-11-25 — Statsig keys behind Android guest-welcome presentation
+
+Lfs10 declares typed Statsig parameter keys welcome, welcome_skip_available, welcome_button_copy, welcome_language_presentation, welcome_language_suggested_tags, welcome_language_configuration_version, welcome_disclosure_use_combined_disclosures, welcome_disclosure_use_alternative_subtitle, welcome_disclosure_hide_subtitle, welcome_disclosure_shorten_accuracy_disclosure, and welcome_disclosure_guest_cta_copy. Lxr10.h(Lof70) evaluates them through Lmx71 (StatsigManager) and constructs Lplh1; Lnlh1 is the generated serializer. The local enrollment writer Ltl30 embeds Lplh1 in Lcmh1 and persists it in Lylh1. Lmx71 wraps Lix71 / Lzw71 SDK state and typed getters; upstream Statsig refresh/cache expiry/offline precedence remain unknown. Do not port analytics/exposure logging to ChatJS.

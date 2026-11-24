@@ -712,3 +712,27 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Trace the writer/source of `Lnlh1` (especially `guestCtaCopy`) independently. Verify whether the feature model `Lplh1` contains or refers to this presentation value, and where its transport/cache data is installed.
 - Continue the `La991` receiver binding investigation without inferring it from a shared generic callback type.
 - Locate the real guest HTTP create/refresh and guest composer prepare/send clients separately; keep Windows Work Local and Android Work Cloud distinct.
+
+## 2026-11-25 — Android welcome Statsig parameter names and cached evaluation
+
+### Source findings
+- Corrected the obfuscated class mapping: Lnlh1 is the generated Kotlin serializer; Lplh1 is the actual welcome presentation data class.
+- Lnlh1's generated descriptor contains presentation, useCombinedDisclosures, useAlternativeSubtitle, ctaStyle, guestCtaCopy, hideLoginButton, and showGoogleCta.
+- Lfs10.<clinit> declares named typed Statsig parameters: welcome, welcome_skip_available, welcome_button_copy, welcome_language_presentation, welcome_language_suggested_tags, welcome_language_configuration_version, welcome_disclosure_use_combined_disclosures, welcome_disclosure_use_alternative_subtitle, welcome_disclosure_hide_subtitle, welcome_disclosure_shorten_accuracy_disclosure, and welcome_disclosure_guest_cta_copy.
+- Lxr10.h(Lof70) evaluates these typed inputs through the Lof70 experimentation interface and constructs Lplh1. The app-facing Lof70 implementation is Lmx71 (StatsigManager), wrapping SDK state through Lix71 / Lzw71. Ltl30 embeds Lplh1 as Lcmh1 field j and writes the updated local Lylh1 value through Lzyv0.m / Lhi41 branch 19.
+- Lmx71 getters use the current evaluated/cache-backed SDK state. Its separate Llmt0 helper loads local SharedPreferences override/default maps into manager-side state; it is not the welcome PreferenceStore.
+- The exact Statsig SDK remote config refresh endpoint, request/response schema, fetch/refresh timing, cache expiry/persistence and offline/default precedence remain unidentified. No endpoint has been inferred from the parameter declarations.
+- Statsig is part of the shipped Android app's feature configuration, not an inference provider. ChatJS must not port SDK telemetry, exposure logging, analytics callbacks or captured-event reporting.
+
+### Evidence boundary and implementation status
+- The actual welcome parameter key names and data flow into Lplh1 / Lcmh1 / Lylh1 are static DEX findings from the supplied public Android 1.2026.321 APK.
+- No Statsig network fetch, analytics event, guest session creation, or guest composer request was run.
+- No production JS/TS, dependencies or public package API changed. No ChatJS implementation status changes.
+
+### Canonical records updated
+- Corrected current serializer/model attribution; updated Android protocol findings, experiments, knowledge base, open questions, TODO, capability matrix/inventory, AI memory, continuation, structured project state, generated state and this session log.
+
+### Handoff
+- Continue the Statsig SDK config refresh/cache machinery only if it clarifies the shipped client data flow; avoid integrating analytics/exposure behavior into ChatJS.
+- Then prioritize the actual anonymous guest create/refresh HTTP client and guest composer prepare/send path, which remain the critical missing protocol.
+- Keep Windows Work Local and Android Work Cloud as separate client implementations.

@@ -171,7 +171,7 @@ A separate Lks31 (AuthSession, SessionLogin) coroutine calls Lau31.n → Ldt31, 
 
 ## 2026-11-24 — Guest welcome-presentation preference and UI mapping
 
-A follow-up DEX trace found a distinct ChatGPT welcome-presentation model, separate from the Shop plugin's similarly named copy. Lnlh1 is a serialized welcome-presentation model with fields including ctaStyle, guestCtaCopy, hideLoginButton, showGoogleCta and presentation/disclosure configuration. Its typed stored value is Lylh1.
+A follow-up DEX trace found a distinct ChatGPT welcome-presentation model, separate from the Shop plugin's similarly named copy. Lnlh1 is the generated Kotlin serializer for Lplh1, the actual welcome-presentation model with fields including ctaStyle, guestCtaCopy, hideLoginButton, showGoogleCta and presentation/disclosure configuration. Lylh1 is a separate local enrollment record.
 
 The WelcomeLanguageEnrollment manager receives Lzlh1, a PreferenceStore subclass using the global_ preference namespace. The inspected manager path accesses the typed value through local preference-store methods; no HTTP client/request builder was identified there. Lvlh1 reports an anonymous_welcome enrollment event. Lxr10 maps the nested guest CTA copy and flags into welcome/composer UI state, using Statsig/feature-gate decisions and a special skip value.
 
@@ -233,3 +233,9 @@ Traced the local preference writer beyond the `WelcomeLanguageEnrollment` manage
 - `Lvlh1.e` separately emits `anonymous_welcome`; that is instrumentation and is not a ChatJS requirement.
 - Later `Lz840.d` / `Ljb40` account/profile repository work in the coroutine is a separate connector/profile branch, not evidence of the welcome presentation or guest session being fetched. No guest HTTP create/send request appears.
 - This resolves the local enrollment record writer, not the origin of `Lnlh1.guestCtaCopy`. The `Lnlh1` presentation model and `Lcmh1` persisted enrollment record remain distinct; the remote/cache source of `Lnlh1` is still unknown.
+
+## 2026-11-25 — Named Statsig inputs for the Android welcome model
+
+The Lfs10 class initializer declares typed parameters welcome, welcome_skip_available, welcome_button_copy, welcome_language_presentation, welcome_language_suggested_tags, welcome_language_configuration_version, welcome_disclosure_use_combined_disclosures, welcome_disclosure_use_alternative_subtitle, welcome_disclosure_hide_subtitle, welcome_disclosure_shorten_accuracy_disclosure, and welcome_disclosure_guest_cta_copy. Lxr10.h(Lof70) reads these through the app-facing Statsig manager and constructs Lplh1. Lnlh1 is the serializer for that data model. The Ltl30 coroutine embeds the model in Lcmh1 and persists that snapshot inside Lylh1 / welcome_language_opportunity.
+
+Lof70 is the app-facing experimentation interface and Lmx71 is its StatsigManager implementation. It wraps SDK state through Lix71 / Lzw71; getters read current evaluated parameter values, with a local SharedPreferences-backed override/default store (Llmt0). The actual upstream Statsig refresh endpoint, config response shape, refresh schedule, expiry and offline precedence are not identified. This is a first-party ChatGPT client feature-configuration path, not an inference provider. ChatJS must not port Statsig telemetry/exposure events or SDK reporting under the zero-telemetry requirement. No guest session or composer HTTP request is found here.

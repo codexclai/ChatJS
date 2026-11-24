@@ -136,7 +136,7 @@ The string "Continue as Guest" belongs to Li230, a serialized Shop plugin UI mod
 
 **Guest welcome-presentation model and local preference path — 2026-11-24**
 
-- Lnlh1 is a serialized welcome-presentation model. Its observed fields include presentation/disclosure configuration, ctaStyle, guestCtaCopy, hideLoginButton, and showGoogleCta. It is distinct from the unrelated Shop plugin model Li230 containing the phrase "Continue as Guest".
+- Lnlh1 is the generated Kotlin serializer for Lplh1, the actual welcome-presentation model. Lplh1's serialized fields include presentation, useCombinedDisclosures, useAlternativeSubtitle, ctaStyle, guestCtaCopy, hideLoginButton, and showGoogleCta. It is distinct from the unrelated Shop plugin model Li230 containing the phrase "Continue as Guest".
 - The typed welcome value is stored as Lylh1. The WelcomeLanguageEnrollment manager receives Lzlh1, a PreferenceStore subclass using the global_ preference namespace. The inspected manager reads/writes this value through inherited local preference-store methods; the traced path does not contain an HTTP client or request builder.
 - Lvlh1 records an anonymous_welcome enrollment event. This is evidence that the app has a separately named anonymous-welcome enrollment/presentation concept. It does not reveal the server-side source of the preference value, the eligibility policy in full, or an anonymous-session creation endpoint.
 - Lxr10 maps the nested guestCtaCopy and presentation flags into welcome/composer UI state. The inspected mapping includes Statsig/feature gates and a special "skip" value. This establishes consumption of the guest CTA copy in UI state; it does not establish the click callback, what action a tap performs, or that it calls SessionManager.
@@ -395,3 +395,36 @@ A further Android DEX trace followed the actual writer of the local welcome-lang
 - It does not establish the server source, fetch route, cache/update policy, or writer for the separate serialized `Lnlh1` model containing `guestCtaCopy`. The `Lnlh1` presentation model and `Lcmh1` enrollment record must remain distinct until their exact data-flow connection is shown.
 - It does not create an anonymous session, call the guest SessionManager start method, generate a server guest ID, or send a composer request. `anonymous_welcome` is telemetry instrumentation and remains excluded from ChatJS.
 - This was selected static DEX disassembly/reference tracing of the supplied public XAPK, not a full decompilation or runtime network trace. No user/account request was made and no session was created.
+
+## 2026-11-25 — Statsig welcome parameter declarations and evaluation boundary
+
+A further DEX pass mapped the exact Statsig parameter declarations consumed when constructing the Android welcome presentation model.
+
+### Typed parameter declarations
+- The static initializer of Lfs10 declares these named Statsig parameters using the Ly7t typed-parameter builder:
+  - welcome (boolean)
+  - welcome_skip_available (boolean)
+  - welcome_button_copy (enum/string presentation choice)
+  - welcome_language_presentation (enum presentation mode)
+  - welcome_language_suggested_tags (list)
+  - welcome_language_configuration_version (string; declared default is the empty string)
+  - welcome_disclosure_use_combined_disclosures (boolean)
+  - welcome_disclosure_use_alternative_subtitle (boolean)
+  - welcome_disclosure_hide_subtitle (boolean)
+  - welcome_disclosure_shorten_accuracy_disclosure (boolean)
+  - welcome_disclosure_guest_cta_copy (enum/string choice)
+- Lxr10.h(Lof70) reads these typed keys through the app's StatsigManager interface and constructs Lplh1. It also checks a separate Lo680-typed Statsig gate/condition before returning the complete model; exact remote parameter/gate defaults are not inferred from the callsite alone.
+- Lnlh1 is the generated Kotlin serializer for Lplh1, not the data model. Lplh1 is embedded by Ltl30 as field j in Lcmh1; Lcmh1 is then stored within Lylh1 under the local welcome_language_opportunity preference.
+
+### What the Statsig manager trace establishes
+- Lof70 is the app-facing experimentation interface; Lmx71 is its StatsigManager implementation. Lxr10.h calls the typed parameter evaluation methods on that interface.
+- Lmx71 wraps a Statsig SDK instance (Lix71 / Lzw71) and reads evaluated config/parameter results from the SDK's current in-memory/cache-backed state. The app-facing parameter getters are not the guest-session HTTP client.
+- The SDK wrapper also has a local SharedPreferences-backed override/default store (Llmt0) and asynchronous SDK lifecycle/user-update hooks (Lix71). These are distinct from the welcome-enrollment PreferenceStore (Lzlh1).
+- The inspected getters do not identify the upstream Statsig network refresh endpoint, exact response/config payload, download timing, persistence/expiry strategy, or offline fallback precedence. That SDK acquisition/cache trace remains open.
+
+### Separation and policy
+- This is a feature-configuration/presentation path inside the shipped ChatGPT Android app. It is not another inference provider, model backend, or ChatJS runtime provider.
+- ChatJS must not port Statsig analytics, exposure logging, SDK diagnostics, anonymous_welcome, or captured-event transport. The owner requires zero telemetry and no unsolicited network traffic.
+- No guest SessionManager start, guest HTTP create/refresh request, server guest ID, or composer-send request is established by these Statsig keys.
+
+Evidence boundary: selected static DEX method and class-initializer inspection of the supplied public Android 1.2026.321 XAPK. No live Statsig request, analytics call, account operation, or guest session was initiated.
