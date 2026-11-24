@@ -96,3 +96,8 @@ New infrastructure evidence: Lp6t defines backend-api and backend-anon roots, Lv
 
 
 QR-profile disambiguation: Lr10's local anonymous-session descriptor is consumed by QrLoginApi Lqz8. The associated QR sign-in/review flow references /backend-api/qr-code/details and /backend-api/qr-code/action; these are not guest conversation routes. Do not infer guest create/send behavior from the descriptor.
+
+
+### Android SessionManager dependency correction — 2026-11-24
+
+Do not treat Lof70 as an auth/session provider. It is the Statsig/experimentation interface (Lmx71 StatsigManager; Lbu70 FakeExperimentManager); Lau31.F invokes Lof70.G for feature/experiment evaluation. The Lis31 Failed to refresh the unauthenticated session path reads Llzx.u local session snapshot and calls Lau31.u for local manager transition (E/r), with no HTTP call in the inspected method. A separate Lks31 AuthSession/SessionLogin → Lau31.n → Ldt31 → Lsk8/Ld7x CredentialsRepositoryImpl path uses DPoP/credential token refresh and is not proven guest creation. Continue seeking a concrete network request behind the actual guest fallback; keep guest create/send routes unknown until a request builder/client is found.

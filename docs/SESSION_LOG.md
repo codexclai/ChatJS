@@ -501,3 +501,15 @@ Android has a genuine anonymous backend base/path family and a locally configure
 - A final source cross-reference follows Lr10's anonymous-session-labelled local profile into QrLoginApi Lqz8. QR-login UI coroutines reference /backend-api/qr-code/details (Lj32) and /backend-api/qr-code/action (Lj1v0). This is a separate QR sign-in/review/approval feature under backend-api, not the missing guest conversation create/send protocol.
 - Local validation after this QR attribution update: npm run docs:sync and /tmp/node26/bin/npm run check passed; generated state synchronized, all 27 Markdown links passed, all 23 tests passed, and the eight-file module archive was rebuilt.
 - Current main at start of this follow-up was 10da00ee3f34de333e4371e0ef094dbddf8021a4. Remote CI/CodeQL for the QR-attribution doc update remain to be verified after its fast-forward commit.
+
+
+## 2026-11-24 — Correction: Statsig dependency and unauthenticated state refresh
+
+A more careful DEX implementation/call-site pass corrected an earlier misattribution:
+
+- Lof70 is the experimentation/Statsig interface, not an auth/session provider. Its concrete implementations in the supplied DEX are Lmx71 (constructor logger tag StatsigManager, with Experimentation config) and Lbu70 (FakeExperimentManager). Lau31.h, Lma11.b, and Lq5d1.e are feature/experiment dependencies. Lau31.F invokes Lof70.G as feature/experiment evaluation before its post-logout Lau31.E state transition; it does not read auth/session state from Lof70.
+- The Lis31 path that logs Failed to refresh the unauthenticated session obtains the current local session snapshot via Llzx.u, packages it as an Lal8 state/decision value and calls Lau31.u. Lau31.u derives the next state and delegates to Lau31.E/Lau31.r. The inspected method graph contains no HTTP client, URL, or request builder. The error-log wording identifies local unauthenticated state refresh/reconciliation, not proof of a server request.
+- A separate Lks31 class is tagged AuthSession and creates a SessionLogin event. Its coroutine calls Lau31.n → Ldt31, then Lsk8 (AuthRepository) and Ld7x (CredentialsRepositoryImpl). This credential/token path includes DPoP handling, missing/invalid refresh-credential errors, background-refresh policy and token/credential persistence failures. It is separate authenticated credential management and has not been shown to create the anonymous guest session.
+- Correct dependency attribution for Lau31: field h:Lof70 = Statsig/experimentation; c:Lvv31 = local session DataStore; i:Lcn8 = AuthStorage; j:Lsk8 = AuthRepository. Keep feature gates, account credentials, local session metadata and server-side anonymous session creation separate.
+- Updated current Android findings, open questions, experiments, knowledge base, capability inventory/matrix, AI memory, continuation guide and TODO. Earlier session entries remain chronological; this addendum supersedes the inaccurate Lof70/auth-session attribution.
+- No guest network create/refresh request has been identified in these paths. The actual accountless HTTP operation and guest composer route remain open.

@@ -89,3 +89,6 @@ The Android guest-start dependency chain is better bounded: RootSessionCoordinat
 
 
 The Lr10 anonymous-session-labelled local profile is consumed by QrLoginApi Lqz8. The corresponding QR flow references /backend-api/qr-code/details and /backend-api/qr-code/action for QR sign-in/review/approval. Those routes are not the accountless guest conversation create/send API; the local profile name alone does not establish the guest protocol.
+
+
+Correction to the Android DEX dependency map: Lof70 is the Statsig/experimentation interface (Lmx71 StatsigManager / Lbu70 FakeExperimentManager), not an auth/session provider. Lau31.F calls Lof70.G for feature/experiment evaluation. The unauthenticated refresh error path in Lis31 reads a local snapshot and calls Lau31.u for local state transition. The separate Lau31.n → Ldt31 → Lsk8/Ld7x chain is AuthSession/SessionLogin credential-backed DPoP/token work. These do not establish the missing guest-session HTTP create request.
