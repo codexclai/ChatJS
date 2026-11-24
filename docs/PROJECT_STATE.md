@@ -6,7 +6,6 @@
 
 | Field | Current value |
 | --- | --- |
-
 | Project | ChatJS |
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
