@@ -66,3 +66,6 @@ Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, conta
 ## Evidence and promotion
 
 Keep package observation, source inspection, behavior tracing, implemented Node.js behavior, and end-to-end account tests as different evidence levels. A client interface evidenced by shipped code must not be rejected merely because it is missing from public API documentation. Mark a feature Implemented only after real code, success/failure tests, relevant cancellation/concurrency/security coverage, ESM/CommonJS parity, accurate declarations, user docs, and actual integration evidence.
+
+
+Android guest-welcome UI evidence: Lnlh1/Lylh1 carries guestCtaCopy and CTA display flags; WelcomeLanguageEnrollment reads it from local PreferenceStore Lzlh1; Lxr10 maps it into UI state. This is presentation evidence only; source population, click action and guest network calls remain unknown.

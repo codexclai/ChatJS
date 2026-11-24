@@ -81,3 +81,7 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Reconstruct Windows desktop Work Local's app/native-host request lifecycle and its local filesystem/process/approval boundaries without Codex CLI/app-server dependency.
 - [ ] Reconstruct Android Work Cloud's task/session/progress/artifact/control protocol and its account/guest eligibility rules.
 - [ ] Determine which Codex CLI workflows are materially distinct from desktop Work and therefore merit a separately exposed ChatJS capability.
+
+
+- [ ] Trace who populates Lzlh1 / the Lylh1 welcome-presentation preference (including the source of Lnlh1.guestCtaCopy), whether it is remotely delivered or locally seeded, and the exact eligibility/cache/update conditions. The currently inspected manager path is PreferenceStore-backed and has no visible HTTP request.
+- [ ] Trace the UI callback that consumes Lxr10's mapped guestCtaCopy/CTA flags, determine the action behind the tap and whether it reaches SessionManager's initial anonymous fallback. The current trace proves UI-state mapping only, not the callback.

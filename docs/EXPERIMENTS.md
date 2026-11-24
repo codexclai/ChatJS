@@ -167,3 +167,12 @@ The initial attribution of Lof70 as an auth/session provider was wrong. The inte
 The Lis31 coroutine's Failed to refresh the unauthenticated session path obtains the current local snapshot with Llzx.u, constructs/passes an Lal8 state record to Lau31.u, and applies Lau31.E/Lau31.r local SessionManager state logic. The inspected Lau31.u call graph has no HTTP client, route or request builder. The log message is the name of a local session-state refresh/reconciliation path, not proof of a server request.
 
 A separate Lks31 (AuthSession, SessionLogin) coroutine calls Lau31.n → Ldt31, which uses Lsk8 (AuthRepository) and Ld7x (CredentialsRepositoryImpl) for credential-backed token work, including DPoP and missing/invalid refresh credential handling. This is an authenticated credential/session path and has not been shown to create or refresh the accountless guest session. Keep the three roles distinct: Lof70 = Statsig; Lvv31 = local session DataStore; Lsk8/Ld7x = account credential/token path.
+
+
+## 2026-11-24 — Guest welcome-presentation preference and UI mapping
+
+A follow-up DEX trace found a distinct ChatGPT welcome-presentation model, separate from the Shop plugin's similarly named copy. Lnlh1 is a serialized welcome-presentation model with fields including ctaStyle, guestCtaCopy, hideLoginButton, showGoogleCta and presentation/disclosure configuration. Its typed stored value is Lylh1.
+
+The WelcomeLanguageEnrollment manager receives Lzlh1, a PreferenceStore subclass using the global_ preference namespace. The inspected manager path accesses the typed value through local preference-store methods; no HTTP client/request builder was identified there. Lvlh1 reports an anonymous_welcome enrollment event. Lxr10 maps the nested guest CTA copy and flags into welcome/composer UI state, using Statsig/feature-gate decisions and a special skip value.
+
+This is positive evidence for a ChatGPT anonymous-welcome presentation/configuration surface and its UI-state consumption. It does not identify where the preference is initially populated, whether that population is remote or locally seeded, the guest CTA click callback, or whether the callback invokes the initial SessionManager guest fallback. It does not expose the actual anonymous create/refresh or composer send request. Do not treat the event as a ChatJS telemetry requirement; ChatJS must not collect telemetry.

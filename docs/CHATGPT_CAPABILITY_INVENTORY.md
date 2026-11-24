@@ -92,3 +92,6 @@ The Lr10 anonymous-session-labelled local profile is consumed by QrLoginApi Lqz8
 
 
 Correction to the Android DEX dependency map: Lof70 is the Statsig/experimentation interface (Lmx71 StatsigManager / Lbu70 FakeExperimentManager), not an auth/session provider. Lau31.F calls Lof70.G for feature/experiment evaluation. The unauthenticated refresh error path in Lis31 reads a local snapshot and calls Lau31.u for local state transition. The separate Lau31.n → Ldt31 → Lsk8/Ld7x chain is AuthSession/SessionLogin credential-backed DPoP/token work. These do not establish the missing guest-session HTTP create request.
+
+
+The Android welcome UI has a separate guest-presentation model: Lnlh1 contains guestCtaCopy and CTA/display flags; WelcomeLanguageEnrollment reads its Lylh1 value through local PreferenceStore Lzlh1; Lvlh1 records anonymous_welcome; Lxr10 maps the copy/flags into welcome/composer UI state under feature gates. This confirms a guest-welcome presentation/configuration surface, but not its population source, click callback, SessionManager action or guest HTTP protocol.

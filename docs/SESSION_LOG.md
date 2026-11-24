@@ -513,3 +513,26 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Correct dependency attribution for Lau31: field h:Lof70 = Statsig/experimentation; c:Lvv31 = local session DataStore; i:Lcn8 = AuthStorage; j:Lsk8 = AuthRepository. Keep feature gates, account credentials, local session metadata and server-side anonymous session creation separate.
 - Updated current Android findings, open questions, experiments, knowledge base, capability inventory/matrix, AI memory, continuation guide and TODO. Earlier session entries remain chronological; this addendum supersedes the inaccurate Lof70/auth-session attribution.
 - No guest network create/refresh request has been identified in these paths. The actual accountless HTTP operation and guest composer route remain open.
+
+
+## 2026-11-24 — Guest welcome presentation trace and session closeout
+
+### Source findings
+- Traced Lnlh1 as a serialized Android welcome-presentation model. Its observed fields include guestCtaCopy, ctaStyle, hideLoginButton, showGoogleCta and presentation/disclosure configuration. Lylh1 is the typed stored value.
+- Traced WelcomeLanguageEnrollment to injected Lzlh1, a PreferenceStore subclass using the global_ preference namespace. The inspected manager reads/writes the welcome value through inherited local preference-store methods; no HTTP client/request builder was found in that path.
+- Lvlh1 reports an anonymous_welcome enrollment event. Lxr10 maps guestCtaCopy and the CTA/display flags into welcome/composer UI state under Statsig/feature gates, including a special skip value.
+- This is positive evidence of a ChatGPT guest-welcome presentation/configuration path. It does not reveal who initially populates the preference, whether it is remotely delivered or locally seeded, the CTA click callback/action, or whether a tap reaches SessionManager.
+- Do not conflate this model with Li230's Shop plugin "Continue as Guest" string. The latter remains Shop UI, not ChatGPT guest UI.
+- No guest create/refresh HTTP request or guest composer send/prepare route was identified in this slice.
+
+### Corrections and implementation status
+- Retained the corrections that Lof70 is Statsig/experimentation, Lau31.u is local unauthenticated session-state refresh, and Lau31.n/Ldt31 is credential-backed AuthSession/DPoP work. None of those paths establishes guest network creation.
+- ChatJS runtime remains the foundation plus generic bounded/cancellable SSE parser. No authenticated/accountless ChatGPT transport, conversation, or Work workflow has been implemented. Do not claim this Android source research is working runtime behavior.
+- Updated Android protocol findings, experiments, knowledge base, open questions, capability inventory/matrix, AI memory, continuation, TODO, structured state, generated state, and root ChatJS.md.
+
+### Verification and repository state
+- Live main before this slice: 3796c881835943e86322fa8c6a0323469c3f53c3, tree 231d5dbb6c596acbb31baf4b378e616c560af768.
+- At that head, GitHub CI run 45429744610 passed; CodeQL run 45429744521 passed, with a later CodeQL run 45434025650 also completed successfully.
+- Final closeout validation after all guest-welcome documentation changes: npm run docs:sync completed, then /tmp/node26/bin/npm run check passed under Node.js 26.13.1/npm 11.20.0. Syntax checks passed; docs:check confirmed generated state synchronized and 27 Markdown local links; node:test passed 23/23; archive generation created eight intended module files.
+- Final archive inspected after the closeout changes: dist/ChatJS.tar.gz, 9,897 bytes, SHA-256 a613410e07b71de70150f92ad7d5a01d8edadbe5b15b70549d50b6714a494238; it contains exactly ChatJS/package.json, ChatJS/ChatJS.md, ChatJS/README.md, ChatJS/LICENSE, ChatJS/src/index.cjs, ChatJS/src/index.mjs, ChatJS/src/sse.cjs and ChatJS/types/index.d.ts.
+- Live main before the closeout commit is 3796c881835943e86322fa8c6a0323469c3f53c3. Its CI run 45429744610, CodeQL run 45429744521 and later CodeQL run 45434025650 all passed. Only main exists. The closeout documentation/state commit is to be created with a non-force expected-head update; fresh CI/CodeQL for that commit must be checked before claiming remote verification.

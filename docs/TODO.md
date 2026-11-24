@@ -88,3 +88,7 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Record Android guest-session identifiers and anonymous endpoint attribution caveat.
 - [ ] Finish the exact guest-session call graph and prepare/send payload reconstruction.
 - [ ] Continue source-led direct ChatGPT authentication, conversation and Work implementation; no live ChatGPT connection is implemented yet.
+
+
+- [ ] Trace the writer/population source for WelcomeLanguageEnrollment / Lzlh1 / Lylh1, including the source of guestCtaCopy, local seed vs remote fetch, cache/update conditions and feature gates.
+- [ ] Trace the Lxr10 UI-state consumer callback for guestCtaCopy; establish the actual tap action and whether it reaches the initial SessionManager guest path.

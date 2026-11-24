@@ -43,7 +43,7 @@ The repository currently provides:
 - TypeScript declarations;
 - a generic, bounded, cancellable Server-Sent Events parser for async byte streams.
 
-The real ChatGPT connection, authenticated and accountless session lifecycle, and product-specific chat/Work workflows are not implemented yet. The SSE parser is only a reusable framing primitive; it does not send requests or interpret ChatGPT-specific payloads. Do not claim account access or feature compatibility until actual Node.js code and end-to-end tests establish it.
+The real ChatGPT connection, authenticated and accountless session lifecycle, and product-specific chat/Work workflows are not implemented yet. The SSE parser is only a reusable framing primitive; it does not send requests or interpret ChatGPT-specific payloads. Do not claim account access or feature compatibility until actual Node.js code and end-to-end tests establish it. Android source analysis has identified a guest-session state/storage subsystem and a guest-welcome presentation model, but the preference population path, guest CTA action, server-side guest create/refresh request, and guest conversation send route remain unverified; these are research findings, not implemented ChatJS capabilities.
 
 ## Installation
 

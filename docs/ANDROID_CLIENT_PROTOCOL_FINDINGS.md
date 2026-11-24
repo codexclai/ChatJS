@@ -134,6 +134,14 @@ The string "Continue as Guest" belongs to Li230, a serialized Shop plugin UI mod
 
 
 
+**Guest welcome-presentation model and local preference path — 2026-11-24**
+
+- Lnlh1 is a serialized welcome-presentation model. Its observed fields include presentation/disclosure configuration, ctaStyle, guestCtaCopy, hideLoginButton, and showGoogleCta. It is distinct from the unrelated Shop plugin model Li230 containing the phrase "Continue as Guest".
+- The typed welcome value is stored as Lylh1. The WelcomeLanguageEnrollment manager receives Lzlh1, a PreferenceStore subclass using the global_ preference namespace. The inspected manager reads/writes this value through inherited local preference-store methods; the traced path does not contain an HTTP client or request builder.
+- Lvlh1 records an anonymous_welcome enrollment event. This is evidence that the app has a separately named anonymous-welcome enrollment/presentation concept. It does not reveal the server-side source of the preference value, the eligibility policy in full, or an anonymous-session creation endpoint.
+- Lxr10 maps the nested guestCtaCopy and presentation flags into welcome/composer UI state. The inspected mapping includes Statsig/feature gates and a special "skip" value. This establishes consumption of the guest CTA copy in UI state; it does not establish the click callback, what action a tap performs, or that it calls SessionManager.
+- Evidence boundary: the current trace reaches a persisted welcome model and its UI-state mapping. The preference-population path, complete CTA interaction/callback, session-manager linkage, and guest HTTP create/refresh and composer-send routes remain untraced. Do not port the Android anonymous_welcome instrumentation as ChatJS telemetry; ChatJS remains zero-telemetry.
+
 **Corrected Statsig, local-state refresh, and authenticated token boundaries**
 
 - The field Lau31.h:Lof70 is not an auth/session provider. Lof70 is the experimentation interface: Lmx71 implements it with logger tag StatsigManager and experimentation configuration, while Lbu70 is the FakeExperimentManager implementation. Lau31.F invokes Lof70.G as a feature/experiment evaluation before its post-logout state transition. Similar Lof70 injections in Lma11 and Lq5d1 are feature-gate dependencies, not the source of account or guest session state.

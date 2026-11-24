@@ -124,3 +124,6 @@ The internal native Android path's second Standard Integrity request hash is can
 ### Integrity SDK cooldown and retry evidence — 2026-11-24
 
 The Android integrity SDK uses a 300-second local TOO_MANY_REQUESTS cooldown and exposes remaining milliseconds when active. Its candidate retry status list is -19, -18, -12, 0, -100, -8 and -9, but the helper also checks a feature/configuration gate and other branches are not fully reconstructed. A named DeviceRateLimits store reads, expires, filters and records rate-limit entries; exact scope/schema and relation to the cooldown marker remain open. SDK retry counters and Play Services/Store metadata are instrumentation: never port/export them as telemetry. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+- New Android guest-welcome evidence (2026-11-24): Lnlh1 is a serialized welcome-presentation model with guestCtaCopy/CTA flags; WelcomeLanguageEnrollment reads Lylh1 through local PreferenceStore Lzlh1 (global_ prefix); Lvlh1 records anonymous_welcome; Lxr10 maps the copy/flags into welcome/composer UI state under Statsig gates, including skip. This is not the Shop plugin's Continue as Guest string. It proves display/configuration consumption only; preference population, click callback, SessionManager linkage and guest HTTP create/send are still unknown.

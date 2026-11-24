@@ -134,3 +134,8 @@ The Lr10 local anonymous-session profile is passed into a component tagged QrLog
 ### 2026-11-24 — Correction: Statsig vs auth/session dependencies
 
 Lof70 is the Statsig/experimentation interface, implemented by Lmx71 (StatsigManager) and Lbu70 (FakeExperimentManager). Lau31.F calls Lof70.G for feature/experiment evaluation, not to read auth/session state. Lau31.u is called by the Lis31 path that logs Failed to refresh the unauthenticated session; it consumes the Llzx.u local state snapshot and applies Lau31.E/Lau31.r state transitions, with no HTTP route in the inspected method. A separate Lks31 (AuthSession/SessionLogin) → Lau31.n → Ldt31 path reaches Lsk8 AuthRepository and Ld7x CredentialsRepositoryImpl for credential/DPoP/token-refresh work. Do not conflate that account-credential flow with anonymous guest creation. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+### 2026-11-24 — Guest welcome presentation model
+
+Android also contains a ChatGPT welcome-presentation path distinct from the Shop plugin copy. Lnlh1 is a serialized welcome-presentation model with guestCtaCopy, ctaStyle, hideLoginButton, showGoogleCta and presentation/disclosure configuration; Lylh1 is its typed stored value. WelcomeLanguageEnrollment reads it through Lzlh1, a local PreferenceStore subclass using the global_ prefix. Lvlh1 reports anonymous_welcome enrollment, and Lxr10 maps the guest copy/flags into welcome/composer UI state under Statsig gates, including a skip special case. This establishes guest-welcome configuration and display-state mapping, not the preference's origin, tap callback, SessionManager linkage or network create/send route. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
