@@ -23,7 +23,10 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Define a repeatable client behavior test plan and capture verified request/response examples without storing personal account data.
 - [x] Add official Codex source snapshot CodexCLI.zip to Project Sources, pinned to a verified upstream commit; document it as reference-only, not a runtime dependency.
 - [x] Trace Android anonymous-session state and storage foundations: SessionManager startup/logout/refresh paths, serialized session metadata, sessions/guest-* storage and retired-session cleanup; distinguish location-cookie endpoint constants from composer routes.
-- [ ] Reconstruct the exact Android guest session create/refresh network request, identifier lifecycle, expiry/replacement/retirement policy and actual guest conversation composer send/prepare route schemas.
+- [ ] Reconstruct the exact Android guest session create/refresh network request; the traced Lau31.F → Lau31.E post-logout path only resolves/checkpoints local session state through Lv2f0/Lvv31.
+- [ ] Trace the origin, generation, persistence, expiry/replacement/retirement policy for the two opaque values used by Lxzp0 to compose sessions/guest-* storage paths.
+- [ ] Trace the Continue as Guest click callback to SessionManager; UI strings are present but callback linkage remains open.
+- [ ] Reconstruct the actual guest conversation composer send/prepare route schemas independently of LocationCookieInitializer.
 - [ ] Reconstruct Windows desktop Work Local and Android Work Cloud as separate execution surfaces; never require Codex CLI or app-server.
 - [ ] Verify whether Windows desktop Work has a real logged-out guest mode; current evidence is insufficient.
 - [ ] Windows extracted-payload archive work is deferred by the owner; resume only when asked.

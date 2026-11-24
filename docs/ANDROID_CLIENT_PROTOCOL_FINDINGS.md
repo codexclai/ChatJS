@@ -86,6 +86,25 @@ The route ownership is now more specific than the earlier string scan:
 - This proves the observed endpoint constants are used by the location-permission cookie initialization subsystem. It does not prove that the normal guest composer sends user messages to these routes. The /backend-anon substring is therefore not enough to infer a guest conversation endpoint.
 - The exact purpose of each route variant, request/response body, and whether any location-cookie bootstrap request is shared with a conversation client remain open. Keep the guest chat send/prepare routes unassigned until their actual conversation-client call sites are traced.
 
+
+
+**Further post-logout transition trace**
+
+- Lau31.F is the post-logout anonymous-start coroutine. It queries the auth/session provider through Lof70.G, converts that result to the session-manager transition input, and calls Lau31.E. The log message is emitted when that manager transition returns an unsuccessful result or throws.
+- The inspected Lau31.E coroutine delegates to Lau31.e / Lv2f0 to resolve the selected auth state, reads and updates the persisted record through Lvv31, obtains the manager's current session state, builds a Lzk8 session-selection/context record, and checkpoints it through the session-store API. Its visible method references are to the manager, auth repository/resolver, and Lvv31 DataStore operations; no concrete HTTP client, request builder, or anonymous create-session URL was identified in this coroutine body.
+- Lau31.l reads the serialized Lov31 record via Lvv31's session DataStore and constructs a Lzk8 record using opaque session-related string values, a boolean and a set. The meanings of the Lzk8 constructor arguments were not independently recovered, so do not map them to a particular server token or guest ID.
+- This narrows the evidence: the post-logout "start anonymous session" flow is definitely a SessionManager state transition, but the inspected call path does not itself establish the network operation that creates or refreshes a guest session. That operation may be elsewhere in the injected session/auth dependencies; keep its route and payload unknown until the exact owner is traced.
+
+**Guest storage-path construction helper**
+
+- Lxzp0.invoke composes a path beneath sessions/ with a guest- prefix. It uses string values obtained from a session-state object (Lks31) and a separate two-string value record (Lxk8), with a hyphen delimiter, then passes the resulting path into the app FileSystem helper and a session-storage record.
+- Lxk8 is a two-string value record. The DEX trace did not recover the semantic names, generation algorithm, entropy source, or whether either value is server-issued. Therefore the path composition does not prove a random UUID or establish the guest-session ID lifecycle.
+- Ld1d1.b checks a candidate storage path against local filesystem and session/credential ownership state, including the guest- path form. This is a local storage validation/ownership check, not a network request.
+
+**Guest UI evidence follow-up**
+
+The public APK contains a UI method referencing AnonymousSessionLoading and a separate UI/string model containing Continue as Guest. These strings support the presence of a guest entry/loading experience, but this pass did not trace the CTA through to the exact SessionManager action. Keep the button-to-session-start linkage unproven until its callback is followed.
+
 **Evidence limits:** method names shown above are obfuscated DEX class/method identifiers; descriptive names such as SessionManager and LocationCookieInitializer are observed logger tags, not recovered Java/Kotlin source class names. No guest token was generated, no live account/session request was made, and no server behavior was inferred from the client-only DEX. No ChatJS guest-session implementation exists yet.
 
 ## Model discovery and conversation requirements

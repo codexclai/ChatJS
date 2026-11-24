@@ -71,3 +71,6 @@ Windows desktop Work Local and Android Work Cloud are separate owner-confirmed e
 Method-level DEX analysis now observes an Unauthenticated/AnonymousSession/LoggedInSession enum, a serialized session metadata record, SessionManager initial/refresh/logout paths, and SessionStorageCleanupImpl handling of sessions/guest-<id> storage and retired sessions. This substantially strengthens evidence for a genuine first-party accountless mode but does not provide the final guest network schemas or a working ChatJS implementation.
 
 The /backend-anon/f/conversation* constants were traced to LocationCookieInitializer processing the locationPermissionCookieSettings user setting. Do not label them guest composer send routes. Windows desktop guest Work remains unknown. Details and evidence boundaries are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+Further DEX tracing confirms the post-logout anonymous-start attempt enters a SessionManager transition that resolves and checkpoints local auth/session state in the session DataStore; it does not yet reveal the guest create/refresh network request. A storage helper builds sessions/guest-* from two opaque values plus a hyphen, with ID semantics/generation unknown. Guest loading/CTA strings exist, but callback wiring is not yet traced. Do not overstate this as a live or fully reconstructed guest API.

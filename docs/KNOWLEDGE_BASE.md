@@ -92,3 +92,8 @@ The owner distinguishes Windows desktop Work Local from Android Work Cloud. Code
 The public Android DEX now provides method-level evidence for the guest session manager and storage lifecycle: enum Unauthenticated / AnonymousSession / LoggedInSession; a serialized nine-field session metadata record; a SessionManager-tagged class that launches initial state/refresh handling and a post-logout anonymous-start attempt; and a SessionStorageCleanupImpl that validates sessions/guest-<single-segment-id> paths and cleans retired guest storage. Exact guest-session network creation/refresh requests, IDs/expiry and composer send routes remain unknown.
 
 Correction to earlier endpoint attribution: the /backend-anon/f/conversation* constants are used by the LocationCookieInitializer subsystem during locationPermissionCookieSettings processing. They are not established guest composer send/prepare endpoints. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+### Additional 2026-11-24 guest-session transition evidence
+
+The post-logout Lau31.F → Lau31.E path queries the auth/session provider and then resolves/updates/checkpoints local session state through Lv2f0 and Lvv31 (session DataStore). No concrete guest create/refresh HTTP request or route was identified in those coroutine bodies. The Lxzp0 helper constructs sessions/guest-* paths using two opaque session-related string values and a hyphen; it does not establish UUID generation or whether these values are server-issued. AnonymousSessionLoading and Continue as Guest UI strings exist, but the CTA callback was not followed through to SessionManager. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.

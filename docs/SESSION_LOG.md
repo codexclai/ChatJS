@@ -390,3 +390,23 @@ The GitHub About description was not changed because the available GitHub integr
 - Final pre-research main commit c813e6f7749a2e80ed6b1ca030407bacef6b8a81 had passing CI run 45413586725 and CodeQL run 45413586728.
 - The method-level work above is static source inspection only, not a runtime integration. npm run docs:sync and npm run check passed after the additions: generated project state synchronized, 27 Markdown local links valid, 23 tests passed, and the eight-file distribution archive was rebuilt. The exact Node.js 26.13.1/npm 11.20.0 run is also required before commit verification.
 - The existing main head c813e6f7749a2e80ed6b1ca030407bacef6b8a81 had passing CI run 45413586725 and CodeQL run 45413586728 before this documentation-only research slice. Commit the new docs via a non-force expected-head fast-forward. When creating Git blobs from browser-file reads, append the verified trailing newline; the previous CI incident was caused by that reader trimming final newlines.
+
+
+## 2026-11-24 — Further Android guest transition and path-construction trace
+
+### New method-level evidence
+- Followed Lau31.F (post-logout anonymous-start coroutine): it queries the auth/session provider through Lof70.G, constructs the manager transition input, and calls Lau31.E.
+- Inspected Lau31.E and Lau31.l call references. The transition resolves selected auth state through Lv2f0, reads/updates/checkpoints session metadata through Lvv31's local session DataStore, builds a Lzk8 session-selection/context record and updates SessionManager state. No concrete HTTP client, request builder, or anonymous create-session URL was identified in the inspected coroutine bodies. This is local session-state reconciliation evidence, not proof of a server session-create request.
+- Traced Lxzp0.invoke: it composes a sessions/guest-* path using two opaque session-related values (from Lks31 and Lxk8) separated by a hyphen, prefixes guest-, and passes the path through the app FileSystem/session-storage helper. The Lxk8 two-string value record's semantics, ID-generation algorithm, entropy and server origin remain unknown; do not call this a UUID.
+- Ld1d1.b checks a candidate guest storage path against local filesystem and session/credential ownership state. It is local storage validation.
+- The public APK references AnonymousSessionLoading and a Continue as Guest UI/string model. This pass did not trace the click callback through to SessionManager; keep the UI-to-start linkage open.
+
+### Correctly bounded conclusion
+The Android app has a substantive guest-session state manager and persistence model, a separate local guest-storage path helper, and a visible guest entry/loading affordance. The specific service request that creates or refreshes the anonymous session, the source of the opaque guest path values, and the real guest composer send/prepare API are not yet recovered. The anonymous URL constants already attributed to LocationCookieInitializer remain unrelated to a proven composer route.
+
+### Verification
+- After these docs updates, npm run docs:sync and the full npm run check passed under Node.js 26.13.1/npm 11.20.0: generated state synchronized, 27 Markdown local links passed, 23 tests passed, and the eight-file archive was rebuilt.
+- Static DEX inspection only; no live guest/session request or ChatJS guest implementation was attempted.
+
+### Files updated in this follow-up
+- docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md, docs/OPEN_QUESTIONS.md, docs/EXPERIMENTS.md, docs/KNOWLEDGE_BASE.md, docs/CHATGPT_CAPABILITY_INVENTORY.md, docs/TODO.md, docs/project-state.json, docs/PROJECT_STATE.md, docs/SESSION_LOG.md.
