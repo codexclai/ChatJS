@@ -25,7 +25,7 @@ ChatJS is one comprehensive, general-purpose Node.js module adapting the actual 
 - Use the supplied package contents as substantive technical evidence: client code, compiled modules, request/response construction, payload schemas, transport, connection/auth/session behavior, persistence, tools, dependencies, and resources.
 - Do not reject a client interface because public developer docs do not describe it. Inspect the actual code and record direct evidence.
 - Distinguish complete extraction, source-level decompilation, behavioral tracing, and a tested Node.js implementation.
-- Current installer sources are retained in Project Sources; do not depend on the personal Library. Use a Library folder named `ChatJS Project` only as a useful and necessary fallback when accessible.
+- Current installer sources are retained in Project Sources. The personal Library is outside the normal workflow and is not a source to depend on routinely. Access it only when a concrete task genuinely needs particular material and it is actually useful and accessible; any material used there must be under `ChatJS Project` and limited to authentic, necessary sources or useful original findings.
 - Source-level Android DEX/Valdi analysis and request-flow tracing remain incomplete. Windows package extraction and full analysis are not claimed complete.
 - Record source paths, dates, scope, evidence class, and limitations.
 

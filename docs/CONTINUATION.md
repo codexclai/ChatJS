@@ -23,7 +23,7 @@ Current implementation remains foundation-only. First-pass Android client findin
 
 ## Reference packages and browser profile
 
-Use ChatJS Project → Sources as the primary location for supplied ChatGPT packages. The personal Library is optional only when genuinely useful, needed, accessible, and Sources cannot provide the material. Any Library material for this project must be under a folder named **ChatJS Project** and contain only authentic, necessary source material and original findings.
+Use ChatJS Project → Sources as the normal and primary location for supplied ChatGPT packages. The personal Library is outside the normal workflow; do not depend on it or treat it as a primary or routine source. Access it only for a concrete task when particular material is genuinely useful, necessary, and actually accessible. Any material used there must be under a folder named **ChatJS Project**, containing only authentic, necessary sources or useful original findings.
 
 - Android: `ChatGPT-Android.xapk`, 123,574,190 bytes; an app bundle containing the base APK and required splits, not a standalone APK. ZIP integrity and published-hash match were verified.
 - Windows: `ChatGPT-Windows.msix.part001` (400,000,000 bytes) and `ChatGPT-Windows.msix.part002` (396,523,063 bytes). Sequential pieces of one installer; neither is independently installable. Reassembly matched the original byte-for-byte, SHA-256 `561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963`.

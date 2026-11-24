@@ -8,7 +8,7 @@
 2. `docs/project-state.json`: structured state; `PROJECT_STATE.md` is generated.
 3. `/docs`: project direction, requirements, technical references, decisions, tasks, experiments, risks, and handoffs.
 4. The owner's latest explicit direction and current conversation.
-5. **ChatJS Project → Sources is the primary source location** for supplied client packages. Do not depend on the personal Library or use it by default. Use it only when genuinely useful, needed, accessible, and Project Sources cannot supply the material; any such material must be under a folder named `ChatJS Project` and limited to authentic, necessary sources and original findings.
+5. **ChatJS Project → Sources is the normal and primary location** for supplied client packages. The personal Library is outside the normal workflow: do not depend on it or treat it as a primary or routine source. Access it only for a concrete task when particular material is genuinely useful, necessary, and actually accessible. Any material used there for ChatJS must be inside a folder named `ChatJS Project`, containing only authentic, necessary source material or useful original findings.
 6. Verified package content and source code take precedence over assumptions in old assistant messages.
 
 ## Product identity and goal
@@ -39,7 +39,7 @@ Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cooki
 
 ### Android
 
-Personal Library path: `/ChatJS-Archives/ChatJS-Android.zip`; re-materialized size 59,454,036 bytes.
+Historical extraction archive: `/ChatJS-Archives/ChatJS-Android.zip` (59,454,036 bytes at the 2026-11-20 verification). This is retained as historical research context, not a normal source dependency. Do not access it unless a specific task genuinely needs that material and it is available.
 
 The archive contains 4,989 ZIP entries: all 4,987 extracted APK payload entries plus a README and structured JSON inventory. The APK payload entries total 106,501,945 uncompressed bytes. The inventory includes ten compiled DEX files and 121 compiled Valdi modules. ZIP CRC testing found no corrupt member. The original APK container is not nested in this archive.
 
@@ -47,9 +47,9 @@ This is the full extracted APK payload tree, not the earlier metadata-only dossi
 
 ### Windows
 
-The owner asked to set further Windows archive work aside for now. The Library file `/ChatJS-Archives/ChatJS-Windows.zip` currently materialized in this session is a 418,238-byte metadata/reference ZIP with seven entries; it is not the full extracted desktop application payload.
+Historical note from 2026-11-20: `/ChatJS-Archives/ChatJS-Windows.zip` was a 418,238-byte metadata/reference ZIP with seven entries, not the full extracted desktop application payload. This is not a current source dependency.
 
-The preceding chat transcript records a remote 1.1 GB extracted Windows archive with 3,758 entries and a reported successful remote integrity check, but its transfer into the personal Library was incomplete. That remote result was not reverified in this session. Preserve this distinction; do not claim the full Windows archive is in Library. If the owner resumes the task, the goal is a comprehensive archive of extracted app payload contents (ASAR/application code, executables, native libraries, resources, plugins, dependencies, and necessary metadata), not merely a renamed MSIX installer or a file-name index. Do not resume until asked.
+A preceding conversation recorded a larger remote Windows extraction, but its transfer was incomplete and it was not independently reverified. Do not rely on or claim access to that remote archive.
 
 ### Sources and repository retention
 

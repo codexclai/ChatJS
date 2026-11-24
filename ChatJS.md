@@ -27,7 +27,7 @@ Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, conta
 
 The supplied Android app bundle and Windows installer are retained in ChatJS Project → Sources. Android is an XAPK containing the base APK and required splits. Windows is stored as two sequential installer pieces that must be joined in order before use. See `docs/REFERENCE_APK.md` and `docs/REFERENCE_DESKTOP.md` for source layout, verification, and limitations.
 
-Project Sources are the normal source location. The personal Library is an optional fallback only when genuinely useful, needed, accessible, and Sources cannot supply the material. Any such material must be under a folder named `ChatJS Project` and limited to authentic, necessary sources and documented original findings.
+Project Sources are the normal source location. The personal Library is outside the normal workflow and is not a primary or routine source. Access it only when a concrete task makes specific material genuinely useful, necessary, and accessible. Any such material must be under a folder named `ChatJS Project` and limited to authentic, necessary sources and useful original findings.
 
 The persistent browser profile `ChatJS` is the sole reusable default for ChatJS browser work. Never sign out of its Google or ChatGPT sessions or clear, reset, replace, delete, or recreate the profile. Temporary browser sessions are allowed only when genuinely required and must not be saved as additional reusable profiles.
 

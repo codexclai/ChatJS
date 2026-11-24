@@ -53,6 +53,6 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 
 ## Current position
 
-ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Current package sources are `ChatGPT-Android.xapk` and the two sequential Windows installer pieces in ChatJS Project → Sources. The personal Library is only an optional fallback when genuinely needed and accessible; any project material stored there belongs under `ChatJS Project`. The persistent ChatJS browser profile is the only reusable default profile; temporary sessions are disposable and must not replace it.
+ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Current package sources are `ChatGPT-Android.xapk` and the two sequential Windows installer pieces in ChatJS Project → Sources. The personal Library is outside the normal workflow and is not a routine source; access it only for a concrete need when useful and accessible. Any material used there belongs under `ChatJS Project` and must be authentic and necessary. The persistent ChatJS browser profile is the only reusable default profile; temporary sessions are disposable and must not replace it.
 
 Never create branches or worktrees. Keep all repository work on main.

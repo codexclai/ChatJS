@@ -30,6 +30,6 @@ This directory contains persistent project memory and the engineering handbook. 
 
 [Architecture](ARCHITECTURE.md), [Workflow](WORKFLOW.md), [Repository Settings](REPOSITORY_SETTINGS.md), [Governance](GOVERNANCE.md), and [ChatGPT Project Instructions](CHATGPT_PROJECT_INSTRUCTIONS.md).
 
-ChatGPT client packages are retained in ChatJS Project → Sources. The persistent `ChatJS` browser profile is the sole reusable default for ChatJS browser work and must never be signed out of, reset, cleared, replaced, or deleted. Temporary browser sessions are allowed only when genuinely required. The personal Library is an optional fallback only when genuinely useful, needed, accessible, and Sources cannot provide the material; any such material belongs under `ChatJS Project`.
+ChatGPT client packages are retained in ChatJS Project → Sources. The persistent `ChatJS` browser profile is the sole reusable default for ChatJS browser work and must never be signed out of, reset, cleared, replaced, or deleted. Temporary browser sessions are allowed only when genuinely required. The personal Library is outside the normal ChatJS source workflow. Access it only when a concrete task genuinely needs particular material and it is useful and accessible; any such material belongs under `ChatJS Project`.
 
 Record meaningful requirements, decisions, research, actions, changed files, tests, failures, limits, blockers, and handoffs in canonical docs. Keep state JSON and generated Markdown synchronized; append SESSION_LOG.
