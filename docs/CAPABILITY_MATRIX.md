@@ -69,3 +69,6 @@ Keep package observation, source inspection, behavior tracing, implemented Node.
 
 
 Android guest-welcome UI evidence: Lnlh1/Lylh1 carries guestCtaCopy and CTA display flags; WelcomeLanguageEnrollment reads it from local PreferenceStore Lzlh1; Lxr10 maps it into UI state. The observed CTA action-29 click path reaches Ltu10/Lqik0/Lnik0 login-child coordination, reads current Lks31 session state via Llzx.t, and processes login-flow events through local Lau31.i/Lxs31 state reconciliation. It is not proven to call Lgs31.b → Lau31.G or create a guest session. The preference population source and guest network requests remain unknown.
+
+
+Android guest-start research addendum (2026-11-24): a separate event-gated caller is traced through Lej6 → La991.G → Lmuz0 branch 9 → Lgs31.b → Lau31.G. This remains static source evidence for local session startup only. It does not change ChatJS runtime capability status: authenticated/guest transport and conversation remain unimplemented; the marker is not a telemetry requirement.

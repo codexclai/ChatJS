@@ -561,3 +561,28 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 ### Verification and handoff
 - Local npm run check, generated state sync, archive listing/integrity, remote CI and CodeQL results are to be recorded after this documentation-only slice is validated and published.
 - Next trace: resolve the action-29 coordinator branch and determine whether any explicit event calls the separate Lgs31.b → Lau31.G path; continue the preference writer and guest HTTP create/refresh/composer request investigation. Then continue the separately scoped Windows Work Local and Android Work Cloud traces.
+
+
+## 2026-11-24 — Additional event-gated Android guest-start caller
+
+### Source findings
+- Followed another DEX call-site into the initial local anonymous-session startup method, separate from the welcome CTA click path.
+- Lej6.invoke() constructs La991 with the current Lks31 AuthSession wrapper, a Lw4h0 state-flow dependency, a Function0 callback and related login/session dependencies.
+- La991.G(Louf0) compares the incoming event with Lw891.a and evaluates Lcq41.e; the matching branch launches Lmuz0 coroutine branch 9.
+- Branch 9 handles the ChatgptClientMarkerUserSessionBootstrapRequestType marker, invokes La991.R1, and calls Lgs31.b(...). The wrapper delegates to Lau31.G(...), so this is a second event-gated caller of local SessionManager guest startup.
+- The producer/meaning of the Louf0 event and the Lcq41.e condition are not established. No call edge connects this path to welcome CTA action-29 → Lgs10 → Ltu10 → Lqik0 → Lnik0; keep the paths separate until an event publisher is traced.
+- The client marker is instrumentation; ChatJS must not send or port it as telemetry. The examined Lau31.G path remains local mutex/eligibility/state/DataStore work. No guest HTTP create/refresh request, guest token exchange, or composer route was identified.
+- Analysis used selected DEX method/call-site inspection and a purpose-built partial scanner, not a complete decompiler or full call graph. No network request was made and no guest session was created.
+
+### Canonical records updated
+- Updated Android protocol findings, open questions, TODO, experiments, knowledge base, capability matrix/inventory, AI memory, continuation guide, root ChatJS status, structured project state and generated project state.
+
+### Verification and limits
+- At the start of this slice, main was fd3761dcdd0eba2f2dcd185b53c7dcc972d71613; only main existed, with no open issues or pull requests. CI run 45453168174 and CodeQL run 45453168157 passed on that head.
+- The local container did not have a checked-out repository for running npm run check or inspecting a locally generated archive. The generated project state was rendered using the checked-in generator's template. Remote CI will be checked after this documentation-only update; no local test/archive result is claimed.
+- No production code, package API, dependencies or tests were changed. ChatJS remains foundation-only; authenticated/guest ChatGPT connection, conversation send/stream decoding, and Work execution remain unimplemented.
+
+### Handoff
+- Trace the producer/meaning of Louf0 and Lcq41.e, and whether the action-29 login-child route emits the event consumed by La991.G.
+- Continue the welcome PreferenceStore writer/population trace, then locate the actual guest HTTP create/refresh and composer prepare/send clients independently.
+- Keep Android Work Cloud and Windows Work Local as separate client surfaces; Codex CLI/app-server remains reference-only.
