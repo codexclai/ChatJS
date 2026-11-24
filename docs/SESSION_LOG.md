@@ -586,3 +586,25 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Trace the producer/meaning of Louf0 and Lcq41.e, and whether the action-29 login-child route emits the event consumed by La991.G.
 - Continue the welcome PreferenceStore writer/population trace, then locate the actual guest HTTP create/refresh and composer prepare/send clients independently.
 - Keep Android Work Cloud and Windows Work Local as separate client surfaces; Codex CLI/app-server remains reference-only.
+
+
+## 2026-11-24 — Correction to Android guest-start event dispatch
+
+### Source correction
+- A further instruction-level decode of La991.G(Louf0) corrected the preceding event summary. The W891.a equality branch reads the current Lw4h0 value, passes it to Lcq41.e and returns. It does not launch guest startup.
+- The separate `instance-of Lt891` branch constructs Lmuz0 label 9. That coroutine invokes the captured La991.R1 callback, reads Lt891.a, constructs the local Llnp0 argument and calls Lgs31.b → Lau31.G. The method-level local SessionManager path remains mutex/eligibility/state/DataStore work, not a recovered HTTP request.
+- Two candidate Lt891 producers are now identified: Lq20.invoke emits Lt891(5) through a captured Function1 in the Llal1.h / Lej10.c WebView UI callsites; Ldo1.invoke selector case 18 can emit Lt891(6) through a captured Function1 on an inspected null-Lh70 branch, where the lambda is hosted by Lp1w constructed in Le2w.e (ConversationSidebar UI). Neither captured Function1 is proven to target this La991 instance. The event payload semantics and relationship to welcome CTA action-29 remain unknown.
+- The ChatgptClientMarkerUserSessionBootstrapRequestType value remains client instrumentation; no telemetry is to be ported. The welcome CTA action-29 → Lgs10 → Ltu10 → Lqik0 → Lnik0 flow remains its own login-child/local-session reconciliation path.
+
+### Canonical synchronization
+- Corrected Android protocol findings, experiments, knowledge base, open questions, TODO, capability matrix/inventory, AI memory, continuation, root ChatJS status, structured project state and generated state. This correction supersedes the previous wording that associated W891.a with guest-start coroutine dispatch.
+
+### Verification and limits
+- Correction starts from main commit 74d9d4d32daaed83472b71ee348e425e4482f6f7. Parent main 94d1d8d1552dccceb82cfb29c8c193c973e9ca96 had passing GitHub CI run 45456885471 and CodeQL run 45456885469. The correction commit's own remote checks are to be verified after push.
+- No production JS/TS, tests, dependencies, or package API were modified. The environment does not provide a local ChatJS checkout with Node/npm/git; npm run check and local archive build/inspection are unavailable in this slice and are not claimed.
+- The DEX analysis is selected static method/call-site decoding, not a full decompilation or runtime trace. No HTTP request was made and no guest session was created.
+
+### Handoff
+- Resolve the callback owners for both Lt891 constructors and establish whether either reaches the La991 instance. Keep the welcome action-29 flow separate until an actual connection appears.
+- Continue the preference writer/population trace, then identify exact guest HTTP create/refresh and composer-send request builders.
+- Continue Windows Work Local and Android Work Cloud as independent client implementations; Codex CLI/app-server stays reference-only.

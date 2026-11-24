@@ -130,3 +130,6 @@ The Android integrity SDK uses a 300-second local TOO_MANY_REQUESTS cooldown and
 
 
 - Additional Android guest-start path (2026-11-24): Lej6.invoke creates La991; the La991.G(Louf0) event handler checks Lw891.a and Lcq41.e, then runs Lmuz0 branch 9 → Lgs31.b → Lau31.G. This is a second event-gated caller of local SessionManager startup, not yet tied to welcome CTA action-29. Its ChatgptClientMarkerUserSessionBootstrapRequestType marker is instrumentation and must not be ported as telemetry. No guest HTTP create/refresh or composer protocol is established.
+
+
+- Correction to the 2026-11-24 guest-start event trace: La991.G handles W891.a by forwarding current Lw4h0 state through Lcq41.e and returning; it is **Lt891** that dispatches Lmuz0 label 9 → Lgs31.b → Lau31.G. Candidate Lt891 producers are Lq20.invoke (payload 5) and Ldo1.invoke selector case 18 (payload 6, null-Lh70 branch) through generic Function1 callbacks. The latter is hosted by Lp1w/Le2w.e ConversationSidebar UI; the former is in Lq20 WebView callbacks. Callback targets into the La991 instance are not proven. Do not conflate W891 with guest startup or either candidate UI with an established runtime trigger. This remains local state transition evidence, not HTTP guest creation.
