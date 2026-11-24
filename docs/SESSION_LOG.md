@@ -410,3 +410,80 @@ The Android app has a substantive guest-session state manager and persistence mo
 
 ### Files updated in this follow-up
 - docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md, docs/OPEN_QUESTIONS.md, docs/EXPERIMENTS.md, docs/KNOWLEDGE_BASE.md, docs/CHATGPT_CAPABILITY_INVENTORY.md, docs/TODO.md, docs/project-state.json, docs/PROJECT_STATE.md, docs/SESSION_LOG.md.
+
+
+## 2026-11-24 — Anonymous transport/profile trace and guest-CTA attribution correction
+
+### New DEX findings
+- Lp6t declares the Android roots https://android.chat.openai.com/backend-api/ and https://android.chat.openai.com/backend-anon/.
+- Lvwo0.invoke consumes both roots when building a global Lar31 network configuration alongside the web/Skybridge/realtime/Codex/platform roots and platform metadata. This is configuration assembly, not an HTTP request.
+- Lyzo0 request path validation/interceptor accepts relative paths beginning /backend-api/ and /backend-anon/. This confirms both route families are supported by the client networking layer; it does not identify a guest create/refresh route or a conversation send API.
+- Lr10.<clinit> initializes Lr10.l from Lzk8("id", "anonymous-session", false, emptySet) and other local descriptors using Lxk8("id", "id-session"). Lqz8 (logger tag QrLoginApi) accepts an Lr10 profile and consults its state. This is local session/profile configuration evidence; it does not prove a server token, guest ID, or HTTP creation operation.
+- The "Continue as Guest" phrase was traced to Li230, a serialized Shop plugin UI model containing plugin_shop, shop, Shop, product-search/checkout text, Checkout, and Log in with Shop. It is not ChatGPT guest UI and must not be used as a guest-session callback target.
+- AnonymousSessionLoading is a separate Compose method Losk1.a. A direct DEX call-reference pass did not identify a caller/callback connecting it to SessionManager. Keep its composition/navigation path open.
+
+### Corrections to prior research wording
+Earlier notes grouped the Shop "Continue as Guest" string with ChatGPT anonymous UI. This was an attribution error. Corrected the primary Android findings, capability inventory/matrix, AI memory, continuation guide, TODO, experiments and knowledge base. Historical session-log entries remain as originally recorded; this addendum supplies the correction.
+
+### Conclusions and remaining limits
+Android has a genuine anonymous backend base/path family and a locally configured anonymous-session profile alongside the known state/storage model. The inspected initial fallback Lgs31.b → Lau31.G, post-logout transition and global backend configuration still do not expose the actual HTTP request that creates/refreshes a guest session. The composer route remains unknown. No live guest request, token creation, or ChatJS integration was attempted.
+
+### Verification and changed files
+- Run npm run docs:sync and npm run check under Node.js 26.13.1/npm 11.20.0 before commit.
+- Updated: docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md, docs/OPEN_QUESTIONS.md, docs/TODO.md, docs/KNOWLEDGE_BASE.md, docs/EXPERIMENTS.md, docs/CHATGPT_CAPABILITY_INVENTORY.md, docs/CAPABILITY_MATRIX.md, docs/AI_MEMORY.md, docs/CONTINUATION.md, docs/SESSION_LOG.md, docs/project-state.json and generated docs/PROJECT_STATE.md.
+
+
+### Additional initial-session orchestration trace — 2026-11-24
+- Lma11 carries the RootViewModel logger tag and stores the auth/session, install-referrer and guest-session coordinator dependencies.
+- Its initialization coroutine first invokes Los8.f through Lpjk0 → Lgkk0 (LoginGraphManager), passing Lfh8.AccountSelector. This is the install-referrer account-selector login attempt; a dedicated failure message is "Failed to start install-referrer account-selector login".
+- The same coroutine then calls Lgs31.b. That method delegates to Lau31.G and has the separate failure message "Failed to start the initial anonymous session". This is the actual initial guest fallback path; it is distinct from Los8.f.
+- Lau31.G constructs/runs a suspend helper through Llzx.n, then continues with manager/session state transitions. The helper's full behavior and any HTTP request nested beneath it remain untraced. No route/body/header claim is made.
+- Updated Android findings, experiments, knowledge base, capability inventory, TODO, open questions, AI memory and continuation notes with this call-order separation.
+
+
+### Lau31.G helper call-graph boundary — 2026-11-24
+- Followed Llzx.n from the initial guest fallback. It constructs/runs Lwk8.invokeSuspend.
+- Lwk8.invokeSuspend accesses local session/model/config fields, iterates model-associated lists, reads feature/config records and compares the session-state object. No HTTP client, URL constant, request builder or network interface appears in the inspected method call graph.
+- Lau31.G then continues into SessionManager transition work. This inspected helper is local eligibility/state logic, not the missing guest HTTP create operation. Continue through injected auth/session service dependencies beyond it.
+- Updated Android findings, open questions, TODO, experiments, knowledge base, capability inventory, AI memory and continuation.
+
+
+### Root session manager dependency boundary — 2026-11-24
+- Identified Lpb11 as RootSessionCoordinator; it owns/coordinates Lgs31 SessionManager, Lq5d1 UserScopeManager, Ldrk0 LogoutCleanupCoordinator and session-related state.
+- Ldrk0 orchestrates local logout cleanup through Lsk8, Lvv31 and Lgv31, and distinguishes retired authenticated storage from retired guest sessions.
+- Lsk8 is tagged AuthRepository; it delegates to Lcn8, tagged AuthStorage, backed by application context and local credential/session metadata stores. Inspected methods resolve, persist, migrate and remove local credentials; no guest HTTP create endpoint appears in the inspected methods.
+- Lau31.G first calls Lmgo0.a, the coroutine Mutex.lock operation, serializing concurrent anonymous-start transitions. It then runs Llzx.n/Lwk8 local eligibility and state evaluation, resolves session context via Llzx.u and enters Lau31.E.
+- This traces the local coordination/storage stack more completely but does not expose a server-side anonymous-session create/refresh request. The /backend-anon/ root and local anonymous-session profile remain infrastructure/configuration evidence only.
+
+
+### Additional backend-anon cross-reference disambiguation — 2026-11-24
+- Inspected Lxi80 after finding /backend-anon references in its code.
+- Lxi80 is a Files API client: methods cover files/download, upload-reservation claim/finalize, upload-processing and file processing/indexing events, with FileServiceException/FileDownloadError types.
+- Its shared request helper recognizes both backend-anon and backend-api path roots. This is file-service transport/path handling, not guest session creation or guest conversation send.
+- Added the disambiguation to Android protocol findings, experiments, knowledge base, open questions and structured project evidence limits.
+
+
+## 2026-11-24 — Final guest-session source-trace consolidation
+
+### Attribution corrections and method boundaries
+- Corrected the Shop plugin string "Continue as Guest": Li230 is a Shop UI model, not a ChatGPT guest-login CTA. AnonymousSessionLoading is a distinct Compose method Losk1.a; no direct DEX caller/callback to SessionManager has been established.
+- Confirmed the global Android network config has both backend-api and backend-anon roots (Lp6t/Lvwo0) and the generic request interceptor accepts both prefixes (Lyzo0). This is infrastructure, not a guest-specific route.
+- The Lr10 local profile is labelled anonymous-session and is consumed by QR-login-related configuration; it is not proven to be a server-issued guest token or create operation.
+- The separate RootViewModel order is install-referrer AccountSelector login (Los8.f → LoginGraphManager) first, then the initial anonymous fallback (Lgs31.b → Lau31.G).
+- Lau31.G serializes the transition with Lmgo0 Mutex, then runs Llzx.n/Lwk8 local session/model/feature evaluation and Lau31.E local state resolution.
+- The coordinator chain includes RootSessionCoordinator Lpb11, UserScopeManager Lq5d1, LogoutCleanupCoordinator Ldrk0, AuthRepository Lsk8, AuthStorage Lcn8, session DataStore Lvv31 and guest storage cleaner Lgv31. Their inspected methods cover local credentials, session state and retired-storage cleanup, not the server-side guest create/refresh HTTP request.
+- Lx4k0 backend-anon/f/conversation* constants are used by LocationCookieInitializer during locationPermissionCookieSettings handling, not proven guest composer routes.
+- Lxi80 is a Files API client (download, upload reservation claim/finalize, file processing/indexing) whose shared request helper recognizes both backend-api and backend-anon. It is not guest session creation or chat send.
+- The anonymous guest create/refresh service request and actual guest conversation composer send/prepare route remain untraced. No live request, token generation or ChatJS integration was attempted.
+
+### Validation
+- npm run docs:sync completed and generated docs/PROJECT_STATE.md.
+- /tmp/node26/bin/npm run check passed under Node.js 26.13.1/npm 11.20.0: syntax checks, synchronized project state, 27 Markdown local links, all 23 tests, and eight-file ChatJS.tar.gz generation.
+- Archive inspection: dist/ChatJS.tar.gz, 9,774 bytes, SHA-256 592cff5830330130c32446aed3a3a3265126109b8f3b379bc54bae1484077c57; it contains the eight intended package files.
+- At the start of this slice live main was 631042dcd97b8c4039b593df28ad6fcd4d453bfd, whose CI run 45418072676 and CodeQL run 45418072883 succeeded; the new documentation commit's remote checks remain pending.
+- Git blob uploads from the KERNEL browser-file reader must append the verified final LF; prior CI failures were caused by trimmed terminal newlines.
+
+### Remaining work
+- Locate the concrete lower-level network service/call site behind guest create/refresh; do not infer from the anonymous base URL or the local session manager.
+- Trace the true guest composer prepare/send route independently of location-cookie and file-service clients.
+- Continue Android AnonymousSessionLoading composition and guest ID lifecycle research, then the separate desktop Work Local / Android Work Cloud traces.

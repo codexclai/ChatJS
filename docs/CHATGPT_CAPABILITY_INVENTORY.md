@@ -61,7 +61,7 @@ Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, conta
 
 ## Accountless sessions and execution-surface distinctions — 2026-11-24
 
-Android 1.2026.321 DEX inspection observed Unauthenticated, AnonymousSession and LoggedInSession states, Continue as Guest UI, AnonymousSettings components, a chatgptguestplan identifier, anonymous session metadata and guest storage/cleanup identifiers. Anonymous endpoint constants were observed, but their owning class is LocationCookieInitializer; exact final guest conversation route attribution and request schemas remain unproven. This is a genuine guest-session research lead, not an implemented protocol. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+Android 1.2026.321 DEX inspection observed Unauthenticated, AnonymousSession and LoggedInSession states, AnonymousSessionLoading, AnonymousSettings components, a chatgptguestplan identifier, anonymous session metadata and guest storage/cleanup identifiers. The "Continue as Guest" phrase belongs to the Shop plugin UI model, not ChatGPT. Anonymous endpoint constants were observed, but their owning class is LocationCookieInitializer; exact final guest conversation route attribution and request schemas remain unproven. This is a genuine guest-session research lead, not an implemented protocol. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
 
 Windows desktop Work Local and Android Work Cloud are separate owner-confirmed execution surfaces. Codex CLI is a terminal coding client; it is source reference only for current ChatJS implementation work and is not a Work runtime prerequisite. Windows guest Work remains unknown.
 
@@ -74,3 +74,15 @@ The /backend-anon/f/conversation* constants were traced to LocationCookieInitial
 
 
 Further DEX tracing confirms the post-logout anonymous-start attempt enters a SessionManager transition that resolves and checkpoints local auth/session state in the session DataStore; it does not yet reveal the guest create/refresh network request. A storage helper builds sessions/guest-* from two opaque values plus a hyphen, with ID semantics/generation unknown. Guest loading/CTA strings exist, but callback wiring is not yet traced. Do not overstate this as a live or fully reconstructed guest API.
+
+
+The client also configures a distinct https://android.chat.openai.com/backend-anon/ root alongside backend-api; Lvwo0 builds a global Lar31 config containing both, and Lyzo0's interceptor accepts both path prefixes. Lr10.l is initialized with a local anonymous-session profile descriptor. These findings establish guest-aware client infrastructure/profile metadata, not the concrete guest create/send network protocol. Details and limits are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+The initial Android RootViewModel call order is now separated: Lma11 first tries install-referrer AccountSelector login (Los8.f → LoginGraphManager), then invokes the initial anonymous fallback (Lgs31.b → SessionManager.G). Do not attribute the former to guest creation. The actual anonymous network create/refresh operation behind the latter remains untraced.
+
+
+The initial guest fallback Lgs31.b → Lau31.G invokes Llzx.n/Lwk8.invokeSuspend, whose inspected logic is local session/model/feature evaluation and collection traversal, not HTTP. No guest create/refresh request has been identified in that helper or the post-logout DataStore transition. The app still has a configured anonymous backend root, but its guest session-create endpoint remains unknown.
+
+
+The Android guest-start dependency chain is better bounded: RootSessionCoordinator Lpb11 → SessionManager Lgs31/Lau31 with UserScopeManager Lq5d1 and LogoutCleanupCoordinator Ldrk0; Lau31 injects AuthRepository Lsk8 → AuthStorage Lcn8 and session DataStore Lvv31. Initial guest startup is serialized by coroutine Mutex Lmgo0 before local Llzx.n/Lwk8 eligibility and Lau31.E resolver/state work. This traces local session/credential persistence and cleanup, not the still-missing guest-session HTTP create request.

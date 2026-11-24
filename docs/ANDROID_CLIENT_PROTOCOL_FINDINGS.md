@@ -36,7 +36,7 @@ A separate static DEX string, field and method-reference pass over the supplied 
 Observed identifiers and strings include:
 
 - Session states Unauthenticated, AnonymousSession, and LoggedInSession.
-- UI/session components and strings Continue as Guest, AnonymousSessionLoading, AnonymousSettingsScreen, and AnonymousSettings.
+- UI/session evidence includes the AnonymousSessionLoading Compose method, AnonymousSettingsScreen, and AnonymousSettings. The separate phrase "Continue as Guest" was traced to the Shop plugin model Li230 and is not a ChatGPT guest-login CTA.
 - A guest plan identifier chatgptguestplan.
 - SessionManager error paths for failing to start the initial anonymous session and for failing to start one after logout.
 - Session metadata fields userId, isAnonymous, authSessionId, anonymousSessionId, retiredGuestSessionIds, legacyGuestPreferencesOwnerId, guestPreferencesInitialized, deniedLegacyFileDirectories, and pendingReplacement.
@@ -68,6 +68,8 @@ The follow-up pass disassembled selected methods from the public XAPK's base DEX
 - Its constructor launches the Lis31 coroutine as part of manager initialization.
 - Lis31.invokeSuspend reads current state/flags, invokes the Lau31.q flow when handling a guest session it cannot support, and has explicit error handling for Failed to log out unsupported guest session. It also invokes the unauthenticated-session refresh flow and logs Failed to refresh the unauthenticated session if that work fails.
 - The separate Lau31.F coroutine is the post-logout anonymous-start path: it first queries current auth/session state through Lof70.G, then enters Lau31.E. If that attempt fails, it logs Failed to start an anonymous session after logout and returns false.
+- The initial fallback and post-logout paths are distinct: the RootViewModel calls Lgs31.b → Lau31.G for initial anonymous startup, while Lau31.F → Lau31.E is the post-logout restart path. The G coroutine invokes Llzx.n, which creates/runs the Lwk8 suspend helper. The inspected Lwk8.invokeSuspend reads local model/session state, enumerates collections, consults feature/config records, and produces a local decision value. Its visible call graph contains no HTTP client, request builder, or endpoint. Lau31.G then continues into the SessionManager transition. This does not exclude network work in an untraced injected dependency, but the inspected helper itself is local state/eligibility logic, not the guest create request.
+- Lma11 is tagged RootViewModel and owns the initial auth/session orchestration. Its coroutine first invokes Los8.f through the install-referrer/account-selector path; Los8.f delegates through Lpjk0 to Lgkk0 (logger tag LoginGraphManager) and passes Lfh8.AccountSelector. Failure is logged as Failed to start install-referrer account-selector login. The same root coroutine then invokes Lgs31.b for the separate initial anonymous-session fallback; Lgs31.b delegates to Lau31.G, whose failure is logged as Failed to start the initial anonymous session. Do not confuse the install-referrer AccountSelector attempt with guest-session creation.
 - These call paths prove the app has distinct startup, logout, guest-session handling and unauthenticated-session refresh work. The exact request that creates/replaces the anonymous session, its URL/body/headers, and whether the same request is shared with the public conversation client are still not identified.
 
 **Guest session storage and retirement**
@@ -103,7 +105,42 @@ The route ownership is now more specific than the earlier string scan:
 
 **Guest UI evidence follow-up**
 
-The public APK contains a UI method referencing AnonymousSessionLoading and a separate UI/string model containing Continue as Guest. These strings support the presence of a guest entry/loading experience, but this pass did not trace the CTA through to the exact SessionManager action. Keep the button-to-session-start linkage unproven until its callback is followed.
+The public APK contains the AnonymousSessionLoading Compose method Losk1.a. A static DEX call-reference search did not find a direct invocation of that method or a callback connecting it to SessionManager; the actual caller may be supplied through a higher-level UI/Valdi/navigation composition and remains untraced. The phrase "Continue as Guest" is not ChatGPT guest UI: it is a field in Li230, whose constructor also defines plugin_shop, shop, Shop, "Search for products and check out with Shop.", Checkout, and "Log in with Shop". This is the Shop plugin UI model. Do not use that string as evidence for a ChatGPT guest-entry button or create a task to trace it as such.
+
+
+
+**Global anonymous API base and request-path acceptance**
+
+- Lp6t declares the global first-party backend roots. Field d is https://android.chat.openai.com/backend-api/; field e is https://android.chat.openai.com/backend-anon/.
+- Lvwo0.invoke consumes both Lp6t.d and Lp6t.e when constructing the Lar31 network/base-URL configuration, alongside the ChatGPT web root, Skybridge, realtime/public API roots, Codex cloud roots, platform metadata, device name, Android SDK level, package name and related configuration. This is a configuration-construction path; the inspected method does not issue a guest-session HTTP request.
+- Lyzo0 request-path validation/interceptor recognizes relative request paths beginning with /backend-api or /backend-api/, and /backend-anon or /backend-anon/, before forwarding the request. This proves that the Android networking layer allows both authenticated and anonymous backend path families. It does not identify a concrete anonymous session-create route, request body, or guest composer endpoint.
+- An additional apparent cross-reference, Lxi80, is a Files API client rather than the guest-session manager. Its methods include file download (files/download/), upload reservation claim/finalize (/files/upload_reservations/{reservation_id}/claim_and_finish), upload processing, and file processing/indexing events. Its shared request helper also recognizes /backend-anon and /backend-api roots. This is file-service transport/path support, not evidence for anonymous guest-session creation or guest composer send routes.
+- The earlier /backend-anon/f/conversation* constants remain attributed to Lx4k0 (LocationCookieInitializer) during locationPermissionCookieSettings processing. Global anonymous-root configuration and generic path acceptance must not be conflated with proof that those location-cookie endpoints are guest message APIs.
+
+**Anonymous-session profile descriptor**
+
+- Lr10 static initialization constructs a profile object stored in Lr10.l using Lzk8("id", "anonymous-session", false, emptySet). The same initializer constructs other Lr10 profile objects using an Lxk8("id", "id-session") descriptor.
+- In the root-view-model path, Los8.f is the install-referrer AccountSelector/login attempt, not the anonymous fallback. The subsequent Lgs31.b → Lau31.G call is the initial anonymous-session path. The current trace follows Lau31.G into a coroutine helper and local session-state transition, but has not recovered a concrete guest HTTP request builder or route from those methods.
+- Lzk8 is a local four-field value record (two strings, boolean, set); Lxk8 is a local two-string value record. The strings are used as values in these descriptors. The source code names and complete semantics of every field are not available from the obfuscated DEX.
+- Lqz8 is tagged QrLoginApi; its constructor accepts an Lr10 instance, and one of its methods consults Lr10.a(). This shows that Lr10 session/profile configuration is consumed in a QR-login-related component. It does not establish that anonymous-session is a server-issued guest token, a conversation ID, or the HTTP operation that creates a guest session.
+- These are useful static markers of a separately configured anonymous session profile, but remain local configuration/model evidence. No server response, session token, guest ID generation, or request schema is established by these constants alone.
+
+**Shop-string attribution correction**
+
+The string "Continue as Guest" belongs to Li230, a serialized Shop plugin UI model. The same constructor includes the plugin identifiers and labels plugin_shop, shop, Shop, "Search for products and check out with Shop.", Checkout, and "Log in with Shop". It must not be represented as a ChatGPT anonymous-session button. The AnonymousSessionLoading Compose method remains a distinct finding; its caller/callback was not established by this pass.
+
+
+
+**SessionManager dependency and coordinator boundary**
+
+A further pass inspected the immediate injected dependencies and orchestration classes around the initial anonymous fallback:
+
+- Lpb11 is tagged RootSessionCoordinator. Its constructor receives Lgs31 (session manager), Lq5d1, Ldrk0, Lmj2, and session-related sets/state. Lq5d1 is tagged UserScopeManager; Ldrk0 is tagged LogoutCleanupCoordinator.
+- Ldrk0 coordinates logout cleanup through Lsk8, Lvv31 and Lgv31. Its coroutine handles retired authenticated storage and retired guest storage separately, including Failed to clean retired authenticated storage, Failed to clean retired guest session, and Failed to read retired guest sessions. This is local cleanup, not guest session creation.
+- Lsk8 is tagged AuthRepository and injects Lcn8, tagged AuthStorage, plus credential/session and logging dependencies. The inspected methods resolve persisted credential records, update/remove credential storage and coordinate user-scope work. Lcn8 uses an application-context-backed store and local maps/metadata, with migration/ownership handling; its inspected methods are storage operations, not an anonymous HTTP create endpoint.
+- The initial guest path Lgs31.b → Lau31.G enters Lmgo0.a, which is a coroutine Mutex.lock operation. It serializes the transition so concurrent guest-start attempts do not run simultaneously. After acquiring the mutex, Lau31.G runs Llzx.n, awaits a local async/mutex dependency, evaluates current session state, reads the selected session context through Llzx.u, and then calls Lau31.E. The inspected method graph contains no HTTP client, endpoint or request builder.
+- The post-logout Lau31.F → Lau31.E route uses the same manager state transition family, while Lau31.E resolves/checkpoints local state through Lv2f0 and Lvv31.
+- This is a more complete view of the local lifecycle boundary: RootViewModel → RootSessionCoordinator/SessionManager → mutex + resolver + AuthRepository/AuthStorage + DataStore + cleanup coordinator. The concrete operation that obtains or refreshes the server-side anonymous session is still not identified in these inspected dependencies. Do not assume the global /backend-anon/ base or anonymous-session profile string reveals its endpoint.
 
 **Evidence limits:** method names shown above are obfuscated DEX class/method identifiers; descriptive names such as SessionManager and LocationCookieInitializer are observed logger tags, not recovered Java/Kotlin source class names. No guest token was generated, no live account/session request was made, and no server behavior was inferred from the client-only DEX. No ChatJS guest-session implementation exists yet.
 

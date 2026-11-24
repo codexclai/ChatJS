@@ -86,3 +86,10 @@ The runtime includes a generic bounded and cancellable SSE parser in src/sse.cjs
 The Android DEX pass now traces a three-state Unauthenticated/AnonymousSession/LoggedInSession enum, a serialized session metadata model, SessionManager startup/logout/unauthenticated-refresh paths, and SessionStorageCleanupImpl handling sessions/guest-* directories and retired sessions. Exact guest create/refresh HTTP requests and composer send/prepare schemas remain open.
 
 Important correction: the anonymous conversation URL constants observed in DEX are consumed by LocationCookieInitializer while processing locationPermissionCookieSettings. They are not evidence of the guest composer message-send route. Read the latest method-level section in ANDROID_CLIENT_PROTOCOL_FINDINGS.md before continuing the guest protocol trace.
+
+
+### Android guest UI and anonymous transport correction — 2026-11-24
+
+Do not treat the phrase "Continue as Guest" as ChatGPT guest UI: it comes from Li230, a serialized Shop plugin model with Shop checkout/login labels. The AnonymousSessionLoading Compose method Losk1.a is separate; a direct DEX call-reference search found no caller/callback connecting it to SessionManager.
+
+New infrastructure evidence: Lp6t defines backend-api and backend-anon roots, Lvwo0 includes both in the global Lar31 network config, and Lyzo0 accepts paths under either prefix. Lr10 initializes a local profile descriptor labelled anonymous-session, passed into a QR-login-related component; this is not proof of a server-issued guest token or guest create route. The RootViewModel path first performs install-referrer AccountSelector login (Los8.f → LoginGraphManager), then separately calls Lgs31.b → Lau31.G for anonymous startup. Continue through Lau31.G and its Llzx.n helper/injected SessionManager dependencies to locate a concrete request builder; do not mistake Los8.f for guest creation. Actual guest composer send routes are still untraced.
