@@ -38,13 +38,32 @@ The 2026-11-24 scan of ChatGPT Android 1.2026.321 found distinct requirements-in
 
 - [ ] What is the exact request/response JSON schema for /backend-api/sentinel/chat-requirements, including the token, Turnstile, proof-of-work and app_attest_challenge fields?
 - [ ] What does app_attest_challenge mean in this Android build, and is it consumed by a provider other than the native Play Integrity path?
-- [ ] How is the server challenge/nonce transformed and bound to the Play Integrity token and account/conversation request?
-- [ ] What exact input tuple does the helper transform for the second Play Integrity token? The invoke references accountId, conversationId and parentMessageId plus another unresolved string argument; how is that token bound server-side?
+- [ ] How does the server validate the second Standard Integrity token's request hash (SHA-256 over canonical account_id/conversation_id/device_id/parent_message_id JSON), and what is its binding/lifetime relative to the conversation request?
 - [ ] Why does the inspected native implementation require package ID com.openai.chatgpt.internal while the supplied XAPK manifest is com.openai.chatgpt, and is the provider selected or callable in the public app build?
 - [ ] Why does the internal native helper's User-Agent identify ChatGPT 1.2026.209 (build 2620909) while this XAPK is 1.2026.321 (version code 2632129)?
 - [ ] What are the exact JSON body fields/values and status/error behavior for /backend-api/playintegrity, including the bot_token, play_integrity_token and chat_requirement_token values seen in the worker?
-- [ ] What cookie name/scope/lifetime is required, how is it retained or reused by the native flow, and what later request(s) depend on it? The inspected response bridge returns bodyPatchJson: null.
+- [ ] The cookie name must end in _playintegrity and it must be Secure, unexpired, first-party-domain scoped, and have a backend API path accepted by the native helper. What exact cookie name, expiry policy, rotation and deletion behavior are used? The inspected native response bridge returns bodyPatchJson: null.
 - [ ] What are the precise validation and merge rules for bodyPatchJson and returned openai-sentinel-* headers before the conversation request?
 - [ ] The native Android helper uses UUID.randomUUID() for device_id and persists it in SharedPreferences; what is its lifetime, rotation/reset/deletion policy, scope, and which requests require it?
 - [ ] Which Windows/desktop host provider, if any, supplies equivalent genuine integrity behavior? Do not infer equivalence from the Android path.
 - [ ] How should ChatJS expose unsupported platform, missing Play Services, rate limiting, retry/cooldown, expiration, cancellation and integrity failure without bypassing a required account check?
+
+## Standard Integrity provider details now observed
+
+The internal Android helper calls Google Play Standard Integrity provider preparation (prepareIntegrityToken / warm-up) and requestExpressIntegrityToken, each with a 30-second wait. It retries once after its provider-invalid error path by preparing a new provider. The following remain open:
+
+- [ ] What is the complete OpenAI PlayIntegrityTokenGenerator retry/cooldown policy, beyond the observed provider refresh on one invalid-provider status?
+- [ ] Which error codes trigger token retry, initialization retry, cooldown, or terminal failure in the OpenAI wrapper, and what are the exact backoff ceilings?
+- [ ] What public Android build/provider selection path, if any, supplies the same first-party provider without the internal package guard?
+
+## Integrity SDK retry and local cooldown questions
+
+The current DEX trace observes a 300-second default local cooldown for the TOO_MANY_REQUESTS path, a static retryable-status candidate list, and a DeviceRateLimits data store. It does not reconstruct the whole retry machine.
+
+- [ ] What is the exact symbolic meaning of each candidate status (-19, -18, -12, 0, -100, -8, -9) in the OpenAI wrapper, and which additional conditions/feature gates change retry eligibility?
+- [ ] What do the additional branches (-15 and -14, among others) in the token coroutine mean? Which errors reprepare the provider, retry the token, enter cooldown, or terminate?
+- [ ] What are the exact maximum attempts, delays, jitter, backoff ceilings and reset conditions? The current scan does not prove these.
+- [ ] Is the 300-second local cooldown based on a monotonic or wall clock, and when/how is its marker cleared?
+- [ ] Does the local cooldown marker persist across process restart? The separate DeviceRateLimits data store exists, but its relation to the in-memory/local cooldown helper is not yet clear.
+- [ ] What fields, scope (device/account/provider), expiry and retention rules are represented in DeviceRateLimits? Which code paths record and discard its entries?
+- [ ] Which retry counters and provider/version fields are instrumentation only? Do not port SDK metrics or export diagnostic metadata under ChatJS's zero-telemetry rule.

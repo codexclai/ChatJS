@@ -68,3 +68,24 @@ For each investigation include question, setup/method, actual result, conclusion
 - Architecture conclusion: host environment context, client-install identity and genuine first-party attestation are distinct. Android Play Integrity is not a synthetic generic device profile and must not be claimed by Windows/Linux hosts.
 - Limits: this was static package/Dex analysis, not full decompilation or a complete call graph. Exact challenge/nonce schema, request-body serialization, app_attest_challenge semantics, token binding, cookie contract, body patch/header merge, device ID generation, internal package path selection and desktop equivalence remain open. No authorized live account request was made. No runtime feature was implemented.
 - Next: continue source-level trace of the providers and exact schemas; use fixtures only in tests and keep genuine integrity unavailable states explicit.
+
+## 2026-11-24 — Standard Integrity request hash, origin and cookie validation trace
+
+- Source: ChatGPT Android 1.2026.321 XAPK in ChatJS Project → Sources; targeted DEX disassembly of Lxwf.f, Lxwf.v, Lxwf.w, Lxwf.y, DeviceIntegrityService, native provider a.run, and the Standard Integrity wrapper classes.
+- Exact second request hash: canonical JSON field order account_id, conversation_id, device_id, parent_message_id; escape string values; UTF-8 encode; SHA-256; lowercase two-digit hex per digest byte. The caller passes account ID, device UUID, conversation ID and parent-message ID to this helper.
+- Provider: Google Play Standard Integrity warm-up/prepare-integrity-token and request-express-integrity-token path. Provider preparation and token requests wait up to 30 seconds. The helper caches the provider and re-prepares/retries once on its provider-invalid error path. Other failures propagate.
+- First request nonce: 256 random bytes from SecureRandom, Android Base64 URL-safe/no-wrap encoding. It is used as the request hash for the initial Standard Integrity token.
+- Endpoint security: HTTPS only; exact or subdomains of openai-staging.com, chatgpt-staging.com, openai.com and chatgpt.com; no userinfo, explicit port, base path, query or fragment. Relative path only.
+- HTTP: POST JSON, bearer and account/client/device/package/user-agent headers, redirects disabled, 30-second connect/read timeouts, 2xx accepted, 8 KiB streaming reads and 256 KiB body cap; cancellation disconnects active connection.
+- Cookie: parsed Set-Cookie values; name suffix _playintegrity, non-empty value, Secure, unexpired, first-party-domain validation, backend API endpoint path allowlist. Missing path defaults to /backend-api; other path rules are validated against the known conversation/chat-requirements routes. Compatible default CookieManager reused; absent handler created with ACCEPT_ORIGINAL_SERVER; incompatible handler fails closed.
+- Native service: async cached-executor work, main-thread Handler completion, explicit cancellation, request constructor order accountId/accessToken/baseUrl/conversationId/parentMessageId, response constructor order bodyPatchJson/headerNames/headerValues.
+- Limits: partial custom bytecode disassembly, not a full decompiler. Exact OpenAI wrapper rate-limit/backoff matrix, cookie exact name/expiry/deletion, public-build selection, Valdi header application, app_attest_challenge and live service validation remain unresolved. No live account request or ChatJS runtime implementation was performed.
+
+## 2026-11-24 — Standard Integrity retry classification and local cooldown
+
+- Source: Android 1.2026.321 classes2.dex; selected methods in com.openai.integrity.impl.g, Lxrf0, and Lhm00.
+- The SDK's retry-classification list contains status integers -19, -18, -12, 0, -100, -8, and -9. g.c(PlayIntegrityException) also checks another feature/configuration boolean, so membership is not an unconditional retry decision. The token coroutine has additional status branches, including -15 and -14; full branch semantics remain open.
+- Lxrf0 initializes a default duration using 300 with the SECONDS unit. The wrapper gates token generation while the local TOO_MANY_REQUESTS cooldown is active and surfaces cooldown_remaining_ms; its error text explicitly says generation is skipped while the client is cooling down.
+- DeviceRateLimits is a named SDK data store. Its methods read records, discard expired entries, filter/sort and remember updates, with explicit failure paths. Its schema, scope, persistence/retention and relationship to the separate cooldown marker remain unresolved.
+- The SDK assembles diagnostic metrics/counters (initialization_retry_count, token_retry_count, lifetime_integrity_initialization_count, Play Services/Store metadata). These must not be exported by ChatJS under the zero-telemetry requirement; only genuine functional retry/cooldown semantics are in scope.
+- No live account request, provider invocation or ChatJS implementation was performed. No attempt/backoff ceiling is claimed.

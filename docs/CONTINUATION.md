@@ -54,3 +54,11 @@ Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cooki
 Record meaningful requirements, decisions, sources/dates, actions, changed files, tests, failures, limits, blockers, and handoffs in canonical docs. Correct affected references and preserve chronology. Update `project-state.json` and regenerate `PROJECT_STATE.md`; update TODO and the chronological session log.
 
 Run `npm run check`, build/inspect the module archive, verify CI where possible, inspect the final tree and branch list, and commit directly to the existing `main` branch using a non-force fast-forward update. Record actual results; never claim unverified work.
+
+### Further Android integrity trace — 2026-11-24
+
+The internal Android native helper's second Standard Integrity request hash is canonical JSON in account_id/conversation_id/device_id/parent_message_id order, UTF-8 SHA-256 lowercase hex. It uses Standard Integrity provider warm-up/token requests with 30-second waits and one observed provider-invalid refresh/retry path. Cookie acceptance requires _playintegrity, Secure, unexpired, trusted domain and backend route path. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md. The public app/package caveat remains unresolved; no ChatJS provider is implemented.
+
+### Integrity SDK cooldown and retry evidence — 2026-11-24
+
+The Android SDK contains a 300-second local TOO_MANY_REQUESTS cooldown, conditional candidate retry statuses (-19, -18, -12, 0, -100, -8, -9), and a DeviceRateLimits store with read/expiry/filter/write paths. Exact retry gates, limits, store scope and restart persistence remain unknown. Do not treat candidate codes as unconditional retries and do not port SDK metrics/telemetry. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.

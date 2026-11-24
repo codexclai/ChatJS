@@ -278,3 +278,23 @@ The GitHub About description was not changed because the available GitHub integr
 - Reassembled ChatGPT-Windows.msix.part001 and ChatGPT-Windows.msix.part002 from Project Sources in numeric order.
 - Result: 796,523,063 bytes; SHA-256 561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963; ZIP CRC test passed with no compressed-data errors.
 - This is a byte-integrity recheck only. No publisher-signature verification, install, launch, or full app-payload analysis was performed. Full Windows extracted-payload work remains deferred until explicitly requested.
+
+### Follow-on DEX trace — Standard Integrity request hash, provider and cookie gate — 2026-11-24
+
+- Continued targeted method disassembly after fixing the custom DEX parser's const-wide instruction width handling.
+- Reconstructed the second request hash: Lxwf.f(accountId, deviceId, conversationId, parentMessageId) builds JSON in the exact key order account_id/conversation_id/device_id/parent_message_id, escapes values as JSON strings, UTF-8 encodes, computes SHA-256, and returns lower-case hex. The native caller feeds that string to the Standard Integrity token provider.
+- Mapped provider operations to the bundled Google Play Standard Integrity wrapper: prepare/warm-up provider (prepareIntegrityToken) and request token (requestExpressIntegrityToken), 30-second waits, provider cached, and a single prepare-and-retry path for the observed invalid-provider status. The wrapper's full throttle/backoff policy remains open.
+- Confirmed the first integrity nonce is 256 SecureRandom bytes, Base64 URL-safe/no-wrap; the resulting genuine token accompanies the internal package name, nonce and UUID device ID in POST /backend-api/playintegrity.
+- Reconstructed origin checks and HTTP bounds: first-party HTTPS exact/subdomain host allowlist; no user info, explicit port, base path, query or fragment; POST, redirects disabled, 30-second connect/read timeout, 2xx accepted, 8 KiB read buffer, 256 KiB response cap, cancellation disconnects active connection.
+- Reconstructed cookie acceptance checks: name suffix _playintegrity, non-empty value, Secure, not expired, trusted domain, backend API route path allowlist; missing path set to /backend-api. Compatible default CookieManager reused; absent manager created with ACCEPT_ORIGINAL_SERVER; incompatible handler fails closed.
+- Request constructor order: accountId/accessToken/baseUrl/conversationId/parentMessageId. Response constructor order: bodyPatchJson/headerNames/headerValues. Async work on cached executor, callbacks posted to main-thread Handler.
+- These are internal native implementation observations subject to the same package guard (com.openai.chatgpt.internal) and public XAPK mismatch. No public consumer-build use, live-account success or ChatJS runtime provider is claimed.
+
+### Integrity SDK retry and cooldown trace — 2026-11-24
+
+- Inspected selected retry/cooldown methods in Android classes2.dex (com.openai.integrity.impl.g, Lxrf0, Lhm00).
+- Observed retry classification integers: -19, -18, -12, 0, -100, -8, -9. The eligibility helper additionally reads a configuration/feature boolean, so these are candidate statuses, not unconditional retry instructions. The token coroutine also branches on other values (-15, -14, etc.); their semantics and total attempt ceilings remain untraced.
+- Confirmed the local TOO_MANY_REQUESTS cooldown default is constructed from 300 SECONDS. The wrapper checks for an active cooldown before token generation and surfaces cooldown_remaining_ms; the matching error states generation is skipped while the client is cooling down.
+- Observed a named SDK data store DeviceRateLimits whose methods read stored limits, discard expired records, filter/sort and persist updates. Exact schema, scope, retention and relationship to the separate cooldown marker are unknown.
+- Identified instrumentation-only fields/counters (initialization_retry_count, token_retry_count, lifetime_integrity_initialization_count, play_services, play_store). ChatJS must not export/replicate these as telemetry; the zero-telemetry rule remains absolute.
+- Did not invoke Google Play Integrity, make a live service request, or implement a ChatJS provider. This remains static method analysis.

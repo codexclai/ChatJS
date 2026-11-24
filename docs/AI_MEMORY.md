@@ -103,3 +103,11 @@ Record meaningful requirements, decisions, research, actions/files, tests/CI, fa
 ## End of session
 
 Complete a coherent work unit. Update `project-state.json` and regenerate `PROJECT_STATE.md`; update `TODO`, `SESSION_LOG`, and affected docs. Run `npm run check`, build/inspect `ChatJS.tar.gz`, verify CI where possible, inspect the final tree and branch list, and commit on `main`. Record actual results, blockers, and next actions. Never claim unverified behavior.
+
+### Further Android integrity trace — 2026-11-24
+
+The internal native Android path's second Standard Integrity request hash is canonical JSON in account_id/conversation_id/device_id/parent_message_id order, with string escaping, UTF-8, SHA-256 and lowercase hexadecimal. It uses Google Play Standard Integrity prepare/warm-up and request-express-token operations with 30-second waits and one observed provider-invalid refresh/retry path. The first token is bound to a 256-byte SecureRandom URL-safe/no-wrap Base64 nonce; the cookie exchange validates _playintegrity, Secure, expiry, trusted domain and backend endpoint path. Origin restrictions, no-redirect HTTP, 30-second network timeouts, 256 KiB body cap and task cancellation are documented. Public app availability remains unproven due the internal package guard. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+### Integrity SDK cooldown and retry evidence — 2026-11-24
+
+The Android integrity SDK uses a 300-second local TOO_MANY_REQUESTS cooldown and exposes remaining milliseconds when active. Its candidate retry status list is -19, -18, -12, 0, -100, -8 and -9, but the helper also checks a feature/configuration gate and other branches are not fully reconstructed. A named DeviceRateLimits store reads, expires, filters and records rate-limit entries; exact scope/schema and relation to the cooldown marker remain open. SDK retry counters and Play Services/Store metadata are instrumentation: never port/export them as telemetry. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
