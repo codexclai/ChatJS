@@ -303,3 +303,18 @@ Cookie handling is part of the two-stage exchange:
 The native bridge runs its work on a cached executor and posts success/failure completion through a main-thread Handler. The DeviceIntegrityTask exposes cancellation; the shared cancellation token is checked across the work, and the active HTTP connection is disconnected. The DeviceIntegrityRequest constructor order is accountId, accessToken, baseUrl, conversationId, parentMessageId; the response constructor order is bodyPatchJson, headerNames, headerValues.
 
 These are observed details of the internal-package native implementation only. The public XAPK/package mismatch and version mismatch described above remain decisive limitations; do not assume this implementation is selected by or available to the public Android build.
+
+
+## 2026-11-24 — Welcome CTA action-29 path into login-child coordinator
+
+A method-level DEX pass now follows the welcome CTA beyond its click closure:
+
+- The observed UI path is Li96 action 29 → Lgs10 event → Ltu10 welcome view-model → Lqik0 onboarding event → Lnik0 login-child coordinator.
+- Lnik0 is constructed with both Lks31 (the current AuthSession wrapper) and Lgs31 (the anonymous SessionManager), as well as Los8 and Lpjk0 (LoginGraphManager). This proves the login-child subsystem has access to both authenticated and anonymous session state; constructor injection alone does not prove which action is performed.
+- Llzx.t(Lgs31) is a local state getter: it obtains the current Lks31 wrapper from the SessionManager's local state/flow. It does not construct or issue a network request.
+- The Los8 coordinator checks a UI/feature condition (Ltpk0.d()). One branch collects the login-flow event stream through Lgs8/Lfet0; the alternate branch launches LoginGraphManager via Ljil1.c(...).
+- The event collector obtains the current local session wrapper through Llzx.t and passes typed Lir31 events to Lau31.i.
+- Lau31.i runs Lxs31, acquires the SessionManager coroutine mutex Lmgo0, rereads the current local Lks31 state, evaluates the session variant and event, derives a local session/UI status via Lau31.w, then applies the local wrapper/state transition through Lau31.r. The inspected methods contain no URL, HTTP client, request builder, or guest token exchange.
+- The flow model includes Lwnk0 values Login, Signup and CombinedLoginSignup. The navigation/entry-point model Lfh8 includes multiple login surfaces such as Modal, FullScreen, LoginPage, AnonymousSideBar, LoginMenu, LandingScreen, WelcomeDisclosure and AccountSelector. These are login/onboarding UI-flow types, not guest-create protocol names.
+
+**Conclusion and evidence boundary:** the welcome CTA click is traced into the login-child/onboarding coordinator, which reads current local auth/guest session state and processes login-flow events using local SessionManager synchronization/state reconciliation. The trace does not prove that action 29 invokes the initial anonymous-session fallback Lgs31.b → Lau31.G, creates a new guest session, or sends a server request. That initial fallback remains a separate observed path. The actual guest create/refresh HTTP operation and anonymous composer prepare/send routes remain unidentified. Preference population for Lzlh1/Lylh1 also remains unresolved. No ChatJS runtime behavior is implemented by this source research.

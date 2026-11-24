@@ -84,4 +84,4 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 
 
 - [ ] Trace who populates Lzlh1 / the Lylh1 welcome-presentation preference (including the source of Lnlh1.guestCtaCopy), whether it is remotely delivered or locally seeded, and the exact eligibility/cache/update conditions. The currently inspected manager path is PreferenceStore-backed and has no visible HTTP request.
-- [ ] Trace the UI callback that consumes Lxr10's mapped guestCtaCopy/CTA flags, determine the action behind the tap and whether it reaches SessionManager's initial anonymous fallback. The current trace proves UI-state mapping only, not the callback.
+- [ ] Trace which branch after the now-observed welcome CTA action-29 → Ltu10 → Lqik0 → Lnik0 login-child coordinator leads to anonymous-session startup, if any. The current branch reads local Lks31 state through Llzx.t and processes Lir31 login-flow events through Lau31.i/Lxs31 under the Lmgo0 mutex; it does not prove a call to the separate Lgs31.b → Lau31.G initial guest fallback or a guest-create request.

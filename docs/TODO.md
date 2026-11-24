@@ -91,4 +91,4 @@ Never create branches or worktrees. Keep all repository work on main.
 
 
 - [ ] Trace the writer/population source for WelcomeLanguageEnrollment / Lzlh1 / Lylh1, including the source of guestCtaCopy, local seed vs remote fetch, cache/update conditions and feature gates.
-- [ ] Trace the Lxr10 UI-state consumer callback for guestCtaCopy; establish the actual tap action and whether it reaches the initial SessionManager guest path.
+- [ ] Trace which action-29 login-child coordinator branch, if any, reaches the separate Lgs31.b → Lau31.G initial guest fallback; the observed path currently reads local session state and handles login-flow events through Lau31.i/Lxs31.

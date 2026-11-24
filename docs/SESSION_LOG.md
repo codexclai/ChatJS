@@ -537,3 +537,27 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Final archive inspected after the closeout changes: dist/ChatJS.tar.gz, 9,897 bytes, SHA-256 a613410e07b71de70150f92ad7d5a01d8edadbe5b15b70549d50b6714a494238; it contains exactly ChatJS/package.json, ChatJS/ChatJS.md, ChatJS/README.md, ChatJS/LICENSE, ChatJS/src/index.cjs, ChatJS/src/index.mjs, ChatJS/src/sse.cjs and ChatJS/types/index.d.ts.
 - The guest-welcome research update was committed directly to main as a802d5f3b3e2514823f36036da8294a4ed5baf9d, using a non-force expected-head update from 3796c881835943e86322fa8c6a0323469c3f53c3. GitHub CI run 45436181327 and CodeQL run 45436181361 both completed successfully on the new commit.
 - Final live repository review: main is the only branch; there are no open issues or pull requests. The CI workflow ran the Node LTS full checks, installed-module CommonJS/ESM smoke tests and archive upload.
+
+## 2026-11-24 — Android welcome CTA and login-child session-state boundary
+
+### Source and findings
+- Continued from live GitHub main at 536f3d8cf0c394642b15095e565db72e76be1afa; refreshed the exact source snapshot and canonical records before analysis. Only main exists; open issue and PR searches returned no results.
+- Followed the Android welcome CTA action closure into the login/onboarding layer: Li96 action 29 → Lgs10 event → Ltu10 welcome view-model → Lqik0 onboarding event → Lnik0 login-child coordinator.
+- Lnik0 is injected with both Lks31 (current AuthSession wrapper) and Lgs31 (anonymous SessionManager), plus Los8 and Lpjk0 (LoginGraphManager). This proves access to both auth and guest state, not which operation the CTA completes.
+- Llzx.t(Lgs31) is a local getter for the current Lks31 wrapper from the manager's local flow/state. The Los8 coordinator branches between login-flow event collection (Lgs8/Lfet0) and LoginGraphManager (Ljil1.c).
+- The event collector obtains the local session wrapper with Llzx.t and passes Lir31 flow events to Lau31.i. Its coroutine Lxs31 acquires Lmgo0, rereads local session state, evaluates the session variant/event, derives a local state record with Lau31.w, and applies the wrapper/state transition with Lau31.r.
+- Lwnk0 contains Login, Signup and CombinedLoginSignup; Lfh8 contains login navigation surfaces. This identifies login/onboarding flow handling.
+- None of the inspected action-29 coordinator methods contains an HTTP client, route, request builder or guest-token exchange. No evidence connects action 29 to the separate initial guest fallback Lgs31.b → Lau31.G. That method remains an independently observed local startup path whose concrete server-side create operation is still unidentified.
+- The earlier welcome presentation preference facts remain: Lnlh1/Lylh1, Lzlh1 (global_ PreferenceStore), Lvlh1 enrollment marker and Lxr10 UI-state mapping. The preference population source is still unknown. The anonymous_welcome instrumentation is not a ChatJS telemetry requirement.
+
+### Decisions, limits and implementation status
+- Correct the prior documentation statement that the welcome click callback was untraced. The click-to-login-child/onboarding path is observed; the action-to-new-guest-session behavior is not proven.
+- Keep anonymous session creation and composer send schemas/routes open. Do not infer network behavior from injected dependencies, feature flags, local state, or the backend-anon root.
+- No runtime code or public API was changed. ChatJS remains a foundation plus generic bounded/cancellable SSE framing parser; no authenticated/accountless ChatGPT connection, guest creation, conversation, or Work engine is implemented.
+
+### Changed records
+- Update Android protocol findings, experiments, knowledge base, open questions, TODO, capability matrix/inventory, AI memory, continuation, project-state, generated project state, root ChatJS.md, and this session log.
+
+### Verification and handoff
+- Local npm run check, generated state sync, archive listing/integrity, remote CI and CodeQL results are to be recorded after this documentation-only slice is validated and published.
+- Next trace: resolve the action-29 coordinator branch and determine whether any explicit event calls the separate Lgs31.b → Lau31.G path; continue the preference writer and guest HTTP create/refresh/composer request investigation. Then continue the separately scoped Windows Work Local and Android Work Cloud traces.
