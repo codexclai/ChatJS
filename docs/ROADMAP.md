@@ -1,6 +1,6 @@
 # ChatJS Roadmap
 
-This roadmap describes intended work, not current support. A capability is supported only when implementation, documentation, tests, and end-to-end evidence exist.
+This roadmap describes intended work, not current support. The accepted completeness, portability, customization and production-quality target is defined in [PRODUCT_STANDARD.md](PRODUCT_STANDARD.md). A capability is supported only when implementation, documentation, tests, compatibility evidence, and applicable end-to-end verification exist.
 
 ## 1. Complete the real client implementation research
 
@@ -31,8 +31,16 @@ Define secure credential/session handling, cancellation, timeouts, backpressure,
 
 Keep the package reusable across applications, Node.js environments, OSes, and deployment styles. Camera, microphone, screen, browser, and desktop interaction must remain optional integrations rather than assumed core hardware.
 
-## 5. Production readiness
+## 5. Product configuration and dynamic capability model
+
+- Define validated configuration layers and explicit override precedence, without security or authorization bypasses.
+- Add runtime capability discovery backed by genuine providers and explicit support states.
+- Define narrow optional host adapters and a tested Node.js/OS compatibility matrix.
+- Maintain client/protocol compatibility evidence and update only from verified source changes and contract tests.
+- Keep protocol discovery, update checks and diagnostics free of hidden background network traffic.
+
+## 6. Production readiness
 
 Focus on correctness, tests, measurable performance, memory/concurrency limits, reliable cancellation/cleanup, Node.js host compatibility, security, dependency governance, accurate API docs, and reproducible checks.
 
-No fake features or version/release automation.
+No fake features or version/release automation. Use PRODUCT_STANDARD.md as the feature acceptance gate; the target is maximum practical verified quality, not a promise of universal availability or indefinite compatibility.

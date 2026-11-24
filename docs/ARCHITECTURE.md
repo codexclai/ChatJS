@@ -10,6 +10,12 @@ The intended product integrates with real ChatGPT client/service behavior. The o
 
 Current ChatJS runtime remains foundation-only. No planned workflow may be described as implemented until real Node.js code and end-to-end evidence exist.
 
+## Product-quality target
+
+The accepted project-wide requirements for comprehensiveness, one cohesive module, broad portability, customization, runtime capability discovery, reliability, security/privacy, usability, documentation, and production-readiness gates are specified in [PRODUCT_STANDARD.md](PRODUCT_STANDARD.md). Treat that document as a normative target when designing new APIs and implementations. It does not imply that planned functionality is already present.
+
+The design should expose meaningful configuration and provider choice through validated, documented interfaces while preserving immutable security and authorization requirements. Capability discovery must describe real runtime/provider support, not infer it from OS labels or pretend profiles. Protocol adaptation must be based on verified source evidence and tests, never unsolicited network probing or hidden automatic downloads.
+
 ## Goals
 
 - Node.js only, with ESM, CommonJS, and accurate TypeScript declarations.

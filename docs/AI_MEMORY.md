@@ -21,6 +21,10 @@ The target is the real consumer ChatGPT product and its legitimate account/servi
 
 ChatJS must remain general-purpose: usable by different Node.js applications, operating systems, hosts, devices, and deployment environments. Do not assume it is itself a phone/desktop app or that any particular camera, microphone, screen, browser, or OS facility is present. Expose host-dependent capabilities through optional integrations/adapters so consumers can use the module without those facilities.
 
+## Accepted product-quality target
+
+The owner requires ChatJS to pursue comprehensive all-in-one functionality, maximum practical production quality, broad portability, dynamic capability/protocol adaptation, extensive safe customization and control, and a user-friendly API. docs/PRODUCT_STANDARD.md is the normative, detailed requirement and acceptance gate. This target does not claim present implementation or guarantee every feature on every host forever. Maintain a capability registry and compatibility evidence as implementation develops; never bypass account authorization, entitlements, first-party security, rate limits or cooldowns; preserve zero telemetry and no unsolicited network activity. The current runtime remains foundation-only.
+
 ## Current Project Sources — verified 2026-11-24
 
 - Android: `ChatGPT-Android.xapk`, 123,574,190 bytes. This is an app bundle containing the base APK and required splits, not one standalone APK. ZIP integrity passed; SHA-256 matched the download provider's published hash `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`. The provider hash match is not an independent malware scan or signing-certificate verification.
@@ -77,7 +81,7 @@ The current installer files are held in ChatJS Project → Sources, not public G
 2. `PROJECT_STATE.md`, `project-state.json`, `TODO.md`, `SESSION_LOG.md`.
 3. `DECISIONS.md`, `KNOWLEDGE_BASE.md`, `EXPERIMENTS.md`, `OPEN_QUESTIONS.md`.
 4. `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`, `REFERENCE_APK.md`, `REFERENCE_DESKTOP.md`.
-5. `ROADMAP.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, root `ChatJS.md`.
+5. `ROADMAP.md`, `ARCHITECTURE.md`, `PRODUCT_STANDARD.md`, `WORKFLOW.md`, root `ChatJS.md`.
 6. Inspect live `main`, complete branch list, recent commits/tree, issues/PRs, and CI.
 
 ## Canonical records
@@ -90,7 +94,7 @@ The current installer files are held in ChatJS Project → Sources, not public G
 | Experiments/unknowns | `EXPERIMENTS.md` / `OPEN_QUESTIONS.md` |
 | Capabilities | `CAPABILITY_MATRIX.md` / `CHATGPT_CAPABILITY_INVENTORY.md` |
 | Package/protocol findings | `REFERENCE_APK.md` / `ANDROID_CLIENT_PROTOCOL_FINDINGS.md` / `REFERENCE_DESKTOP.md` |
-| Architecture/workflow | `ARCHITECTURE.md` / `WORKFLOW.md` / `ROADMAP.md` |
+| Architecture/workflow | `ARCHITECTURE.md` / `PRODUCT_STANDARD.md` / `WORKFLOW.md` / `ROADMAP.md` |
 | Public API | Root `ChatJS.md` |
 | Project operating instructions | `CHATGPT_PROJECT_INSTRUCTIONS.md` |
 

@@ -9,8 +9,8 @@
 | Project | ChatJS |
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
-| Phase | Actual ChatGPT mobile/desktop client integration research; general-purpose Node.js architecture |
-| Status | ChatJS targets the real client-side systems of official ChatGPT mobile and desktop Work/Codex in one general-purpose Node.js module. The runtime remains foundation-only; no actual ChatGPT connection or feature workflow is implemented yet. |
+| Phase | Product-quality target documented; actual ChatGPT mobile/desktop client integration research and general-purpose Node.js architecture |
+| Status | ChatJS has an accepted project-wide target for comprehensive in-scope functionality, one cohesive module, broad tested portability, safe customization, dynamic capability discovery, production quality and user-friendly documentation. The runtime remains foundation-only; no actual ChatGPT connection or feature workflow is implemented yet. |
 | Default branch | main |
 | Last reviewed | 2026-11-24 |
 | Runtime policy | Use the supported Node.js LTS in CI. |
@@ -60,6 +60,8 @@
 40. Inspected ChatGPT Android XAPK 1.2026.321 (version code 2632129); independently verified its SHA-256 and ZIP CRC, inventoried the base APK (5,080 entries, ten DEX, 111 Valdi modules), decompressed all 111 Valdi modules, and performed a partial DEX method-reference scan of the native device-integrity flow.
 41. Traced the Android internal native Standard Integrity request-hash construction, provider preparation/token requests, strict origin allowlist, cookie validation, HTTP size/time limits, and cancellation bridge from selected DEX method disassembly.
 42. Inspected Android integrity SDK retry/cooldown helpers: observed a 300-second local TOO_MANY_REQUESTS cooldown, conditional retry-status candidate list, and DeviceRateLimits read/expiry/filter/write data-store paths; documented telemetry exclusions and unresolved retry/store semantics.
+43. Documented the owner-approved comprehensive, all-in-one, portable, customizable, dynamically adaptable and production-quality target in docs/PRODUCT_STANDARD.md; linked it from the architecture, root user guide, continuity and workflow records, and added measurable implementation tasks. This is a requirements milestone, not a runtime feature completion.
+44. Ran npm run docs:sync and npm run check after the product standard documentation change: syntax checks passed, generated project state synchronized, all 26 Markdown files passed local-link validation, all 9 tests passed, and ChatJS.tar.gz built and was inspected with the seven expected module files. New-commit remote CI/CodeQL verification remains pending.
 
 ## Not implemented
 
@@ -68,18 +70,20 @@
 - Conversation, project/context, instruction, memory, file/attachment, image/video, voice, search/tool, Work/Codex, task, workspace, process, Git review, and local artifact workflows beyond the foundation.
 - Optional host adapters for browser, desktop, camera, microphone, screen, and other host-specific capabilities.
 - End-to-end verification of the combined mobile and desktop client behavior in Node.js.
+- The production-quality product target itself: comprehensive verified capability coverage, layered customization/configuration, runtime capability registry, optional host/provider adapter APIs, expanded compatibility matrix, and complete user/API documentation for future implemented workflows.
 
 ## Next actions
 
-1. Continue reconstructing Android integrity retry/cooldown semantics: status-code and feature gates, total attempts/backoff, 300-second cooldown clock/marker persistence, DeviceRateLimits data schema/scope/retention, generated Valdi requirements schema, public-build provider selection and cancellation.
-2. Define host environment context, protocol-specific client-install identity and genuine first-party attestation as separate Node.js concepts; use optional genuine host providers and explicit unsupported/unavailable/failure states.
-3. Perform deeper method-level analysis of Android account-check, model/chat-requirements, conversation, upload, history, image-gallery, and Library clients; map exact call graphs and serialized request/response schemas.
-4. Trace first-party sign-in, bearer credential renewal/revocation, encrypted credential storage, account binding, and device-integrity/Sentinel requirements without bypassing them.
-5. Trace direct/polling SSE streaming, event schemas, handoff/resume tokens, reasoning/tool/message completion events, and cancellation behavior.
-6. Define general-purpose ChatJS client configuration, connection/session lifecycle, transport, streaming/backpressure, cancellation, timeouts, concurrency, retries, and typed errors from client evidence.
-7. Implement and test the first real ChatGPT client connection and conversation send/receive/stream workflow without Platform API substitution or fake responses.
-8. Map project/context/instructions, file/attachment, voice/image, search/tools, Work, and Codex client flows for Node.js adaptation.
-9. Resume Windows extracted-payload archive work only when the owner explicitly asks.
+1. Translate PRODUCT_STANDARD.md into source-evidenced capability slices, validated layered configuration, host adapter/capability registry contracts, declared compatibility matrix, and per-feature production-readiness tests.
+2. Continue reconstructing Android integrity retry/cooldown semantics: status-code and feature gates, total attempts/backoff, 300-second cooldown clock/marker persistence, DeviceRateLimits data schema/scope/retention, generated Valdi requirements schema, public-build provider selection and cancellation.
+3. Define host environment context, protocol-specific client-install identity and genuine first-party attestation as separate Node.js concepts; use optional genuine host providers and explicit unsupported/unavailable/failure states.
+4. Perform deeper method-level analysis of Android account-check, model/chat-requirements, conversation, upload, history, image-gallery, and Library clients; map exact call graphs and serialized request/response schemas.
+5. Trace first-party sign-in, bearer credential renewal/revocation, encrypted credential storage, account binding, and device-integrity/Sentinel requirements without bypassing them.
+6. Trace direct/polling SSE streaming, event schemas, handoff/resume tokens, reasoning/tool/message completion events, and cancellation behavior.
+7. Define general-purpose ChatJS client configuration, connection/session lifecycle, transport, streaming/backpressure, cancellation, timeouts, concurrency, retries, and typed errors from client evidence.
+8. Implement and test the first real ChatGPT client connection and conversation send/receive/stream workflow without Platform API substitution or fake responses.
+9. Map project/context/instructions, file/attachment, voice/image, search/tools, Work, and Codex client flows for Node.js adaptation.
+10. Resume Windows extracted-payload archive work only when the owner explicitly asks.
 
 ## Reference artifact
 

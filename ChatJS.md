@@ -21,6 +21,8 @@ Intended areas include:
 
 The portable core must remain usable without a particular camera, microphone, screen, browser, operating system, or device API.
 
+The long-term product target is a comprehensive, all-in-one, highly customizable and dynamically adaptable module with broad host portability and production-grade behavior. These are requirements to implement and verify, not claims that every capability currently works everywhere. Customization must never bypass authentication, entitlements, first-party security checks, or other safety boundaries. See [the Product and Engineering Standard](https://github.com/codexclai/ChatJS/blob/main/docs/PRODUCT_STANDARD.md) for the complete target, control model, capability states, quality gates, and external-service limits.
+
 Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features are out of scope.
 
 ## Client-package references

@@ -12,6 +12,7 @@ This directory contains persistent project memory and the engineering handbook. 
 
 ## Product and engineering knowledge
 
+- [Product and Engineering Standard](PRODUCT_STANDARD.md) — comprehensive all-in-one product goals, safe customization, dynamic capability discovery, portability and production-readiness acceptance gate.
 - [Client Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md) — actual mobile/desktop client systems to investigate and adapt.
 - [Capability Matrix](CAPABILITY_MATRIX.md) — actual implementation status.
 - [Knowledge Base](KNOWLEDGE_BASE.md) — facts, sources, and technical notes.

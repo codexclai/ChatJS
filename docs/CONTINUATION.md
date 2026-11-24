@@ -7,7 +7,7 @@ Every ChatJS conversation continues the same repository and shared project memor
 1. Read `AI_MEMORY.md`.
 2. Inspect live `main`, complete branch list, tree, recent commits, issues/PRs, CI, and TODO.
 3. Read state, session history, decisions, knowledge, experiments, and open questions.
-4. Read capability matrix/inventory, Android protocol findings, Android/desktop reference records, roadmap, architecture, and workflow.
+4. Read capability matrix/inventory, Android protocol findings, Android/desktop reference records, roadmap, architecture, PRODUCT_STANDARD.md, and workflow.
 5. Read root `ChatJS.md` before public API changes.
 6. Resume the highest-priority actionable work; do not return only a plan.
 
@@ -20,6 +20,10 @@ Use the actual shipped client code and package contents as the primary technical
 The Node.js package must be usable by different hosts and applications. Do not assume a particular device, operating system, camera, microphone, screen, browser, or deployment model. Such capabilities are optional integrations when the consuming environment supports them.
 
 Current implementation remains foundation-only. First-pass Android client findings are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; they are not full source reconstruction or a working Node.js integration. Never present intended scope or research as implemented behavior.
+
+## Product-quality target
+
+Read PRODUCT_STANDARD.md as the accepted target for broad in-scope feature coverage, a cohesive one-package API, portability, customization, dynamic capability discovery, reliability, security/privacy, usability and production-readiness. Treat its checks as requirements to implement—not as evidence that the runtime already satisfies them. Prioritize real feature slices and test them; keep support states and unsupported-host behavior honest.
 
 ## Reference packages and browser profile
 

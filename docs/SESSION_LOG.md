@@ -298,3 +298,26 @@ The GitHub About description was not changed because the available GitHub integr
 - Observed a named SDK data store DeviceRateLimits whose methods read stored limits, discard expired records, filter/sort and persist updates. Exact schema, scope, retention and relationship to the separate cooldown marker are unknown.
 - Identified instrumentation-only fields/counters (initialization_retry_count, token_retry_count, lifetime_integrity_initialization_count, play_services, play_store). ChatJS must not export/replicate these as telemetry; the zero-telemetry rule remains absolute.
 - Did not invoke Google Play Integrity, make a live service request, or implement a ChatJS provider. This remains static method analysis.
+
+
+## 2026-11-24 — Comprehensive product-quality and customization standard
+
+### Direction and repository state
+- Continued from live GitHub main at 9edb6019deb06bd68fa7240e6c5039bb67d33e30; the repository metadata identifies main as the default branch. The complete branch listing contains only main; open issue and pull-request searches returned no results.
+- Verified the preceding commit's GitHub Actions runs: CI run 45372931412 completed successfully and CodeQL run 45372931487 completed successfully. These results apply to commit 9edb6019, not to this documentation change until its own CI finishes.
+- Refreshed the exact 9edb6019 source snapshot in the existing persistent ChatJS browser VM; no profile, Google/ChatGPT session or cookie state was reset.
+- The owner asked that ChatJS permanently target the broadest practical all-in-one functionality, production quality, dynamic adaptation, portability, extensive customization/control and user-friendliness.
+
+### Decisions and documentation
+- Added docs/PRODUCT_STANDARD.md as the normative requirements and feature acceptance document. It defines product ambition, unified modular architecture, portable host support, validated configuration layers, capability discovery/protocol drift, reliability/lifecycle, security/privacy, UX/docs, production-readiness gates and quality dimensions.
+- Clarified that "maximum everywhere/forever" is a quality objective, not a technically supportable promise that every capability works on every host or that external services, entitlements, providers and protocols remain available forever.
+- Customization is required to expose meaningful, validated user control, but must never override legitimate authentication, authorization, entitlements, first-party checks, service rate limits/cooldowns, privacy, or security policy. Dynamic adaptation must use verified evidence and must not introduce unsolicited network requests, remote-code downloads or hidden background activity.
+- Linked the standard from root ChatJS.md, docs/README.md, docs/ARCHITECTURE.md, AI_MEMORY.md, CONTINUATION.md, DECISIONS.md, TODO.md, ROADMAP.md and WORKFLOW.md. Updated docs/project-state.json; PROJECT_STATE.md is generated from that source.
+- Added explicit future work for capability inventory, layered configuration, optional host/provider adapters, tested compatibility matrix, feature acceptance gates, documentation, performance and soak tests.
+
+### Implementation status and limits
+- This is a documentation/requirements change only. No runtime API, capability, adapter, authentication flow, protocol integration or product feature was implemented in this work unit.
+- Existing runtime status remains foundation-only. The Android/Windows reference research is not equivalent to working Node.js support.
+- Ran npm run docs:sync and npm run check successfully after the documentation changes: syntax checks passed; generated PROJECT_STATE.md matched project-state.json; all 26 Markdown files passed local-link validation; all 9 Node tests passed; dist/ChatJS.tar.gz built with the seven intended package files.
+- Inspected the archive listing and SHA-256: edbc4740faa998f4bedc0b8445fd337cd4f1a3db9b48588fae37fa42861a91ac. The archive includes package.json, ChatJS.md, README.md, LICENSE, src/index.cjs, src/index.mjs and types/index.d.ts; it excludes docs, tests, reference payloads and dist itself.
+- The preceding main commit 9edb6019 has passing CI and CodeQL; the new documentation commit still requires its own remote CI/CodeQL verification after publication.

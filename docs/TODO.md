@@ -23,6 +23,16 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Define a repeatable client behavior test plan and capture verified request/response examples without storing personal account data.
 - [ ] Windows extracted-payload archive work is deferred by the owner; resume only when asked.
 
+## P1 — Product completeness, customization and capability architecture
+
+- [ ] Translate PRODUCT_STANDARD.md into a prioritized, source-evidenced capability map covering every in-scope Android and desktop/Work/Codex workflow; track support, partial, experimental, unsupported, blocked and unknown states.
+- [ ] Design and test a validated layered configuration model (safe defaults, per-client settings, optional profiles, and per-operation overrides) with explicit precedence, immutable operation snapshots and no security-bypass switches.
+- [ ] Design a capability registry and narrow optional host/provider adapter contracts, including discovery, prerequisites, lifecycle, cancellation, cleanup and typed unavailable/unsupported states.
+- [ ] Define a tested Node.js/OS/host compatibility matrix; add CI coverage for declared targets and real-host integration tests for platform-specific adapters.
+- [ ] Define production-readiness checks for each feature: source evidence, real implementation, ESM/CommonJS/TypeScript parity, error/cancellation/concurrency/security tests, authorized end-to-end evidence, measured resource budgets, packaging and user documentation.
+- [ ] Expand public documentation as real APIs land: quick starts, TypeScript/CommonJS examples, configuration reference, host/provider setup, capability states, errors, limits, side effects, troubleshooting and cleanup.
+- [ ] Add performance and soak tests for implemented high-use workflows with explicit latency, memory, concurrency and resource ceilings; do not publish unmeasured performance claims.
+
 ## P1 — General-purpose Node.js integration design
 
 - [ ] Define the client factory/configuration/lifecycle API for different host applications.

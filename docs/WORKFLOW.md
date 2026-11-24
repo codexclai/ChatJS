@@ -16,6 +16,12 @@ Use a separate browser session only when genuinely required for temporary or dis
 
 Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cookies, site data, local storage, or saved sessions; never reset, delete, replace, or recreate it. Avoid actions that could invalidate either login. Preserve the authenticated session and save profile changes. Do not expose credentials, cookies, tokens, or private account/session data. Normal permissions, entitlements, and first-party security checks still apply.
 
+Read PRODUCT_STANDARD.md during project restoration and use it as the acceptance standard for every new capability or public API.
+
+## Product-quality requirements
+
+Use PRODUCT_STANDARD.md when making architecture, public API, capability, configuration, adapter, testing or documentation decisions. Treat customization, dynamic adaptation and broad host compatibility as explicit design goals, but do not bypass authentication, entitlements, first-party checks, provider limits or privacy invariants. A capability is supported only after its implementation and applicable checks pass.
+
 ## Product definition
 
 ChatJS is one comprehensive, general-purpose Node.js module adapting the actual client-side systems and workflows of official ChatGPT mobile and desktop (Work/Codex). It is not a feature-name imitation, different model provider, device-specific app, or recreation of ChatGPT's server.
