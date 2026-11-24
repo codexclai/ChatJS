@@ -10,7 +10,7 @@
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
 | Phase | Direct Node.js streaming foundation and source-led ChatGPT client, guest-session and Work research |
-| Status | Android 1.2026.321 DEX analysis confirms anonymous backend infrastructure, guest state/storage, and a distinct guest-welcome presentation model. The welcome model Lnlh1/Lylh1 is read by WelcomeLanguageEnrollment through local PreferenceStore Lzlh1; Lvlh1 records anonymous_welcome; Lxr10 maps guestCtaCopy and flags into welcome/composer UI state under feature gates. The Shop phrase Continue as Guest remains Shop UI, not ChatGPT. The guest preference population source, UI tap callback, SessionManager linkage, server-side create/refresh HTTP request and guest composer route remain untraced. Lof70 is Statsig, Lau31.u is local unauthenticated state refresh, and Lau31.n/Ldt31 is separate credential-backed AuthSession/DPoP work. No ChatGPT network/session/conversation/Work implementation exists yet. The latest full local validation passed under Node.js 26.13.1/npm 11.20.0: synchronized generated state, 27 valid Markdown links, 23/23 tests, and the eight-file distribution archive. |
+| Status | Android 1.2026.321 DEX analysis confirms anonymous backend infrastructure, guest state/storage, and a distinct guest-welcome presentation model. The welcome model Lnlh1/Lylh1 is read by WelcomeLanguageEnrollment through local PreferenceStore Lzlh1; Lvlh1 records anonymous_welcome; Lxr10 maps guestCtaCopy and flags into welcome/composer UI state under feature gates. The Shop phrase Continue as Guest remains Shop UI, not ChatGPT. The guest preference population source, UI tap callback, SessionManager linkage, server-side create/refresh HTTP request and guest composer route remain untraced. Lof70 is Statsig, Lau31.u is local unauthenticated state refresh, and Lau31.n/Ldt31 is separate credential-backed AuthSession/DPoP work. No ChatGPT network/session/conversation/Work implementation exists yet. The latest full local validation passed under Node.js 26.13.1/npm 11.20.0: synchronized generated state, 27 valid Markdown links, 23/23 tests, and the eight-file distribution archive. Guest-welcome research is committed on main as a802d5f3b3e2514823f36036da8294a4ed5baf9d; GitHub CI run 45436181327 and CodeQL run 45436181361 passed. The repository has only main and no open issues/PRs. |
 | Default branch | main |
 | Last reviewed | 2026-11-24 |
 | Runtime policy | Use the supported Node.js LTS in CI. |
@@ -99,6 +99,7 @@
 79. Bounded guest welcome evidence: source population/refresh, tap callback, SessionManager linkage and anonymous HTTP create/refresh/composer send routes remain unknown; the similarly phrased Continue as Guest string in Li230 is Shop plugin UI.
 80. Final closeout validation under Node.js 26.13.1/npm 11.20.0 passed: docs:sync, docs:check with 27 local Markdown links, all 23 tests and archive generation.
 81. Inspected final dist/ChatJS.tar.gz: 9,897 bytes, SHA-256 a613410e07b71de70150f92ad7d5a01d8edadbe5b15b70549d50b6714a494238; exactly eight distributable module files.
+82. Committed the guest-welcome presentation research on main as a802d5f3b3e2514823f36036da8294a4ed5baf9d; verified GitHub CI 45436181327 and CodeQL 45436181361 both passed, with only main and no open issues or PRs.
 
 ## Not implemented
 
