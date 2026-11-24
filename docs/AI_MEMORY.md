@@ -8,7 +8,7 @@
 2. `docs/project-state.json`: structured state; `PROJECT_STATE.md` is generated.
 3. `/docs`: project direction, requirements, technical references, decisions, tasks, experiments, risks, and handoffs.
 4. The owner's latest explicit direction and current conversation.
-5. The personal Library is the reference-archive location. **Project Sources are intentionally kept empty.** Never search them expecting `ChatGPT.zip`; use the existing Library archives and do not ask for repeat uploads.
+5. **ChatJS Project → Sources is the primary source location** for supplied client packages. Do not depend on the personal Library or use it by default. Use it only when genuinely useful, needed, accessible, and Project Sources cannot supply the material; any such material must be under a folder named `ChatJS Project` and limited to authentic, necessary sources and original findings.
 6. Verified package content and source code take precedence over assumptions in old assistant messages.
 
 ## Product identity and goal
@@ -21,7 +21,21 @@ The target is the real consumer ChatGPT product and its legitimate account/servi
 
 ChatJS must remain general-purpose: usable by different Node.js applications, operating systems, hosts, devices, and deployment environments. Do not assume it is itself a phone/desktop app or that any particular camera, microphone, screen, browser, or OS facility is present. Expose host-dependent capabilities through optional integrations/adapters so consumers can use the module without those facilities.
 
-## Reference archive facts — verified 2026-11-20
+## Current Project Sources — verified 2026-11-24
+
+- Android: `ChatGPT-Android.xapk`, 123,574,190 bytes. This is an app bundle containing the base APK and required splits, not one standalone APK. ZIP integrity passed; SHA-256 matched the download provider's published hash `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`. The provider hash match is not an independent malware scan or signing-certificate verification.
+- Windows: `ChatGPT-Windows.msix.part001` (400,000,000 bytes) and `ChatGPT-Windows.msix.part002` (396,523,063 bytes). These sequential chunks reconstruct one official x64 installer; neither chunk is independently installable. Reassembly was verified byte-for-byte against the original: 796,523,063 bytes, SHA-256 `561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963`.
+- The temporary remote download workspace was deleted after verifying all three files in Project Sources. Retrieve them there when needed; do not expect remote working copies.
+
+## Persistent ChatJS browser profile
+
+The persistent browser profile named **ChatJS** is the sole default reusable profile for all ChatJS browser work. It already has the owner's Google and ChatGPT sessions authenticated. Always use it for browser-based ChatJS tasks.
+
+Use a separate browser session only when genuinely required for temporary or disposable work. Keep it temporary; never save it as another reusable profile or replace ChatJS with it.
+
+Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cookies, site data, local storage, or saved sessions; never reset, delete, replace, or recreate it. Avoid actions that could invalidate either login. Preserve the authenticated session and save profile changes. Do not expose credentials, cookies, tokens, or private account/session data. Normal permissions, entitlements, and first-party security checks still apply.
+
+## Historical extracted-payload research — verified 2026-11-20
 
 ### Android
 
@@ -39,7 +53,7 @@ The preceding chat transcript records a remote 1.1 GB extracted Windows archive 
 
 ### Sources and repository retention
 
-Project Sources are intentionally kept empty. Private reference archives stay in the personal Library, not public Git. Do not commit official APK/MSIX files, extracted third-party application payloads, credentials, or account/session material to the public repository. Keep independently authored findings, code, tests, and technical decisions in Git.
+The current installer files are held in ChatJS Project → Sources, not public Git. Do not commit official APK/MSIX files, extracted third-party application payloads, credentials, or account/session material to the repository. Keep independently authored findings, code, tests, and technical decisions in Git.
 
 ## Product and engineering constraints
 

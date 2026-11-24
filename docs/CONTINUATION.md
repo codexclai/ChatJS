@@ -21,12 +21,20 @@ The Node.js package must be usable by different hosts and applications. Do not a
 
 Current implementation remains foundation-only. First-pass Android client findings are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; they are not full source reconstruction or a working Node.js integration. Never present intended scope or research as implemented behavior.
 
-## Reference archives
+## Reference packages and browser profile
 
-Project Sources are intentionally kept empty. Use the personal Library archives; do not ask for repeat uploads.
+Use ChatJS Project → Sources as the primary location for supplied ChatGPT packages. The personal Library is optional only when genuinely useful, needed, accessible, and Sources cannot provide the material. Any Library material for this project must be under a folder named **ChatJS Project** and contain only authentic, necessary source material and original findings.
 
-- Android: `/ChatJS-Archives/ChatJS-Android.zip`, 59,454,036 bytes, 4,989 ZIP entries, complete extraction of all 4,987 APK payload entries plus README and structured inventory. Ten DEX files and 121 Valdi modules are recorded. ZIP integrity passed on 2026-11-20.
-- Windows: set aside by the owner. The current Library `ChatJS-Windows.zip` is metadata-only (418,238 bytes, seven entries). A preceding chat recorded a 1.1 GB/3,758-entry extracted archive in a remote workspace with transfer to Library incomplete; that remote archive was not reverified in this session. Do not resume Windows work unless asked.
+- Android: `ChatGPT-Android.xapk`, 123,574,190 bytes; an app bundle containing the base APK and required splits, not a standalone APK. ZIP integrity and published-hash match were verified.
+- Windows: `ChatGPT-Windows.msix.part001` (400,000,000 bytes) and `ChatGPT-Windows.msix.part002` (396,523,063 bytes). Sequential pieces of one installer; neither is independently installable. Reassembly matched the original byte-for-byte, SHA-256 `561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963`.
+
+## Persistent ChatJS browser profile
+
+The persistent browser profile named **ChatJS** is the sole default reusable profile for all ChatJS browser work. It already has the owner's Google and ChatGPT sessions authenticated. Always use it for browser-based ChatJS tasks.
+
+Use a separate browser session only when genuinely required for temporary or disposable work. Keep it temporary; never save it as another reusable profile or replace ChatJS with it.
+
+Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cookies, site data, local storage, or saved sessions; never reset, delete, replace, or recreate it. Avoid actions that could invalidate either login. Preserve the authenticated session and save profile changes. Do not expose credentials, cookies, tokens, or private account/session data. Normal permissions, entitlements, and first-party security checks still apply.
 
 ## Operating rules
 

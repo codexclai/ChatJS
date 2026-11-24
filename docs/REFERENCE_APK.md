@@ -1,54 +1,35 @@
-# ChatGPT Android Client Reference — Extracted APK Payload
+# ChatGPT Android Client Reference
 
-## Provenance and retention
+## Current source
 
-The owner supplied `ChatGPT.zip` in the earlier ChatJS Project research. It contained one `base.apk`. Project Sources are now intentionally kept empty. The verified personal Library copy is:
+The Android client package is retained in **ChatJS Project → Sources** as:
 
-**`/ChatJS-Archives/ChatJS-Android.zip`**
+**`ChatGPT-Android.xapk`** — 123,574,190 bytes.
 
-The owner reported the APK was exported immediately after a Google Play update and was the latest build available to them at acquisition. This is owner-reported provenance, not a claim it was globally latest.
+This is an app bundle containing the ChatGPT base APK and required architecture, language, and density split APKs. Keep the XAPK and its internal structure intact. It is not a standalone APK and must not be treated as one.
 
-## Full APK payload extraction — 2026-11-19
+## Integrity and provenance
 
-The retained ZIP is the full extracted APK payload tree, not the earlier 4 KB metadata-only dossier.
+The package was obtained using the official Google Play listing for ChatGPT as the source reference. The local SHA-256 matched the download provider's published hash:
 
-Verified archive facts on 2026-11-20:
-- Personal Library file size: 59,454,036 bytes.
-- ZIP entry count: 4,989, consisting of all 4,987 extracted APK payload entries plus a README and structured JSON inventory.
-- Total uncompressed size of APK payload entries: 106,501,945 bytes.
-- Ten compiled DEX files are present.
-- 121 compiled Valdi modules (`.valdimodule`) are present.
-- The structured inventory records the path, size, and CRC for each extracted APK entry and includes extension/module summaries.
-- ZIP CRC test returned no corrupt member.
+`22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`
 
-The payload tree retains the manifest, compiled application code/modules, resources/assets, schemas/protobufs, configuration metadata, third-party notices, fonts, images, animations, strings, and other package content. The archive's `CHATJS-ANDROID-REFERENCE.json` is the detailed per-entry inventory.
+The ZIP integrity test completed without errors. This establishes byte integrity against the provider's published hash; it is not an independent malware scan or independent APK certificate verification.
 
-## Why the payload matters
+## Engineering use
 
-The archive contains actual client-side implementation material. It is not merely a metadata summary. It must be used to understand and reproduce the ChatGPT mobile client's request/response construction, payloads, schemas, connection/transport, authentication/session behavior, local state, and other systems where that behavior is present in the package.
+Use supplied client code, compiled modules, request/response construction, payload schemas, serialization, transport, connection/authentication/session behavior, local state, tools, and resources as technical evidence. Do not reject a client interface merely because public developer documentation does not describe it.
 
-Public developer documentation is not the only evidence of a client interface. Do not reject a client-side request or connection merely because it is not described in public API docs. First inspect the shipped code and establish exactly what the client does.
+## Analysis status
 
-## Analysis status and limits
+Earlier work examined a full extracted Android payload archive and recorded ten DEX files, 121 compiled Valdi modules, and first-pass client protocol findings. That work established useful leads, not complete source reconstruction.
 
-**Verified:** extracted payload archive and ZIP integrity.
+Still incomplete: full method-level DEX/Valdi analysis, request-flow tracing, authentication/session tracing, complete schemas, interactive UI audit, emulator testing, and end-to-end Node.js behavior. Do not claim these investigations are complete.
 
-**Observed from the archive inventory:** compiled DEX, compiled Valdi modules, manifest/resources/assets, schemas/configuration, and third-party notices.
-
-**Not yet verified:** source-level DEX decompilation/reconstruction, complete Valdi analysis, request-flow tracing, authentication/session tracing, interactive UI audit, emulator testing, or end-to-end Node.js behavior. Compiled client code is valuable source material but is not already a decompiled Node.js project. Do not claim these investigations are complete until performed and recorded.
-
-Client-side package contents do not include server-side code that was never shipped in the APK. Reproducing the client does not require recreating the ChatGPT server.
+The client package does not include server-side code that was never shipped in the app. ChatJS adapts the client; it does not recreate ChatGPT's server.
 
 ## General-purpose ChatJS implications
 
-ChatJS is a general-purpose Node.js library, not a mobile application. Keep it usable across different host applications, operating systems, devices, and deployment environments. The core must not assume the consumer has a camera, microphone, screen, Android runtime, or particular OS feature. Host-dependent capabilities belong behind optional adapters.
+ChatJS is a general-purpose Node.js library, not a mobile application. It must remain usable across different host applications, operating systems, devices, and deployment environments. Do not assume camera, microphone, screen, Android runtime, or a specific OS feature; host-dependent capabilities belong behind optional adapters.
 
-Use the extracted package as the substantive technical reference. Record exact source paths, observed behavior, request and payload formats, dependencies, platform requirements, and test evidence as analysis proceeds.
-
-## Private Library archive
-
-The extracted payload archive is stored in the owner's personal Library at **`/ChatJS-Archives/ChatJS-Android.zip`**. Project Sources are intentionally kept empty and are not an archive destination. Do not request another upload merely to repeat extraction or inventory work.
-
-Do not put the official APK, extracted third-party payload, bundled assets/code, credentials, tokens, or account/session material into the public GitHub repository. Preserve useful independent research and the ChatJS implementation in Git.
-
-See [Android Client Protocol Findings](ANDROID_CLIENT_PROTOCOL_FINDINGS.md), [ChatGPT Client Capability Inventory](CHATGPT_CAPABILITY_INVENTORY.md), [Capability Matrix](CAPABILITY_MATRIX.md), and [Windows Desktop Reference](REFERENCE_DESKTOP.md).
+Keep official packages and extracted third-party payloads out of public Git. Preserve independently authored findings and ChatJS implementation in the repository.

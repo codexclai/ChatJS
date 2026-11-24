@@ -4,9 +4,17 @@
 
 1. Read `AI_MEMORY.md` and `CONTINUATION.md`.
 2. Inspect live `main`, complete branch list, latest commit/tree, issues/PRs, CI, and TODO.
-3. Use `REFERENCE_APK.md` and `REFERENCE_DESKTOP.md`. Android full extracted payload is in personal Library at `/ChatJS-Archives/ChatJS-Android.zip`. Project Sources are intentionally empty. Windows archive work is deferred; do not resume unless the owner asks.
+3. Use `REFERENCE_APK.md` and `REFERENCE_DESKTOP.md`, then retrieve supplied packages from ChatJS Project → Sources. Android is supplied as an XAPK app bundle; Windows is supplied as two sequential installer chunks that must be joined in order.
 4. Work only on `main`. Never create/delete/rename/switch branches or worktrees. Do not configure/propose branch protection, rulesets, or repository topics.
 5. Resume the highest-priority actionable work; do not return a generic plan.
+
+## Persistent ChatJS browser profile
+
+The persistent browser profile named **ChatJS** is the sole default reusable profile for all ChatJS browser work. It already has the owner's Google and ChatGPT sessions authenticated. Always use it for browser-based ChatJS tasks.
+
+Use a separate browser session only when genuinely required for temporary or disposable work. Keep it temporary; never save it as another reusable profile or replace ChatJS with it.
+
+Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cookies, site data, local storage, or saved sessions; never reset, delete, replace, or recreate it. Avoid actions that could invalidate either login. Preserve the authenticated session and save profile changes. Do not expose credentials, cookies, tokens, or private account/session data. Normal permissions, entitlements, and first-party security checks still apply.
 
 ## Product definition
 
@@ -17,8 +25,8 @@ ChatJS is one comprehensive, general-purpose Node.js module adapting the actual 
 - Use the supplied package contents as substantive technical evidence: client code, compiled modules, request/response construction, payload schemas, transport, connection/auth/session behavior, persistence, tools, dependencies, and resources.
 - Do not reject a client interface because public developer docs do not describe it. Inspect the actual code and record direct evidence.
 - Distinguish complete extraction, source-level decompilation, behavioral tracing, and a tested Node.js implementation.
-- The Android payload is fully extracted and retained in private Library. Source-level DEX/Valdi analysis and request-flow tracing remain to do.
-- Windows archive work is deferred. The existing Library ZIP is metadata-only; a larger remote archive was reported by a previous chat but its current status was not reverified.
+- Current installer sources are retained in Project Sources; do not depend on the personal Library. Use a Library folder named `ChatJS Project` only as a useful and necessary fallback when accessible.
+- Source-level Android DEX/Valdi analysis and request-flow tracing remain incomplete. Windows package extraction and full analysis are not claimed complete.
 - Record source paths, dates, scope, evidence class, and limitations.
 
 ## Integration, privacy, and security

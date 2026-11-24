@@ -11,11 +11,11 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 
 ## P1 — Actual client implementation research
 
-- [x] Preserve the full extracted Android APK payload in the private Library archive.
-- [x] Verify Android archive entry count, payload inventory, and ZIP integrity.
+- [x] Add the current ChatGPT Android XAPK app bundle to ChatJS Project → Sources and verify its hash and archive integrity.
+- [x] Add the official ChatGPT Windows installer to ChatJS Project → Sources as two sequential pieces and verify exact reconstruction.
 - [x] Record Android DEX and Valdi module counts and analysis limitations.
 - [x] Perform a first-pass decompression/string scan of selected Valdi modules and document concrete auth/session, bearer transport, conversation/streaming, upload, history, image-gallery, and Library components and paths.
-- [x] Document that Project Sources are intentionally kept empty.
+- [x] Establish ChatJS Project → Sources as the primary source location for supplied client packages.
 - [ ] Perform deeper DEX/Valdi method-level analysis to identify call graphs, exact request/response schemas, credential lifecycle, Sentinel/device-integrity behavior, SSE event state machines, and upload signing/retry behavior.
 - [ ] Build a deeper source-path-to-behavior map for conversations, streaming, files, Projects, voice, images, search/tools, and other client workflows, including exact call graphs and schemas.
 - [ ] Document actual dependencies and Node.js portability for each major client component.
@@ -53,6 +53,6 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 
 ## Current position
 
-ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Android's full extracted APK payload archive is retained and verified in personal Library at `/ChatJS-Archives/ChatJS-Android.zip`. Project Sources are intentionally empty. Windows extracted-payload archive work is deferred; the current Library ZIP is metadata-only, while a previous chat recorded a larger remote archive whose transfer was incomplete and whose status is not currently reverified.
+ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Current package sources are `ChatGPT-Android.xapk` and the two sequential Windows installer pieces in ChatJS Project → Sources. The personal Library is only an optional fallback when genuinely needed and accessible; any project material stored there belongs under `ChatJS Project`. The persistent ChatJS browser profile is the only reusable default profile; temporary sessions are disposable and must not replace it.
 
 Never create branches or worktrees. Keep all repository work on main.
