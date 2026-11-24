@@ -372,3 +372,26 @@ The generated `Le6` Function1 bridge captures a `Lv6a` receiver and invokes `Lv6
 The WebView-side `Lq20` callback enters through `Lej10.c` (`DilWebViewHost`) and the generated `Ljpc.invoke` wrapper. A separate `Lq20` constructor path is called by `Llal1.h`; one traced caller reaches `Ly641.a` from `Lyi1.J`, labelled `SettingsWorkspaceListItem`. The ConversationSidebar-side `Ldo1` callback remains a parent Function1 forwarded through `Le2w.c` → `Lx0w`/`Lm1w` → `Le2w.j` → `Le2w.e` → `Lp1w`.
 
 The scan across all ten DEX files still found no direct call-site method-id or method-handle reference to `La991.G` outside its definition. That static absence does not rule out virtual dispatch through `Lv6a.H`; however, the observed `Le6` instance is in the Composer/FreeThinkingGaugeNuxHost path and is not statically connected to either the WebView or ConversationSidebar callback. Their concrete callback objects and receiver bindings to the same `La991` instance remain unknown. The confirmed `Lt891` branch reaches only local SessionManager coordination (`Lmuz0` branch 9 → `Lgs31.b` → `Lau31.G`), not a recovered guest HTTP create/refresh or composer-send request. The instrumentation marker remains excluded from ChatJS.
+
+## 2026-11-25 — WelcomeLanguageEnrollment local preference writer
+
+A further Android DEX trace followed the actual writer of the local welcome-language opportunity preference. This identifies the local record-construction path, but not the origin of the separate guest presentation copy model.
+
+### Preference key and local model
+- `Le7f1.invoke` constructs a typed `Lap6` PreferenceStore key named `welcome_language_opportunity`, using `Lxlh1.serializer()` and a default `Lylh1` value whose fields are `Lcmh1 = null`, boolean false, and nullable long = null.
+- `Lvlh1` owns the `Lzlh1` key and the `Lzyv0`-backed read/update operations. Its `a()` path reads the current `Lylh1`; `d()` and related enrollment paths update it. Its `e(Lcmh1,String,Lfmh1)` path records the `anonymous_welcome` event; that event is Android instrumentation and must not be copied into ChatJS.
+- `Lvlh1.c(Lr10,Lof70)` is invoked from `Ltp3.P` and from a separate `Lslh1` coroutine. The exact lifecycle/event condition that selects the coordinator path is not fully recovered.
+
+### Concrete writer coroutine
+- `Lvlh1.c` launches `Ltl30.invokeSuspend`. The coroutine first reads the stored `Lylh1` through `Lzyv0.b`.
+- It evaluates `Lxr10.h(Lof70)`, which returns the Statsig-derived `Lplh1` presentation/feature model. The coroutine checks its nested mode/flags (including the `skip` mode) and evaluates additional `Lof70.c` / `Lof70.G` feature parameters.
+- It collects local context: the device locale via `Lqcf1.G(context).toLanguageTag()`, application/environment information via `Le3k0`, and user/install/session-related values already supplied to the coroutine. It also reads the current wall-clock timestamp and a serialized enum name.
+- It constructs a separate `Lcmh1` record. One explicit value is `no_local_prior_use_install_history_unknown`; other fields include timestamp, enum/list values, locale/app-context strings, the `Lplh1` configuration object and boolean flags. The code therefore derives this enrollment record locally using feature-configuration and app context; it is not simply copying the `Lnlh1` presentation DTO.
+- At `Ltl30` instruction offset `0x1ab`, it calls `Lzyv0.m(Function1,...)` with generated callback `Lhi41` branch 19. That callback passes the existing `Lylh1` and newly constructed `Lcmh1` to `Lylh1.a` (the data-class copy/update method) and returns the updated `Lylh1` to the PreferenceStore. This is the concrete local write path.
+- Later work in the same coroutine invokes `Lz840.d` and `Ljb40` account/profile repository operations. Their inspected service/coroutine paths contain connector/profile operations and Cloudflare handling; they are not evidence that the welcome presentation model or `guestCtaCopy` was fetched from a guest-session endpoint. Keep that service branch separate until an actual data dependency is traced.
+
+### Evidence boundary
+- This establishes the local default key, read, Statsig/config evaluation, local metadata construction, update lambda, and PreferenceStore write.
+- It does not establish the server source, fetch route, cache/update policy, or writer for the separate serialized `Lnlh1` model containing `guestCtaCopy`. The `Lnlh1` presentation model and `Lcmh1` enrollment record must remain distinct until their exact data-flow connection is shown.
+- It does not create an anonymous session, call the guest SessionManager start method, generate a server guest ID, or send a composer request. `anonymous_welcome` is telemetry instrumentation and remains excluded from ChatJS.
+- This was selected static DEX disassembly/reference tracing of the supplied public XAPK, not a full decompilation or runtime network trace. No user/account request was made and no session was created.

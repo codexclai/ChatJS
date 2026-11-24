@@ -689,3 +689,26 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - GitHub CI run `45474704964` and CodeQL run `45474704958` both passed on commit `91e21251eeab72a38d5aa00dc2a9365408943ae8`.
 - Final repository inspection: `main` is the only branch; there are zero open issues and zero open pull requests.
 - The Android work is source research only. No guest create/refresh request, composer-send route, real authenticated/guest ChatGPT connection, or Work Local/Work Cloud runtime has been implemented. The final callback boundary is accurately captured in Android findings and continuation records.
+
+## 2026-11-25 — WelcomeLanguageEnrollment local preference writer
+
+### Source findings
+- Traced `Le7f1.invoke` to the typed `Lap6` preference key named `welcome_language_opportunity`, using `Lxlh1.serializer()` and default `Lylh1(null, false, null)`.
+- Confirmed `Lvlh1.c(Lr10,Lof70)` is invoked from `Ltp3.P` and a separate `Lslh1` coroutine. `Lvlh1.c` launches `Ltl30.invokeSuspend`.
+- `Ltl30` reads the current `Lylh1` via `Lzyv0.b`, evaluates `Lxr10.h(Lof70)` to get Statsig-derived `Lplh1`, checks feature and `skip` flags, and gathers locale (`Locale.toLanguageTag()`), app/environment, supplied user/install/session context and wall-clock time.
+- It constructs an `Lcmh1` model, including `no_local_prior_use_install_history_unknown`, timestamp, enum/list data, locale/app strings, configuration and boolean flags. It then creates `Lhi41` callback variant 19 and calls `Lzyv0.m`; that callback invokes `Lylh1.a(existing, new Lcmh1, ...)` and returns the updated preference value.
+- This resolves local construction and persistence for the enrollment record. It does not establish that the separate serialized `Lnlh1` presentation model or `guestCtaCopy` is populated from `Lcmh1` or fetched by this coroutine.
+- The later `Lz840.d` / `Ljb40` calls in the broad coroutine belong to account/profile service work, with connector/profile endpoints and Cloudflare handling; they are not evidence of the guest create or welcome presentation fetch. `anonymous_welcome` remains Android instrumentation and is excluded from ChatJS.
+
+### Corrections, limits and implementation status
+- Keep three separate concepts: `Lnlh1` presentation copy/model, `Lcmh1` local enrollment record inside `Lylh1`, and actual server-side anonymous session lifecycle. No call/data-flow between the first two and no guest HTTP create/send request have been recovered.
+- No production JavaScript/TypeScript, public API, dependencies or tests changed. This is static method/constructor/call-site inspection of the supplied public Android XAPK, not a full decompilation or runtime trace. No live account request was made and no guest session was created.
+- No ChatJS runtime capability status changes.
+
+### Canonical records updated
+- Updated Android findings, experiments, knowledge base, open questions, TODO, capability inventory, AI memory, continuation, structured state, generated state, and this session log.
+
+### Handoff
+- Trace the writer/source of `Lnlh1` (especially `guestCtaCopy`) independently. Verify whether the feature model `Lplh1` contains or refers to this presentation value, and where its transport/cache data is installed.
+- Continue the `La991` receiver binding investigation without inferring it from a shared generic callback type.
+- Locate the real guest HTTP create/refresh and guest composer prepare/send clients separately; keep Windows Work Local and Android Work Cloud distinct.

@@ -133,3 +133,7 @@ The local guest-start coroutine is dispatched by an `Lt891` event, not by W891.a
 ## 2026-11-25 — Virtual callback dispatch correction
 
 `Lv6a.H(Louf0)` invokes virtual `G(Louf0)`, and `La991` extends `Lv6a`; generic intent callbacks can therefore reach `La991.G` when bound to that instance. The known `Le6` Function1 implementation captures a `Lv6a` and calls `H`, but its observed construction is in Composer / FreeThinkingGaugeNuxHost. No callsite proves that the WebView `Lq20` or ConversationSidebar `Ldo1` callback receives this exact bridge or captures the same `La991` receiver. The earlier direct-reference scan cannot rule out dynamic dispatch. Server guest create/refresh and composer send remain unimplemented and untraced.
+
+## 2026-11-25 — Welcome enrollment preference writer traced
+
+The Android local preference key is `welcome_language_opportunity` (`Le7f1` → `Lap6`, serializer `Lxlh1`) with default `Lylh1(null, false, null)`. `Lvlh1.c` launches `Ltl30`, which reads the current `Lylh1`, evaluates Statsig-derived `Lplh1`, gathers locale/app/install context, builds `Lcmh1`, and persists an updated `Lylh1` via `Lzyv0.m` / `Lhi41` branch 19 / `Lylh1.a`. This is a local enrollment record, not a guest session or message request. The serialized `Lnlh1` guest-presentation model and its `guestCtaCopy` source remain separate and untraced; no implementation status changes.

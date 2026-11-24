@@ -123,3 +123,9 @@ The next trace is now at the parent callback inputs. `Lq20` emits `Lt891(5)`; it
 ### Android generic ViewModel callback dispatch — 2026-11-25
 
 `La991` extends `Lv6a`; `Lv6a.H(Louf0)` invokes virtual `G(Louf0)`. Do not treat absence of direct references to `La991.G` as proof that generic callbacks cannot reach it. Generated `Le6` captures a `Lv6a` and calls `H`, but its observed creation is in Composer / FreeThinkingGaugeNuxHost. The WebView `Lq20` callback and ConversationSidebar `Ldo1` callback remain generic parent Function1 parameters with no proven binding to that `Le6` or the same `La991` receiver. Continue from the actual callback objects and receiver bindings; keep payload values 5/6 opaque and do not connect them to welcome CTA without evidence. The only confirmed Lt891 path remains local SessionManager coordination; guest HTTP creation and composer send remain unknown.
+
+### Android welcome-language preference writer — 2026-11-25
+
+The local enrollment PreferenceStore path is now traced. `Le7f1.invoke` defines the `welcome_language_opportunity` key (Lap6, serializer Lxlh1) with default `Lylh1(null, false, null)`. `Lvlh1.c`, called from `Ltp3.P` / `Lslh1`, launches `Ltl30`; it reads the stored value, evaluates Statsig-derived `Lplh1` through `Lxr10.h`, checks feature/skip flags, collects local locale/app/user-install context, constructs `Lcmh1`, and writes an updated `Lylh1` using `Lzyv0.m` / `Lhi41` branch 19 / `Lylh1.a`. This is local enrollment-state persistence; it does not prove a guest HTTP call.
+
+Keep the `Lnlh1` presentation model with `guestCtaCopy` separate from `Lcmh1` enrollment metadata. Its source, remote fetch/cache writer and connection to this local preference are still unknown. The later `Lz840.d` / `Ljb40` account/profile calls are a separate service branch and should not be relabelled as welcome configuration. `anonymous_welcome` is SDK instrumentation; do not port it into ChatJS.

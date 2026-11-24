@@ -222,3 +222,14 @@ The next static target is the callback argument supplied by the parent `Llal1.h`
 ## 2026-11-25 — Generic ViewModel intent bridge
 
 A follow-up DEX inspection found `Lv6a.H(Louf0)`, which invokes virtual `G(Louf0)` on the receiver. Since `La991` extends `Lv6a`, a callback capturing that receiver through the base bridge could dynamically invoke `La991.G`; the absence of a direct method-id reference therefore does not rule out callback dispatch. Generated `Le6` captures a `Lv6a` and calls `H`, but its observed creation is in the Composer / FreeThinkingGaugeNuxHost path, not at either candidate emitter. The WebView (`Lq20`) and ConversationSidebar (`Ldo1`) callbacks are still generic parent Function1 values and are not proven to capture this `La991` instance. No guest HTTP request is found in this bridge.
+
+## 2026-11-25 — Welcome-language opportunity local writer
+
+Traced the local preference writer beyond the `WelcomeLanguageEnrollment` manager:
+
+- `Le7f1.invoke` creates PreferenceStore key `welcome_language_opportunity` via `Lap6`, with `Lxlh1.serializer()` and default `Lylh1(null, false, null)`.
+- `Lvlh1.c` is called by `Ltp3.P` and `Lslh1`; it launches `Ltl30.invokeSuspend`. That coroutine reads the current value with `Lzyv0.b`, gets `Lplh1` via `Lxr10.h(Lof70)`, checks Statsig flags and skip mode, gathers locale/app/user-install context, and constructs `Lcmh1` locally.
+- The constructed record includes `no_local_prior_use_install_history_unknown`, current timestamp, enum/list values, locale/app strings, a feature config object and flags. The code persists an updated `Lylh1` using `Lzyv0.m` and `Lhi41` branch 19; that branch invokes `Lylh1.a(existing, new Lcmh1, ...)`.
+- `Lvlh1.e` separately emits `anonymous_welcome`; that is instrumentation and is not a ChatJS requirement.
+- Later `Lz840.d` / `Ljb40` account/profile repository work in the coroutine is a separate connector/profile branch, not evidence of the welcome presentation or guest session being fetched. No guest HTTP create/send request appears.
+- This resolves the local enrollment record writer, not the origin of `Lnlh1.guestCtaCopy`. The `Lnlh1` presentation model and `Lcmh1` persisted enrollment record remain distinct; the remote/cache source of `Lnlh1` is still unknown.

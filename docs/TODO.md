@@ -96,3 +96,5 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Trace the concrete callback implementations supplied by `Llal1.h`/`Lj20`/`Lss`/`Lt07`/`Ly641` and the `Lej10.c`/`Ljpc` WebView host, plus the `Le2w.c`/`Le2w.j` ConversationSidebar callbacks. Determine payload meaning and whether any handler dynamically reaches `La991.G`; the ten-DEX static scan found no direct method-id or method-handle binding outside its own definition.
 
 - [ ] Check the candidate Lt891 parent callbacks for a captured `La991` receiver via the generic `Lv6a.H(Louf0)` virtual-dispatch bridge. The known `Le6` bridge is created in Composer / FreeThinkingGaugeNuxHost and is not proven to be the callback supplied to either the WebView or ConversationSidebar.
+
+- [ ] Trace the serialized `Lnlh1` welcome-presentation model writer/source and the remote/cache path for `guestCtaCopy`, independently of the now-traced local `Lylh1` / `welcome_language_opportunity` enrollment record writer (`Ltl30` → `Lcmh1` → `Lzyv0.m`).
