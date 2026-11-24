@@ -487,3 +487,17 @@ Android has a genuine anonymous backend base/path family and a locally configure
 - Locate the concrete lower-level network service/call site behind guest create/refresh; do not infer from the anonymous base URL or the local session manager.
 - Trace the true guest composer prepare/send route independently of location-cookie and file-service clients.
 - Continue Android AnonymousSessionLoading composition and guest ID lifecycle research, then the separate desktop Work Local / Android Work Cloud traces.
+
+
+### QR-login profile disambiguation — 2026-11-24
+- Followed Lr10's anonymous-session-labelled descriptor into Lqz8 (logger tag QrLoginApi).
+- The corresponding QR sign-in/review/approval path references /backend-api/qr-code/details (Lj32 coroutine) and /backend-api/qr-code/action (Lj1v0 coroutine).
+- These are backend-api QR-login routes, not the guest conversation create/refresh or composer send API. The Lr10 descriptor is local configuration consumed by QrLoginApi and is not proof of a server guest token.
+- Added this attribution to Android findings, experiments, knowledge base, capability inventory, AI memory and continuation.
+
+
+### Final verification and QR-profile cross-reference — 2026-11-24
+- The final state/history commit 10da00ee3f34de333e4371e0ef094dbddf8021a4 passed CI run 45425100314 and CodeQL run 45425100577.
+- A final source cross-reference follows Lr10's anonymous-session-labelled local profile into QrLoginApi Lqz8. QR-login UI coroutines reference /backend-api/qr-code/details (Lj32) and /backend-api/qr-code/action (Lj1v0). This is a separate QR sign-in/review/approval feature under backend-api, not the missing guest conversation create/send protocol.
+- Local validation after this QR attribution update: npm run docs:sync and /tmp/node26/bin/npm run check passed; generated state synchronized, all 27 Markdown links passed, all 23 tests passed, and the eight-file module archive was rebuilt.
+- Current main at start of this follow-up was 10da00ee3f34de333e4371e0ef094dbddf8021a4. Remote CI/CodeQL for the QR-attribution doc update remain to be verified after its fast-forward commit.

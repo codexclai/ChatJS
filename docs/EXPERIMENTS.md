@@ -153,3 +153,8 @@ A deeper read of Lau31.G shows it first acquires Lmgo0 through Lmgo0.a, which is
 ### 2026-11-24 — Disambiguating another backend-anon cross-reference
 
 The additional DEX class Lxi80 was initially a possible guest-network lead because its shared request helper references both /backend-anon and /backend-api. Method inspection identifies it as a Files API client: it exposes file download, upload reservation claim/finalization, upload-processing and file-indexing status handling (file.processing.*, file.indexing.*), plus FileServiceException/FileDownloadError paths. Its request helper is shared path/transport handling for the file client. This is not the guest SessionManager create/refresh API or guest conversation composer. Keep it out of guest-route attribution.
+
+
+### 2026-11-24 — QR-login endpoint attribution for the anonymous-session profile
+
+A final DEX cross-reference clarifies the Lr10 profile consumer. Lqz8 carries the logger tag QrLoginApi, accepts an Lr10 profile/config object and consults its selected profile state. The corresponding QR-login flow references /backend-api/qr-code/details (Lj32 coroutine) and /backend-api/qr-code/action (Lj1v0 coroutine), with QR login review/approval UI. These use the authenticated backend-api route family and belong to QR sign-in/review/approval, not guest conversation create/refresh or message send. The local anonymous-session descriptor passed into QrLoginApi is not proof of a server guest token or guest chat route. The server-side guest create/refresh operation and composer endpoints remain untraced.

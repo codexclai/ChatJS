@@ -124,3 +124,8 @@ Lpb11 (RootSessionCoordinator) receives Lgs31 (SessionManager), Lq5d1 (UserScope
 
 
 Additional cross-reference correction: Lxi80 also consumes the backend-anon/backend-api path families, but its method signatures and error models are Files API behavior (files/download, upload-reservation claim/finalize, file processing/indexing). Do not mistake this shared file-transport path handling for guest session creation or chat send endpoints.
+
+
+### 2026-11-24 — QR-login API is distinct from guest conversation
+
+The Lr10 local anonymous-session profile is passed into a component tagged QrLoginApi (Lqz8). Its associated QR flow references /backend-api/qr-code/details and /backend-api/qr-code/action from QR-login coroutines and review/approval UI. These are QR sign-in actions under the backend-api root, not the anonymous guest conversation create or send protocol. Do not use the descriptor label to infer a guest token or composer route.
