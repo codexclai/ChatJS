@@ -630,3 +630,29 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Trace the concrete callback implementations behind `Llal1.h`/WebView `Ljpc` and the parent `Le2w.c`/ConversationSidebar parameters; assign no meaning to payload 5/6 unless the consuming callback is recovered.
 - Continue the welcome PreferenceStore writer/population trace, then locate actual guest HTTP create/refresh and composer prepare/send clients separately.
 - Keep Android Work Cloud and Windows Work Local separate, with no Codex CLI/app-server runtime dependency.
+
+
+## 2026-11-25 — Final verification after callback trace and generated-state correction
+
+### Callback/source handoff
+- The callback-owner trace and ten-DEX static reference scan are recorded in the preceding 2026-11-25 entry and Android findings. They do not prove either Function1 reaches La991.G; values 5/6 remain opaque and the action-29 welcome CTA remains separate.
+
+### CI failure and correction
+- Commit `a724ef3d05336db8de08938eb30280818c180196` failed GitHub CI run `45463982211` at `docs:check`. The generated `docs/PROJECT_STATE.md` had a single stray leading space before the generated-file notice; the state JSON was otherwise valid. No tests or package steps ran in that failed job.
+- Commit `df7e4a3ea26f590e12175ad96a8d7f1e3f060cf8` corrected only that leading space. GitHub CI run `45464064323` and CodeQL run `45464064689` both passed on this commit.
+- Full CI ran Node.js `26.13.1` / npm `11.20.0`: lint, generated-state check, 27 Markdown local-link checks, 23 tests (23 passed, 0 failed), archive creation with eight package files, and installed-consumer CommonJS and ESM smoke tests all succeeded.
+
+### Distribution artifact inspection
+- Downloaded CI artifact ID `14953152606` from the corrected build. Its outer ZIP passed `unzip -t`; contained `ChatJS.tar.gz` is 10,280 bytes, SHA-256 `4a7f8fcc1536c64a32e0b93a24f05bd1df676bf59f9220b2359a6cd6746dad2c`; `gzip -t` passed.
+- Inspected tar contents: exactly eight expected files are present (`package.json`, `ChatJS.md`, `README.md`, `LICENSE`, `src/index.cjs`, `src/index.mjs`, `src/sse.cjs`, `types/index.d.ts`).
+- Extracted this exact artifact locally and passed installed CommonJS and ESM consumer smoke tests under Node.js `22.16.0`; `node --check` also passed for `src/index.cjs` and `src/sse.cjs`.
+- The local environment still cannot fetch a fresh GitHub checkout because outbound GitHub DNS is unavailable, so a separate local full `npm run check` was not run. The full check was run successfully by GitHub CI; no local full-suite result is claimed.
+
+### Repository status and implementation boundary
+- `main` is the only branch; no open issues or pull requests; repository tree has 49 files. No production JS/TS, tests, dependencies or public API changed in this research/documentation slice.
+- ChatJS remains a foundation: generic bounded/cancellable SSE framing and package lifecycle only. Actual ChatGPT authenticated/accountless session, conversation send/receive, and Windows Work Local / Android Work Cloud are not implemented. No guest HTTP create/refresh or composer-send request has been identified, and no guest session was created.
+
+### Next actions
+- Resolve the concrete Function1 callback implementations/receivers for Lt891(5) and Lt891(6); investigate dynamic wiring carefully because the static ten-DEX scan found no La991.G method-id or method-handle references outside the method itself.
+- Trace welcome PreferenceStore population, then exact guest HTTP create/refresh and composer prepare/send clients independently.
+- Continue Windows Work Local and Android Work Cloud as separate direct ChatGPT client workflows; Codex CLI/app-server remains source reference only.

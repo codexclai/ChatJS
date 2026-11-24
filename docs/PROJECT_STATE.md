@@ -104,6 +104,7 @@
 84. Traced a second event-gated Android caller of initial local guest startup: Lej6.invoke → La991.G(Louf0) → Lmuz0 branch 9 → Lgs31.b → Lau31.G; its event source/action-29 relationship and server-side guest HTTP request remain explicitly unresolved, and the associated client marker is excluded as telemetry.
 85. Corrected La991.G event dispatch at instruction level: W891.a forwards current state via Lcq41.e and returns; Lt891 alone dispatches Lmuz0 label 9 into local Lgs31.b → Lau31.G. Located candidate Lt891(5) WebView and Lt891(6) ConversationSidebar callback producers, without claiming their Function1 wiring to the La991 instance.
 86. Traced the parent callback ownership one layer above the Android Lt891(5)/Lt891(6) emitters: Lq20 uses Llal1.h or Lej10.c/Ljpc paths; Ldo1 uses Lp1w/Le2w.e and the Le2w.j/Le2w.c ConversationSidebar path. Scanned all ten DEX files for La991.G callsite and method-handle references; none exists outside the method definition, so callback targets and payload semantics remain unproven.
+87. Completed the Lt891 parent-callback trace and ten-DEX static La991.G reference scan; corrected the generated project-state formatting mismatch, then verified passing full GitHub CI/CodeQL and inspected the rebuilt eight-file ChatJS distribution archive.
 
 ## Not implemented
 
