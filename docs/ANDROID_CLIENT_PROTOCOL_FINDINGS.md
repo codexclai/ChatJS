@@ -361,3 +361,14 @@ A targeted caller/constructor pass followed the generic callbacks that carry the
 - The established local state path remains only: `La991.G(Lt891)` → `Lmuz0` branch 9 → `Lgs31.b` → `Lau31.G`. The inspected branch and SessionManager methods do not reveal the server-side guest-create HTTP request or guest composer route.
 
 **Evidence boundary:** method/field reference and constructor-call analysis across the ten DEX files using the purpose-built partial scanner; no full decompilation, runtime callback observation, or live network operation. No ChatJS behavior is implemented by these findings.
+
+
+## 2026-11-25 — Virtual ViewModel intent dispatch and callback-instance boundary
+
+`La991` extends the shared `Lv6a` ViewModel base. `Lv6a.H(Louf0)` invokes virtual `G(Louf0)` on its receiver, so a generic function reference that captures a `La991` instance and calls `Lv6a.H` can dynamically dispatch to `La991.G` even without a direct method reference to `La991.G`.
+
+The generated `Le6` Function1 bridge captures a `Lv6a` receiver and invokes `Lv6a.H`. Its observed construction is in `Lgbs.e` under the Compose label `Composer`; it is passed to `Lzx1.l`, whose UI label is `FreeThinkingGaugeNuxHost`. This proves the generic ViewModel-intent callback pattern, but not that either candidate guest-start callback receives this particular object.
+
+The WebView-side `Lq20` callback enters through `Lej10.c` (`DilWebViewHost`) and the generated `Ljpc.invoke` wrapper. A separate `Lq20` constructor path is called by `Llal1.h`; one traced caller reaches `Ly641.a` from `Lyi1.J`, labelled `SettingsWorkspaceListItem`. The ConversationSidebar-side `Ldo1` callback remains a parent Function1 forwarded through `Le2w.c` → `Lx0w`/`Lm1w` → `Le2w.j` → `Le2w.e` → `Lp1w`.
+
+The scan across all ten DEX files still found no direct call-site method-id or method-handle reference to `La991.G` outside its definition. That static absence does not rule out virtual dispatch through `Lv6a.H`; however, the observed `Le6` instance is in the Composer/FreeThinkingGaugeNuxHost path and is not statically connected to either the WebView or ConversationSidebar callback. Their concrete callback objects and receiver bindings to the same `La991` instance remain unknown. The confirmed `Lt891` branch reaches only local SessionManager coordination (`Lmuz0` branch 9 → `Lgs31.b` → `Lau31.G`), not a recovered guest HTTP create/refresh or composer-send request. The instrumentation marker remains excluded from ChatJS.

@@ -217,3 +217,8 @@ Followed the two generic `Function1` callback paths from their emitters to the e
 - `Lt891(5)` and `Lt891(6)` payload semantics and the ultimate `Function1` implementations remain unknown. The welcome CTA action-29/login-child path is still separate. Neither candidate establishes the guest HTTP create/refresh or composer-send protocol.
 
 The next static target is the callback argument supplied by the parent `Llal1.h`/WebView wrappers and by the `Le2w.c`/ConversationSidebar rendering inputs; retain the unresolved status unless an actual callback implementation is recovered.
+
+
+## 2026-11-25 — Generic ViewModel intent bridge
+
+A follow-up DEX inspection found `Lv6a.H(Louf0)`, which invokes virtual `G(Louf0)` on the receiver. Since `La991` extends `Lv6a`, a callback capturing that receiver through the base bridge could dynamically invoke `La991.G`; the absence of a direct method-id reference therefore does not rule out callback dispatch. Generated `Le6` captures a `Lv6a` and calls `H`, but its observed creation is in the Composer / FreeThinkingGaugeNuxHost path, not at either candidate emitter. The WebView (`Lq20`) and ConversationSidebar (`Ldo1`) callbacks are still generic parent Function1 values and are not proven to capture this `La991` instance. No guest HTTP request is found in this bridge.
