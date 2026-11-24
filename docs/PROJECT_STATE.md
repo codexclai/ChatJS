@@ -106,6 +106,8 @@
 86. Traced the parent callback ownership one layer above the Android Lt891(5)/Lt891(6) emitters: Lq20 uses Llal1.h or Lej10.c/Ljpc paths; Ldo1 uses Lp1w/Le2w.e and the Le2w.j/Le2w.c ConversationSidebar path. Scanned all ten DEX files for La991.G callsite and method-handle references; none exists outside the method definition, so callback targets and payload semantics remain unproven.
 87. Completed the Lt891 parent-callback trace and ten-DEX static La991.G reference scan; corrected the generated project-state formatting mismatch, then verified passing full GitHub CI/CodeQL and inspected the rebuilt eight-file ChatJS distribution archive.
 88. Corrected the Android callback-reference evidence boundary: La991 extends Lv6a and Lv6a.H invokes virtual G, so dynamic callback dispatch to La991.G is possible. Located the known Le6 bridge in Composer / FreeThinkingGaugeNuxHost, but did not find evidence connecting it or either candidate WebView/ConversationSidebar callback to the same La991 receiver.
+89. Validated the Android callback-dispatch documentation snapshot locally on Node.js 22.23.2/npm 10.9.8: lint passed, generated project state synchronized, all 27 Markdown local links passed, all 23 tests passed, and the eight-file distribution archive was generated. Archive inspection passed gzip/tar integrity; SHA-256 8889b685390e25a6c9ee17e332ea4910a8f776e4b54eb9b2d86eb1d9dac401ff; extracted CommonJS and ESM entry-point smoke tests both loaded successfully.
+90. Verified the callback-dispatch correction commit 91e21251eeab72a38d5aa00dc2a9365408943ae8 on main: GitHub CI run 45474704964 and CodeQL run 45474704958 both succeeded. Final repository inspection found only main, with no open issues or pull requests.
 
 ## Not implemented
 

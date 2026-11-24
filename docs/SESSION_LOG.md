@@ -679,3 +679,13 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Continue from the parent callback objects and resolve their actual receivers (especially `Lv6a.H` capture); keep Lt891 payload meanings and the welcome CTA connection unknown until recovered.
 - Continue the welcome PreferenceStore writer/population trace, then identify guest HTTP create/refresh and composer prepare/send builders separately.
 - Keep Android Work Cloud and Windows Work Local separate; no Codex CLI/app-server runtime dependency.
+
+
+## 2026-11-25 — Callback-dispatch research verification and closeout
+
+- Repository source research remains documentation-only; no production JavaScript/TypeScript, public package API, tests, or dependencies changed in this slice.
+- `npm run check` passed on exact source commit `91e21251eeab72a38d5aa00dc2a9365408943ae8` under Node.js 22.23.2/npm 10.9.8: all syntax checks passed; generated project state was synchronized; all 27 Markdown local links passed; node:test passed 23/23.
+- Distribution archive: `dist/ChatJS.tar.gz`, 10,397 bytes, SHA-256 `8889b685390e25a6c9ee17e332ea4910a8f776e4b54eb9b2d86eb1d9dac401ff`. `gzip -t` and tar listing passed. The archive contains exactly eight intended package files. Extracted CommonJS and ESM imports both loaded and returned the explicit `foundation-only` status.
+- GitHub CI run `45474704964` and CodeQL run `45474704958` both passed on commit `91e21251eeab72a38d5aa00dc2a9365408943ae8`.
+- Final repository inspection: `main` is the only branch; there are zero open issues and zero open pull requests.
+- The Android work is source research only. No guest create/refresh request, composer-send route, real authenticated/guest ChatGPT connection, or Work Local/Work Cloud runtime has been implemented. The final callback boundary is accurately captured in Android findings and continuation records.
