@@ -115,3 +115,8 @@ A method-level DEX pass now follows the welcome CTA beyond its click closure:
 ## 2026-11-24 — Separate event-gated guest-start caller
 
 A second local guest-start caller is observed through Lej6.invoke → La991.G(Louf0) → Lmuz0 branch 9 → Lgs31.b → Lau31.G. Its event producer and eligibility condition are not identified, and it is not linked to the welcome CTA action-29 path. The associated ChatgptClientMarkerUserSessionBootstrapRequestType marker is client instrumentation and excluded from ChatJS. Guest HTTP create/refresh and composer send remain unverified; no runtime capability status changes.
+
+
+## 2026-11-24 — Correction: actual La991.G guest-start event variant
+
+The local guest-start coroutine is dispatched by an `Lt891` event, not by W891.a. The W891.a path reads current Lw4h0 state through Lcq41.e and returns. Lt891 dispatches Lmuz0 label 9 → Lgs31.b → Lau31.G. Candidate creators are Lq20.invoke (payload 5) and the selector-18 Ldo1 path hosted by Lp1w/Le2w.e (payload 6 under a null-Lh70 branch); both forward via generic Function1 callbacks, and neither is proven connected to the current La991 instance. The marker remains instrumentation, not telemetry. Actual server create/refresh and composer-send routes remain unknown; no runtime capability status changes.

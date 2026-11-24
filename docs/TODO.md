@@ -91,4 +91,4 @@ Never create branches or worktrees. Keep all repository work on main.
 
 
 - [ ] Trace the writer/population source for WelcomeLanguageEnrollment / Lzlh1 / Lylh1, including the source of guestCtaCopy, local seed vs remote fetch, cache/update conditions and feature gates.
-- [ ] Trace the producer/meaning of the Louf0 event and Lcq41.e gate consumed by La991.G, and determine whether the separate action-29/login-child path emits it. Keep it distinct from the observed Lej6 → La991.G → Lmuz0 branch 9 → Lgs31.b → Lau31.G local guest-start path until a concrete event connection is found.
+- [ ] Trace Lt891 producers/callback wiring into La991.G. Observed constructors are Lq20.invoke → Lt891(5) and Ldo1.invoke selector case 18 → Lt891(6) via the Le2w.e ConversationSidebar path. The distinct Lt891 branch dispatches Lmuz0 label 9 → Lgs31.b → Lau31.G; W891.a goes to Lcq41.e and returns. Prove which callback targets the coordinator before assigning a UI trigger or connecting it to welcome CTA action-29.

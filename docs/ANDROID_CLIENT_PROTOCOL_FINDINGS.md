@@ -332,3 +332,19 @@ A further DEX call-site trace found another caller of the initial anonymous-sess
 - The ChatgptClientMarkerUserSessionBootstrapRequestType value is client instrumentation. ChatJS must not transmit or reproduce it as telemetry.
 
 **Evidence boundary:** this is static DEX evidence from selected method and call-site inspection using a purpose-built partial bytecode scanner, not a full decompilation or complete call graph. The trigger's semantic name, event producer, relationship to welcome CTA, and server-side guest creation remain unknown. Do not merge the two UI/event paths or infer a network request from the marker name.
+
+
+## 2026-11-24 — Correction: Lt891, not W891.a, dispatches local guest startup
+
+A subsequent instruction-by-instruction decode of La991.G(Louf0) corrects the previous branch summary above. The equality check against singleton Lw891.a follows a distinct path: it reads the current Lw4h0 value, passes it to Lcq41.e, and returns. **It does not launch the guest-start coroutine.** The coroutine is launched by the separate `instance-of Lt891` branch.
+
+The Lt891 branch constructs Lmuz0 with branch label 9. In that coroutine, the captured La991.R1 callback is invoked and the Lt891.a integer payload is read; the coroutine constructs the local Llnp0 argument and calls Lgs31.b, which delegates to Lau31.G. Thus the call path into the local SessionManager start is `La991.G(Lt891)` → `Lmuz0` branch 9 → callback / `Llnp0` → `Lgs31.b` → `Lau31.G`. The event payload is used as an input to this local start; this is not itself the server-side guest-create request.
+
+Two Lt891 construction sites are currently observed:
+
+- `Lq20.invoke` constructs `Lt891(5)` and passes it to a captured Function1. Lq20 is constructed from two UI callsites (`Llal1.h` and `Lej10.c`) with a Context and Function1. The ultimate callback target is not proven.
+- The branch-18 case of `Ldo1.invoke` (selected by a constructor call in `Lp1w.invoke`) can construct `Lt891(6)` when its inspected `Lh70` value is null, then passes it to a captured Function1. `Lp1w` is constructed by `Le2w.e`, whose UI component contains the `ConversationSidebar` label. The actual callback target and runtime path into this La991 instance are not proven.
+
+The event producer(s), meaning of payload values 5 and 6, and concrete callback wiring into the La991 instance are still open. Do not claim that the ConversationSidebar or WebView path necessarily starts a guest session. The welcome CTA action-29/login-child flow remains separate; no evidence yet connects it to either Lt891 producer. The associated ChatgptClientMarkerUserSessionBootstrapRequestType is instrumentation, not a ChatJS telemetry field.
+
+**Evidence boundary:** static method/call-site inspection of selected DEX methods and generated coroutine/lambda code; this is not a complete decompilation or runtime trace. No HTTP client, route, request body, or server-issued guest token is exposed by this branch. Guest create/refresh and composer-send protocols remain unknown.

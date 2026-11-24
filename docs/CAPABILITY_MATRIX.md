@@ -72,3 +72,6 @@ Android guest-welcome UI evidence: Lnlh1/Lylh1 carries guestCtaCopy and CTA disp
 
 
 Android guest-start research addendum (2026-11-24): a separate event-gated caller is traced through Lej6 → La991.G → Lmuz0 branch 9 → Lgs31.b → Lau31.G. This remains static source evidence for local session startup only. It does not change ChatJS runtime capability status: authenticated/guest transport and conversation remain unimplemented; the marker is not a telemetry requirement.
+
+
+Android guest-start research correction (2026-11-24): only the Lt891 event branch in La991.G launches Lmuz0 label 9 → Lgs31.b → Lau31.G. W891.a instead forwards current state through Lcq41.e and returns. Candidate Lt891(5) and Lt891(6) producers exist in Lq20 and Ldo1/ConversationSidebar code respectively, but callback wiring into the coordinator is unverified. This is source research only; no ChatJS guest/auth transport capability is implemented.
