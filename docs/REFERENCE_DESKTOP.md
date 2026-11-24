@@ -37,3 +37,11 @@ Keep original application packages and extracted third-party application payload
 ## 2026-11-24 source-piece integrity recheck
 
 The two Project Sources pieces were reassembled in numeric order in a temporary working directory. The resulting 796,523,063-byte MSIX has SHA-256 561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963; unzip -t reported no compressed-data errors. This rechecks the byte-level container integrity only. The MSIX publisher signature and full Windows application extraction/runtime behavior were not verified in this session. Full Windows payload analysis remains deferred in the task list.
+
+## Work, Codex, and accountless-session boundaries — 2026-11-24
+
+The owner's required product distinction is that Windows ChatGPT desktop Work uses local execution on the desktop host, while Android ChatGPT Work uses the cloud execution surface. These must be traced and implemented as separate execution paths; neither may depend on an installed Codex CLI or a separately running Codex app-server.
+
+The upstream Codex source snapshot is now retained separately as CodexCLI.zip in ChatJS Project → Sources. Its findings and pinned commit are recorded in [CODEX_SOURCE_FINDINGS.md](CODEX_SOURCE_FINDINGS.md). It is protocol/behavior reference material only, not an app-server runtime dependency.
+
+No Windows ChatGPT guest/session or signed-out Work path was established by the current inspection. An anonymous marker within a generic browser-transport subsystem is not evidence of a ChatGPT accountless session. Keep desktop guest mode Unknown until its actual client call path is traced. Android's separate guest session evidence is recorded in [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md).

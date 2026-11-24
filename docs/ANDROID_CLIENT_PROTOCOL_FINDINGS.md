@@ -29,6 +29,28 @@ Observed in `assets/oai_authentication_transport.valdimodule` and `assets/oai_we
 
 These findings show that authentication and session state are explicit client subsystems. They do not provide or authorize use of any user's credentials. ChatJS must implement the legitimate user sign-in/session flow and secure storage lifecycle, not bypass authentication or fabricate tokens.
 
+## Accountless / anonymous ChatGPT session evidence — 2026-11-24
+
+A separate static DEX string, field and method-reference pass over the supplied public Android XAPK found first-class anonymous-session concepts. This is evidence of a distinct logged-out guest session model, not merely Temporary Chat inside an authenticated account.
+
+Observed identifiers and strings include:
+
+- Session states Unauthenticated, AnonymousSession, and LoggedInSession.
+- UI/session components and strings Continue as Guest, AnonymousSessionLoading, AnonymousSettingsScreen, and AnonymousSettings.
+- A guest plan identifier chatgptguestplan.
+- SessionManager error paths for failing to start the initial anonymous session and for failing to start one after logout.
+- Session metadata fields userId, isAnonymous, authSessionId, anonymousSessionId, retiredGuestSessionIds, legacyGuestPreferencesOwnerId, guestPreferencesInitialized, deniedLegacyFileDirectories, and pendingReplacement.
+- Guest-session storage/cleanup identifiers including sessions/guest- and retired guest session file cleanup.
+- Endpoint string constants /backend-anon/f/conversation, /backend-anon/f/conversation/prepare, /backend-api/f/conversation, and /backend-api/f/conversation/prepare.
+
+**Important route-attribution limit:** the /backend-anon/... and /backend-api/... constants observed in the DEX scan are referenced from a class identified as LocationCookieInitializer. Their presence does not, by itself, prove that these are the final message-submit routes for the guest conversation client. The anonymous session model and lifecycle are independently evidenced, but the exact guest conversation request owner, prepare/send body schemas, guest cookie/session headers, lifecycle transitions, and route selection still require method-level tracing. Do not treat the path strings as a completed protocol reconstruction.
+
+ChatJS must model accountless sessions as a genuine first-party session mode with its own creation, storage, request, expiry/retirement and cleanup rules. It must not fabricate guest tokens, borrow authenticated account credentials, silently convert a guest session into an account session, or bypass any server-required sign-in gate. Preserve the service's guest feature restrictions and one-active-conversation/history-retention limits where enforced.
+
+The public ChatGPT web experience also supports logged-out use in eligible regions, subject to first-party availability and restrictions. OpenAI's Help Center describes one active conversation at a time and that logged-out history is not saved to an account. This web product evidence does not prove that the Windows desktop Work surface has the same anonymous-session path.
+
+**Windows desktop boundary:** in the Windows bundle material inspected in this work, an anonymous marker found in a generic browser-transport subsystem was not sufficient to establish a ChatGPT guest session or a signed-out Work flow. Windows desktop Work guest support remains unverified; continue from the Windows package only when the relevant payload/call path is actually available. Do not infer it from the generic browser transport.
+
 ## Model discovery and conversation requirements
 
 Observed in `assets/chatgpt_services.valdimodule`:

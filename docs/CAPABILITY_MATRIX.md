@@ -18,7 +18,8 @@
 | CommonJS and ESM entry points | Implemented | Automated tests load both |
 | Client factory/lifecycle | Partial | Construction, status, assert-open, close |
 | Error base type | Partial | Foundation validation/closed-client errors |
-| TypeScript declarations | Partial | Foundation API only |
+| TypeScript declarations | Partial | Foundation API plus generic SSE parser |
+| Generic Server-Sent Events framing | Implemented | Async byte-iterable parser, UTF-8/chunk boundaries, event fields, limits, abort and iterator cleanup; does not connect to ChatGPT or decode a product-specific event schema |
 | No telemetry in current foundation | Verified for inspected source | Re-review with every network-capable change |
 
 ## Actual ChatGPT client integration
@@ -27,13 +28,18 @@
 | --- | --- | --- |
 | Client request/response construction | Research (first-pass module evidence) | Generated API clients and request paths observed in Android Valdi modules; full call graphs and body schemas remain open |
 | Connection and transport | Research (first-pass module evidence) | Bearer transport, WebSocket integration, SSE clients, and stream processors observed; exact runtime state machine remains open |
-| Authentication and session lifecycle | Research (first-pass module evidence) | Account/session services, secure credential-store components and bearer transport observed; exact sign-in, renewal and Node.js storage flow remain open |
+| Authenticated account session | Research | Android client exposes account/session services, secure credential storage and bearer transport; exact sign-in, refresh, revocation and Node.js storage flow remain open |
+| Accountless / anonymous guest session | Research | Android DEX exposes AnonymousSession, Unauthenticated, LoggedInSession, guest plan/storage identifiers and anonymous endpoint strings; exact conversation route attribution and request schemas remain open |
+| Windows desktop accountless/guest Work | Unknown | Current inspection did not establish a ChatGPT guest-session path in the Windows Work client |
 | Sentinel and device integrity | Research (current Android source scan) | Separate requirements/device-integrity providers and Android native Play Integrity exchange observed; challenge schemas and cross-host provider behavior remain unresolved |
 | Chat conversations and streaming | Planned | Use actual ChatGPT client behavior; no canned/fake responses |
 | Files and attachments | Research/Planned | Trace supported client payloads and real Node.js processing |
 | Projects/instructions/context | Research/Planned | Reproduce relevant client models and state behavior |
 | Voice/image/video | Research/Planned | Use actual client behavior where evidenced; optional host/device facilities |
-| Search/tools/Work/Codex workflows | Research/Planned | Trace client modules and payload behavior; implement tested Node.js equivalents/adapters |
+| Windows desktop Work Local | Research | Owner-confirmed local execution surface; actual desktop client/native-host call graph remains to be reconstructed; no CLI/app-server dependency |
+| Android Work Cloud | Research | Owner-confirmed cloud execution surface; Codex-related Android request paths observed, full Work protocol not yet reconstructed |
+| Codex CLI | Source reference only | Official source archived/pinned; not a ChatJS Work runtime or an external prerequisite |
+| Search/tools/Work/Codex workflows | Research/Planned | Trace each actual client surface and implement tested direct Node.js transports/adapters |
 
 ## Portable Node.js and desktop workflows
 

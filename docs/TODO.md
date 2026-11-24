@@ -21,6 +21,10 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Build a deeper source-path-to-behavior map for conversations, streaming, files, Projects, voice, images, search/tools, and other client workflows, including exact call graphs and schemas.
 - [ ] Document actual dependencies and Node.js portability for each major client component.
 - [ ] Define a repeatable client behavior test plan and capture verified request/response examples without storing personal account data.
+- [x] Add official Codex source snapshot CodexCLI.zip to Project Sources, pinned to a verified upstream commit; document it as reference-only, not a runtime dependency.
+- [ ] Reconstruct the Android accountless guest session lifecycle and attribute anonymous conversation endpoint constants to the actual message prepare/send client; do not assume route ownership from strings alone.
+- [ ] Reconstruct Windows desktop Work Local and Android Work Cloud as separate execution surfaces; never require Codex CLI or app-server.
+- [ ] Verify whether Windows desktop Work has a real logged-out guest mode; current evidence is insufficient.
 - [ ] Windows extracted-payload archive work is deferred by the owner; resume only when asked.
 
 ## P1 — Product completeness, customization and capability architecture
@@ -38,6 +42,7 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Define the client factory/configuration/lifecycle API for different host applications.
 - [ ] Define the real ChatGPT client connection and legitimate authentication/session lifecycle.
 - [ ] Define request/response transport, streaming/backpressure, cancellation, timeouts, retry policy, concurrency, and typed errors from client evidence.
+- [x] Implement a reusable bounded/cancellable Server-Sent Events framing parser for async byte streams; keep ChatGPT-specific decoding and live transport unimplemented.
 - [ ] Define reusable conversation/thread/context/project models.
 - [ ] Define instruction/profile precedence and explicit local persistence/memory behavior.
 - [ ] Define file/attachment ingestion, format handling, size limits, and cleanup.
@@ -46,10 +51,13 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 
 ## P2 — Complete feature slices
 
+- [ ] Implement genuine authenticated-account and accountless-guest ChatGPT session flows using exact first-party client behavior; preserve all gates and guest restrictions.
 - [ ] Implement a genuine ChatGPT client connection and authentication flow based on verified client behavior.
 - [ ] Implement conversation send/receive/stream with real ChatGPT service responses.
 - [ ] Implement project/context/instruction handling.
 - [ ] Implement file and attachment workflows using observed client request formats.
+- [ ] Implement Work Local for the Windows desktop client and Work Cloud for Android as separate client/service flows; neither may depend on Codex CLI/app-server.
+- [ ] Decide and implement a distinct Codex CLI-equivalent coding capability only where source evidence proves user-visible behavior materially separate from Work.
 - [ ] Implement Work/Codex task, workspace, command, approval, Git review, and artifact workflows.
 - [ ] Add optional voice/image/video and host integrations only where actual client and host evidence supports them.
 - [ ] Add security/regression tests for auth lifecycle, secret redaction, cancellation, concurrency, timeouts, and no unsolicited traffic.
@@ -67,3 +75,12 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Current package sources are `ChatGPT-Android.xapk` and the two sequential Windows installer pieces in ChatJS Project → Sources. The personal Library is outside the normal workflow and is not a routine source; access it only for a concrete need when useful and accessible. Any material used there belongs under `ChatJS Project` and must be authentic and necessary. The persistent ChatJS browser profile is the only reusable default profile; temporary sessions are disposable and must not replace it.
 
 Never create branches or worktrees. Keep all repository work on main.
+
+
+## 2026-11-24 — Current transport and guest-session slice
+
+- [x] Add bounded/cancellable generic SSE parser with CommonJS/ESM/type exports, package archive inclusion and deterministic parser tests.
+- [x] Archive the official Codex source snapshot in Project Sources and record its pinned commit/hash; explicitly exclude it as a ChatJS runtime dependency.
+- [x] Record Android guest-session identifiers and anonymous endpoint attribution caveat.
+- [ ] Finish the exact guest-session call graph and prepare/send payload reconstruction.
+- [ ] Continue source-led direct ChatGPT authentication, conversation and Work implementation; no live ChatGPT connection is implemented yet.

@@ -89,3 +89,20 @@ Record durable project and technical decisions with rationale. Preserve supersed
 **Decision:** pursue the broadest verifiable in-scope ChatGPT mobile/desktop client coverage through one cohesive, general-purpose Node.js module. Make meaningful options, per-client/per-operation configuration, host adapters, capability discovery, predictable runtime behavior, and high-quality documentation first-class design requirements. Optimize for correctness, portability, security/privacy, reliability, performance, usability, extensibility and maintainability.  
 **Rationale:** explicit owner direction on making ChatJS all-in-one, full-featured, dynamically adaptable, customizable, controllable, user-friendly and production-ready across as many environments as can genuinely be supported.  
 **Consequences:** docs/PRODUCT_STANDARD.md is the normative target and acceptance standard. Broad support must be earned through source evidence, implementation, tests and a declared compatibility matrix. No literal guarantee of every feature on every host or uninterrupted operation forever is possible. Preserve official authentication, entitlements, required security checks, rate limits, cooldowns, zero-telemetry and no-unsolicited-network constraints; configuration must not override them. The current runtime remains foundation-only until implementation and end-to-end evidence establish otherwise.
+
+
+## Direct Node.js ChatGPT transport; no Codex runtime dependency
+
+**Decision (2026-11-24):** ChatJS must independently implement its direct ChatGPT HTTP/WebSocket/SSE client behavior in Node.js. The upstream Codex repository is source evidence only. Do not require or wrap codex CLI, a standalone codex app-server, or the in-process app-server embedded by codex exec.
+
+**Rationale:** the owner's explicit requirement is direct first-party endpoints and the actual client protocol, not another executable/process layer. Codex's own codex exec starts InProcessAppServerClient, so it is not an app-server-free runtime implementation.
+
+**Consequences:** reproduce legitimate authentication/session, request serialization, streaming, challenge/integrity gates and service errors using the official ChatGPT app sources. Never substitute OpenAI Platform API/key requests. Do not port Codex analytics/telemetry.
+
+## First-class accountless guest mode; separate Work surfaces
+
+**Decision (2026-11-24):** treat logged-out ChatGPT guest sessions as a separate first-party session mode, distinct from authenticated accounts and from Temporary Chat inside an account. Preserve the Windows desktop Work Local and Android Work Cloud execution paths as separate products/engines.
+
+**Rationale:** the supplied Android build contains anonymous session states, guest UI/plan/storage identifiers and anonymous route constants. The owner has clarified the Windows local versus Android cloud Work split.
+
+**Consequences:** do not invent guest tokens, bypass force_login or server limits, or infer Windows guest Work from generic browser code. Exact Android guest message-route attribution remains open. Do not require Codex CLI/app-server for either Work implementation.

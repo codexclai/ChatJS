@@ -10,6 +10,8 @@ test('ES module entry exposes named and default ChatJS exports', async () => {
   assert.equal(typeof api.createChatJS, 'function');
   assert.equal(typeof api.ChatJSClient, 'function');
   assert.equal(typeof api.ChatJSError, 'function');
+  assert.equal(typeof api.ServerSentEventError, 'function');
+  assert.equal(typeof api.parseServerSentEvents, 'function');
 
   const client = api.default.create();
 

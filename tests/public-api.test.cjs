@@ -79,3 +79,9 @@ test('assertOpen returns the client while open and rejects use after close', () 
     (error) => error instanceof ChatJS.Error && error.code === 'CHATJS_CLIENT_CLOSED'
   );
 });
+
+
+test('ChatJS exposes its native streaming parser and typed parser error', () => {
+  assert.equal(typeof ChatJS.parseServerSentEvents, 'function');
+  assert.equal(typeof ChatJS.ServerSentEventError, 'function');
+});

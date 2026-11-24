@@ -1,3 +1,25 @@
+export interface ServerSentEvent {
+  readonly type: string;
+  readonly data: string;
+  readonly lastEventId: string;
+  readonly retry?: number;
+}
+
+export interface ServerSentEventOptions {
+  signal?: AbortSignal;
+  maxLineLength?: number;
+  maxEventBytes?: number;
+}
+
+export class ServerSentEventError extends Error {
+  readonly code: string;
+}
+
+export function parseServerSentEvents(
+  source: AsyncIterable<Uint8Array>,
+  options?: ServerSentEventOptions
+): AsyncGenerator<ServerSentEvent, void, unknown>;
+
 export interface ChatJSOptions {
   [key: string]: unknown;
 }
@@ -39,6 +61,8 @@ declare const ChatJS: {
   readonly ChatJSClient: typeof ChatJSClient;
   readonly ChatJSError: typeof ChatJSError;
   readonly createChatJS: typeof createChatJS;
+  readonly ServerSentEventError: typeof ServerSentEventError;
+  readonly parseServerSentEvents: typeof parseServerSentEvents;
 };
 
 export { ChatJS };

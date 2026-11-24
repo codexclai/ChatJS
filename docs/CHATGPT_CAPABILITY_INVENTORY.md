@@ -57,3 +57,10 @@ The current ChatJS repository is foundation-only. Actual ChatGPT service connect
 ## Explicit exclusions
 
 Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.
+
+
+## Accountless sessions and execution-surface distinctions — 2026-11-24
+
+Android 1.2026.321 DEX inspection observed Unauthenticated, AnonymousSession and LoggedInSession states, Continue as Guest UI, AnonymousSettings components, a chatgptguestplan identifier, anonymous session metadata and guest storage/cleanup identifiers. Anonymous endpoint constants were observed, but their owning class is LocationCookieInitializer; exact final guest conversation route attribution and request schemas remain unproven. This is a genuine guest-session research lead, not an implemented protocol. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+Windows desktop Work Local and Android Work Cloud are separate owner-confirmed execution surfaces. Codex CLI is a terminal coding client; it is source reference only for current ChatJS implementation work and is not a Work runtime prerequisite. Windows guest Work remains unknown.

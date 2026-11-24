@@ -40,9 +40,10 @@ The repository currently provides:
 - a minimal client factory and constructor;
 - a typed base error;
 - basic lifecycle state, open-state validation, and idempotent close behavior;
-- TypeScript declarations.
+- TypeScript declarations;
+- a generic, bounded, cancellable Server-Sent Events parser for async byte streams.
 
-The real ChatGPT connection and client workflows are not implemented yet. Do not claim account access or feature compatibility until actual Node.js code and end-to-end tests establish it.
+The real ChatGPT connection, authenticated and accountless session lifecycle, and product-specific chat/Work workflows are not implemented yet. The SSE parser is only a reusable framing primitive; it does not send requests or interpret ChatGPT-specific payloads. Do not claim account access or feature compatibility until actual Node.js code and end-to-end tests establish it.
 
 ## Installation
 
@@ -78,6 +79,23 @@ Creates and returns a `ChatJS.Client`. Options must be a plain object when suppl
 
 The current foundation client makes no network requests and collects no telemetry.
 
+### ChatJS.parseServerSentEvents(source, options?)
+
+Parses an AsyncIterable<Uint8Array> as a Server-Sent Events stream and returns an async iterator of frozen events:
+
+    {
+      type: 'message',
+      data: '...',
+      lastEventId: '...',
+      retry: 1000 // present when a valid retry field has been received
+    }
+
+It handles incremental UTF-8 decoding, split line endings, multiline data fields, persistent event IDs and retry values, comments and unknown fields. options.signal aborts a pending read; maxLineLength and maxEventBytes bound parser memory (defaults: 1 MiB and 8 MiB). The parser closes the underlying iterator when iteration is cancelled.
+
+This is not a ChatGPT connection, reconnection policy, authentication mechanism or product-specific event decoder. The caller must perform an explicit authorized request and pass its response body stream to the parser.
+
+ChatJS.ServerSentEventError exposes a code for invalid input/options, malformed chunks, size limits, cancellation and stream failures.
+
 ### `new ChatJS.Client(options?)`
 
 Constructs a client directly using the same input validation as the factory.
@@ -112,12 +130,17 @@ The client extends Node.js `EventEmitter` and currently emits one `close` event.
 | `CHATJS_ERROR` | General ChatJS error |
 | `CHATJS_INVALID_OPTIONS` | Client options were not a plain object |
 | `CHATJS_CLIENT_CLOSED` | An operation requiring an open client was attempted after close |
+| `CHATJS_SSE_INVALID_INPUT` | The SSE source is not an async iterable |
+| `CHATJS_SSE_INVALID_CHUNK` | The SSE source yielded a non-byte chunk |
+| `CHATJS_SSE_LINE_LIMIT` | An SSE line exceeded the configured limit |
+| `CHATJS_SSE_EVENT_LIMIT` | An SSE event exceeded the configured limit |
+| `CHATJS_SSE_ABORTED` | The SSE iteration was aborted |
 
 Errors must not expose credentials or private user content. Expand the error catalogue only when real capabilities are implemented.
 
 ## Module formats and TypeScript
 
-CommonJS exposes `ChatJS.Client`, `ChatJS.Error`, and `ChatJS.create`. ESM exposes named exports `ChatJSClient`, `ChatJSError`, `createChatJS` and a default ChatJS object. TypeScript declarations are provided in `types/index.d.ts`.
+CommonJS exposes `ChatJS.Client`, `ChatJS.Error`, and `ChatJS.create`. ESM exposes named exports `ChatJSClient`, `ChatJSError`, `createChatJS`, `ServerSentEventError`, `parseServerSentEvents` and a default ChatJS object. TypeScript declarations are provided in `types/index.d.ts`.
 
 ## Distribution archive
 

@@ -21,6 +21,14 @@ The target is the real consumer ChatGPT product and its legitimate account/servi
 
 ChatJS must remain general-purpose: usable by different Node.js applications, operating systems, hosts, devices, and deployment environments. Do not assume it is itself a phone/desktop app or that any particular camera, microphone, screen, browser, or OS facility is present. Expose host-dependent capabilities through optional integrations/adapters so consumers can use the module without those facilities.
 
+## Product execution and session modes — owner direction, 2026-11-24
+
+- ChatJS independently implements first-party ChatGPT client communication in Node.js. Do not require or wrap Codex CLI, a standalone Codex app-server, or an embedded Codex app-server runtime. The pinned Codex repository is a source reference only. See CODEX_SOURCE_FINDINGS.md.
+- Windows ChatGPT desktop Work is the local execution surface; Android ChatGPT Work is the cloud execution surface. Keep their engines and protocol flows separate. Neither Work surface depends on Codex CLI.
+- Accountless ChatGPT means the genuine logged-out guest session, separate from an authenticated account and from Temporary Chat while signed in. Android 1.2026.321 exposes anonymous session state/UI/plan/storage identifiers and anonymous endpoint constants. Exact guest conversation route attribution and request schemas remain unproven; see ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+- Windows desktop guest Work is unverified. Do not infer it from a generic anonymous browser-transport marker.
+- The current runtime now includes a generic bounded/cancellable SSE parser with CommonJS/ESM/TypeScript coverage. It does not perform network requests, authenticate, or decode product-specific ChatGPT events. No ChatGPT session, conversation, or Work connection is implemented.
+
 ## Accepted product-quality target
 
 The owner requires ChatJS to pursue comprehensive all-in-one functionality, maximum practical production quality, broad portability, dynamic capability/protocol adaptation, extensive safe customization and control, and a user-friendly API. docs/PRODUCT_STANDARD.md is the normative, detailed requirement and acceptance gate. This target does not claim present implementation or guarantee every feature on every host forever. Maintain a capability registry and compatibility evidence as implementation develops; never bypass account authorization, entitlements, first-party security, rate limits or cooldowns; preserve zero telemetry and no unsolicited network activity. The current runtime remains foundation-only.
@@ -29,7 +37,8 @@ The owner requires ChatJS to pursue comprehensive all-in-one functionality, maxi
 
 - Android: `ChatGPT-Android.xapk`, 123,574,190 bytes. This is an app bundle containing the base APK and required splits, not one standalone APK. ZIP integrity passed; SHA-256 matched the download provider's published hash `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`. The provider hash match is not an independent malware scan or signing-certificate verification.
 - Windows: `ChatGPT-Windows.msix.part001` (400,000,000 bytes) and `ChatGPT-Windows.msix.part002` (396,523,063 bytes). These sequential chunks reconstruct one official x64 installer; neither chunk is independently installable. Reassembly was verified byte-for-byte against the original: 796,523,063 bytes, SHA-256 `561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963`.
-- The temporary remote download workspace was deleted after verifying all three files in Project Sources. Retrieve them there when needed; do not expect remote working copies.
+- Codex: CodexCLI.zip, an official openai/codex source snapshot pinned to commit 50aeac27d825007a0ac6bd846087ed4e7095bdb3, 28,071,441 bytes, SHA-256 1ff13fc6e312171f487b0e0f88de302c27c72c9ac20f6bd54325fdee343d66eb. Uploaded to Project Sources. It is protocol/behavior evidence only, not a ChatJS CLI or app-server dependency; see CODEX_SOURCE_FINDINGS.md.
+- The temporary remote download workspace for the Android and Windows pieces was deleted after verifying their three Project Sources files. CodexCLI.zip was added subsequently as a separate official source snapshot. Retrieve source packages from Project Sources when needed; do not expect remote working copies.
 - Current package inspection (2026-11-24): ChatGPT-Android.xapk is version 1.2026.321 (version code 2632129); its base APK has 5,080 entries, ten DEX files and 111 Valdi modules. The source SHA-256 and ZIP CRC are verified. A partial DEX method scan observed a native internal-package-only Google Play Integrity exchange, a 256-byte random nonce, an app-private UUID.randomUUID device_id, a device-verification cookie and an X-Sentinel-Payload bot_token header. Public-build availability remains unresolved; see ANDROID_CLIENT_PROTOCOL_FINDINGS.md. This is not complete decompilation or a working ChatJS integration.
 
 ## Persistent ChatJS browser profile
@@ -80,7 +89,7 @@ The current installer files are held in ChatJS Project → Sources, not public G
 1. `AI_MEMORY.md`, `CONTINUATION.md`.
 2. `PROJECT_STATE.md`, `project-state.json`, `TODO.md`, `SESSION_LOG.md`.
 3. `DECISIONS.md`, `KNOWLEDGE_BASE.md`, `EXPERIMENTS.md`, `OPEN_QUESTIONS.md`.
-4. `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`, `REFERENCE_APK.md`, `REFERENCE_DESKTOP.md`.
+4. `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`, `REFERENCE_APK.md`, `REFERENCE_DESKTOP.md`, CODEX_SOURCE_FINDINGS.md`.
 5. `ROADMAP.md`, `ARCHITECTURE.md`, `PRODUCT_STANDARD.md`, `WORKFLOW.md`, root `ChatJS.md`.
 6. Inspect live `main`, complete branch list, recent commits/tree, issues/PRs, and CI.
 

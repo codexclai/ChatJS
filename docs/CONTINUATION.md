@@ -7,7 +7,7 @@ Every ChatJS conversation continues the same repository and shared project memor
 1. Read `AI_MEMORY.md`.
 2. Inspect live `main`, complete branch list, tree, recent commits, issues/PRs, CI, and TODO.
 3. Read state, session history, decisions, knowledge, experiments, and open questions.
-4. Read capability matrix/inventory, Android protocol findings, Android/desktop reference records, roadmap, architecture, PRODUCT_STANDARD.md, and workflow.
+4. Read capability matrix/inventory, Android protocol findings, Android/desktop/Codex source records, roadmap, architecture, PRODUCT_STANDARD.md, and workflow.
 5. Read root `ChatJS.md` before public API changes.
 6. Resume the highest-priority actionable work; do not return only a plan.
 
@@ -66,3 +66,16 @@ The internal Android native helper's second Standard Integrity request hash is c
 ### Integrity SDK cooldown and retry evidence — 2026-11-24
 
 The Android SDK contains a 300-second local TOO_MANY_REQUESTS cooldown, conditional candidate retry statuses (-19, -18, -12, 0, -100, -8, -9), and a DeviceRateLimits store with read/expiry/filter/write paths. Exact retry gates, limits, store scope and restart persistence remain unknown. Do not treat candidate codes as unconditional retries and do not port SDK metrics/telemetry. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+### Direct transport, accountless sessions and Work surfaces — 2026-11-24
+
+The owner explicitly requires ChatJS to implement direct first-party ChatGPT HTTP/WebSocket/SSE client communication in Node.js. Do not make Work depend on Codex CLI, an external Codex app-server process, or an embedded app-server runtime. The pinned official Codex repository is reference evidence only; read CODEX_SOURCE_FINDINGS.md.
+
+Keep these surfaces separate:
+- Windows ChatGPT desktop Work: local execution on the desktop host.
+- Android ChatGPT Work: cloud execution.
+- Codex CLI: a distinct terminal-oriented coding client, not a Work prerequisite.
+
+Preserve accountless ChatGPT as a genuine first-party logged-out guest session, separate from authenticated accounts and Temporary Chat while signed in. Android 1.2026.321 exposes anonymous session states, guest UI/plan/storage identifiers and anonymous route constants. Exact guest conversation route attribution and payloads remain open. Windows guest Work has not been verified; do not infer it from generic browser code. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md and REFERENCE_DESKTOP.md.
+
+The runtime includes a generic bounded and cancellable SSE parser in src/sse.cjs. Its tests cover incremental UTF-8, line framing, event fields, size limits, abort and iterator cleanup. It does not perform a ChatGPT request, authenticate or interpret product-specific payloads. Keep the remaining ChatGPT transport/auth/session/conversation integration marked unimplemented until proven by end-to-end tests.

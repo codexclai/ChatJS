@@ -17,6 +17,7 @@ const expectedFiles = [
   'ChatJS/LICENSE',
   'ChatJS/src/index.cjs',
   'ChatJS/src/index.mjs',
+  'ChatJS/src/sse.cjs',
   'ChatJS/types/index.d.ts'
 ];
 

@@ -4,7 +4,7 @@
 
 The purpose is to adapt the actual ChatGPT client behavior to Node.js—not merely list familiar features or substitute a different model service. ChatJS does not recreate ChatGPT's server. It is an independent project, not affiliated with or endorsed by OpenAI.
 
-> **Current implementation:** foundation only. The repository currently provides module entry points, a minimal client lifecycle, a base error, and TypeScript declarations. The actual ChatGPT client integration and the broader workflows remain to be implemented.
+> **Current implementation:** foundation only. The repository currently provides module entry points, a minimal client lifecycle, a base error, TypeScript declarations, and a generic bounded/cancellable SSE parser. The actual ChatGPT client integration and the broader workflows remain to be implemented.
 
 ## Product direction
 
@@ -14,13 +14,13 @@ Use the actual supplied application package contents as the engineering referenc
 
 Optional host-specific facilities belong behind integrations so consumers can use the portable package without particular hardware or OS capabilities.
 
-## Reference archives
+## Reference packages
 
-The Android personal Library archive at `/ChatJS-Archives/ChatJS-Android.zip` contains the full extracted APK payload: all 4,987 APK entries, ten compiled DEX files, 121 compiled Valdi modules, resources, notices, README, and structured inventory. It contains actual compiled client implementation material, not merely a metadata list. The 59,454,036-byte ZIP passed integrity testing on 2026-11-20. See [the Android reference](docs/REFERENCE_APK.md).
+The official Android XAPK, the two sequential Windows MSIX parts, and the pinned official CodexCLI.zip source snapshot are retained in **ChatJS Project → Sources**. That is the normal and primary location for supplied source packages. Keep those third-party packages out of public Git.
 
-The owner has asked to set the remaining Windows archive work aside for now. The current Library `ChatJS-Windows.zip` is a seven-entry metadata/reference archive, not the full extracted desktop payload. A preceding chat recorded a larger remote extracted archive whose transfer into Library was incomplete; that remote result is not reverified in this session. See [the desktop reference](docs/REFERENCE_DESKTOP.md).
+The Codex repository is an engineering reference only. ChatJS must implement direct ChatGPT HTTP/WebSocket/SSE client behavior itself; it does not require Codex CLI, a running app-server, or an embedded app-server runtime. See [Codex source findings](docs/CODEX_SOURCE_FINDINGS.md).
 
-Project Sources are intentionally kept empty. Use personal Library archives and committed reference records; do not ask for repeat uploads. Never put official app packages or extracted third-party payloads into public Git.
+The owner has clarified that Windows ChatGPT desktop Work uses local execution, while Android ChatGPT Work uses cloud execution. Keep those paths separate. The Android package contains first-party accountless/guest session evidence; exact anonymous conversation routing is still under investigation. Windows desktop guest Work is not verified. See [the Android protocol findings](docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md) and [the desktop reference](docs/REFERENCE_DESKTOP.md).
 
 ## Current API
 
@@ -48,7 +48,7 @@ console.log(client.getStatus());
 client.close();
 ```
 
-These examples exercise the foundation only; they do not imply that the ChatGPT connection or planned workflows are already implemented.
+These examples exercise the foundation only; they do not imply that the ChatGPT connection or planned workflows are already implemented. The generic ChatJS.parseServerSentEvents parser is available but does not perform network requests or decode ChatGPT-specific events.
 
 ## Development
 

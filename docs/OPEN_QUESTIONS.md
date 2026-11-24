@@ -67,3 +67,14 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Does the local cooldown marker persist across process restart? The separate DeviceRateLimits data store exists, but its relation to the in-memory/local cooldown helper is not yet clear.
 - [ ] What fields, scope (device/account/provider), expiry and retention rules are represented in DeviceRateLimits? Which code paths record and discard its entries?
 - [ ] Which retry counters and provider/version fields are instrumentation only? Do not port SDK metrics or export diagnostic metadata under ChatJS's zero-telemetry rule.
+
+
+## Anonymous guest session and Work execution surfaces — 2026-11-24
+
+- [ ] Trace Android anonymous session startup after cold launch and logout: exact request/cookie/token creation, session identifiers, storage, renewal/expiry, retirement and deletion.
+- [ ] Attribute /backend-anon/f/conversation and /backend-anon/f/conversation/prepare to the actual guest conversation client; reconstruct exact request/response bodies, headers, prepare/send ordering and SSE behavior. Current DEX constants are in a LocationCookieInitializer path and are not yet proof of final message-send routes.
+- [ ] Identify guest-session entitlement/usage restrictions, one-active-conversation policy, persistence boundaries and sign-in conversion prompts from actual client/service behavior.
+- [ ] Determine whether Windows desktop Work has a supported signed-out/guest mode. Do not infer one from generic browser transport markers.
+- [ ] Reconstruct Windows desktop Work Local's app/native-host request lifecycle and its local filesystem/process/approval boundaries without Codex CLI/app-server dependency.
+- [ ] Reconstruct Android Work Cloud's task/session/progress/artifact/control protocol and its account/guest eligibility rules.
+- [ ] Determine which Codex CLI workflows are materially distinct from desktop Work and therefore merit a separately exposed ChatJS capability.

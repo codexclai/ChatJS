@@ -89,3 +89,14 @@ For each investigation include question, setup/method, actual result, conclusion
 - DeviceRateLimits is a named SDK data store. Its methods read records, discard expired entries, filter/sort and remember updates, with explicit failure paths. Its schema, scope, persistence/retention and relationship to the separate cooldown marker remain unresolved.
 - The SDK assembles diagnostic metrics/counters (initialization_retry_count, token_retry_count, lifetime_integrity_initialization_count, Play Services/Store metadata). These must not be exported by ChatJS under the zero-telemetry requirement; only genuine functional retry/cooldown semantics are in scope.
 - No live account request, provider invocation or ChatJS implementation was performed. No attempt/backoff ceiling is claimed.
+
+
+## 2026-11-24 — Generic direct-streaming parser
+
+Implemented src/sse.cjs as a Node.js async-iterable byte-stream parser, exported from CommonJS/ESM and typed in types/index.d.ts. It decodes split UTF-8 sequences; processes CR, LF and CRLF; implements data/event/id/retry and comment/unknown-field handling; bounds line and total event bytes; accepts AbortSignal; and closes the underlying async iterator on abort or early consumer termination.
+
+The regression suite covers multiline payloads, persistent event IDs/retry state, split CRLF, BOM and multibyte UTF-8, ignored NUL IDs/invalid retries, unterminated EOF records, line/event limits, non-byte chunks, abortion and stream cleanup. An additional memory-bound test verifies repeated empty data fields count toward the event limit. This parser is not a live transport, reconnection mechanism or ChatGPT-specific event decoder.
+
+## 2026-11-24 — Official Codex source and direct transport boundary
+
+Downloaded and uploaded the pinned official openai/codex source ZIP (commit 50aeac27d825007a0ac6bd846087ed4e7095bdb3). Source inspection found codex exec starts InProcessAppServerClient, so it embeds app-server internals. The source also contains a direct ChatGPT Codex Responses backend client (backend-api/codex/responses) using HTTP SSE and WebSockets, OAuth-derived bearer/account/session metadata, and request models/events. ChatJS will not wrap the CLI/app-server; this remains source evidence for independent direct Node.js first-party communication. Upstream analytics are explicitly excluded.

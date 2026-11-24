@@ -321,3 +321,47 @@ The GitHub About description was not changed because the available GitHub integr
 - Ran npm run docs:sync and npm run check successfully after the documentation changes: syntax checks passed; generated PROJECT_STATE.md matched project-state.json; all 26 Markdown files passed local-link validation; all 9 Node tests passed; dist/ChatJS.tar.gz built with the seven intended package files.
 - Inspected the archive listing and SHA-256: edbc4740faa998f4bedc0b8445fd337cd4f1a3db9b48588fae37fa42861a91ac. The archive includes package.json, ChatJS.md, README.md, LICENSE, src/index.cjs, src/index.mjs and types/index.d.ts; it excludes docs, tests, reference payloads and dist itself.
 - The preceding main commit 9edb6019 has passing CI and CodeQL; the new documentation commit still requires its own remote CI/CodeQL verification after publication.
+
+
+## 2026-11-24 — Direct streaming foundation, Codex source, anonymous sessions and Work split
+
+### Owner direction preserved
+- ChatJS must implement direct first-party ChatGPT HTTP/WebSocket/SSE client communication in Node.js.
+- Do not require or wrap Codex CLI, a standalone app-server process, or an embedded Codex app-server runtime. The official Codex repository is source evidence only.
+- Windows desktop Work Local and Android Work Cloud are distinct execution surfaces.
+- Accountless ChatGPT is a genuine logged-out guest session, distinct from an authenticated account and from Temporary Chat while signed in.
+
+### Source work
+- Retrieved the official openai/codex repository snapshot at commit 50aeac27d825007a0ac6bd846087ed4e7095bdb3, verified the ZIP archive, and uploaded CodexCLI.zip to ChatJS Project → Sources (28,071,441 bytes; SHA-256 1ff13fc6e312171f487b0e0f88de302c27c72c9ac20f6bd54325fdee343d66eb).
+- Inspected codex exec and found it starts InProcessAppServerClient, confirming that it embeds app-server internals. The repository's direct Responses HTTP/WebSocket client and SSE models are source evidence for independent ChatJS implementation, not code to run as a dependency.
+- Verified that the upstream exec analytics default is enabled; its telemetry/analytics behavior is excluded from ChatJS.
+- Android DEX evidence records AnonymousSession/Unauthenticated/LoggedInSession states, Continue as Guest UI, guest plan/session metadata, guest storage/cleanup identifiers and anonymous endpoint constants. Exact message route ownership remains open because the observed constants appear in a LocationCookieInitializer class.
+- Correction: Windows inspection did not establish a ChatGPT guest Work path. A generic anonymous browser-transport marker is insufficient evidence; desktop guest Work remains unknown.
+
+### Implementation
+- Added src/sse.cjs, exported ServerSentEventError and parseServerSentEvents through CommonJS/ESM and TypeScript.
+- Added bounded incremental UTF-8/SSE framing, CR/LF/CRLF handling, event/id/retry parsing, AbortSignal handling and async-iterator cleanup.
+- Added regression tests, including an empty-data-line memory-bound case.
+- Added the SSE module to the distribution archive and updated root ChatJS.md plus engineering records to distinguish a generic parser from a real ChatGPT integration.
+
+### Verification so far
+- npm run lint passed after initial implementation.
+- The focused SSE parser suite passed 13/13, including memory-bound, Node Readable, WHATWG ReadableStream and pre-aborted signal cases.
+- Full npm run check passed: syntax checks, generated-state synchronization, 27 Markdown local-link checks, all 23 tests, and archive creation.
+- dist/ChatJS.tar.gz is 9,774 bytes, SHA-256 592cff5830330130c32446aed3a3a3265126109b8f3b379bc54bae1484077c57. It contains exactly eight module files; extracted CJS/ESM imports and an extracted SSE parsing smoke test passed.
+- Live main before this change was a8f6d715da4aa55eae4122ad2fa2ba824cdbfea4. Its latest push-triggered CI run 45374031494 and CodeQL run 45374031132 both succeeded. Fresh workflow results for the new commit remain pending.
+- Repository branch search showed only main. Final live ref update and the new commit remain pending.
+
+### Changed files
+- src/sse.cjs, src/index.cjs, src/index.mjs, types/index.d.ts, package.json
+- tests/sse.test.cjs, tests/public-api.test.cjs, tests/esm-entry.test.cjs, tests/archive.test.cjs
+- scripts/build-module-archive.cjs
+- ChatJS.md, README.md
+- docs/CODEX_SOURCE_FINDINGS.md, ANDROID_CLIENT_PROTOCOL_FINDINGS.md, REFERENCE_DESKTOP.md, ARCHITECTURE.md, DECISIONS.md, CAPABILITY_MATRIX.md, CHATGPT_CAPABILITY_INVENTORY.md, KNOWLEDGE_BASE.md, OPEN_QUESTIONS.md, EXPERIMENTS.md, AI_MEMORY.md, CONTINUATION.md, TODO.md, project-state.json, PROJECT_STATE.md
+
+### Remaining work and handoff
+- Finish full npm run check and inspect ChatJS.tar.gz contents.
+- Verify current main CI and confirm only main exists.
+- Inspect final diff/tree, create a commit on main and fast-forward update using an expected-head check; never force.
+- Continue exact Android guest-session call graph and accountless prepare/send route reconstruction.
+- Continue the Windows local Work and Android cloud Work source traces; no live ChatGPT login/conversation/Work feature is implemented yet.

@@ -15,6 +15,7 @@ const includedFiles = [
   'LICENSE',
   'src/index.cjs',
   'src/index.mjs',
+  'src/sse.cjs',
   'types/index.d.ts'
 ];
 

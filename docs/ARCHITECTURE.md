@@ -42,7 +42,30 @@ Treat the source packages as primary evidence. Public developer documentation is
 
 All network requests must be part of explicit ChatJS operations. Preserve user authorization, account protections, and access controls. Do not hardcode, log, or commit credentials/session material. No fake output or substitute inference model.
 
-### Portable Node.js core
+#
+## Direct ChatGPT transport and session modes
+
+ChatJS owns its Node.js HTTP/WebSocket/SSE transport. It must reproduce the actual shipped client request construction, authentication, headers, challenge flow, streaming and state transitions directly to the first-party ChatGPT service. It must not spawn Codex CLI, require a separately running Codex app-server, embed the Codex app-server runtime, or substitute Platform API/key access. The official Codex repository is source evidence only; see [CODEX_SOURCE_FINDINGS.md](CODEX_SOURCE_FINDINGS.md).
+
+Keep these session modes distinct:
+
+- **Authenticated account session:** first-party sign-in, secure credential handling, bearer/account headers, refresh/revocation and account entitlement checks.
+- **Accountless guest session:** a first-party anonymous session with no account identity. Android source evidence includes AnonymousSession and guest-session storage/lifecycle identifiers. The exact guest message route/body is not yet proven; see [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md). Do not fabricate credentials or convert this into a temporary chat belonging to an authenticated account.
+- **Temporary Chat while signed in:** a separate account session with history/training retention behavior controlled by the official client/service. Do not conflate it with logged-out guest mode.
+
+Each mode must preserve its server-enforced feature availability, usage limits, conversation limits, data retention and sign-in prompts. An unavailable/blocked guest mode is a typed service result, not a reason to bypass a gate.
+
+## Distinct Work execution surfaces
+
+The owner has clarified that Windows ChatGPT desktop Work performs local execution on the desktop host, while Android ChatGPT Work uses cloud execution. Implement these as separate client/service execution surfaces with shared high-level task abstractions only where actual behavior supports it.
+
+- **Windows Work Local:** local workspace, processes, approvals, host/native integration and artifacts. Keep the core portable and expose OS/native facilities as explicit host capabilities. Do not require Codex CLI or an app-server process.
+- **Android Work Cloud:** cloud task/session creation, remote progress/control, artifacts and service-side state, using the genuine authenticated/guest client mode and account entitlements.
+- **Codex CLI:** terminal-oriented coding client, not an execution prerequisite for either Work surface. Its pinned source is reference material only.
+
+Do not infer that accountless guest access to ordinary ChatGPT conversations implies accountless Work/Codex access. Verify each surface's actual requirements independently.
+
+## Portable Node.js core
 
 The portable core should provide reusable primitives for:
 - clients, conversations, threads, context, and projects;

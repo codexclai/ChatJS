@@ -1,6 +1,7 @@
 'use strict';
 
 const { EventEmitter } = require('node:events');
+const { ServerSentEventError, parseServerSentEvents } = require('./sse.cjs');
 
 class ChatJSError extends Error {
   constructor(message, options = {}) {
@@ -80,5 +81,7 @@ module.exports = Object.freeze({
   create: createChatJS,
   ChatJSClient,
   ChatJSError,
-  createChatJS
+  createChatJS,
+  ServerSentEventError,
+  parseServerSentEvents
 });
