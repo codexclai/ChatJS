@@ -350,8 +350,8 @@ The GitHub About description was not changed because the available GitHub integr
 - Full npm run check passed: syntax checks, generated-state synchronization, 27 Markdown local-link checks, all 23 tests, and archive creation.
 - dist/ChatJS.tar.gz is 9,774 bytes, SHA-256 592cff5830330130c32446aed3a3a3265126109b8f3b379bc54bae1484077c57. It contains exactly eight module files; extracted CJS/ESM imports and an extracted SSE parsing smoke test passed.
 - Live main before this change was a8f6d715da4aa55eae4122ad2fa2ba824cdbfea4. Commit 952fa35d341a0f2678a06363eac5809d1c217c02 advanced main by a non-force fast-forward update; no other branch was created.
-- On the new commit, CodeQL run 45410739175 completed successfully. CI run 45410739761 failed twice at docs:check with a generic PROJECT_STATE.md stale-file message, before running tests. The repository's Node.js 26.13.1/npm 11.20.0 environment was reproduced locally and npm run check passed there. A follow-up adds first-difference diagnostics to the generator so the next CI run exposes the exact discrepancy.
-- Live branch search after commit still returned only main. The source implementation commit is live; the cross-environment CI discrepancy remains the active blocker.
+- The first implementation commit and diagnostics-only follow-up initially failed in docs:check. The diagnostic identified the exact cause: the GitHub blob upload reader strips trailing newlines, leaving PROJECT_STATE.md one byte short (actual 20,261 bytes; expected 20,262). The same reader had omitted the final newline from all 29 changed text blobs.
+- Rebuilt all 29 text blobs from the verified local workspace with their actual final newline preserved and committed the correction as f085a4729e2ed15ae69af5623b4fb63dca7649bb. CI run 45413077153 and CodeQL run 45413077182 both completed successfully on that commit. The CI job passed npm run check, installed-package CommonJS/ESM smoke tests and archive upload.
 
 ### Changed files
 - src/sse.cjs, src/index.cjs, src/index.mjs, types/index.d.ts, package.json
@@ -361,7 +361,7 @@ The GitHub About description was not changed because the available GitHub integr
 - docs/CODEX_SOURCE_FINDINGS.md, ANDROID_CLIENT_PROTOCOL_FINDINGS.md, REFERENCE_DESKTOP.md, ARCHITECTURE.md, DECISIONS.md, CAPABILITY_MATRIX.md, CHATGPT_CAPABILITY_INVENTORY.md, KNOWLEDGE_BASE.md, OPEN_QUESTIONS.md, EXPERIMENTS.md, AI_MEMORY.md, CONTINUATION.md, TODO.md, project-state.json, PROJECT_STATE.md
 
 ### Remaining work and handoff
-- Resolve the CI-only generated-state mismatch using the first-difference diagnostics added to scripts/generate-project-state.cjs; rerun CI until the actual main commit is verified green.
-- Keep the one-branch invariant: main only; any follow-up updates must be non-force fast-forward commits with expected-head checks.
+- Continue exact Android guest-session call graph and accountless prepare/send route reconstruction.
+- Continue the Windows local Work and Android cloud Work source traces; no live ChatGPT login/conversation/Work feature is implemented yet.
 - Continue exact Android guest-session call graph and accountless prepare/send route reconstruction.
 - Continue the Windows local Work and Android cloud Work source traces; no live ChatGPT login/conversation/Work feature is implemented yet.
