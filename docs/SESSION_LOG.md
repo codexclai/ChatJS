@@ -767,3 +767,32 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - GitHub CI run `45483713918` succeeded on this source commit. CodeQL run `45483714123` was still in progress at the time of this entry; it is not claimed as passed here.
 - Repository inspection showed only `main`, no open issues and no open pull requests.
 - Android source findings remain static evidence only: no real guest HTTP create/refresh request, successful server guest session, composer transport, or ChatJS ChatGPT capability has been implemented.
+
+## 2026-11-25 — Statsig SDK transport/cache and same-instance conversation dispatch
+
+### Source findings
+- Mapped the Android Statsig SDK endpoint enum in `Lyx71`: Initialize uses `https://featureassets.org/v1/i`; `log_event` uses `https://prodregistryv2.org/v1/e`. Similar `GetRemoteConfig` / `RemoteConfigSource` models seen in the scan belong to RevenueCat request handling, not Statsig.
+- Followed `Lzy71.g` initialize request serialization: `user`, `statsigMetadata`, `sinceTime`, `hash`, `previousDerivedFields`, and `full_checksum`. `Lmy71.invokeSuspend` resolves the URL and performs JSON POST via the SDK transport.
+- `Lbdb.z` sets JSON content-type, `STATSIG-API-KEY`, SDK type `android-client`, SDK version `5.5.0`, and client time; the worker may add `STATSIG-STABLE-ID`. No secret value was recorded.
+- `PersistedInitializeResponse` (`Lslt0`) converts to evaluated `Lh3f0` feature-gate, dynamic-config and layer-config maps. The app-facing `Lmx71` StatsigManager exposes typed getter state consumed by `Lxr10.h` for Android welcome presentation.
+- `Lz381` restores `ondiskvaluecache`, `Statsig.LOCAL_OVERRIDES`, and `Statsig.STICKY_DEVICE_EXPERIMENTS`. `Lz381.t` restores persisted initialize maps and supports optional per-user cache via `Statsig.CACHE_BY_USER` / `Li1d1`. The separate `statsig.network_fallback` store holds fallback URLs with seven-day expiry and up to ten previous URLs; this is not response-cache TTL. `Lz381.s` takes a caller age value, but effective production default and offline precedence remain open.
+- Corrected attribution: RevenueCat's `GetRemoteConfig` and `RemoteConfigSource` classes/URLs are unrelated to Statsig. Do not document their request types as Statsig config transport.
+- Traced same-instance Compose conversation event dispatch: `Lxjk1.f` receives `Lgqk0` and constructs `Llu2` capturing that receiver; `Llu2.invoke` applies `Lhkk1.t` and calls virtual `Lv6a.G` on the captured `Lgqk0`. `Ljqk0` extends `Lgqk0`; when the renderer is supplied that `Ljqk0`, dispatch reaches the same instance's coordinator method.
+- `Lhkk1.t` maps `Lkmk0` by preserving its integer `a` and supplying a contextual `Lybz` route value. `Lkmk0` has integer and detail fields; `Lybz` has route descriptor, optional Long and boolean; `Lhe11` exposes content-key/label/same-route methods. Their business semantics remain unknown.
+- The guarded `Ljqk0.G` path continues into `Lps30` label 16: no-messages/all-unsupported `MessageStreamingService` condition, `MessageNotFoundException`, then local `Lgs31.b` with event-derived reason/details. This is not evidence of a guest HTTP create request.
+
+### Privacy and implementation limits
+- Statsig `log_event`, `rgstr_e`, exposure reporting and offline event queues are instrumentation and excluded from ChatJS.
+- Statsig initialize contains a user object and SDK metadata. This research is not approval to add an unsolicited or broad Statsig SDK dependency to ChatJS. Any future adaptation requires a justified need, explicit caller operation and data minimization.
+- No guest HTTP create/refresh request, server guest ID/token, guest composer request or Work protocol was recovered. No production JS/TS, tests, dependencies or public API changed; no live network request or guest session was created.
+
+### Canonical updates and verification
+- Updated Android protocol findings, experiments, knowledge base, capability inventory/matrix, AI memory, continuation, open questions, TODO, root ChatJS status, structured state, generated state and this session log.
+- Parent live `main`: `f94949a2c8abae7892460ff634e1cf91adff74b9`; parent CI `45483861937` and CodeQL `45483861951` both passed. The repository had only `main`, no open issues and no open PRs at the start of this slice.
+- Full local `npm run check`, distribution archive inspection, and new-head CI/CodeQL verification remain to be run after this documentation-only update.
+
+### Handoff
+- Trace the `Lkmk0` producer and reason/detail semantics, then whether the local session transition is followed by a real service request.
+- Prioritize locating the exact anonymous guest create/refresh HTTP request and the separate composer prepare/send route.
+- Resolve Statsig response-cache age/offline precedence only if needed for the presentation behavior; never port telemetry or exposure reporting.
+- Continue Windows Work Local and Android Work Cloud as separate client surfaces.

@@ -90,13 +90,16 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Continue source-led direct ChatGPT authentication, conversation and Work implementation; no live ChatGPT connection is implemented yet.
 
 
-- [ ] Trace the writer/population source for WelcomeLanguageEnrollment / Lzlh1 / Lylh1, including the source of guestCtaCopy, local seed vs remote fetch, cache/update conditions and feature gates.
 - [ ] Trace Lt891 producers/callback wiring into La991.G. Observed constructors are Lq20.invoke → Lt891(5) and Ldo1.invoke selector case 18 → Lt891(6) via the Le2w.e ConversationSidebar path. The distinct Lt891 branch dispatches Lmuz0 label 9 → Lgs31.b → Lau31.G; W891.a goes to Lcq41.e and returns. Prove which callback targets the coordinator before assigning a UI trigger or connecting it to welcome CTA action-29.
 
 - [ ] Trace the concrete callback implementations supplied by `Llal1.h`/`Lj20`/`Lss`/`Lt07`/`Ly641` and the `Lej10.c`/`Ljpc` WebView host, plus the `Le2w.c`/`Le2w.j` ConversationSidebar callbacks. Determine payload meaning and whether any handler dynamically reaches `La991.G`; the ten-DEX static scan found no direct method-id or method-handle binding outside its own definition.
 
 - [ ] Check the candidate Lt891 parent callbacks for a captured `La991` receiver via the generic `Lv6a.H(Louf0)` virtual-dispatch bridge. The known `Le6` bridge is created in Composer / FreeThinkingGaugeNuxHost and is not proven to be the callback supplied to either the WebView or ConversationSidebar.
 
-- [ ] Trace the Statsig SDK remote config refresh/cache path for the named welcome_* parameters used by Lxr10.h(Lof70) to build Lplh1 (serializer Lnlh1), including remote payload, cache expiry and offline/default precedence.
-- [ ] Trace the upstream Statsig configuration refresh/cache path for the Android welcome welcome_* parameters. Named declarations are mapped in the DEX findings; remote refresh endpoint, cache policy, and offline/default precedence remain unknown. Exclude SDK exposure/analytics reporting from ChatJS.
 - [ ] Trace the source and semantics of `Lkmk0` in the conversation coordinator (`Ljqk0.G`). The verified label-16 branch emits `MessageNotFoundException` for no-messages/all-unsupported and invokes local `Lgs31.b`; identify the event producer, reason-code mapping and any subsequent server-side guest creation.
+
+- [x] Trace the local `welcome_language_opportunity` / `Lylh1` enrollment writer and typed `welcome_*` parameters that build the `Lplh1` presentation model; `Lnlh1` is its serializer.
+- [x] Trace Android Statsig initialize route/body and persisted response cache. Remaining question: effective caller-supplied cache age and offline/default precedence; exclude all SDK telemetry.
+- [x] Trace the Compose-to-conversation ViewModel callback binding: `Lxjk1.f` → `Llu2` captures the supplied `Lgqk0` and dispatches virtual `Lv6a.G`; a supplied `Ljqk0` receives the event on that same instance.
+- [ ] Identify the upstream producer and meaning of conversation `Lkmk0` and its `a`/`b` payload; determine whether local `Lgs31.b` is followed by HTTP guest create/refresh.
+- [ ] Locate the actual Android anonymous guest create/refresh HTTP client and the guest conversation composer prepare/send client; keep them separate from LocationCookieInitializer and Files API.

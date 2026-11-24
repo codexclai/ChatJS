@@ -449,3 +449,29 @@ A further instruction-level trace located a second, conversation-specific call i
 - The `Lkmk0` event's business meaning, the significance of the numeric `Llnp0` reason fields, and the exact upstream UI/action that creates the event remain open. Do not describe this as a universal retry or assert that every message-not-found error starts a guest session; it is this specific guarded event branch.
 - This path is separate from the welcome CTA action-29 → `Lnik0` login-child flow and from the `La991` / `Lt891` callback path. No edge connecting those paths has been found.
 - This was static instruction-level DEX analysis of the supplied Android 1.2026.321 public APK. No request was sent and no guest session was created by the analysis.
+
+## 2026-11-25 — Statsig initialize/cache and same-instance conversation intent dispatch
+
+### Statsig welcome configuration acquisition
+- The bundled Android Statsig SDK maps `Initialize` to `https://featureassets.org/v1/i` and `log_event` to `https://prodregistryv2.org/v1/e` through `Lyx71` and `Lgrc1`. Similar `GetRemoteConfig` and `RemoteConfigSource` models seen in the scan belong to RevenueCat request handling, not Statsig.
+- `Lzy71.g` builds the initialize JSON POST with `user`, `statsigMetadata`, `sinceTime`, `hash`, `previousDerivedFields`, and `full_checksum`. `Lmy71.invokeSuspend` resolves the URL, creates the request and submits it through the SDK transport.
+- `Lbdb.z` applies JSON content type, `STATSIG-API-KEY`, SDK type `android-client`, SDK version `5.5.0`, and client time; the worker may add `STATSIG-STABLE-ID`. Header names only are recorded; no key value or user/session secret is captured.
+- `PersistedInitializeResponse` (`Lslt0`) converts to evaluated `Lh3f0` feature-gate, dynamic-config and layer-config maps. The app-facing `Lmx71` StatsigManager exposes typed getters; `Lxr10.h(Lof70)` consumes evaluated `welcome_*` values to build `Lplh1`, whose generated serializer is `Lnlh1`.
+
+### Cache and fallback separation
+- SDK startup restores `ondiskvaluecache`, `Statsig.LOCAL_OVERRIDES`, and `Statsig.STICKY_DEVICE_EXPERIMENTS` through `Lz381`; `Lz381.t` restores persisted initialize response maps and supports per-user caching via `Statsig.CACHE_BY_USER` / `Li1d1`.
+- A separate `statsig.network_fallback` (`networkfallback`) store contains fallback URLs. The inspected `Lou70` writer assigns a seven-day expiry and retains at most ten previous fallback URLs. This is fallback-host retention, **not** the initialize-response cache TTL.
+- The cache-refresh helper `Lz381.s` takes a caller-supplied age parameter. The effective production age/default and complete offline/default precedence were not established in this pass.
+
+### Same-instance conversation event dispatch
+- `Ljqk0` is the concrete conversation ViewModel and extends `Lgqk0`; it receives `Lks31` AuthSession and `Lgs31` anonymous SessionManager in fields `Q1` / `R1`. `Lgqk0` extends `Lv6a`.
+- Compose method `Lxjk1.f` receives a `Lgqk0` conversation ViewModel and constructs `Llu2`, a callback capturing that receiver. `Llu2.invoke` maps the incoming conversation event through `Lhkk1.t(...)`, then calls virtual `Lv6a.G(Louf0)` on the captured `Lgqk0` instance. Because `Ljqk0` is a subclass of `Lgqk0`, when this renderer is supplied the `Ljqk0` instance the call dispatches to that same instance's `Ljqk0.G` implementation. This resolves the generic callback dispatch mechanism for this conversation renderer; it does not mean every `Lgqk0` renderer uses `Ljqk0`.
+- In the `Lkmk0` mapping branch, `Lhkk1.t` preserves event integer `a` and constructs a new `Lkmk0` with contextual `Lybz` route metadata. `Lkmk0` carries `a:int` and `b:Lybz`; `Lybz` carries a route descriptor `Lhe11`, optional `Long`, and boolean. `Lhe11` exposes content-key, label and same-route accessors. These types establish event shape, not the business meaning of the integer or route metadata.
+- The guarded `Ljqk0.G(Lkmk0)` branch launches `Lps30` label 16. Its exact packed-switch branch logs the no-messages/all-unsupported `MessageStreamingService` condition, emits `MessageNotFoundException`, then invokes local `Lgs31.b` with event-derived reason/detail data. The inspected SessionManager path still performs mutex/feature/eligibility/DataStore work, not a guest HTTP create request.
+
+### Privacy and evidence boundary
+- Statsig `log_event`, `rgstr_e`, exposure reporting and the offline event queue are instrumentation. ChatJS must not port or call these endpoints, SDK diagnostics, analytics callbacks or telemetry buffering.
+- Statsig initialize is feature-configuration retrieval from a bundled SDK; it contains a `user` object and SDK metadata. This is not a ChatGPT auth, guest-create or conversation endpoint. No ChatJS SDK integration is implemented or implied; any future adaptation requires separate necessity, minimization and explicit-operation review.
+- The Compose-to-`Ljqk0.G` callback bridge and guarded local SessionManager recovery are static DEX findings. The `Lkmk0` producer/meaning, exact reason-code semantics, subsequent HTTP guest creation, guest composer request and Work protocol remain unknown. No live request or guest session was created during this research.
+
+**Evidence boundary:** selected static disassembly/reference tracing of the supplied public Android 1.2026.321 APK; not a complete decompilation or runtime network trace.
