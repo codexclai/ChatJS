@@ -76,6 +76,13 @@ Keep these surfaces separate:
 - Android ChatGPT Work: cloud execution.
 - Codex CLI: a distinct terminal-oriented coding client, not a Work prerequisite.
 
-Preserve accountless ChatGPT as a genuine first-party logged-out guest session, separate from authenticated accounts and Temporary Chat while signed in. Android 1.2026.321 exposes anonymous session states, guest UI/plan/storage identifiers and anonymous route constants. Exact guest conversation route attribution and payloads remain open. Windows guest Work has not been verified; do not infer it from generic browser code. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md and REFERENCE_DESKTOP.md.
+Preserve accountless ChatGPT as a genuine first-party logged-out guest session, separate from authenticated accounts and Temporary Chat while signed in. Android 1.2026.321 method-level DEX evidence now traces its three session states, serialized metadata, SessionManager startup/logout/refresh flows and sessions/guest-* storage/retirement cleanup. The observed anonymous route constants belong to LocationCookieInitializer during location-cookie setup, not a proven guest composer. Exact guest create/refresh and message-send schemas remain open. Windows guest Work has not been verified; do not infer it from generic browser code. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md and REFERENCE_DESKTOP.md.
 
 The runtime includes a generic bounded and cancellable SSE parser in src/sse.cjs. Its tests cover incremental UTF-8, line framing, event fields, size limits, abort and iterator cleanup. It does not perform a ChatGPT request, authenticate or interpret product-specific payloads. Keep the remaining ChatGPT transport/auth/session/conversation integration marked unimplemented until proven by end-to-end tests.
+
+
+### Latest Android guest-session trace — 2026-11-24
+
+The Android DEX pass now traces a three-state Unauthenticated/AnonymousSession/LoggedInSession enum, a serialized session metadata model, SessionManager startup/logout/unauthenticated-refresh paths, and SessionStorageCleanupImpl handling sessions/guest-* directories and retired sessions. Exact guest create/refresh HTTP requests and composer send/prepare schemas remain open.
+
+Important correction: the anonymous conversation URL constants observed in DEX are consumed by LocationCookieInitializer while processing locationPermissionCookieSettings. They are not evidence of the guest composer message-send route. Read the latest method-level section in ANDROID_CLIENT_PROTOCOL_FINDINGS.md before continuing the guest protocol trace.

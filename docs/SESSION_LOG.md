@@ -365,3 +365,28 @@ The GitHub About description was not changed because the available GitHub integr
 - Continue the Windows local Work and Android cloud Work source traces; no live ChatGPT login/conversation/Work feature is implemented yet.
 - Continue exact Android guest-session call graph and accountless prepare/send route reconstruction.
 - Continue the Windows local Work and Android cloud Work source traces; no live ChatGPT login/conversation/Work feature is implemented yet.
+
+
+## 2026-11-24 — Android guest-session method and storage trace
+
+### Source and analysis
+- Continued static DEX analysis of the supplied public Android 1.2026.321 XAPK base APK using custom, local DEX class/field/method-reference parsers. No live account request, guest token creation, or server call was made.
+- Identified Lvr71 as the three-state enum Unauthenticated / AnonymousSession / LoggedInSession.
+- Mapped Lov31 and its generated Lmv31 serializer to nine session metadata properties: userId, isAnonymous, authSessionId, anonymousSessionId, retiredGuestSessionIds, legacyGuestPreferencesOwnerId, guestPreferencesInitialized, deniedLegacyFileDirectories and pendingReplacement. The nested pendingReplacement record Llv31 has three strings and a boolean; its business meaning remains unresolved.
+- Traced Lau31 (constructor logger tag SessionManager): it stores auth/session and session-state dependencies, observable state and async jobs, and launches the Lis31 startup coroutine. Lis31 has explicit unsupported-guest logout and unauthenticated-session refresh error paths. Lau31.F is the post-logout anonymous-start attempt; it queries current auth/session state before entering Lau31.E and logs a specific failure if the attempt fails. The exact network request inside the transition remains unresolved.
+- Traced Lgv31 (constructor logger tag SessionStorageCleanupImpl): it resolves and checks the sessions directory, reads user_id and pending_credential_deletion metadata, recognizes guest-prefixed entries, validates guest IDs as single path segments under sessions/guest-, handles retired session storage and separately cleans legacy account DB/preferences. Lxzp0 is a second helper constructing guest-prefixed session paths; full ID-generation and retention policy are open.
+- Corrected route attribution: Lx4k0 logs LocationCookieInitializer. Its caller Lcl00 maps remote settings property locationPermissionCookieSettings and invokes the location-cookie initializer flow. That subsystem consumes /backend-anon/f/conversation, /backend-anon/f/conversation/prepare and authenticated counterpart constants through the lower-level Lgnw request interface. These are not proven guest composer message-send routes.
+
+### Conclusions and remaining limits
+- The Android package contains a genuine accountless guest-session state/lifecycle subsystem distinct from authenticated login and Temporary Chat.
+- Guest session persistence has its own sessions/guest-<single-segment-id> storage and retired-session cleanup.
+- The exact guest create/refresh HTTP route/body/headers, guest ID derivation/expiry/replacement policy, actual composer guest prepare/send routes, guest SSE schema and account/feature restrictions remain open.
+- Windows desktop guest Work remains unverified. Windows Work Local and Android Work Cloud remain separate, owner-confirmed execution surfaces; neither should depend on Codex CLI/app-server.
+
+### Changed records
+- docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md, docs/OPEN_QUESTIONS.md, docs/EXPERIMENTS.md, docs/KNOWLEDGE_BASE.md, docs/CHATGPT_CAPABILITY_INVENTORY.md, docs/TODO.md, docs/project-state.json, docs/PROJECT_STATE.md and docs/SESSION_LOG.md.
+
+### Verification and handoff
+- Final pre-research main commit c813e6f7749a2e80ed6b1ca030407bacef6b8a81 had passing CI run 45413586725 and CodeQL run 45413586728.
+- The method-level work above is static source inspection only, not a runtime integration. npm run docs:sync and npm run check passed after the additions: generated project state synchronized, 27 Markdown local links valid, 23 tests passed, and the eight-file distribution archive was rebuilt. The exact Node.js 26.13.1/npm 11.20.0 run is also required before commit verification.
+- The existing main head c813e6f7749a2e80ed6b1ca030407bacef6b8a81 had passing CI run 45413586725 and CodeQL run 45413586728 before this documentation-only research slice. Commit the new docs via a non-force expected-head fast-forward. When creating Git blobs from browser-file reads, append the verified trailing newline; the previous CI incident was caused by that reader trimming final newlines.

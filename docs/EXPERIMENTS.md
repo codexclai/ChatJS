@@ -100,3 +100,14 @@ The regression suite covers multiline payloads, persistent event IDs/retry state
 ## 2026-11-24 — Official Codex source and direct transport boundary
 
 Downloaded and uploaded the pinned official openai/codex source ZIP (commit 50aeac27d825007a0ac6bd846087ed4e7095bdb3). Source inspection found codex exec starts InProcessAppServerClient, so it embeds app-server internals. The source also contains a direct ChatGPT Codex Responses backend client (backend-api/codex/responses) using HTTP SSE and WebSockets, OAuth-derived bearer/account/session metadata, and request models/events. ChatJS will not wrap the CLI/app-server; this remains source evidence for independent direct Node.js first-party communication. Upstream analytics are explicitly excluded.
+
+
+## 2026-11-24 — Android anonymous-session method and storage trace
+
+A second method-level DEX pass over the supplied public Android 1.2026.321 XAPK traced selected client methods beyond the earlier anonymous string inventory. Lvr71 is the Unauthenticated / AnonymousSession / LoggedInSession enum. Lov31 is the serialized session metadata record; its generated Lmv31 serializer declares userId, isAnonymous, authSessionId, anonymousSessionId, retiredGuestSessionIds, legacyGuestPreferencesOwnerId, guestPreferencesInitialized, deniedLegacyFileDirectories and pendingReplacement.
+
+Lau31 constructs a logger tagged SessionManager and launches the Lis31 startup coroutine. The coroutine has explicit unsupported-guest logout and unauthenticated-session refresh error paths. Lau31.F is a post-logout anonymous-start attempt that queries the current auth/session provider before calling the Lau31.E transition and logs a dedicated failure if the attempt fails. The final guest create/refresh network route and payload were not reconstructed.
+
+Lgv31 tags itself SessionStorageCleanupImpl. Its coroutine resolves and validates the sessions directory, reads user_id and pending_credential_deletion metadata, recognizes guest-prefixed entries, validates guest IDs as single path segments, uses retired session-related sets and has a dedicated retired-session-storage deletion error path. It separately removes legacy account DB/preferences. Lxzp0 also constructs sessions/guest-<id> storage paths via the app file-system layer; the full ID-generation and retention policy remain open.
+
+The earlier anonymous URL constants were re-attributed: Lx4k0 logs LocationCookieInitializer; Lcl00 maps remote user settings locationPermissionCookieSettings and invokes the location-cookie initializer, which uses the constants and a lower-level Lgnw request interface. These paths are not proven to be the guest message composer routes. This distinction has been added to the Android findings/open questions. Static analysis only; no live session request, token creation, or ChatJS integration was attempted.

@@ -22,7 +22,8 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Document actual dependencies and Node.js portability for each major client component.
 - [ ] Define a repeatable client behavior test plan and capture verified request/response examples without storing personal account data.
 - [x] Add official Codex source snapshot CodexCLI.zip to Project Sources, pinned to a verified upstream commit; document it as reference-only, not a runtime dependency.
-- [ ] Reconstruct the Android accountless guest session lifecycle and attribute anonymous conversation endpoint constants to the actual message prepare/send client; do not assume route ownership from strings alone.
+- [x] Trace Android anonymous-session state and storage foundations: SessionManager startup/logout/refresh paths, serialized session metadata, sessions/guest-* storage and retired-session cleanup; distinguish location-cookie endpoint constants from composer routes.
+- [ ] Reconstruct the exact Android guest session create/refresh network request, identifier lifecycle, expiry/replacement/retirement policy and actual guest conversation composer send/prepare route schemas.
 - [ ] Reconstruct Windows desktop Work Local and Android Work Cloud as separate execution surfaces; never require Codex CLI or app-server.
 - [ ] Verify whether Windows desktop Work has a real logged-out guest mode; current evidence is insufficient.
 - [ ] Windows extracted-payload archive work is deferred by the owner; resume only when asked.

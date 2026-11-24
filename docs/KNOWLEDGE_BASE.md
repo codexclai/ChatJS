@@ -85,3 +85,10 @@ The pinned official source snapshot is in Project Sources as CodexCLI.zip (opena
 Codex source identifies the first-party backend base https://chatgpt.com/backend-api/codex and Responses path /responses, with HTTP SSE and WebSocket transport, OAuth-derived bearer authentication, account and session/thread headers. These are Codex-specific references, not a complete ChatGPT conversation schema or a working ChatJS connection. Upstream analytics/telemetry is excluded.
 
 The owner distinguishes Windows desktop Work Local from Android Work Cloud. Codex CLI is a separate terminal-oriented coding client and must not be required by either Work implementation.
+
+
+## 2026-11-24 — Android anonymous-session method trace
+
+The public Android DEX now provides method-level evidence for the guest session manager and storage lifecycle: enum Unauthenticated / AnonymousSession / LoggedInSession; a serialized nine-field session metadata record; a SessionManager-tagged class that launches initial state/refresh handling and a post-logout anonymous-start attempt; and a SessionStorageCleanupImpl that validates sessions/guest-<single-segment-id> paths and cleans retired guest storage. Exact guest-session network creation/refresh requests, IDs/expiry and composer send routes remain unknown.
+
+Correction to earlier endpoint attribution: the /backend-anon/f/conversation* constants are used by the LocationCookieInitializer subsystem during locationPermissionCookieSettings processing. They are not established guest composer send/prepare endpoints. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.

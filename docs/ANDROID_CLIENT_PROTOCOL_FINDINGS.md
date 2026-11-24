@@ -43,13 +43,50 @@ Observed identifiers and strings include:
 - Guest-session storage/cleanup identifiers including sessions/guest- and retired guest session file cleanup.
 - Endpoint string constants /backend-anon/f/conversation, /backend-anon/f/conversation/prepare, /backend-api/f/conversation, and /backend-api/f/conversation/prepare.
 
-**Important route-attribution limit:** the /backend-anon/... and /backend-api/... constants observed in the DEX scan are referenced from a class identified as LocationCookieInitializer. Their presence does not, by itself, prove that these are the final message-submit routes for the guest conversation client. The anonymous session model and lifecycle are independently evidenced, but the exact guest conversation request owner, prepare/send body schemas, guest cookie/session headers, lifecycle transitions, and route selection still require method-level tracing. Do not treat the path strings as a completed protocol reconstruction.
+**Important route-attribution limit:** the method-level trace confirms these endpoint constants are stored and consumed by Lx4k0, a class tagged LocationCookieInitializer; its caller maps the remote-user-settings property locationPermissionCookieSettings and invokes the location-cookie initialization flow. These constants therefore belong to a location-permission cookie subsystem in the observed call path. They are not proof of the guest composer message-send routes. The actual guest conversation request owner, prepare/send body schemas, guest cookie/session headers, and route selection remain untraced. Do not treat these path strings as a completed guest chat protocol.
 
 ChatJS must model accountless sessions as a genuine first-party session mode with its own creation, storage, request, expiry/retirement and cleanup rules. It must not fabricate guest tokens, borrow authenticated account credentials, silently convert a guest session into an account session, or bypass any server-required sign-in gate. Preserve the service's guest feature restrictions and one-active-conversation/history-retention limits where enforced.
 
 The public ChatGPT web experience also supports logged-out use in eligible regions, subject to first-party availability and restrictions. OpenAI's Help Center describes one active conversation at a time and that logged-out history is not saved to an account. This web product evidence does not prove that the Windows desktop Work surface has the same anonymous-session path.
 
 **Windows desktop boundary:** in the Windows bundle material inspected in this work, an anonymous marker found in a generic browser-transport subsystem was not sufficient to establish a ChatGPT guest session or a signed-out Work flow. Windows desktop Work guest support remains unverified; continue from the Windows package only when the relevant payload/call path is actually available. Do not infer it from the generic browser transport.
+
+
+### Android anonymous session state and storage call graph — method-level DEX trace, 2026-11-24
+
+The follow-up pass disassembled selected methods from the public XAPK's base DEX files and followed method/field references. This improves the earlier string-only evidence, but remains static analysis of compiled client code rather than a fully reconstructed or live-tested protocol.
+
+**Session state model**
+
+- Lvr71 is an enum containing exactly Unauthenticated, AnonymousSession, and LoggedInSession.
+- Lov31 is the serialized session metadata record. Its Lmv31 generated serializer declares these nine fields in order: userId (string), isAnonymous (boolean), authSessionId (string), anonymousSessionId (string), retiredGuestSessionIds (set), legacyGuestPreferencesOwnerId (string), guestPreferencesInitialized (boolean), deniedLegacyFileDirectories (set), and pendingReplacement (nested Llv31 record).
+- Llv31 itself contains three strings and a boolean. Its exact business interpretation was not recovered in this trace; do not assign semantics to those four members from their types alone.
+
+**SessionManager startup and logout behavior**
+
+- Lau31 constructs a logger tagged SessionManager, retains the auth/session provider Lof70, a session-state provider Lvv31, a Set of session-related identifiers, and observable state/async-job objects.
+- Its constructor launches the Lis31 coroutine as part of manager initialization.
+- Lis31.invokeSuspend reads current state/flags, invokes the Lau31.q flow when handling a guest session it cannot support, and has explicit error handling for Failed to log out unsupported guest session. It also invokes the unauthenticated-session refresh flow and logs Failed to refresh the unauthenticated session if that work fails.
+- The separate Lau31.F coroutine is the post-logout anonymous-start path: it first queries current auth/session state through Lof70.G, then enters Lau31.E. If that attempt fails, it logs Failed to start an anonymous session after logout and returns false.
+- These call paths prove the app has distinct startup, logout, guest-session handling and unauthenticated-session refresh work. The exact request that creates/replaces the anonymous session, its URL/body/headers, and whether the same request is shared with the public conversation client are still not identified.
+
+**Guest session storage and retirement**
+
+- Lgv31 constructs a logger tagged SessionStorageCleanupImpl. Its cleanup coroutine obtains the app file system, resolves the sessions root, verifies that the root is a directory, and enumerates stored session entries.
+- The cleanup code reads persisted session metadata keys including user_id and pending_credential_deletion, and tracks ownership before reconciling/removing stored entries. It explicitly recognizes names beginning with guest-; the guest-session storage method validates that a guest session ID is a single path segment and resolves it under sessions/guest-.
+- The cleanup routine consumes sets of retired/denied session-related entries and has a dedicated Failed to delete retired session storage error path. It separately handles legacy account databases and legacy account preferences; those account cleanup paths must not be conflated with guest-session deletion.
+- A second helper (Lxzp0) also constructs a guest-prefixed directory name under sessions/ and passes it into the app file-system/session-storage helpers. The full ID-generation/retention policy and the exact relationship between this helper and SessionManager remain open.
+
+**Correct attribution of anonymous endpoint constants**
+
+The route ownership is now more specific than the earlier string scan:
+
+- /backend-anon/f/conversation, /backend-anon/f/conversation/prepare, /backend-api/f/conversation, and /backend-api/f/conversation/prepare are stored in Lx4k0, whose constructor logs the tag LocationCookieInitializer.
+- The initialization path in Lcl00 invokes Lx4k0.m after mapping the remote-user-settings property locationPermissionCookieSettings into the location-cookie settings model. Lx4k0 then uses the lower-level Lgnw request interface and the Lpmw request model.
+- This proves the observed endpoint constants are used by the location-permission cookie initialization subsystem. It does not prove that the normal guest composer sends user messages to these routes. The /backend-anon substring is therefore not enough to infer a guest conversation endpoint.
+- The exact purpose of each route variant, request/response body, and whether any location-cookie bootstrap request is shared with a conversation client remain open. Keep the guest chat send/prepare routes unassigned until their actual conversation-client call sites are traced.
+
+**Evidence limits:** method names shown above are obfuscated DEX class/method identifiers; descriptive names such as SessionManager and LocationCookieInitializer are observed logger tags, not recovered Java/Kotlin source class names. No guest token was generated, no live account/session request was made, and no server behavior was inferred from the client-only DEX. No ChatJS guest-session implementation exists yet.
 
 ## Model discovery and conversation requirements
 

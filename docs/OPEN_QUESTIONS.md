@@ -71,8 +71,10 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 
 ## Anonymous guest session and Work execution surfaces — 2026-11-24
 
-- [ ] Trace Android anonymous session startup after cold launch and logout: exact request/cookie/token creation, session identifiers, storage, renewal/expiry, retirement and deletion.
-- [ ] Attribute /backend-anon/f/conversation and /backend-anon/f/conversation/prepare to the actual guest conversation client; reconstruct exact request/response bodies, headers, prepare/send ordering and SSE behavior. Current DEX constants are in a LocationCookieInitializer path and are not yet proof of final message-send routes.
+- [ ] Reconstruct the exact Android anonymous-session create/refresh request and response (route, body, headers/cookies/tokens), including its mapping to the Unauthenticated/AnonymousSession/LoggedInSession state machine. DEX evidence now traces SessionManager startup and post-logout attempt paths, but not the final network operation.
+- [ ] Determine guest session ID generation, persistence/expiry, replacement/retirement and cleanup triggers. DEX evidence shows sessions/guest-<single-segment-id> storage and retired-session cleanup, but not the full retention policy.
+- [x] Attribute the observed /backend-anon/f/conversation* endpoint constants to their traced caller: they are consumed by LocationCookieInitializer during locationPermissionCookieSettings processing, not proven guest composer message routes.
+- [ ] Trace the actual Android anonymous conversation composer/send client independently; identify its prepare/send route, exact request/response bodies, guest headers/cookies, ordering, SSE behavior and whether it uses a distinct guest endpoint family.
 - [ ] Identify guest-session entitlement/usage restrictions, one-active-conversation policy, persistence boundaries and sign-in conversion prompts from actual client/service behavior.
 - [ ] Determine whether Windows desktop Work has a supported signed-out/guest mode. Do not infer one from generic browser transport markers.
 - [ ] Reconstruct Windows desktop Work Local's app/native-host request lifecycle and its local filesystem/process/approval boundaries without Codex CLI/app-server dependency.
