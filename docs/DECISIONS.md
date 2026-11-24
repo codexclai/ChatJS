@@ -66,18 +66,15 @@ Record durable project and technical decisions with rationale. Preserve supersed
 
 ## Public repository and third-party reference material
 **Status:** accepted  
-**Decision:** keep the public repository independent and do not commit official APK/MSIX binaries, extracted third-party application payloads, or credentials. Retain source reference archives in personal Library and commit independently authored findings and ChatJS code.  
+**Decision:** keep the public repository independent and do not commit official APK/MSIX binaries, extracted third-party application payloads, or credentials. Use ChatJS Project → Sources as the primary source location and commit independently authored findings and ChatJS code.  
 **Consequences:** public availability of a package does not make it a ChatJS-owned artifact; preserve provenance and relevant third-party notices.
 
-## Private reference archive policy
-**Status:** accepted  
-**Decision:** keep reference archives in the personal Library at `/ChatJS-Archives`. Project Sources are intentionally kept empty. Android full extracted payload ZIP is verified. Windows full-payload archive work is deferred at the owner's request; the current Library ZIP is metadata-only.
+## Project source and optional Library policy
+**Status:** accepted; current owner direction  
+**Decision:** ChatJS Project → Sources is the primary and normal location for supplied ChatGPT packages. Do not depend on the personal Library or use it by default. Use the Library only when genuinely useful, needed, accessible, and Project Sources cannot provide the material. Any such material belongs under a folder named `ChatJS Project` and must contain only authentic, necessary source material or documented original findings.
 
 ## Canonical documentation completeness
 **Status:** accepted; permanent workflow requirement  
 **Decision:** record meaningful requirements, decisions, research, actions, changed files, verification, failures, limits, blockers, and handoffs in canonical docs during the same session. Update affected references and generated state while preserving chronology.
 
 
-## No ChatJS product versioning
-**Status:** accepted  
-**Decision:** no product versions/tags, release numbering or automation, lockfiles, changelogs, package version fields, checksum inventories, or npm publishing. The package name remains exactly `ChatJS`.

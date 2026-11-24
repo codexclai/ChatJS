@@ -24,11 +24,11 @@ Index of durable product, technical, compatibility, security, and research knowl
 | Repository | codexclai/ChatJS; public; default branch main | Live GitHub |
 | Branch inventory | Only main at check on 2026-11-20 | GitHub branch API |
 | Privacy | No telemetry, tracking, hidden collection, background reporting, phone-home, or unsolicited content upload | Explicit owner requirement |
-| Android archive | Full extracted APK payload ZIP in personal Library, 59,454,036 bytes, ZIP CRC test passed | Materialized Library copy, 2026-11-20 |
+| Android source | ChatGPT-Android.xapk retained in ChatJS Project → Sources; archive integrity and provider hash match checked | Source upload and local verification, 2026-11-24 |
 | Android payload | 4,987 APK entries; ten DEX files; 121 Valdi modules; 4,989 ZIP entries incl README/inventory | Embedded inventory and ZIP listing |
 | Android analysis | Payload extraction complete; first-pass Valdi protocol strings/components mapped; full call graphs, exact schemas, and behavior tracing remain open | ANDROID_CLIENT_PROTOCOL_FINDINGS.md |
-| Windows archive | Current Library ZIP metadata-only: seven entries, 418,238 bytes; prior chat reports larger remote archive, Library transfer incomplete | Current materialization + Chat-1 transcript |
-| Sources | Project Sources intentionally kept empty | Latest owner direction, 2026-11-20 |
+| Windows source | Two sequential installer pieces in ChatJS Project → Sources; exact reassembly verified byte-for-byte | Source upload and local verification, 2026-11-24 |
+| Sources | ChatJS Project → Sources is primary; personal Library is optional only when genuinely useful, needed, accessible, and Sources cannot supply the material | Owner direction, 2026-11-24 |
 | Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
 | Public API manual | Root ChatJS.md | Repository |
 | Distribution | ChatJS.tar.gz built and checked by npm/CI workflow | Script/CI workflow |
@@ -68,3 +68,8 @@ Record question, conclusion, evidence label, source path/date, access date, scop
 ## Maintenance
 
 When evidence changes a decision, capability assessment, or task priority, update the canonical document and append a session-history entry. Never leave durable knowledge only in chat prose.
+
+
+## Persistent browser profile
+
+The persistent `ChatJS` browser profile is the sole reusable default for ChatJS browser work. It keeps the owner's Google and ChatGPT sessions authenticated. Never sign out or clear, reset, replace, or delete it. Temporary sessions are allowed only for genuinely disposable tasks and must not become additional reusable profiles.

@@ -25,11 +25,11 @@ Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, conta
 
 ## Client-package references
 
-The Android personal Library archive contains the full extracted APK payload tree: 4,987 payload files (106,501,945 uncompressed bytes), including ten compiled DEX files and 121 compiled Valdi modules, plus a README and structured inventory. The 59,454,036-byte Library ZIP has 4,989 entries and passed ZIP integrity testing on 2026-11-20. It is actual compiled client implementation material, not a metadata-only report. Source-level DEX/Valdi reconstruction and full behavior tracing are not yet recorded as complete. See `docs/REFERENCE_APK.md`.
+The supplied Android app bundle and Windows installer are retained in ChatJS Project → Sources. Android is an XAPK containing the base APK and required splits. Windows is stored as two sequential installer pieces that must be joined in order before use. See `docs/REFERENCE_APK.md` and `docs/REFERENCE_DESKTOP.md` for source layout, verification, and limitations.
 
-Windows archive work is currently deferred by the owner. The current Library item `ChatJS-Windows.zip` is metadata-only; a preceding conversation recorded a larger remote extracted archive but its Library transfer was incomplete and is not reverified here. See `docs/REFERENCE_DESKTOP.md`.
+Project Sources are the normal source location. The personal Library is an optional fallback only when genuinely useful, needed, accessible, and Sources cannot supply the material. Any such material must be under a folder named `ChatJS Project` and limited to authentic, necessary sources and documented original findings.
 
-Project Sources are intentionally kept empty. Use the personal Library and committed reference notes.
+The persistent browser profile `ChatJS` is the sole reusable default for ChatJS browser work. Never sign out of its Google or ChatGPT sessions or clear, reset, replace, delete, or recreate the profile. Temporary browser sessions are allowed only when genuinely required and must not be saved as additional reusable profiles.
 
 ## Current implementation
 
