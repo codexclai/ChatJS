@@ -243,3 +243,38 @@ The GitHub About description was not changed because the available GitHub integr
 - Preserved the authenticated Google and ChatGPT sessions with the rule never to sign out, clear, reset, delete, replace, or recreate the `ChatJS` profile.
 - Recovered the full chronological session log from the last intact repository snapshot and appended this entry after an earlier malformed log write. No prior dated project history was intentionally discarded.
 - No runtime implementation, dependencies, tests, source packages, or user-facing package behavior were changed.
+
+## 2026-11-24 — Android 1.2026.321 integrity-provider and cross-host architecture research
+
+### Live repository and source restoration
+- Restored the latest public main snapshot at bf752be1bf37a07f08bed83393da91eb106c314b and read the required memory, continuation, state, task, decision, research, capability, reference, architecture, workflow and public API records.
+- Confirmed main is the only branch (including the completed second branch-search page), no open issues or pull requests, and no repository PRs in any state.
+- Confirmed the latest CI and CodeQL runs for bf752be1bf37a07f08bed83393da91eb106c314b both completed successfully (CI 45366236282; CodeQL 45366236260).
+- Restored the exact commit snapshot in the persistent ChatJS browser VM and ran npm run check before modifications: Node.js v22.23.2, npm 10.9.8; syntax checks passed; generated state was synchronized; all 25 Markdown files passed local-link validation; all 9 tests passed; the seven-file ChatJS.tar.gz was created and inspected.
+- The local container could not resolve github.com, so the exact public archive was restored through the existing authenticated ChatJS browser profile. The profile was not reset, signed out, or cleared.
+
+### Android source inspection — observed, not implemented
+- Inspected the newly supplied ChatGPT-Android.xapk (123,574,190 bytes). The manifest identifies ChatGPT 1.2026.321, version code 2632129, package com.openai.chatgpt, minimum SDK 32 and target SDK 37.
+- Recomputed SHA-256: 22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d; ZIP CRC check passed.
+- The base APK contains 5,080 ZIP entries, ten DEX files and 111 Valdi modules. All 111 modules decompressed from Zstandard successfully (77,451,888 decoded bytes). The prior 121-module count belongs to the older historical extracted archive and was not overwritten.
+- Valdi strings show distinct ChatGPTRequirementsIntegrityProvider and ChatGPTDeviceIntegrityProvider interfaces; a requiresDeviceIntegrity send gate; an app_attest_challenge validator key; and separate token, turnstile and proofofwork chat-requirements fields.
+- The Android DEX includes DeviceIntegrityService.prepare(request, completion) with a cancellable task; request fields accessToken, accountId, baseUrl, conversationId and parentMessageId; response fields bodyPatchJson, headerNames and headerValues.
+- Partial DEX method/constant inspection observed an empty-object POST to /backend-api/sentinel/chat-requirements; a 256-byte SecureRandom nonce encoded Base64 URL-safe/no-wrap; genuine Google Play Integrity token generation; POST /backend-api/playintegrity with package_name/nonce/integrity_token/device_id JSON; a first-party device-verification cookie; and a second request-scoped token returned in X-Sentinel-Payload as a bot_token object containing play_integrity_token and chat_requirement_token. The DeviceIntegrityResponse bodyPatchJson is null in this inspected path. The native helper requires package com.openai.chatgpt.internal while the XAPK manifest uses com.openai.chatgpt, and its User-Agent says 1.2026.209/build 2620909 rather than XAPK 1.2026.321; public-build selection/availability is unresolved.
+- The native Android helper creates device_id with UUID.randomUUID().toString() when no valid value is saved and persists it in app-private SharedPreferences file oai_device_integrity under key device_id. It is a client-install UUID, not a hardware serial or attestation; lifetime/rotation/deletion remain unknown. The inspected native method sends it in OAI-Device-Id and JSON device_id fields.
+- Observed retry/cooldown after Play Integrity TOO_MANY_REQUESTS, Play Services/Store failure paths and cancellation that disconnects the HTTP connection. The internal package/debug-signature path is visible in constants/errors, but its selection conditions are unknown.
+- The current DEX work is a partial method-reference/selected-method scan, not full decompilation or a complete call graph. The generated Valdi chat-requirements schema, app_attest_challenge semantics, exact derived input for the second token, cookie name/scope/lifetime, UUID lifecycle, Valdi-side header validation/application, internal package guard/provider selection and Windows equivalent remain open. No live account request was made.
+
+### Architecture decision and limits
+- Added a permanent requirement separating truthful host/runtime context, protocol-specific client-install identity and genuine first-party integrity/attestation.
+- A Windows/Linux host must not impersonate Android or fabricate Google Play Integrity. Optional host providers must invoke genuine supported platform mechanisms; unsupported/unavailable/failed/cancelled states remain explicit. Ordinary environment metadata is not an attestation proof. Test simulations are tests-only.
+- No runtime feature, dependencies, fake provider, telemetry, or API surface was added.
+
+### Changed canonical records
+- Updated AI_MEMORY, CONTINUATION, ANDROID_CLIENT_PROTOCOL_FINDINGS, REFERENCE_APK, REFERENCE_DESKTOP, DECISIONS, ARCHITECTURE, WORKFLOW, TODO, OPEN_QUESTIONS, CAPABILITY_MATRIX, CHATGPT_CAPABILITY_INVENTORY, KNOWLEDGE_BASE, EXPERIMENTS and project-state.json; regenerated PROJECT_STATE.md from the JSON and verified synchronization.
+- Next work: continue exact Android requirements/device-integrity challenge serialization and control-flow reconstruction, then define real portable provider contracts from verified protocol requirements. Do not claim a Node.js integrity implementation or account-compatible connection yet.
+
+### Windows source verification recheck — 2026-11-24
+
+- Reassembled ChatGPT-Windows.msix.part001 and ChatGPT-Windows.msix.part002 from Project Sources in numeric order.
+- Result: 796,523,063 bytes; SHA-256 561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963; ZIP CRC test passed with no compressed-data errors.
+- This is a byte-integrity recheck only. No publisher-signature verification, install, launch, or full app-payload analysis was performed. Full Windows extracted-payload work remains deferred until explicitly requested.

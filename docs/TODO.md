@@ -17,6 +17,7 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [x] Perform a first-pass decompression/string scan of selected Valdi modules and document concrete auth/session, bearer transport, conversation/streaming, upload, history, image-gallery, and Library components and paths.
 - [x] Establish ChatJS Project → Sources as the primary source location for supplied client packages.
 - [ ] Perform deeper DEX/Valdi method-level analysis to identify call graphs, exact request/response schemas, credential lifecycle, Sentinel/device-integrity behavior, SSE event state machines, and upload signing/retry behavior.
+- [ ] Continue method-level reconstruction of the current Android requirements-integrity and native device-integrity chain: exact chat-requirements schema, app_attest_challenge semantics, nonce/token binding, device_id lifecycle, cookie contract, bodyPatchJson/header merge, provider gating, retry and cancellation behavior.
 - [ ] Build a deeper source-path-to-behavior map for conversations, streaming, files, Projects, voice, images, search/tools, and other client workflows, including exact call graphs and schemas.
 - [ ] Document actual dependencies and Node.js portability for each major client component.
 - [ ] Define a repeatable client behavior test plan and capture verified request/response examples without storing personal account data.

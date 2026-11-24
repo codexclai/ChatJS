@@ -27,6 +27,7 @@ The MSIX inspection recorded Electron/Node/Chromium, ChatGPT and Codex executabl
 ## First-pass Android protocol findings
 
 See [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md) for observed authentication/session components, bearer headers, model/chat-requirements APIs, conversation and SSE streaming, uploads, history, image-gallery, and Library request paths. These are static module-string findings, not complete source reconstruction or end-to-end behavior verification.
+The current 2026-11-24 XAPK scan adds method-reference evidence for separate requirements/device-integrity providers and the Android native Google Play Integrity flow. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md. These observations remain Research: they do not mean ChatJS has implemented attestation, Sentinel, Turnstile, or proof-of-work.
 
 ## Client implementation areas to investigate
 

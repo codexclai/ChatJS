@@ -57,3 +57,14 @@ For each investigation include question, setup/method, actual result, conclusion
 - Request path/module/header details are recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
 - Conclusion: the Android package contains real client-side request, session, transport and service implementation material; it is not just a feature-name list.
 - Limits: static decompressed string/structure scan only. Full method/call-graph reconstruction, exact serialized bodies and response schemas, credential/session lifecycle, device-integrity/Sentinel behavior, SSE state transitions, upload signing/retry logic and live account tests remain outstanding.
+
+## 2026-11-24 — Current Android XAPK integrity-provider reconstruction
+
+- Source: supplied ChatJS Project → Sources file ChatGPT-Android.xapk, package version 1.2026.321 / version code 2632129.
+- Integrity: XAPK ZIP CRC passed; the 123,574,190-byte source SHA-256 was independently recomputed and matched the recorded provider hash 22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d.
+- Inventory: base APK ZIP has 5,080 entries, ten DEX files and 111 compiled Valdi modules. All 111 modules decompressed successfully (77,451,888 decoded bytes). This is a newer source snapshot than the historical 121-module extracted archive.
+- Method: inspected Valdi decoded strings/module identifiers; parsed selected DEX class, field, method and partial invoke/constant references for the native device-integrity classes.
+- Observed: separate requirements/device-integrity provider abstractions; requiresDeviceIntegrity conversation gating; native DeviceIntegrityRequest/Response and cancellable task contract; account/conversation-scoped request fields; Android Google Play Integrity token generator; challenge retrieval, POST /backend-api/playintegrity JSON key/header/Set-Cookie identifiers; persistent app-private device_id preference; retry/cooldown and failure paths.
+- Architecture conclusion: host environment context, client-install identity and genuine first-party attestation are distinct. Android Play Integrity is not a synthetic generic device profile and must not be claimed by Windows/Linux hosts.
+- Limits: this was static package/Dex analysis, not full decompilation or a complete call graph. Exact challenge/nonce schema, request-body serialization, app_attest_challenge semantics, token binding, cookie contract, body patch/header merge, device ID generation, internal package path selection and desktop equivalence remain open. No authorized live account request was made. No runtime feature was implemented.
+- Next: continue source-level trace of the providers and exact schemas; use fixtures only in tests and keep genuine integrity unavailable states explicit.

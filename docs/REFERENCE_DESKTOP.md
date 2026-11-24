@@ -33,3 +33,7 @@ The purpose of further analysis is to understand the desktop client's actual loc
 ChatJS remains a general-purpose Node.js library. Host-specific desktop, browser, process, filesystem, and UI capabilities must be optional integrations rather than assumptions about the runtime host.
 
 Keep original application packages and extracted third-party application payloads out of public Git. Commit independently authored findings, technical analysis, and ChatJS implementation.
+
+## 2026-11-24 source-piece integrity recheck
+
+The two Project Sources pieces were reassembled in numeric order in a temporary working directory. The resulting 796,523,063-byte MSIX has SHA-256 561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963; unzip -t reported no compressed-data errors. This rechecks the byte-level container integrity only. The MSIX publisher signature and full Windows application extraction/runtime behavior were not verified in this session. Full Windows payload analysis remains deferred in the task list.

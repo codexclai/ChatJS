@@ -27,7 +27,8 @@
 | --- | --- | --- |
 | Client request/response construction | Research (first-pass module evidence) | Generated API clients and request paths observed in Android Valdi modules; full call graphs and body schemas remain open |
 | Connection and transport | Research (first-pass module evidence) | Bearer transport, WebSocket integration, SSE clients, and stream processors observed; exact runtime state machine remains open |
-| Authentication and session lifecycle | Research (first-pass module evidence) | Native/encrypted credential store and sign-in/session service identifiers observed; exact flow and Node.js host compatibility remain open |
+| Authentication and session lifecycle | Research (first-pass module evidence) | Account/session services, secure credential-store components and bearer transport observed; exact sign-in, renewal and Node.js storage flow remain open |
+| Sentinel and device integrity | Research (current Android source scan) | Separate requirements/device-integrity providers and Android native Play Integrity exchange observed; challenge schemas and cross-host provider behavior remain unresolved |
 | Chat conversations and streaming | Planned | Use actual ChatGPT client behavior; no canned/fake responses |
 | Files and attachments | Research/Planned | Trace supported client payloads and real Node.js processing |
 | Projects/instructions/context | Research/Planned | Reproduce relevant client models and state behavior |

@@ -34,6 +34,8 @@ ChatJS is one comprehensive, general-purpose Node.js module adapting the actual 
 - Target the real ChatGPT client/service behavior in the supplied package; do not substitute OpenAI Platform APIs/keys or another model provider.
 - Preserve legitimate user authentication, authorization, entitlements, and access controls. Do not bypass them.
 - Never hardcode, log, publish, or commit credentials/session material.
+- Keep truthful host/runtime context, protocol-specific client-install identity, and first-party integrity/attestation separate. A host adapter may report real local capabilities; only a genuine supported platform provider may produce attestation. Unsupported, unavailable, failed, expired, or cancelled integrity operations must not become synthetic success. Test fixtures are tests-only.
+- Reconstruct Sentinel/chat-requirements, Turnstile, proof-of-work and device-integrity as distinct protocol stages from the supplied client code. Do not invent challenge algorithms or treat ordinary device metadata as an integrity proof.
 - No telemetry, hidden collection, phone-home, background reporting, remote diagnostics, or unsolicited network traffic.
 - Network activity must result from an explicit ChatJS operation. No automatic content upload.
 - Host-specific device/desktop integrations are optional; the core must not assume a particular host or hardware.
