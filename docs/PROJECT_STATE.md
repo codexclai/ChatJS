@@ -10,7 +10,7 @@
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
 | Phase | Direct Node.js streaming foundation and source-led ChatGPT client, guest-session and Work research |
-| Status | Android 1.2026.321 DEX analysis confirms anonymous backend infrastructure, a local anonymous-session profile, guest state/storage and the RootViewModel initial fallback path. The fallback is serialized and traced through RootSessionCoordinator, UserScopeManager, LogoutCleanupCoordinator, AuthRepository/AuthStorage and DataStore; inspected methods are local state/credential/cleanup logic, not the server-side guest create request. The Shop “Continue as Guest” string is Shop plugin UI; Lxi80 is Files API transport. Actual guest create/refresh and composer routes remain unknown. No ChatGPT network/session/conversation or Work integration is implemented. |
+| Status | Android 1.2026.321 DEX analysis confirms anonymous backend infrastructure, a local anonymous-session profile, guest state/storage and the RootViewModel initial fallback path. The fallback is serialized and traced through RootSessionCoordinator, UserScopeManager, LogoutCleanupCoordinator, AuthRepository/AuthStorage and DataStore; inspected methods are local state/credential/cleanup logic, not the server-side guest create request. The Shop “Continue as Guest” string is Shop plugin UI; Lxi80 is Files API transport. Actual guest create/refresh and composer routes remain unknown. No ChatGPT network/session/conversation or Work integration is implemented. The corrected Android research records are committed on main as 2bb67fdf0215948304d8ab738d88aaededfb9cc2; GitHub CI run 45424297229 and CodeQL run 45424297125 passed. The repository has only main and no open issues or PRs. |
 | Default branch | main |
 | Last reviewed | 2026-11-24 |
 | Runtime policy | Use the supported Node.js LTS in CI. |
@@ -88,6 +88,7 @@
 68. Confirmed Lau31.G serializes initial anonymous-start transitions with coroutine Mutex Lmgo0 before running local Llzx.n/Lwk8 eligibility and Lau31.E resolver/state work.
 69. Disambiguated Lxi80 as a Files API client (download, upload-reservation claim/finalize and file-processing/indexing events) whose shared path helper accepts backend-anon; it is not the guest session create or composer API.
 70. Traced the initial guest fallback through RootSessionCoordinator/SessionManager, coroutine Mutex, UserScopeManager, LogoutCleanupCoordinator, AuthRepository, AuthStorage and DataStore; the inspected call graph remains local state and cleanup, with no guest HTTP creation request.
+71. Committed the corrected Android anonymous-session research/attribution records on main as 2bb67fdf0215948304d8ab738d88aaededfb9cc2; verified CI 45424297229 and CodeQL 45424297125 passed, with only main and no open issues/PRs.
 
 ## Not implemented
 

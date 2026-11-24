@@ -480,7 +480,7 @@ Android has a genuine anonymous backend base/path family and a locally configure
 - npm run docs:sync completed and generated docs/PROJECT_STATE.md.
 - /tmp/node26/bin/npm run check passed under Node.js 26.13.1/npm 11.20.0: syntax checks, synchronized project state, 27 Markdown local links, all 23 tests, and eight-file ChatJS.tar.gz generation.
 - Archive inspection: dist/ChatJS.tar.gz, 9,774 bytes, SHA-256 592cff5830330130c32446aed3a3a3265126109b8f3b379bc54bae1484077c57; it contains the eight intended package files.
-- At the start of this slice live main was 631042dcd97b8c4039b593df28ad6fcd4d453bfd, whose CI run 45418072676 and CodeQL run 45418072883 succeeded; the new documentation commit's remote checks remain pending.
+- At the start of this slice live main was 631042dcd97b8c4039b593df28ad6fcd4d453bfd, whose CI run 45418072676 and CodeQL run 45418072883 succeeded. The documentation correction committed as 2bb67fdf0215948304d8ab738d88aaededfb9cc2 passed CI run 45424297229 and CodeQL run 45424297125. Live branch search still returns only main; open issue and pull-request searches are empty.
 - Git blob uploads from the KERNEL browser-file reader must append the verified final LF; prior CI failures were caused by trimmed terminal newlines.
 
 ### Remaining work
