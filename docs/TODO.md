@@ -99,3 +99,4 @@ Never create branches or worktrees. Keep all repository work on main.
 
 - [ ] Trace the Statsig SDK remote config refresh/cache path for the named welcome_* parameters used by Lxr10.h(Lof70) to build Lplh1 (serializer Lnlh1), including remote payload, cache expiry and offline/default precedence.
 - [ ] Trace the upstream Statsig configuration refresh/cache path for the Android welcome welcome_* parameters. Named declarations are mapped in the DEX findings; remote refresh endpoint, cache policy, and offline/default precedence remain unknown. Exclude SDK exposure/analytics reporting from ChatJS.
+- [ ] Trace the source and semantics of `Lkmk0` in the conversation coordinator (`Ljqk0.G`). The verified label-16 branch emits `MessageNotFoundException` for no-messages/all-unsupported and invokes local `Lgs31.b`; identify the event producer, reason-code mapping and any subsequent server-side guest creation.

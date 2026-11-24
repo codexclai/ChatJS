@@ -736,3 +736,25 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Continue the Statsig SDK config refresh/cache machinery only if it clarifies the shipped client data flow; avoid integrating analytics/exposure behavior into ChatJS.
 - Then prioritize the actual anonymous guest create/refresh HTTP client and guest composer prepare/send path, which remain the critical missing protocol.
 - Keep Windows Work Local and Android Work Cloud as separate client implementations.
+
+## 2026-11-25 — ConversationViewModel guest-session recovery branch
+
+### Source findings
+- Identified `Ljqk0` as the Android conversation coordinator/ViewModel (`Lgqk0` superclass). Its constructor receives `Lks31` AuthSession and `Lgs31` anonymous SessionManager; fields are `Q1` and `R1`.
+- `Ljqk0.G(Louf0)` handles a guarded `Lkmk0` event. After the local `Lx2a.invoke` guard, it constructs `Lps30` with coroutine byte label 16 and launches it through `Lv6a.v`.
+- Decoded `Lps30.invokeSuspend`'s packed-switch payload: 29 entries, keys 0–28; key 16 targets offset `0x350`. This maps the actual constructor-selected coroutine label to the branch rather than inferring from nearby shared-callback code.
+- Branch 16 logs under `MessageStreamingService` the no-messages/all-unsupported condition, constructs `MessageNotFoundException`, and emits a conversation error via `Ljl90`. It then reads `Ljqk0.R1` (`Lgs31`), reads `Lkmk0.a`/`b`, constructs an `Llnp0` reason from event data (including `a + 1` and constant `22`), wraps details in `Lzbz`/`Lhr31`, and invokes `Lgs31.b(...)`.
+- This is a real conversation-level, guarded local SessionManager start/recovery transition after the selected message error. It is separate from the reusable `AnonymousSessionLoading` ViewModel, whose constructor did not inject `Lgs31`, and separate from welcome CTA action-29 and `La991`/`Lt891`.
+
+### Evidence boundary
+- The inspected `Lgs31.b` / `Lau31.G` path performs local mutex, feature/eligibility and state/DataStore work. This trace does not reveal the actual guest HTTP create/refresh request, request/response shape, server-issued guest ID/token, or prove remote creation succeeds.
+- The `Lkmk0` producer/business meaning, payload fields, numeric `Llnp0` reason semantics, guard meaning, and any subsequent server request remain open. Do not claim every message-not-found exception starts a guest session; this is this specific guarded event branch.
+- Static DEX disassembly only; no network operation, guest session creation, or production code change occurred.
+
+### Canonical records updated
+- Added the method-level finding to Android protocol findings, experiments, knowledge base, capability inventory, AI memory and continuation; updated root ChatJS status, open questions, TODO, project-state JSON and generated state.
+
+### Handoff
+- Trace who emits `Lkmk0`, the meaning of its integer/detail payload and the `Llnp0` reason mapping; trace the coordinator's resulting session state to see whether a distinct request client follows.
+- Locate the real Android guest create/refresh HTTP request and composer prepare/send transport separately; do not misattribute LocationCookieInitializer's URL constants or Files API operations.
+- Continue Windows Work Local and Android Work Cloud as separate first-party client surfaces.

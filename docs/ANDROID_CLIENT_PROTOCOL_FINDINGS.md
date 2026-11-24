@@ -428,3 +428,24 @@ A further DEX pass mapped the exact Statsig parameter declarations consumed when
 - No guest SessionManager start, guest HTTP create/refresh request, server guest ID, or composer-send request is established by these Statsig keys.
 
 Evidence boundary: selected static DEX method and class-initializer inspection of the supplied public Android 1.2026.321 XAPK. No live Statsig request, analytics call, account operation, or guest session was initiated.
+
+## 2026-11-25 — ConversationViewModel guest-session recovery branch
+
+A further instruction-level trace located a second, conversation-specific call into the anonymous `SessionManager`, distinct from the root startup fallback and the `La991` / `Lt891` event path.
+
+### Coordinator and event dispatch
+- `Ljqk0` is the Android conversation coordinator/ViewModel (superclass `Lgqk0`). Its constructor receives both `Lks31` (authenticated `AuthSession` wrapper) and `Lgs31` (anonymous `SessionManager`); the corresponding instance fields are `Q1` and `R1`.
+- `Ljqk0.G(Louf0)` handles conversation UI/session events. On the `Lkmk0` event path, after the local callback/guard at `Lx2a.invoke`, it constructs `Lps30` with byte label `16` and launches it through `Lv6a.v`.
+- `Lps30.invokeSuspend` contains a 29-entry packed switch. The decoded key `16` targets bytecode offset `0x350`; this is the branch selected by the `Ljqk0.G` callsite, not a neighboring branch in the shared generated coroutine class.
+
+### Exact label-16 branch
+- The selected branch logs under `MessageStreamingService` and reports: `Conversation was requested with no messages, or all messages are unsupported`.
+- It constructs `MessageNotFoundException`, creates the corresponding conversation error model, and emits that error through the captured `Ljl90` event/state stream.
+- The same branch then reads the `Ljqk0.R1` field (the injected `Lgs31` SessionManager), reads the `Lkmk0` event's integer field `a` and detail field `b`, constructs an `Llnp0` reason value from that event data (including `a + 1` and constant `22`), wraps the detail in `Lzbz` / `Lhr31`, and invokes `Lgs31.b(...)` with the coordinator's local session context.
+- This establishes an actual conversation-feature event/error path that requests the local anonymous SessionManager start transition after the `MessageNotFoundException` / unsupported-empty-conversation condition. It is stronger than the separate `AnonymousSessionLoading` presentation component, whose ViewModel construction did not inject `Lgs31`.
+
+### Evidence boundary
+- This call is still a client-side SessionManager transition. The selected `Lgs31.b` / `Lau31.G` path inspected so far performs local mutex, feature/eligibility and state/DataStore work; this finding does not expose a guest HTTP create/refresh route, a server-issued guest ID/token, or proof that remote session creation succeeded.
+- The `Lkmk0` event's business meaning, the significance of the numeric `Llnp0` reason fields, and the exact upstream UI/action that creates the event remain open. Do not describe this as a universal retry or assert that every message-not-found error starts a guest session; it is this specific guarded event branch.
+- This path is separate from the welcome CTA action-29 → `Lnik0` login-child flow and from the `La991` / `Lt891` callback path. No edge connecting those paths has been found.
+- This was static instruction-level DEX analysis of the supplied Android 1.2026.321 public APK. No request was sent and no guest session was created by the analysis.
