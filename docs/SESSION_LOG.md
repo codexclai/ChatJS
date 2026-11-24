@@ -349,19 +349,19 @@ The GitHub About description was not changed because the available GitHub integr
 - The focused SSE parser suite passed 13/13, including memory-bound, Node Readable, WHATWG ReadableStream and pre-aborted signal cases.
 - Full npm run check passed: syntax checks, generated-state synchronization, 27 Markdown local-link checks, all 23 tests, and archive creation.
 - dist/ChatJS.tar.gz is 9,774 bytes, SHA-256 592cff5830330130c32446aed3a3a3265126109b8f3b379bc54bae1484077c57. It contains exactly eight module files; extracted CJS/ESM imports and an extracted SSE parsing smoke test passed.
-- Live main before this change was a8f6d715da4aa55eae4122ad2fa2ba824cdbfea4. Its latest push-triggered CI run 45374031494 and CodeQL run 45374031132 both succeeded. Fresh workflow results for the new commit remain pending.
-- Repository branch search showed only main. Final live ref update and the new commit remain pending.
+- Live main before this change was a8f6d715da4aa55eae4122ad2fa2ba824cdbfea4. Commit 952fa35d341a0f2678a06363eac5809d1c217c02 advanced main by a non-force fast-forward update; no other branch was created.
+- On the new commit, CodeQL run 45410739175 completed successfully. CI run 45410739761 failed twice at docs:check with a generic PROJECT_STATE.md stale-file message, before running tests. The repository's Node.js 26.13.1/npm 11.20.0 environment was reproduced locally and npm run check passed there. A follow-up adds first-difference diagnostics to the generator so the next CI run exposes the exact discrepancy.
+- Live branch search after commit still returned only main. The source implementation commit is live; the cross-environment CI discrepancy remains the active blocker.
 
 ### Changed files
 - src/sse.cjs, src/index.cjs, src/index.mjs, types/index.d.ts, package.json
 - tests/sse.test.cjs, tests/public-api.test.cjs, tests/esm-entry.test.cjs, tests/archive.test.cjs
-- scripts/build-module-archive.cjs
+- scripts/build-module-archive.cjs, scripts/generate-project-state.cjs (CI mismatch diagnostics)
 - ChatJS.md, README.md
 - docs/CODEX_SOURCE_FINDINGS.md, ANDROID_CLIENT_PROTOCOL_FINDINGS.md, REFERENCE_DESKTOP.md, ARCHITECTURE.md, DECISIONS.md, CAPABILITY_MATRIX.md, CHATGPT_CAPABILITY_INVENTORY.md, KNOWLEDGE_BASE.md, OPEN_QUESTIONS.md, EXPERIMENTS.md, AI_MEMORY.md, CONTINUATION.md, TODO.md, project-state.json, PROJECT_STATE.md
 
 ### Remaining work and handoff
-- Finish full npm run check and inspect ChatJS.tar.gz contents.
-- Verify current main CI and confirm only main exists.
-- Inspect final diff/tree, create a commit on main and fast-forward update using an expected-head check; never force.
+- Resolve the CI-only generated-state mismatch using the first-difference diagnostics added to scripts/generate-project-state.cjs; rerun CI until the actual main commit is verified green.
+- Keep the one-branch invariant: main only; any follow-up updates must be non-force fast-forward commits with expected-head checks.
 - Continue exact Android guest-session call graph and accountless prepare/send route reconstruction.
 - Continue the Windows local Work and Android cloud Work source traces; no live ChatGPT login/conversation/Work feature is implemented yet.

@@ -59,8 +59,27 @@ if (checkOnly) {
   const actual = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
 
   if (actual !== expected) {
+    let firstDifference = 0;
+    const sharedLength = Math.min(actual.length, expected.length);
+
+    while (
+      firstDifference < sharedLength &&
+      actual.charCodeAt(firstDifference) === expected.charCodeAt(firstDifference)
+    ) {
+      firstDifference += 1;
+    }
+
+    const contextStart = Math.max(0, firstDifference - 40);
+    const contextEnd = firstDifference + 80;
+    const actualContext = JSON.stringify(actual.slice(contextStart, contextEnd));
+    const expectedContext = JSON.stringify(expected.slice(contextStart, contextEnd));
+
     process.stderr.write(
-      'docs/PROJECT_STATE.md is out of date. Run npm run docs:sync and commit the generated change.\n'
+      'docs/PROJECT_STATE.md is out of date. Run npm run docs:sync and commit the generated change.\\n' +
+      'actual_length=' + actual.length + ' expected_length=' + expected.length +
+      ' first_difference=' + firstDifference + '\\n' +
+      'actual_context=' + actualContext + '\\n' +
+      'expected_context=' + expectedContext + '\\n'
     );
     process.exitCode = 1;
   } else {

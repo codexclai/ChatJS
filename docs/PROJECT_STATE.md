@@ -10,7 +10,7 @@
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
 | Phase | Direct Node.js streaming foundation and source-led ChatGPT client/Work research |
-| Status | The runtime now includes a tested generic bounded/cancellable SSE parser with ESM/CommonJS/type exports. No actual authenticated or accountless ChatGPT connection, product-specific conversation transport, or Work/Codex workflow is implemented yet. The product target remains the direct first-party ChatGPT client behavior. |
+| Status | The runtime now includes a tested generic bounded/cancellable SSE parser with ESM/CommonJS/type exports. No actual authenticated or accountless ChatGPT connection, product-specific conversation transport, or Work/Codex workflow is implemented yet. The product target remains the direct first-party ChatGPT client behavior. The implementation is committed on main. New-commit CodeQL passed; the new-commit CI check has twice failed at generated-state synchronization before tests, despite local full check passing under the same Node.js 26.13.1/npm 11.20.0; exact-diff diagnostics are being added. |
 | Default branch | main |
 | Last reviewed | 2026-11-24 |
 | Runtime policy | Use the supported Node.js LTS in CI. |
@@ -69,6 +69,7 @@
 49. npm run check passed after the SSE parser and documentation updates: syntax checks, generated project state sync, all 27 Markdown local links, all 23 tests and archive generation.
 50. Inspected dist/ChatJS.tar.gz (9,774 bytes; SHA-256 592cff5830330130c32446aed3a3a3265126109b8f3b379bc54bae1484077c57); it contains exactly eight expected module files, and extracted CommonJS/ESM plus SSE parsing smoke tests passed.
 51. Verified pre-change main branch CI run 45374031494 and CodeQL run 45374031132 succeeded; only main exists. New commit CI remains pending.
+52. Committed the direct SSE streaming foundation and source-led Codex/guest-session research directly to main as 952fa35d341a0f2678a06363eac5809d1c217c02 using a non-force fast-forward update; verified only main exists.
 
 ## Not implemented
 
@@ -84,20 +85,21 @@
 
 ## Next actions
 
-1. Trace Android anonymous guest session creation, route ownership, prepare/send bodies, cookies, expiry/retirement and service eligibility.
-2. Trace Windows desktop Work Local and Android Work Cloud call graphs as separate execution surfaces; do not require Codex CLI/app-server.
-3. Implement the legitimate authenticated-account and accountless-guest ChatGPT session lifecycle, secure storage and direct first-party connection.
-4. Implement the ChatGPT-specific SSE/Responses event decoding and conversation send/receive flow on top of the generic tested SSE parser.
-5. Translate PRODUCT_STANDARD.md into source-evidenced capability slices, validated layered configuration, host adapter/capability registry contracts, declared compatibility matrix, and per-feature production-readiness tests.
-6. Continue reconstructing Android integrity retry/cooldown semantics: status-code and feature gates, total attempts/backoff, 300-second cooldown clock/marker persistence, DeviceRateLimits data schema/scope/retention, generated Valdi requirements schema, public-build provider selection and cancellation.
-7. Define host environment context, protocol-specific client-install identity and genuine first-party attestation as separate Node.js concepts; use optional genuine host providers and explicit unsupported/unavailable/failure states.
-8. Perform deeper method-level analysis of Android account-check, model/chat-requirements, conversation, upload, history, image-gallery, and Library clients; map exact call graphs and serialized request/response schemas.
-9. Trace first-party sign-in, bearer credential renewal/revocation, encrypted credential storage, account binding, and device-integrity/Sentinel requirements without bypassing them.
-10. Trace direct/polling SSE streaming, event schemas, handoff/resume tokens, reasoning/tool/message completion events, and cancellation behavior.
-11. Define general-purpose ChatJS client configuration, connection/session lifecycle, transport, streaming/backpressure, cancellation, timeouts, concurrency, retries, and typed errors from client evidence.
-12. Implement and test the first real ChatGPT client connection and conversation send/receive/stream workflow without Platform API substitution or fake responses.
-13. Map project/context/instructions, file/attachment, voice/image, search/tools, Work, and Codex client flows for Node.js adaptation.
-14. Resume Windows extracted-payload archive work only when the owner explicitly asks.
+1. Resolve the CI-only docs/PROJECT_STATE.md synchronization discrepancy using the first-difference diagnostics in scripts/generate-project-state.cjs, then confirm the main-head CI passes.
+2. Trace Android anonymous guest session creation, route ownership, prepare/send bodies, cookies, expiry/retirement and service eligibility.
+3. Trace Windows desktop Work Local and Android Work Cloud call graphs as separate execution surfaces; do not require Codex CLI/app-server.
+4. Implement the legitimate authenticated-account and accountless-guest ChatGPT session lifecycle, secure storage and direct first-party connection.
+5. Implement the ChatGPT-specific SSE/Responses event decoding and conversation send/receive flow on top of the generic tested SSE parser.
+6. Translate PRODUCT_STANDARD.md into source-evidenced capability slices, validated layered configuration, host adapter/capability registry contracts, declared compatibility matrix, and per-feature production-readiness tests.
+7. Continue reconstructing Android integrity retry/cooldown semantics: status-code and feature gates, total attempts/backoff, 300-second cooldown clock/marker persistence, DeviceRateLimits data schema/scope/retention, generated Valdi requirements schema, public-build provider selection and cancellation.
+8. Define host environment context, protocol-specific client-install identity and genuine first-party attestation as separate Node.js concepts; use optional genuine host providers and explicit unsupported/unavailable/failure states.
+9. Perform deeper method-level analysis of Android account-check, model/chat-requirements, conversation, upload, history, image-gallery, and Library clients; map exact call graphs and serialized request/response schemas.
+10. Trace first-party sign-in, bearer credential renewal/revocation, encrypted credential storage, account binding, and device-integrity/Sentinel requirements without bypassing them.
+11. Trace direct/polling SSE streaming, event schemas, handoff/resume tokens, reasoning/tool/message completion events, and cancellation behavior.
+12. Define general-purpose ChatJS client configuration, connection/session lifecycle, transport, streaming/backpressure, cancellation, timeouts, concurrency, retries, and typed errors from client evidence.
+13. Implement and test the first real ChatGPT client connection and conversation send/receive/stream workflow without Platform API substitution or fake responses.
+14. Map project/context/instructions, file/attachment, voice/image, search/tools, Work, and Codex client flows for Node.js adaptation.
+15. Resume Windows extracted-payload archive work only when the owner explicitly asks.
 
 ## Reference artifact
 
