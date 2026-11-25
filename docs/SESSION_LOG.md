@@ -1346,3 +1346,6 @@ GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989c
 **Implementation:** added private `src/chatgpt/android-es256-signature.cjs` and seven focused tests. The helper only converts DER signature bytes to fixed-width ES256 form; the first test verifies a real Node-generated P-256 ECDSA signature with Node's IEEE-P1363 verifier. Added source syntax validation and the module archive allowlist entry; documented private/internal status and the fact that no key, signing provider, keystore, authentication, DPoP request or network integration is implemented.
 
 **Local validation:** focused test command passed 7/7. No full repository checkout is available in this environment, so `npm run check`, built archive inspection and CI for the new commit are pending remote GitHub Actions verification. Prior main baseline at `4ded6` had successful CI and CodeQL; this is not evidence for the new change.
+
+
+**CI correction:** GitHub CI run 45670251320 executed 119 tests: 118 passed and the archive allowlist assertion failed because the new private ES256 source path was added to the archive builder but not to the independent expected-file list in `tests/archive.test.cjs`. The seven ES256 tests and all other tests passed. The test's expected archive contents are corrected in the follow-up commit; CI for that correction is pending.
