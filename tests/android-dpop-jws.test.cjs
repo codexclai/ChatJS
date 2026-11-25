@@ -3,7 +3,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const { canonicalizeAndroidDpopUrl, buildAndroidDpopSigningInput, assembleAndroidDpopJws } = require('../src/chatgpt/android-dpop-jws.cjs');
+const {
+  canonicalizeAndroidDpopUrl,
+  calculateAndroidDpopIssuedAt,
+  buildAndroidDpopSigningInput,
+  assembleAndroidDpopJws
+} = require('../src/chatgpt/android-dpop-jws.cjs');
 
 function decode(value) {
   return Buffer.from(value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - value.length % 4) % 4), 'base64');
@@ -47,13 +52,25 @@ test('serializes exact Android JWS header/payload fields and access-token hash',
   assert.equal(payload.ath, crypto.createHash('sha256').update(token, 'utf8').digest('base64url'));
 });
 
-test('serializes 64-bit integer iat values without JS number rounding', () => {
+test('applies the source-traced server-minus-local clock offset in epoch seconds', () => {
+  assert.equal(calculateAndroidDpopIssuedAt(1795632000, 12), 1795632012);
+  assert.equal(calculateAndroidDpopIssuedAt(1795632000, -30), 1795631970);
+  assert.equal(calculateAndroidDpopIssuedAt(100n, -7n), 93n);
+  assert.equal(calculateAndroidDpopIssuedAt(100, 9007199254740992n), 9007199254741092n);
+});
+
+test('rejects non-integer and unsafe numeric clock values', () => {
+  assert.throws(() => calculateAndroidDpopIssuedAt(1.5, 2), /safe integer or bigint/);
+  assert.throws(() => calculateAndroidDpopIssuedAt(Number.MAX_SAFE_INTEGER + 1, 2), /safe integer or bigint/);
+  assert.throws(() => calculateAndroidDpopIssuedAt(1, NaN), /safe integer or bigint/);
+});
+
+test('preserves 64-bit integer iat values without JS number rounding', () => {
   const signingInput = buildAndroidDpopSigningInput({
     publicJwk: createJwk(), targetUrl: 'https://example.com/', issuedAt: 9223372036854775807n,
     jti: 'jti-value', accessToken: 'token'
   });
-  const payloadBytes = decode(signingInput.split('.')[1]);
-  assert.equal(payloadBytes.toString('utf8').includes('9223372036854775807'), true);
+  assert.equal(decode(signingInput.split('.')[1]).toString('utf8').includes('9223372036854775807'), true);
 });
 
 test('assembles and verifies a compact JWS using a host-supplied P-256 signature', () => {

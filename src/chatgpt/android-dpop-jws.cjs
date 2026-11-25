@@ -40,6 +40,26 @@ function normalizePublicJwk(publicJwk) {
   return Object.freeze({ kty: 'EC', crv: 'P-256', x: publicJwk.x, y: publicJwk.y });
 }
 
+function toIntegerBigInt(value, label) {
+  if (typeof value === 'bigint') return value;
+  if (typeof value === 'number' && Number.isSafeInteger(value)) return BigInt(value);
+  throw new TypeError(label + ' must be a safe integer or bigint.');
+}
+
+/**
+ * Apply the Android DPoP server-minus-local clock offset to local epoch seconds.
+ * Both values must come from the caller's real clock/first-party response flow.
+ */
+function calculateAndroidDpopIssuedAt(localEpochSeconds, serverClockOffsetSeconds) {
+  const result = toIntegerBigInt(localEpochSeconds, 'localEpochSeconds') +
+    toIntegerBigInt(serverClockOffsetSeconds, 'serverClockOffsetSeconds');
+  if (typeof localEpochSeconds === 'number' && typeof serverClockOffsetSeconds === 'number' &&
+      result >= BigInt(Number.MIN_SAFE_INTEGER) && result <= BigInt(Number.MAX_SAFE_INTEGER)) {
+    return Number(result);
+  }
+  return result;
+}
+
 function normalizeIssuedAt(issuedAt) {
   if (typeof issuedAt === 'bigint') return issuedAt.toString(10);
   if (typeof issuedAt === 'number' && Number.isSafeInteger(issuedAt)) return String(issuedAt);
@@ -64,8 +84,8 @@ function buildAndroidDpopSigningInput({ publicJwk, targetUrl, issuedAt, jti, acc
 }
 
 /**
- * Append a host-produced fixed-width ES256 signature. Key ownership and signing
- * remain with a real explicit host signer; this only assembles compact-JWS bytes.
+ * Append a host-produced fixed-width ES256 signature. This only assembles bytes;
+ * signing and non-exportable key ownership remain with a real host signer.
  */
 function assembleAndroidDpopJws(signingInput, signature) {
   assertString(signingInput, 'signingInput');
@@ -76,4 +96,9 @@ function assembleAndroidDpopJws(signingInput, signature) {
   return signingInput + '.' + encodeBase64Url(bytes);
 }
 
-module.exports = Object.freeze({ canonicalizeAndroidDpopUrl, buildAndroidDpopSigningInput, assembleAndroidDpopJws });
+module.exports = Object.freeze({
+  canonicalizeAndroidDpopUrl,
+  calculateAndroidDpopIssuedAt,
+  buildAndroidDpopSigningInput,
+  assembleAndroidDpopJws
+});
