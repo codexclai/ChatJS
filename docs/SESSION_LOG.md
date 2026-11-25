@@ -1247,4 +1247,5 @@ The native DEX user-agent is ChatGPT/1.2026.209 (build 2620909), unlike the encl
 - Authentication/controller/native secure-store/renewal/account-switching behavior is researched but not implemented. No plaintext credential fallback or fake login was added.
 - The safe origin-relative path validation and exact regex flags remain to be disassembled. The new helper is not used by an HTTP client and is not a public API.
 - Account-check complete schema/method selection, native credential callback contract, encrypted secure-store lifecycle, DPoP/token refresh and the separate accountless guest create/refresh/composer routes remain open.
-- Full package checks and CI/CodeQL for this change remain pending.
+- Full repository CI run `45606423090` passed 51/51 tests, syntax checks, generated-state sync, all 27 Markdown links, 11-file archive build and installed CommonJS/ESM smoke tests. CodeQL run `45606423246` passed on implementation commit `acdf32c7413644be86cb1759ab9e1e041488c71b`.
+- Downloaded workflow artifact ZIP (18,741 bytes; SHA-256 `62895b9d2ce9fa76bc264d36fb626f3a5e254ea24b9a722d597ee0245a35e9e9`), passed ZIP integrity, inspected its inner `ChatJS.tar.gz` (18,591 bytes; SHA-256 `29e8d05e0986719832c629c5583ba4f460121ad0d38ebf106d8cf2d718649389`), and passed gzip/tar integrity plus an extracted-helper smoke test.

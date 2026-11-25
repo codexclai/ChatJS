@@ -411,4 +411,8 @@ Added private `src/chatgpt/android-auth-validation.cjs` with the five pure predi
 4. Decode encrypted secure credential storage and token rejection/renewal flow. Define a portable ChatJS secure-storage adapter only after the exact lifecycle is understood; no plaintext fallback.
 5. Continue tracing DPoP/account switching and the independent accountless guest HTTP protocol. Do not conflate authenticated AuthSession with anonymous SessionManager state.
 
+### Verification
+
+The focused authentication-validator test file passed all seven tests locally. GitHub CI run `45606423090` passed the full repository check: 51/51 tests, generated-state synchronization, all 27 Markdown local links, the 11-file archive build, and installed CommonJS/ESM smoke tests. CodeQL run `45606423246` passed on commit `acdf32c7413644be86cb1759ab9e1e041488c71b`. The downloaded workflow artifact ZIP (18,741 bytes) matched GitHub's SHA-256 `62895b9d2ce9fa76bc264d36fb626f3a5e254ea24b9a722d597ee0245a35e9e9`; its inner `ChatJS.tar.gz` (18,591 bytes) passed gzip/tar inspection and has SHA-256 `29e8d05e0986719832c629c5583ba4f460121ad0d38ebf106d8cf2d718649389`. The extracted authentication helper smoke test passed.
+
 Android Work, Windows/Desktop and Codex CLI remain parked only for execution sequencing; the full three-family product goal remains unchanged.
