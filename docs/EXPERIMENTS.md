@@ -315,3 +315,35 @@ The conversation callback is traced through the same ViewModel receiver: `Lxjk1.
 **Safety/retention:** the temporary source checkout, C harness, compiler, bytecode inputs and dump files stayed in the isolated analysis VM. No official app payload, extracted third-party code, compiler binary, or QuickJS code was committed. No user/account credentials were used and no network request was sent to ChatGPT.
 
 **Follow-up:** reconstruct complete generated nested model/requirements schemas; inspect the native device-integrity service implementation/public-build gate; decode the exact stream resume wire request; and disassemble upload reservation/PUT/process paths and numeric limits.
+
+## 2026-11-25 — Android stream worker/resume, upload service and picker policy disassembly
+
+**Source:** owner-supplied ChatGPT Android XAPK version 1.2026.321. The compiled Valdi modules were extracted from the base APK; each selected entry had the 4-byte Valdi bytecode prefix removed before reading with the temporary pinned QuickJS tool. The payloads were deserialized only; no Android method was evaluated or executed.
+
+**Streaming payloads decoded:**
+
+| Module entry | Bytecode bytes | SHA-256 |
+| --- | ---: | --- |
+| ChatGPTStreamingWorkerRuntime.js | 10,244 | 8715784129e94b18e72c9679b587bee6d88d80bc0de5de67b0478a34caed2ff6 |
+| ChatGPTStreamingWorkerClient.js | 4,956 | a8b3be08efa38733210b895f783cfe161442d89e805c2698b27338e6f00d49c0 |
+| ChatGPTStreamingResponseProcessor.js | 3,760 | 5c756590b43b97ff262483eae95b39502944309fb6c64f8f8a1992d977470156 |
+| ChatGPTStreamingProtocol.js | 739 | 579c01eec41dd49bdada1619089d39a602c4a4571c442984d12b17aab0b9f217 |
+| ChatGPTStreamingContracts.js | 1,421 | dbfc84206295424acf6e84cc56686e2e40820e6ec7029c834b6acedb13e0c063 |
+| AssistantResponseClient.js | 1,124 | 5318bfb554340e437ab24a75cceeeebb288e1f1eafb9090a80d6cc1a8569b1f7 |
+
+**Upload payloads decoded:**
+
+| Module entry | Bytecode bytes | SHA-256 |
+| --- | ---: | --- |
+| ChatGPTFileUploadService.js | 16,754 | 5814c2457b0c05d2306a718a64059d1a7ce9cafb1bb97d109a6484a2cb0f2a64 |
+| oai_file_picker / FilePickerPolicy.js | 1,600 | c65066dcc1d14e5688e50900e85ac5f0dbf071a149bfea0636ad15961e9f931a |
+
+**Results:** decoded host/worker message enums, request ID correlation, content-prefix deduplication, direct SSE versus injected polling behavior, and exact resume request builder. The continuation posts to the initial route plus /resume; body fields are conversation_id, optional model, offset and stream:false, with x-conduit-token added to the original headers. Direct-only resume is capped at three handoffs.
+
+Decoded the upload reservation POST, multipart Estuary finalize/content paths, external signed-storage PUT path, process-upload POST, trusted destination suffixes, Azure versus S3 header difference, upload failure mapping, MIME/data-URL checks and image dimension reader. FilePickerPolicy values are 10 selections, 20 MiB per file and 25 MiB aggregate; it accepts the listed office/text/document extensions, JSON/PDF/CSV/Markdown/plain-text MIME values and GIF/JPEG/PNG/WebP image MIME values. Maximum image width/height is 32,768 pixels.
+
+**ChatJS implementation:** added internal src/chatgpt/file-upload-policy.cjs with deterministic tests. It validates the recovered selection metadata and byte limits, padded Base64 data URL byte length, trusted upload-destination parsing, and the Estuary-versus-signed-storage plan and storage headers. It does not perform HTTP requests, authenticate, reserve or upload files, process server responses, or expose a public API.
+
+**Verification:** npm run check passed in a disposable local snapshot of the current main commit. All 35 tests passed, generated docs and links were valid, and dist/ChatJS.tar.gz contained nine module files. The source helper is included in the distribution archive. This result does not establish a live ChatGPT upload, conversation or streaming implementation.
+
+**Limits:** this is static client-source reconstruction and a partial deterministic policy implementation. It does not establish live endpoint availability, service authorization, signed-URL lifetime, retry/cancellation semantics, download/indexing, all process-stream terminal states, or public-build native device-integrity availability. The temporary disassembler, QuickJS source/build, app payloads and extracted bytecode remained outside the ChatJS repository and distribution.

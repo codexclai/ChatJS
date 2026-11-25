@@ -173,9 +173,9 @@ The overall estimate remains approximately **3%**. Source research and documenta
 
 The supplied XAPK is mounted at `/mnt/data/ChatGPT-Android.xapk` for this session. The base APK member is `com.openai.chatgpt.apk`; its `assets/chatgpt_services.valdimodule` Zstandard frame was decompressed and compiled module regions inspected.
 
-New evidence is in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`: DirectResponseClient conversation/message field inventory; generated model and Sentinel decoder names plus primitive validation strings; event delta operations, entity-reference spans, handoff/resume identifiers; upload metadata keys, Azure block-blob PUT headers and trusted storage suffixes. The field inventory is not a complete schema. Object nesting, requiredness, route selection, exact resume mapping, maximum handoff count and upload numeric limits remain unknown. Do not implement a guessed request builder.
+This was the earlier string-only pass. It has been superseded by the later bytecode/method-level traces below, which recover the generated model/requirements schemas, exact direct-stream resume request, worker message protocol, upload request/transfer/process branches, and numeric picker limits. Remaining gaps are listed in the latest handoff.
 
-Next: decode Valdi bytecode/control flow for DirectResponseClient prepare/send and generated decoders; decode stream event/resume branch; recover upload constants and reservation response layout. Continue the independent guest-session HTTP search and preserve first-party integrity requirements. No production behavior changed in this slice.
+Superseded next steps: DirectResponseClient, generated schema, stream resume/worker, and upload reservation/limit bytecode are now reconstructed. Continue with the remaining native device-integrity service, separate challenge consumers, guest lifecycle, and the broader Android non-Work inventory.
 
 ## Owner clarification — one ChatJS client, three source families (2026-11-25)
 
@@ -260,8 +260,8 @@ Full method-level evidence and caveats are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.
 
 1. Complete generated ModelCatalog/ChatRequirements nested response schemas and nullable/optional precedence.
 2. Reconstruct native device-integrity service internals and whether a public Android build exposes it; do not bypass or simulate.
-3. Decode the exact streaming resume HTTP path/body/headers and worker/processor state.
-4. Disassemble FileUploadService reservation, signed destination, PUT, process/finalize and download paths; recover numeric file limits and cancellation/expiry/retry behavior.
+3. Finish the remaining Android stream processor and event variants, then test direct-stream state, cancellation, interruption, and server recovery with authorized sessions.
+4. Implement the authorized attachment workflow around the traced policy: reservation, content transfer, processing, download/indexing, signed-URL expiry, retries/cancellation and cleanup.
 5. Continue independent Android guest create/refresh and guest composer route reconstruction. `/backend-anon` constants in LocationCookieInitializer remain unrelated evidence.
 
 **No ChatJS production code changed:** request, auth, file, SSE and integrity workflows remain unimplemented. The new results improve source evidence only; do not report functional support.
@@ -271,4 +271,42 @@ Full method-level evidence and caveats are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.
 
 The decoded generated ConversationApiClient now provides the concrete ModelCatalog/ChatRequirements named-field contract. ModelCatalogRequest requires boolean iim and supports_model_picker_upgrade_presets. ModelCatalogResponse requires string default_model_slug and has optional models[] / versions[] arrays; ModelCatalogModel.slug and ModelCatalogPreset.model_slug are optional strings; ModelCatalogVersion.intelligence_presets is an optional ModelCatalogPreset[] array. ChatRequirementChallenge.required is optional boolean. ChatRequirementsResponse.token is required string; turnstile, proofofwork and so are optional arrays of challenge descriptors. Optional fields are checked against undefined, so null is rejected; extra object keys are preserved.
 
-See ANDROID_CLIENT_PROTOCOL_FINDINGS.md. Continue into consumers of extra/pass-through catalog fields and the separate Turnstile/proof-of-work/so challenge types. Native device-integrity exchange/public-build availability, resume wire request, upload lifecycle, and anonymous guest network flows remain open. No ChatJS runtime implementation changed.
+See ANDROID_CLIENT_PROTOCOL_FINDINGS.md. The resume builder and upload reservation/transfer/process methods are now reconstructed; remaining gaps include challenge-specific consumers, native device-integrity exchange/public-build availability, upload URL expiry/retry/cancellation and download/index lifecycle, and anonymous guest network flows. The runtime still has no live ChatGPT connection.
+
+
+## Latest handoff — Android stream worker, resume and upload policy — 2026-11-25
+
+### Source decoding completed
+
+The temporary pinned QuickJS reader successfully deserialized six additional Android streaming modules: ChatGPTStreamingWorkerRuntime, ChatGPTStreamingWorkerClient, ChatGPTStreamingResponseProcessor, ChatGPTStreamingProtocol, ChatGPTStreamingContracts, and AssistantResponseClient. It also decoded ChatGPTFileUploadService and the separate oai_file_picker FilePickerPolicy module. The analysis VM held the compiler, reader, source copies, APK-derived payloads and disassembly; none were copied into the ChatJS repository or runtime.
+
+### Exact stream contract recovered
+
+- Host/worker protocol enumerations and request-ID correlation are reconstructed. The host start/cancel protocol and worker callback kinds are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+- Direct mode uses the packaged StreamingHTTPClient plus ServerSentEventClient, POST and SSE with automatic reconnection disabled. Polling uses an injected optional client and is not evidence of a production polling path.
+- Direct continuation appends /resume to the initial path, sends conversation_id, optional model, offset and stream:false, and adds x-conduit-token from the continuation token. The worker closes/cancels the prior request, allows direct mode only, and caps handoffs at three.
+- Worker-to-host updates keep content, conversation state, DIL, reasoning, entity references, completion and errors distinct. Prepared content is prefix-compared and only a new appended suffix is sent to the text-delta callback.
+- A transport close with the exact SSE-closed message after text receipt is handled as completion; other transport failures reach the processor error path.
+
+### Exact upload contract recovered
+
+- Reservation: authenticated POST /backend-api/files with composer/file metadata, client-resolved MIME, use_case and timezone offset.
+- Transfer: first-party Estuary multipart POST for the combined finalize or content-bytes paths; otherwise a raw PUT to a signed trusted destination.
+- External signed-storage PUT omits ChatGPT bearer/account headers. It sends Content-Type and, except for AWS S3 hostnames, the Azure block-blob type/version headers.
+- Processing: POST /backend-api/files/process_upload_stream for the content-bytes path, with file ID/name/use case and composer metadata.
+- File-picker limits are ten files, 20 MiB per file, 25 MiB total, and 32,768 pixels per image dimension. Document/image accepted types and name/MIME constraints are recorded in the source findings.
+- Remaining gaps: signed URL expiry, retry/cancellation, download, indexing, full process-stream terminal/progress states and live authorized end-to-end tests.
+
+### ChatJS code change and evidence boundary
+
+Added internal src/chatgpt/file-upload-policy.cjs and tests/android-file-upload-policy.test.cjs. The helper validates file metadata and selection limits, padded Base64 content length, HTTPS destination structure/host allow-list, and an upload plan distinguishing Estuary from signed storage. It is not a public API and does not perform network activity or upload files.
+
+The disposable local copy of current main passed npm run check: 35 tests passed, generated docs and links were valid, and dist/ChatJS.tar.gz contained nine module files. The source helper is included in the distribution archive. This result does not establish a live ChatGPT upload, conversation or streaming implementation.
+
+### Next Android non-Work priorities
+
+1. Trace the distinct Turnstile/proof-of-work/so challenge consumers and native device-integrity service/public-build availability. Preserve fail-closed behavior.
+2. Reconstruct authenticated Android account/session lifecycle and the independent accountless guest create/refresh/composer path.
+3. Finish all remaining stream event/processor and history behavior; add authorized tests for resume, interruption, cancellation and errors.
+4. Implement the real authenticated attachment reservation/transfer/process/download lifecycle with bounded resources, secure signed-URL handling, retries, cancellation and cleanup.
+5. Continue the exhaustive Android non-Work inventory and implementation. Android Work, Windows/Desktop and Codex CLI stay parked; the permanent three-family product goal is unchanged.

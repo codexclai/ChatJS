@@ -728,7 +728,7 @@ The decoded event consumer establishes:
 - Every non-[DONE] event increments eventOffset before payload decoding, including ignored/unknown events.
 - resume_conversation_token stores a non-empty token string and string conversation_id.
 - stream_handoff requires an options array containing at least one object option and a previously stored resume token/conversation. Missing resume state throws; a conflicting string conversation_id throws. Valid continuation is {conversationId, eventOffset, token}.
-- Direct stream handoff count is capped at three. The exact resume HTTP body/header/path mapping remains open.
+- Direct stream handoff count is capped at three. The exact resume HTTP mapping is recorded in the later worker/contract trace below.
 - Normal message updates accept assistant/tool roles and non-empty message IDs; visually hidden messages are skipped. Assistant text is accumulated by message ID and emitted as the newly appended suffix. The decoder also tracks conversation state, DIL result changes, entity-reference changes and reasoning snapshots.
 
 The delta decoder reads c (channel), o (operation), p (path), and v (value), retaining prior channel/operation/path values when subsequent delta events omit them. Supported operations are Add, Append, Patch, Remove, Replace and Truncate. Add inserts into an array at a numeric index or assigns an object property. Append concatenates strings, appends array values, or merges plain-object values. Patch recursively applies an array of nested operations. Remove splices/deletes. Replace assigns. Truncate requires a non-negative integer and truncates a string or array.
@@ -739,7 +739,7 @@ Paths are slash-delimited JSON-pointer-like strings, limited to 2,048 characters
 
 The sender maps HTTP 401 to session-expired, HTTP 403 to account/device-integrity error, and HTTP 429 to temporary rate-limit error. These are source-derived branches, not evidence that ChatJS currently handles them.
 
-Still open: full generated nested schemas; native device-integrity implementation/public-build availability; exact resume wire mapping; file reservation/upload/process lifecycle and size constants; and independent guest create/refresh and guest composer protocols.
+Still open: full generated nested schemas and challenge-specific provider consumers; native device-integrity implementation/public-build availability; upload destination expiry, cancellation/retry and download/index lifecycle; and independent guest create/refresh and guest composer protocols. The resume request wire mapping, reservation/PUT/process sequence, and file-picker limits have been recovered by the later method-level traces below.
 
 **Runtime status:** this is static Android source knowledge only. ChatJS still has no product-specific connection, authenticated/guest session implementation, conversation sender/decoder, file workflow or integrity provider.
 
@@ -763,3 +763,114 @@ The optional checks are specifically against `undefined`. If an optional field i
 The catalog API method calls the `ModelCatalogRequest` decoder and serializes scalar query properties with `encodeURIComponent`; array-valued query parameters are serialized as repeated keys. The inspected direct client supplies `iim=true` and `supports_model_picker_upgrade_presets=false` on GET `/backend-api/models`.
 
 The requirements API calls `ChatRequirementsResponse`; its `token` is required. Each challenge item preserves extra properties but only validates the optional `required` flag at this generated layer. Exact payload semantics of Turnstile, proof-of-work and `so` remain to be followed into their consumers and any separate challenge providers.
+
+
+## 2026-11-25 — Android stream worker, continuation transport and file-upload methods
+
+This section supersedes the earlier string-only uncertainty about the resume wire request, attachment reservation/upload/process structure, and the numeric picker limits. It is based on read-only disassembly of the compiled Valdi bytecode entries in the supplied ChatGPT Android 1.2026.321 XAPK. The pinned QuickJS reader only deserialized functions; it did not evaluate or execute the Android modules. These findings establish client source behavior, not live server acceptance or ChatJS feature completion.
+
+### Streaming host/worker protocol
+
+The ChatGPTStreamingProtocol module defines two small integer message enums:
+
+| Direction | Name | Value |
+| --- | --- | ---: |
+| Host → worker | StartPolling | 0 |
+| Host → worker | StartDirect | 1 |
+| Host → worker | Cancel | 2 |
+| Worker → host | PreparedContent | 0 |
+| Worker → host | ConversationState | 1 |
+| Worker → host | DILResult | 2 |
+| Worker → host | Reasoning | 3 |
+| Worker → host | Complete | 4 |
+| Worker → host | Error | 5 |
+| Worker → host | EntityReferences | 6 |
+
+The host-side ChatGPTStreamingWorkerClient owns a request-ID counter starting at 1 and a Map of active streams. Each start allocates a request ID, stores its callbacks and accumulated prepared content, and posts the relevant start message. A failed post removes the Map entry and propagates the error. Cancellation deletes that request's state and posts a correlated Cancel message when the endpoint is available.
+
+Worker responses are correlated by requestId. Prepared content is either sent to onPreparedContent, or—when that callback is absent—compared with the already delivered content and only the new appended suffix is delivered through onTextDelta. Conversation state, DIL, entity references and reasoning are routed to separate callbacks. Complete and Error delete the request entry and invoke their corresponding terminal callbacks; error messages are wrapped as ChatGPTBackgroundStreamError.
+
+The worker's direct mode uses the packaged StreamingHTTPClient and ServerSentEventClient with a POST request, the supplied path/body/headers, UTF-8 JSON body bytes, and SSE automatic reconnection disabled. The alternate polling mode is driven by an injected optional client and fails when that client is unavailable; it is not evidence of a general production polling transport.
+
+### Exact direct-stream resume request
+
+ChatGPTStreamingContracts.resumeChatGPTDirectStream(request, continuation) builds a new request instead of replaying the original body:
+
+    {
+      baseUrl: request.baseUrl,
+      path: request.path.replace(/\/+$/, '') + '/resume',
+      body: {
+        conversation_id: continuation.conversationId,
+        ...(typeof request.body.model === 'string'
+          ? { model: request.body.model }
+          : {}),
+        offset: continuation.eventOffset,
+        stream: false
+      },
+      headers: {
+        ...request.headers,
+        'x-conduit-token': continuation.token
+      }
+    }
+
+The worker permits resume only for direct-mode streams. It increments the handoff counter and throws after the third handoff, closes or cancels the prior request, and invokes the direct connection with the generated continuation request. A non-direct stream cannot use this resume method.
+
+The runtime maps decoded conversation state, text delta, reasoning, DIL and entity-reference updates into separate response-processor calls. When the transport reports the exact error message The SSE connection closed after text has already been received, the worker treats it as completion; otherwise it reports a transport failure. These are observed source branches, not a claim that the ChatJS runtime now performs live streaming.
+
+### Upload reservation and processing requests
+
+ChatGPTFileUploadService has a three-stage flow:
+
+1. Create a first-party upload reservation with POST /backend-api/files.
+2. Transfer bytes to the returned URL using one of two distinct upload modes.
+3. For the upload_content_bytes path, process the uploaded file with POST /backend-api/files/process_upload_stream. The upload_content_and_finalize path is already a combined upload/finalize operation and skips the separate processing call.
+
+The reservation request includes client_resolved_mime_type, entry_surface: "chat_composer", file_name, file_size, mime_resolution_source: "declared_mime", mime_type, reset_rate_limits: false, selection_method: "file_picker", timezone_offset_min, and use_case (multimodal for image MIME types, otherwise ace_upload). The response is accepted only when status is success, file_id is a string matching ^[A-Za-z\d_-]{1,256}$, and upload_url is present as a string.
+
+The content data URL must begin with the declared MIME type and ;base64,. The padded Base64 content is decoded and its byte length must equal the declared file size.
+
+### Destination validation and transport separation
+
+The upload URL parser accepts HTTPS destinations, rejects malformed authorities, credentials, non-default ports, fragments and unsafe hostname forms, and constrains destinations to either the active backend origin or the following host suffixes:
+
+- .blob.core.windows.net
+- .blob.storage.azure.net
+- .amazonaws.com
+- .oaiusercontent.com
+
+A destination is routed according to its path suffix:
+
+| Destination suffix | Transfer | Separate process request |
+| --- | --- | --- |
+| /api/estuary/upload_content_and_finalize | Multipart POST | No |
+| /api/estuary/upload_content_bytes | Multipart POST | Yes |
+| Other trusted signed destination | Raw PUT | Yes |
+
+The two Estuary multipart paths use the first-party upload client and include the authenticated session bearer and account headers. The multipart fields include the file bytes and upload URL; the combined finalize path additionally carries the file ID/name, use case, index_for_retrieval: false, and entry_surface: "chat_composer".
+
+The signed-storage path is deliberately different: it PUTs the decoded file bytes with Content-Type. It does not attach the ChatGPT bearer token or account ID to the external signed URL. Non-Amazon destinations also receive x-ms-blob-type: BlockBlob and x-ms-version: 2020-04-08; .amazonaws.com destinations do not receive those Azure headers.
+
+The separate process request carries entry_surface, file_id, file_name, index_for_retrieval: false, and use_case. Its newline-delimited response is JSON-decoded; malformed lines and error/failed/cancelled/unknown event suffixes fail the processing operation. The client also maps HTTP 401 to an expired-session error and HTTP 429 to an attachment-upload-limit error.
+
+### Android file-picker policy values
+
+The separate oai_file_picker module exposes the following values:
+
+| Policy | Value |
+| --- | ---: |
+| Maximum selected files | 10 |
+| Maximum single file | 20,971,520 bytes (20 MiB) |
+| Maximum combined selection | 26,214,400 bytes (25 MiB) |
+| Maximum image dimension | 32,768 pixels |
+| Maximum file-name length in the upload service | 512 characters |
+| Maximum MIME declaration length | 128 characters |
+
+Accepted document filename extensions are .csv, .doc, .docx, .json, .md, .pdf, .ppt, .pptx, .txt, .xls, and .xlsx. Accepted document MIME values are application/json, application/pdf, text/csv, text/markdown, and text/plain. Accepted image MIME values are image/gif, image/jpeg, image/png, and image/webp. The policy accepts a recognized extension or a recognized MIME value; the upload service separately validates the MIME syntax and file name.
+
+The upload module reads dimensions for PNG, GIF, JPEG and WebP inputs and rejects non-positive or over-limit width/height values. It returns dimensions for later conversation attachment mapping.
+
+### Partial ChatJS implementation boundary
+
+ChatJS now contains an internal, side-effect-free policy helper at src/chatgpt/file-upload-policy.cjs. It implements the reconstructed selection metadata/size/type checks, padded Base64 byte-length verification, trusted upload-destination parsing, and Estuary-versus-signed-storage request-plan/header distinction. It is packaged internally and covered by deterministic tests. It is not a public API, uploader, reservation client, authenticated transport, streaming processor, or live ChatGPT operation. No network request is made by the helper.
+
+**Still open:** actual signed-URL expiry and service-side signature semantics; upload retry/cancellation behavior across every transport; file download, image-gallery, and file-indexing workflows; complete process-stream terminal/progress schema; native device-integrity behavior/public-build selection; challenge-specific Turnstile/proof-of-work/so consumers; authenticated account and anonymous guest lifecycles; and authorized end-to-end service tests.

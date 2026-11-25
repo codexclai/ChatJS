@@ -1135,3 +1135,20 @@ The first CI run for the Android bytecode-trace documentation commit failed in t
 Continued decoding the generated `ChatGPTConversationApiClient` validators. Recovered required/optional properties and primitive/nested array types for ModelCatalogRequest, ModelCatalogModel, ModelCatalogPreset, ModelCatalogVersion, ModelCatalogResponse, ChatRequirementChallenge, and ChatRequirementsResponse. Optional field checks are against undefined, so explicit null fails the declared decoder. The generated decoder copies additional object keys, so unknown model/requirements fields remain pass-through and their actual consumers still need tracing.
 
 Updated Android protocol findings, TODO/open questions, AI memory, continuation handoff, and session log. No production runtime code was changed. Current local disassembler and third-party sources remain isolated outside Git.
+
+
+## 2026-11-25 — Android stream worker, resume, upload policy and tests
+
+**Active scope:** continued Android non-Work only. Android Work, Windows/Desktop and Codex CLI remain parked as sequencing; the permanent product target is unchanged.
+
+**Source work:** using the supplied ChatGPT Android 1.2026.321 XAPK and temporary pinned Valdi QuickJS reader, disassembled ChatGPTStreamingWorkerRuntime, ChatGPTStreamingWorkerClient, ChatGPTStreamingResponseProcessor, ChatGPTStreamingProtocol, ChatGPTStreamingContracts, AssistantResponseClient, ChatGPTFileUploadService and the separate oai_file_picker/FilePickerPolicy entry. The reader only deserializes with JS_ReadObject and dumps function bytecode; it never evaluates app functions. Analysis artifacts and third-party source/build remained outside the repository.
+
+**New stream findings:** reconstructed host/worker enums and request correlation; direct POST SSE with reconnect disabled; injected polling fallback; per-callback state/DIL/reasoning/entity-reference/text handling; exact continuation builder using /resume, conversation_id, optional model, offset, stream:false and x-conduit-token; direct-only resume with a maximum of three handoffs. Core worker and response processor mapping is in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+**New upload findings:** reconstructed authenticated POST /backend-api/files reservation body/result checks; first-party Estuary multipart finalize/content-bytes branches; signed-storage PUT path without ChatGPT bearer/account headers; Azure headers except AWS S3; process-upload POST and failure mapping; secure destination suffix/origin rules; supported MIME/extensions, ten-file / 20-MiB-file / 25-MiB-total limits, 32,768-pixel image dimension ceiling, and file name/MIME validation.
+
+**Code changed:** added internal src/chatgpt/file-upload-policy.cjs. Added tests/android-file-upload-policy.test.cjs (12 tests), included the module in scripts/build-module-archive.cjs and the archive regression test, and added syntax checking to package.json. The helper is pure/side-effect-free, not public, and makes no network requests; actual reservation/upload/process/download workflows remain unimplemented.
+
+**Validation:** npm run check passed on a disposable snapshot of the exact main commit 1a7b0ab77d94e3bb7aa86eebd12d46ac4c387656. All 35 tests passed; generated state and links passed; dist/ChatJS.tar.gz was built and inspected with nine module files (14,935 bytes; SHA-256 a7ea49529be2001718712af47fc454d0e34df57fababc1d91e6b8a1687b86854). The parent commit's CI run 45575887848 and CodeQL run 45575887722 were green before this change; verification for the new commit remains pending.
+
+**Still open:** native public-build device-integrity behavior; Turnstile/proof-of-work/so challenge consumers; authenticated account/guest session lifecycles; remaining stream event/processor variants and authorized live transport testing; signed URL expiry/retry/cancellation; upload download/indexing; and comprehensive Android non-Work feature coverage. The source trace does not imply entitlement, live endpoint success, or working ChatJS product support.

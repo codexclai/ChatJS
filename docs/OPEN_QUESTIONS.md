@@ -101,11 +101,11 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 
 ## Android authenticated conversation and guest boundary — 2026-11-25
 
-- [ ] Reconstruct the complete request body builder/serializer and method-to-route binding in `ChatGPTDirectResponseClient.js`; the present module scan identifies method/field names and route constants but not a complete validated payload schema.
-- [ ] Reconstruct the full generated model-catalog and Sentinel chat-requirements challenge schemas, including exact response decoding and provider-selection logic.
+- [x] Reconstruct the compiled Android DirectResponseClient request builder and route binding: the selected user-message body, fields/conditionals, attachment mapping, and authenticated send versus separate parent lookup versus requirements request are method-level traced. [ ] Port a validated Node.js serializer and test against non-personal fixtures.
+- [x] Reconstruct the generated ModelCatalog and ChatRequirements named-field schemas, required/optional fields, array element decoders, null handling and pass-through properties. [ ] Trace extra fields and challenge descriptor consumers/providers.
 - [ ] Trace how the direct client constructs and validates Sentinel headers, how its requirements-integrity provider obtains the required token, and how the separate device-integrity provider is selected on public Android builds. Never fabricate either result.
-- [ ] Decode the full direct SSE event schema and handoff/resume state, including the source of `resume_conversation_token`, the `x-conduit-token` header, offset semantics, and the real maximum handoff count.
-- [ ] Reconstruct file upload reservation, signed destination, PUT headers/body, processing request, cancellation/retry/expiry, and exact attachment limits before implementing uploads.
+- [x] Decode core direct SSE events, delta schema/operations, resume-token and stream-handoff state, eventOffset, continuation validation, x-conduit-token mapping, /resume body/path/header, and three-handoff cap. [ ] Complete remaining event variants and prove server acceptance through authorized tests.
+- [x] Reconstruct upload reservation, response validation, Estuary multipart and signed-storage PUT variants, process-upload request, trusted host constraints and picker limits. [ ] Resolve URL expiry/signature semantics, retries/cancellation, download, and file-indexing behavior.
 - [ ] Find the separate Android guest service. All 111 decompressed Valdi modules had no `/backend-anon` route string; the currently observed DEX route constants remain in LocationCookieInitializer. Identify the actual guest create/refresh and guest composer prepare/send owners independently.
 
 ## Windows desktop local execution boundary — 2026-11-25
@@ -120,8 +120,8 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [x] Decode ChatGPTDirectResponseClient send/prepare method bodies, selected-user-message flow, attachment mapping, integrity-provider preparation, JSON body, and route selection. Direct POST is /backend-api/f/conversation; separate parent lookup is GET /backend-api/conversation/{encodedConversationId}; requirements are POST /backend-api/sentinel/chat-requirements with {}. Full findings are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
 - [x] Decode generated ModelCatalog/ChatRequirements named-field schemas and null handling. Exact typed fields are recorded in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. [ ] Trace pass-through model/preset/version properties and challenge-specific payloads into their consumers; determine when each challenge type is emitted and required in public app behavior.
 - [x] Decode event message/completion/resume-token/stream-handoff and delta-operation state machine, including c/o/p/v fields, supported operations, JSON-pointer escaping, unsafe-path rejection, 2,048-character and 64-segment limits, and three-handoff ceiling.
-- [ ] Recover resume HTTP request body/header/path mapping and reconcile eventOffset with streaming worker offset/continuation protocol.
-- [ ] Recover numeric MAX_PICKED_FILES, MAX_PICKED_FILE_BYTES and MAX_PICKED_TOTAL_BYTES plus upload reservation response layout, signed URL requirements, PUT headers, processing request, URL expiry and retry/cancellation policy.
+- [x] Recover the direct resume path/body/header builder and its offset/token mapping from ChatGPTStreamingContracts; confirm it is used only for direct streams and capped at three handoffs. [ ] Verify live service acceptance and restart/recovery behavior.
+- [x] Recover MAX_PICKED_FILES=10, MAX_PICKED_FILE_BYTES=20 MiB, MAX_PICKED_TOTAL_BYTES=25 MiB, accepted document/image types, file-name/MIME validation, upload destinations, request bodies and storage headers. [ ] Resolve URL expiry, retry/cancellation and end-to-end upload behavior.
 - [ ] Trace the full native ChatGPTDeviceIntegrityProvider service call and actual public-build availability. The Valdi adapter boundary, version/service selection and response patch/header validation are now traced; the DEX native implementation has a package-ID caveat.
 
 ## Codex CLI client family — 2026-11-25

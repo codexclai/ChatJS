@@ -10,12 +10,16 @@ No Android client capability is removed from consideration by its feature-domain
 
 ### Android non-Work completion sequence
 
-- [x] Build a temporary read-only bytecode inspector from the pinned Valdi QuickJS fork and disassemble Android ChatGPTDirectResponseClient, the generated conversation API client, and the event decoder. Recovered the authenticated send body, exact send/parent-lookup/requirements routes, requirements-integrity gate, device-integrity adapter boundary, handoff/delta behavior and path bounds. Remaining schema/native-provider/resume/upload questions stay separately open.
+- [x] Build a temporary read-only bytecode inspector from the pinned Valdi QuickJS fork and disassemble the Android direct sender, generated conversation API client, event decoder, streaming worker/client/contracts, upload service and file-picker policy. Recovered the authenticated send body/routes, typed model/requirements fields, stream handoff and resume request, upload reservation/transfer/process flow, trusted storage hosts and numeric selection limits. The analysis tool and third-party bytecode remain temporary; no Android app code is executed.
 - [ ] Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP and account switching with legitimate authorization and secret handling.
 - [ ] Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
-- [ ] Decode Android model catalog and chat-requirements decoders, nested challenge variants, requirements-integrity and device-integrity flow, public-build provider selection, cooldown/rate-limit handling, and all failure/retry semantics.
-- [ ] Decode the Android conversation stream/event model, delta operations, assistant/tool/reasoning updates, handoff/resume body and headers, offsets, interruption, errors, completion and history synchronization.
-- [ ] Reconstruct files/attachments end to end: reservation, signed destination, bounded upload, finalize/process, download, image metadata, file indexing, expiry, retry and cancellation.
+- [x] Decode generated Android ModelCatalog and ChatRequirements named-field schemas, optional/null behavior, and pass-through properties; record the exact models and chat-requirements routes.
+- [ ] Trace pass-through model/preset/version properties and challenge-specific Turnstile/proof-of-work/so consumers; reconstruct requirements/device-integrity selection, native public-build availability, cooldown/rate-limit retention, and all failure/retry semantics.
+- [x] Reconstruct the Android direct-stream worker protocol, host/worker message kinds, callback correlation, prepared-content delta handling, direct-versus-polling branch, exact resume path/body/header, offset handoff, and three-handoff cap from compiled methods.
+- [ ] Complete the remaining event variants, response-processor lifecycle, interruption/recovery, error mapping, completion/history synchronization, and authorized end-to-end stream tests.
+- [x] Reconstruct the Android file-picker selection policy, upload reservation body/result checks, Estuary multipart and signed-storage PUT branches, process-upload request, trusted destination rules, and image-dimension bounds from compiled methods.
+- [x] Add and test an internal, side-effect-free ChatJS attachment-policy helper for the verified selection limits, Base64 byte-length check, trusted destination parser, and upload strategy/header plan. This is not a network uploader or public API.
+- [ ] Implement and test the complete authenticated upload/download workflow, including real reservation/transfer/process calls, file indexing, URL expiry, retries, cancellation, and cleanup.
 - [ ] Inventory and trace the remaining Android non-Work product areas, including Projects, instructions, context, memory/personalization, image generation/input, video, voice/audio, search, tools, connectors, galleries, and all other genuine client workflows.
 - [ ] Reconstruct feature/configuration dependencies only where required for functional parity; preserve functional configuration while excluding SDK analytics, exposure reporting, tracking and telemetry.
 - [ ] Implement the Android non-Work capabilities in native ChatJS modules with ESM/CommonJS parity, accurate TypeScript, validated configuration, bounded async/concurrent streaming, cancellation, backpressure and resource cleanup.
@@ -130,10 +134,10 @@ Never create branches or worktrees. Keep all repository work on main.
 
 ## P1 — Newly identified protocol reconstruction tasks (2026-11-25)
 
-- [ ] Reconstruct the full Android authenticated DirectResponseClient request builder and exact route/method selection for `/backend-api/f/conversation` vs `/backend-api/conversation`; decode the serialized body and validate it with non-personal fixtures.
-- [ ] Decode complete generated model-catalog and Sentinel chat-requirements request/response schemas. Preserve the separate requirements-integrity and device-integrity provider interfaces; never fake their output or bypass a required provider.
-- [ ] Reconstruct Android direct-stream event decoding, `resume_conversation_token`, `x-conduit-token`, `/resume` request, offset/handoff state and retry limits.
-- [ ] Reconstruct the attachment upload reservation/PUT/process sequence, signed-URL allow-list, cancellation, retry/expiry and size/type limits.
+- [x] Reconstruct the static Android DirectResponseClient sender: exact send/parent-lookup/requirements routes, selected-user-message body, conditional fields, attachment mapping and integrity gates. Node.js serialization/transport and fixture tests remain open.
+- [x] Decode generated ModelCatalog and ChatRequirements typed fields, optional/null validation and pass-through behavior. [ ] Trace challenge-specific provider consumers and native device-integrity availability.
+- [x] Decode core direct-stream events and direct resume path/body/header/offset/token mapping, including the three-handoff cap. [ ] Complete all event variants, processor lifecycle and authorized live tests.
+- [x] Decode reservation, signed destination validation, Estuary multipart/raw PUT variants, processing request, numeric limits and accepted formats. [ ] Implement and test authenticated transfer/download, expiry, retry/cancellation and indexing.
 - [ ] Locate the Android guest service and the real anonymous create/refresh and composer prepare/send calls. Keep this independent from the authenticated ChatGPT service module and the LocationCookieInitializer route strings.
 - [ ] Map the exact user-visible Windows ChatGPT Work Local UI call path to its local process/RPC and service network behavior. The packaged Codex app-server subprocess is a source finding, not a ChatJS dependency; ChatJS must not spawn `codex.exe` or a separate app-server process.
 - [ ] Reconstruct the desktop `/wham` and Estuary client schemas and identify which UI features use them; do not equate every visible Work surface with the Codex app-server path.
@@ -142,8 +146,8 @@ Never create branches or worktrees. Keep all repository work on main.
 
 - [x] Decode Valdi bytecode/control flow for authenticated DirectResponseClient send/prepare: exact `/backend-api/f/conversation` send route, separate GET `/backend-api/conversation/{id}` parent lookup, selected-user-message body construction, conditional conversation/skills fields, attachment mapping, JSON serialization and requirements/device-integrity provider boundaries. Full nested model/requirements schemas, public native integrity behavior, upload protocol and resume mapping remain separate tasks.
 - [x] Decode generated ModelCatalog/ChatRequirements named-field requiredness, optionality, and types: request flags; default_model_slug; models/versions; model slug/model_slug; intelligence_presets; requirements token and turnstile/proofofwork/so challenge arrays; challenge required flag. Extra properties are preserved and optional nulls fail validation. [ ] Trace pass-through catalog fields and challenge descriptor consumers/provider schemas.
-- [ ] Decode event decoder and direct resume request bytecode, including delta operations, entity references, `resume_conversation_token`, `stream_handoff`, `resume_sse_endpoint`, `x-conduit-token`, offsets and maximum handoff count.
-- [ ] Decode upload reservation response, numeric file/count/total-size limits, URL expiry, retry/cancellation and accepted MIME/image constraints.
+- [x] Decode event/delta operations and direct resume request bytecode, including entity references, resume/handoff events, x-conduit-token, offset and maximum handoff count. [ ] Complete untraced event types and server verification.
+- [x] Decode upload reservation response, exact count/per-file/aggregate limits, accepted MIME/image constraints, URL validation, and PUT/process requests. [ ] Resolve URL expiry, retry/cancellation, download and file indexing.
 
 ## P1 — Unified ChatGPT mobile + desktop + Codex CLI product target
 
