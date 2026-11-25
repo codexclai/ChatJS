@@ -169,3 +169,12 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Trace dynamic-tool source registration/refresh, current-thread lifecycle, namespace/schema validation, deferred/direct exposure, response callback and cancellation. It must not be treated as another model provider or a fake local tool.
 - [ ] Map catalog-sourced plugin/connector discovery and install flow, exact elicitation request, consent outcomes, verification, MCP refresh, connector merge and client availability gates. Decide which candidates are in scope while preserving the project's category exclusions and no-unsolicited-network policy.
 - [ ] Confirm all upstream analytics/tracking attached to tool or install paths are excluded.
+
+## Android QuickJS method disassembly — 2026-11-25
+
+- [ ] Obtain a complete source checkout of the pinned Valdi QuickJS fork and its exact supporting source/header files; record repository commit, source hashes, compile flags, architecture and dependencies.
+- [ ] Verify whether the Android release's native QuickJS/Valdi build corresponds to the pinned source revision or whether bytecode/build options differ. The native library's QuickJS/Valdi strings are only corroborating static evidence.
+- [ ] Build a temporary analysis-only QuickJS utility with the Valdi fork. Patch the deserializer to call `js_dump_function_bytecode` after `JS_ReadFunctionTag` has fully populated the constant pool; do not rely on `DUMP_BYTECODE` alone, whose ordinary call-site is in compilation.
+- [ ] Validate the temporary dumper on a known QuickJS bytecode fixture and a copied Valdi module entry; confirm it reads the `0x0100C634` wrapped payload after unwrapping and does not execute application functions.
+- [ ] Disassemble only allow-listed methods, starting with `ChatGPTDirectResponseClient.prepare/send`, then model/Sentinel decoders, event/resume and upload methods; record complete call graphs and schema evidence.
+- [ ] Check whether the Android module retains debug filenames, line tables and sources for selected functions. Missing debug source must not be mistaken for missing opcodes or incomplete control flow.

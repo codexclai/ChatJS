@@ -274,3 +274,23 @@ The conversation callback is traced through the same ViewModel receiver: `Lxjk1.
 - **Result:** Appx identity is `OpenAI.Codex` v`26.1117.4957.0`, displayed as ChatGPT. The packaged Electron app is `openai-codex-electron`; it ships `codex.exe` and a host `StdioConnection.spawnProcess()` that launches the executable with piped stdio. The app-server RPC surface includes thread/turn operations and streamed item/command/file notifications. A distinct desktop fetch bridge restricts auth attachment to OpenAI/ChatGPT origins and identifies selected `wham` and Estuary path families.
 - **Conclusion:** the packaged desktop coding-agent path uses a local Codex app-server subprocess; this is not an acceptable ChatJS runtime dependency and is not proof that every visible Windows Work feature maps to that same path. Keep Windows local execution distinct from Android cloud Work.
 - **Limits:** no Windows app launch, login, request capture, signature verification, or end-to-end Work test. This is static package analysis only.
+
+## 2026-11-25 — QuickJS disassembly feasibility for Android Valdi bytecode
+
+**Question:** Can compiled Android Valdi methods be inspected as opcodes without relying on printable strings?
+
+**Pinned source:** `Snapchat/Valdi` commit `f5bc2dcfcb880109c908e0675968cb532231ca71`, especially `third-party/quickjs/src/quickjs/quickjs.c`, plus the Valdi QuickJS context loader.
+
+**Source observations:**
+- `js_dump_function_bytecode` invokes the actual `dump_byte_code` decoder against a function's code buffer with variable/closure/constant-pool context.
+- The ordinary `DUMP_BYTECODE` call-site is in compilation, not proof that serialized precompiled modules are printed.
+- `DUMP_READ_OBJECT` adds byte-oriented trace output to `JS_ReadObject` and `JS_ReadFunctionTag`.
+- `JS_ReadFunctionTag` reconstructs function metadata, opcode buffer, debug metadata, then the constant pool. A temporary build can call `js_dump_function_bytecode` after constant-pool loading to decode the already-serialized function.
+
+**Android runtime evidence:** the supplied `config.arm64_v8a.apk` includes stripped 8,817,776-byte `lib/arm64-v8a/libopenai_xplat_export.so`; static ELF/string inspection finds QuickJS and Valdi runtime class names. No useful exported dump/reader symbols were present in the inspected dynamic symbol table.
+
+**Result:** a temporary, source-matched QuickJS analysis build appears feasible in principle and is a stronger path than a generic upstream `qjs` CLI or string scan. It must retain the exact Valdi fork/build profile and parse the existing Valdi wrappers correctly.
+
+**Unsuccessful/blocked step:** no source checkout or compatible QuickJS binary is installed in the analysis runtime. The GitHub connector returned an empty body for the large `quickjs.c` source file, and Firecrawl provided targeted source excerpts rather than a complete build tree. GCC is available, but the QuickJS source/dependency tree and build context are not. No compiler command ran and no method dump was produced.
+
+**Next experiment:** obtain the exact source tree/revision and build settings; patch only a temporary copy of `JS_ReadFunctionTag` to dump functions after constant-pool deserialization; run against selected module entries without invoking the resulting function bodies; validate the dumper on a known compiled fixture before analyzing ChatGPT methods.

@@ -583,3 +583,48 @@ The supplied Android assets/chatgpt_services.valdimodule was previously decompre
 The compiled module entries inspected here begin with the 0x0100C634 wrapper marker. This explains why a printable-string scan finds method names but not the executable control flow. It provides a concrete next route: a bytecode inspection utility must match the precise Valdi QuickJS fork/build and its serialized object format. No such disassembler has yet been run, and no method body, request serializer, branch condition or schema has been decoded by this step.
 
 **Scope and evidence boundary:** the only Android artifact was the owner-supplied ChatGPT-Android.xapk; the Valdi source is third-party format/runtime reference material. No APK launch, account access, credential/session extraction, HTTP request or telemetry occurred. Do not bundle the third-party Valdi/QuickJS runtime into ChatJS merely to ease static analysis; first assess license, compatibility, and whether temporary analysis tooling suffices.
+
+## 2026-11-25 — Android native QuickJS runtime and deserialized-bytecode disassembly route
+
+The compiled Valdi container investigation now has a concrete disassembly approach based on the pinned public Valdi QuickJS fork source (`Snapchat/Valdi` commit `f5bc2dcfcb880109c908e0675968cb532231ca71`) and the owner-supplied Android split package.
+
+### Native runtime confirmation
+
+The supplied `config.arm64_v8a.apk` contains `lib/arm64-v8a/libopenai_xplat_export.so`:
+
+- Size: 8,817,776 bytes.
+- ELF: 64-bit AArch64 Android shared library (minimum Android API 24; build metadata identifies NDK r28c).
+- The binary is stripped. Exported-symbol inspection did not reveal a ready-made `JS_ReadObject`, `JS_WriteObject`, or QuickJS dump entry point.
+- Static printable strings include `QuickJS`, `ValdiModuleArchiveWrapper`, `ValdiModuleArchive`, and the Valdi QuickJS context/heap/factory class names (`QuickJSJavaScriptContext`, `QuickJSHeap`, `QuickJSJavaScriptContextFactory`).
+
+This confirms the supplied Android application packages a native Valdi/QuickJS runtime alongside the compiled service modules. It does not prove the exact native build hash/source revision, that debug dump flags are enabled in this release, or that the stripped library exposes a reusable disassembler. Do not treat it as executable analysis tooling.
+
+### QuickJS dump hooks and the important call-site distinction
+
+The pinned Valdi-fork `third-party/quickjs/src/quickjs/quickjs.c` contains:
+
+- `DUMP_BYTECODE`, a compile-time flag with bits for final/pass-2/pass-1 bytecode, standard-library functions, raw bytecode hex, line tables and stack-size calculation.
+- `js_dump_function_bytecode(JSContext*, JSFunctionBytecode*)`, an internal function that prints function identity, arguments/locals/closure variables, stack size and decodes `byte_code_buf` with `dump_byte_code(...)`.
+- `DUMP_READ_OBJECT`, a separate compile-time guard that enables `bc_read_trace` byte/structure tracing while `JS_ReadObject` deserializes an object.
+- `JS_ReadFunctionTag`, which reconstructs each `JSFunctionBytecode`: reads flags/name/counts, allocates the function, reads local and closure definitions, reads the bytecode, then reads debug metadata and the constant pool.
+- `JS_ReadObject(..., JS_READ_OBJ_BYTECODE)` calls the atom reader and recursive object reader; nested function values in constant pools are deserialized recursively.
+
+Crucial distinction: the existing `DUMP_BYTECODE` call-site is in the compilation path, so merely defining that macro does not establish that precompiled Android functions read from the module are dumped. `DUMP_READ_OBJECT` provides a byte-level deserialization trace and structural metadata; it is not by itself the readable opcode disassembly needed to reconstruct request serializer control flow.
+
+### Proposed temporary analysis patch (not yet built or run)
+
+In a **separate temporary copy** of the pinned QuickJS fork, instrument `JS_ReadFunctionTag` to call the existing `js_dump_function_bytecode(ctx, b)` after the function's constant pool has been fully deserialized (and before it is returned). The constant pool must be populated first because the opcode dumper resolves constant-pool operands. The recursive reader should then naturally reach nested function objects in module/function constant pools. Enable `DUMP_READ_OBJECT` separately only when a serialized-byte trace is useful.
+
+The analysis harness should:
+1. use the exact Valdi QuickJS source revision and build options corresponding to the Android module where possible;
+2. preserve the module's `0x0100C634` wrapper handling and pass only the unwrapped payload to `JS_ReadObject` with `JS_READ_OBJ_BYTECODE`;
+3. parse the enclosing Valdi packet/archive with validated size bounds and do not execute the functions;
+4. dump a narrow allow-listed set of methods (first `ChatGPTDirectResponseClient.prepare/send`, then generated catalog/requirements decoders, stream/resume decoder and upload methods);
+5. compare function name, parameter/local tables, opcode references, constant-pool values and call sites before drawing control-flow conclusions;
+6. record engine revision/build flags and output provenance; keep the tool and third-party runtime out of the ChatJS production package unless a separate, justified architecture/licensing decision is made.
+
+### Current status and blocker
+
+This is a source-supported proposed path, **not a working disassembler**. No QuickJS analysis build was compiled, no method bytecode was dumped, and no ChatGPT protocol method body has yet been reconstructed. The repository's GitHub file wrapper returned an empty body for the very large `quickjs.c`; Firecrawl retrieval provided targeted source excerpts but not a complete local source tree. This session's runtime has GCC but no installed `qjs`, `quickjs` or `qjsc` executable/source tree. A full compatible source checkout/build context is still required before this approach can be tested.
+
+**Safety/evidence boundary:** no Android app was launched; no account/session data, credentials, device identifiers or HTTP traffic were accessed. No app modification, injection, hooking or bypass was attempted. The only library operation was static ELF metadata/string/export inspection. No production ChatJS code or dependency changed.

@@ -207,3 +207,16 @@ Statsig's Android SDK maps initialize to `https://featureassets.org/v1/i` and `l
 ## Android authenticated conversation contract — deeper static pass, 2026-11-25
 
 The owner-supplied base APK's decompressed `chatgpt_services.valdimodule` has a direct-response field inventory covering conversation/message context, text and multimodal parts, metadata, model-written DIL, skills overrides, stream/timezone controls and file/image asset references. It contains both authenticated conversation route constants and a POST/JSON serialization path. The generated model/requirements API client contains strict schema decoders; the event decoder identifies delta operations, entity-reference spans, reasoning/DIL state, handoff tokens and resume context. The upload client contains reservation/process metadata, Azure block-blob PUT headers, trusted cloud-storage suffix checks and Estuary routes. Exact object nesting, method branch conditions, requiredness, decoder variants, resume semantics and numeric upload limits remain unknown. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md. This is static evidence, not an implemented or live-tested ChatJS feature.
+
+## 2026-11-25 — Valdi QuickJS dump hooks and the Android method-disassembly plan
+
+A public-source cross-check against `Snapchat/Valdi` commit `f5bc2dcfcb880109c908e0675968cb532231ca71` found internal QuickJS bytecode diagnostics in `third-party/quickjs/src/quickjs/quickjs.c`:
+
+- `js_dump_function_bytecode(JSContext*, JSFunctionBytecode*)` prints function metadata and invokes `dump_byte_code` on the actual opcode buffer with variable/closure/constant-pool metadata.
+- `DUMP_BYTECODE` is a compile-time diagnostic primarily invoked in the source compilation path.
+- `DUMP_READ_OBJECT` enables byte/structure tracing in `JS_ReadObject`, including the `JS_ReadFunctionTag` deserializer. It is not by itself a decoded opcode listing.
+- `JS_ReadFunctionTag` reconstructs function bytecode, then reads debug data and the constant pool. A temporary analysis copy can call the existing disassembler after the constant pool is populated, so deserialized precompiled Android functions can be inspected without executing them.
+
+The supplied Android `config.arm64_v8a.apk` also contains an 8,817,776-byte, stripped ARM64 `libopenai_xplat_export.so` with printable `QuickJS` and `ValdiModuleArchive`/Valdi QuickJS class names. Exported-symbol inspection found no directly reusable dump/deserialize entry points. This corroborates that the package includes the runtime, but does not establish its exact source revision or build flags.
+
+**Status:** viable temporary analysis strategy identified; no compatible tool has yet been built or run. Full QuickJS fork sources and matching build options remain required. Do not mark the Android send serializer or any other method decoded until a narrow method disassembly and call-flow analysis are completed. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.

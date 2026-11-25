@@ -184,3 +184,10 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Implement current-thread dynamic tool registration/invocation as explicit callback-based operations with schema validation, lifecycle events and cancellation; keep separate from AI-service transport.
 - [ ] Reconstruct catalog-sourced plugin/connector discovery/install, explicit elicitation consent, install verification and MCP refresh; only support approved in-scope entries and preserve all product exclusions.
 - [ ] Add unit and authorized integration tests for every control/extension lifecycle, host adapter missing states, cancellation, reordered responses, install decline/cancel and no-telemetry/no-unsolicited-network invariants.
+
+## P1 — Android Valdi/QuickJS bytecode inspection tooling
+
+- [ ] Obtain the full pinned Valdi QuickJS source tree and exact fork/build settings; resolve the large-source retrieval blocker and verify source/native-runtime compatibility.
+- [ ] Build a temporary analysis-only fork with a deserialized-function dump hook in `JS_ReadFunctionTag` after its constant pool has been read. Use `DUMP_READ_OBJECT` only as a supplemental serialization trace; the regular `DUMP_BYTECODE` hook is not sufficient for precompiled modules.
+- [ ] Validate the disassembler against a known compiled function fixture and a copy of one module entry; preserve bounds checking and never execute module functions.
+- [ ] Disassemble DirectResponseClient.prepare/send, exact route selection/serialization, generated ModelCatalog/ChatRequirements decoders, SSE event/resume and upload reservation/process functions. Record bytecode, constants, function metadata, branches, callees and remaining uncertainties.

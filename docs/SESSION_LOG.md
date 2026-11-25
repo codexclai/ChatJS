@@ -1006,3 +1006,20 @@ Pinned Codex source: `codex-rs/core/src/tools/network_approval.rs`, `tools/handl
 - No user interface, user answer, environment startup, MCP resource request, dynamic tool call or plugin/connector installation occurred.
 - No production ChatJS code, tests, dependencies or APIs changed. These remain Research/Planned.
 - ChatJS must not claim a user question or status update was displayed without an actual host interaction path, or claim installation/readiness without a real successful result.
+
+## 2026-11-25 — Android QuickJS native runtime and bytecode disassembly feasibility
+
+### Work performed
+
+- Extracted the owner-supplied `config.arm64_v8a.apk` split from `ChatGPT-Android.xapk` and statically inspected the native library inventory.
+- Inspected `lib/arm64-v8a/libopenai_xplat_export.so`: 8,817,776 bytes, ELF64 AArch64 Android, minimum API 24, NDK r28c build metadata, stripped. Printable strings identify QuickJS and Valdi module archive/context/heap/factory classes. No reusable `JS_ReadObject`/dump symbols were observed in the exported dynamic symbol table.
+- Retrieved targeted excerpts from the pinned Valdi QuickJS source and identified `js_dump_function_bytecode`, `DUMP_BYTECODE`, `DUMP_READ_OBJECT`, `JS_ReadObject`, and `JS_ReadFunctionTag`.
+- Distinguished compilation-time bytecode dumping from deserialization tracing: `DUMP_BYTECODE` is normally called from compilation, while `DUMP_READ_OBJECT` traces serialized bytes/metadata. `JS_ReadFunctionTag` reconstructs opcodes before reading the constant pool; the temporary patch must call `js_dump_function_bytecode` after the constant pool is read.
+- Defined a bounded, analysis-only approach: unwrap one Valdi compiled-JS entry, pass bytecode to `JS_ReadObject` with `JS_READ_OBJ_BYTECODE`, instrument deserialized function dumping, and never evaluate application code.
+
+### Limits and blockers
+
+- The current analysis runtime has GCC but no installed `qjs`, `quickjs` or `qjsc` tool/source tree.
+- The GitHub connector returned an empty content body for the very large `quickjs.c`; Firecrawl returned exact targeted source excerpts, not a complete local source/build tree. Therefore no temporary utility was compiled or executed.
+- The Android native library's embedded QuickJS/Valdi strings do not prove exact source revision/build options or expose a ready-made disassembler.
+- No method body, request serializer branch, or decoder control flow has been recovered. No app launch, account access, credential extraction, HTTP request, injection or telemetry occurred. No production ChatJS code, tests, API or dependency changed.
