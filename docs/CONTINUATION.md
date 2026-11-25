@@ -650,3 +650,10 @@ The lookup-key nonce proof is traced, but its full consumers and relationship to
 Added private `src/chatgpt/android-dpop-jws.cjs` and seven tests. It builds the ordered signing input and appends only an externally supplied 64-byte ES256 signature. Tests cover canonicalization, wire schema/order, ath, integer preservation, compact assembly, and verification of an ephemeral P-256 test signature. Added syntax check, archive allowlist/contract, and root docs. It is not a public API export.
 
 No production key/signing, AndroidKeyStore access, secure credential storage, timestamp/jti generation, nonce challenge, token refresh, authentication or HTTP request was implemented. Production use requires a real host-owned secure non-exportable signer and the remaining first-party session/challenge state machine. Other client tracks remain parked only for sequencing.
+
+
+## Correction — Android DPoP iat clock semantics — 2026-11-25
+
+The previous handoff described the `iat` unit and rounding as unresolved. Direct bytecode shows otherwise. `Ln1d1.b` reads `Lblf0.a`, the Instant epoch-second long, reads stored `Lpvx.b`, and adds the two using 64-bit arithmetic before passing the value to `Lyls0.s`. `Lxb8.e` calculates and stores the offset as server epoch seconds minus local Instant epoch seconds, then logs that it is retrying the refresh request after correcting the DPoP proof timestamp. Therefore `iat` is server-aligned epoch seconds. It is not milliseconds, and the Instant nanosecond field is not used.
+
+The exact original server timestamp source and retry ceiling remain open. ChatJS's private `calculateAndroidDpopIssuedAt` helper applies already-supplied integer values only; it does not acquire clock state, parse server time, persist the offset or perform retries. Two focused tests cover the helper.

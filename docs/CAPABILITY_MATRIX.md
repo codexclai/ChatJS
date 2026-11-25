@@ -143,3 +143,8 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 | --- | --- | --- |
 | Android DPoP header/payload and compact-JWS serialization | Implemented (private serializer only) | Source-traced header `typ`/`alg`/`jwk` and payload `htm`/`htu`/`iat`/`jti`/`ath`; canonical URL and token hash; 64-byte signature assembly. Seven tests include real P-256 signature verification. No key generation, host signer, session/nonce/refresh workflow or HTTP transport. |
 
+
+
+### Android DPoP timestamp alignment — 2026-11-25
+
+The JWS `iat` input is an Instant epoch-second value plus the stored server-minus-local epoch-second offset. The correction path updates the offset from server epoch seconds minus local Instant epoch seconds. The private ChatJS helper applies these supplied integer values only; time acquisition, server-time extraction, persistence and retries remain Research/Planned.

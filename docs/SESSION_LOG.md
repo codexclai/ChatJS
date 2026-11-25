@@ -1366,3 +1366,12 @@ GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989c
 **Implementation:** added private `src/chatgpt/android-dpop-jws.cjs` and seven tests; it serializes the ordered signing input and assembles a three-segment compact JWS from a supplied 64-byte signature. Tests include an ephemeral P-256 signing/verification round trip only. Added package syntax check, archive inclusion/contract and root documentation. No key generation, signing provider, keystore, credentials, refresh/challenge flow, authentication or network behavior was added.
 
 **Local verification:** `node --check src/chatgpt/android-dpop-jws.cjs` passed; focused tests passed 7/7. Full CI/CodeQL for the new commit are pending.
+
+
+## 2026-11-25 — Android DPoP epoch-second clock correction
+
+**Source trace:** corrected the prior uncertainty in the DPoP `iat` handoff. `Ln1d1.b` reads the Instant epoch-second long from `Lblf0.a`, adds stored `Lpvx.b` with 64-bit arithmetic, and passes the result into the proof builder. `Lxb8.e` reads a server-supplied timestamp, subtracts local Instant epoch seconds, stores server-minus-local seconds in `Lpvx.b`, and logs a retry after correcting the DPoP proof timestamp. Thus `iat` uses epoch seconds, not milliseconds; Instant nanoseconds are not used. Exact server timestamp source and total retry ceiling remain open.
+
+**Implementation:** added `calculateAndroidDpopIssuedAt` to the private DPoP serializer. It performs integer-only offset addition, preserves BigInt where needed and rejects unsafe/fractional Number inputs. Two tests cover positive/negative offsets, BigInt/mixed inputs and invalid numbers. It does not obtain time, persist offset state, parse a server response or retry.
+
+**CI correction:** CI for `64e24bb` and `a247735` stopped at docs:check because `project-state.json` ended with literal backslash-n characters, so the generator could not parse JSON. The JSON source and generated Markdown are repaired together in this handoff. CodeQL for `64e24bb` passed; complete CI has not yet passed for the DPoP clock helper.

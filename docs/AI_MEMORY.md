@@ -363,3 +363,8 @@ DEX method `Ljj51.m(byte[], KeyPair)` serializes JCA `SHA256withECDSA` output fr
 ### Android P-256 key lifecycle/JWK formatter — 2026-11-25
 
 DEX `Lchy.d/f/e` provide AndroidKeyStore EC secp256r1 key generation/load/delete with SHA-256 digest. Cross-DEX callsites connect `Lcn8` and `Lqhk0`/`Lzt2` to the `openai.login.dpop.` alias family. The generic Valdi Keychain AES-GCM key under alias `Valdi` is a separate subsystem. DEX `Ljj51.p` plus `Ldk50` establish exact public EC JWK fields `kty`/`crv`/`x`/`y` and 32-byte affine coordinate/Base64URL encoding. ChatJS now has a private P-256 JWK coordinate formatter with six tests; it does not generate/load keys, sign, access a keystore, or implement DPoP. The exact relationship of this lookup-key proof to the main DPoP request flow remains unknown.
+
+
+### Android DPoP proof serializer and clock alignment — 2026-11-25
+
+The main proof path `Ln1d1.b` → `Lyls0.s` has header `typ=dpop+jwt`, `alg=ES256`, `jwk`; payload `htm`, `htu`, `iat`, `jti`, `ath`. The jti originates from 16 SecureRandom bytes; htm is POST; ath is SHA-256 of UTF-8 access-token bytes in unpadded Base64URL; htu lowercases scheme/host, removes default ports, preserves path spelling, defaults empty path to slash and omits query/fragment. iat is Instant epoch seconds plus stored server-minus-local epoch-second offset. The correction path calculates the offset from server epoch seconds minus local Instant epoch seconds and logs a timestamp-correction retry. ChatJS contains private signing-input/JWS serialization and an integer offset helper, but neither signs or obtains/persists clock state. Exact server timestamp source, offset lifecycle, retry ceiling, native provider and secure host signer remain open.

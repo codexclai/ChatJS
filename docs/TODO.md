@@ -334,6 +334,15 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Decode header `typ=dpop+jwt`, `alg=ES256`, `jwk`; payload `htm`, `htu`, long `iat`, `jti`, `ath`, their field order and serialization.
 - [x] Verify SHA-256/UTF-8/Base64URL token binding and source URL canonicalization.
 - [x] Implement private signing-input/compact-JWS serialization with seven tests and package archive coverage.
-- [ ] Resolve `iat` clock unit/rounding and stored clock-offset lifecycle.
+- [x] Resolve `iat` as epoch seconds from `Instant.epochSecond` plus stored server-minus-local epoch-second offset; trace the correction calculation. Offset acquisition/persistence and total retry ceiling remain open.
 - [ ] Trace main-request DPoP nonce/challenge state, OAuth refresh request/response and bounded retries; keep lookup-key nonce proof separate.
 - [ ] Implement authenticated DPoP only after native provider and secure non-exportable host signer/session ownership are established and authorized E2E tests pass.
+
+
+## Android DPoP timestamp correction and epoch-second alignment — 2026-11-25
+
+- [x] Trace `Ln1d1.b`: read `Instant.epochSecond`, add stored `Lpvx.b` offset using 64-bit arithmetic, and pass the result as DPoP `iat`.
+- [x] Trace `Lxb8.e`: calculate corrected offset as server epoch seconds minus local Instant epoch seconds and store it in `Lpvx.b` before the timestamp-correction refresh retry.
+- [x] Add `calculateAndroidDpopIssuedAt` as a private integer-only offset helper with Number/BigInt preservation and tests for positive, negative, mixed-width and invalid inputs.
+- [ ] Identify the exact server timestamp source field and remaining bounded retry ceiling; do not infer either from the log message alone.
+- [ ] Trace offset persistence, expiry and reset across credential/session changes.

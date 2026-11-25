@@ -1614,3 +1614,19 @@ The clock input is an instant-derived long plus stored DPoP offset. Its exact un
 Added private `src/chatgpt/android-dpop-jws.cjs`: `canonicalizeAndroidDpopUrl`, `buildAndroidDpopSigningInput`, and `assembleAndroidDpopJws`. Seven tests verify URL normalization, exact field names/order, `ath`, integer preservation, compact assembly, and a real ephemeral P-256 signature check. The module is included in syntax checking and the distribution archive/contract test, but is not exported publicly.
 
 This is serialization only. Callers must supply a real public JWK, authorized timestamp, jti, access token, and 64-byte signature from an explicit host-owned secure non-exportable signer. No key generation/storage, AndroidKeyStore access, secure signer/provider, credential refresh, nonce/challenge state, authentication, or HTTP request is implemented. No DPoP proof was sent to a service and no credentials were used in tests.
+
+
+## Android DPoP epoch-second clock and timestamp correction — 2026-11-25
+
+The earlier handoff marked the `iat` unit/rounding unresolved. That is superseded by this method-level trace:
+
+- In `Ln1d1.b`, the Android caller obtains the current Instant from `La8l.a()`, reads the epoch-second long field `Lblf0.a`, reads the stored offset field `Lpvx.b`, and performs a 64-bit `add-long`. That sum is passed to `Lyls0.s` as the JWS `iat`.
+- In `Lxb8.e`, the invalid-proof timestamp-correction path obtains a server-supplied long, obtains the current Instant and reads its epoch-second field, then performs `serverEpochSeconds - localEpochSeconds` and stores the result in `Lpvx.b`.
+- The method logs: “Retrying refresh token request after correcting the DPoP proof timestamp.”
+- Therefore `iat = localEpochSeconds + (serverEpochSeconds - localEpochSeconds)`: server-aligned epoch seconds. The offset is in seconds, not milliseconds. The Instant nanosecond field is not used in this calculation.
+
+The exact original server timestamp response/header/error field and the overall retry ceiling remain unresolved; preserve bounded, source-specific retry behavior.
+
+### ChatJS helper
+
+The private `calculateAndroidDpopIssuedAt(localEpochSeconds, serverClockOffsetSeconds)` helper in `android-dpop-jws.cjs` adds integer epoch seconds and offset. It preserves large values with BigInt when needed and rejects fractional/unsafe Number inputs. Two tests cover positive/negative offsets, BigInt/mixed values and invalid numbers. It does not acquire the clock, parse server time, persist offset state or retry requests.

@@ -235,3 +235,10 @@ The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r ||
 **Resolved:** generated serializer `Ldk50` confirms exact public-key model JSON fields `kty`, `crv`, `x` and `y`; constructor fixes EC/P-256. `Ljj51.p(ECPublicKey)` derives affine X/Y, normalizes 32 bytes and uses URL-safe Base64 without padding. `Lyt2.b(String)` consumes that model in a 32-byte lookup-key nonce signature path.
 
 **Still open:** trace all consumers of this lookup-key proof and determine whether it is reused by or separate from the main DPoP JWT request/challenge flow. Exact native provider injection and host secure-key ownership also remain unknown. The new ChatJS JWK formatter only serializes coordinate bytes.
+
+
+## Android DPoP iat clock source — 2026-11-25
+
+**Resolved:** the proof path reads `Instant.epochSecond` and adds the stored DPoP offset. The timestamp-correction path sets the offset to server epoch seconds minus local Instant epoch seconds. The resulting `iat` is server-aligned epoch seconds, not milliseconds.
+
+**Still open:** exact server timestamp source field, offset reset/expiry/persistence lifecycle, timestamp-correction retry ceiling, native credential-provider injection and real secure host signer. ChatJS's helper only adds supplied integer epoch seconds and offset.
