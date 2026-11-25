@@ -209,7 +209,8 @@ The generated request descriptors and catalog/requirements response decoders now
 - [x] Decode OAIRequestCredential's generated ErrorEnvelope schema, exact token_revoked/token_invalidated/require_sso_login/token_expired classification order, reportRevoked/accountId/SSO flag behavior and caller-gated accessToken renewal. Implemented only as a private pure classifier/plan; no service calls or retries.
 - [x] Trace OAIRequestCredential context into native clear/accessToken calls and OAIBearerAPIService caller: exact 401 eligibility, explicit renewal gate, same-request one-shot replay with further renewal disabled, and original-response fallback are method-decoded. The pure request/recovery policy helper is tested only.
 - [ ] Reconstruct actual native clear effects, renewable token payload/DPoP, provider implementations, SSO UI and authorized host adapter; no credential invalidation, renewal or HTTP transport is implemented.
-- [ ] Trace DPoP and token lifecycle to the exact AuthSession credential repository callsites, and keep those authenticated flows separate from the accountless guest SessionManager lifecycle.
+- [x] Trace the Android DEX DPoP key repository, AndroidKeyStore/EC signing path, ES256 dpop+jwt serialization constants, DPoP-vs-Bearer request plugin, nonce/challenge readers and OAuth refresh/error call graph. Source findings are documented; no runtime support exists.
+- [ ] Complete the native provider closure/host injection path, exact DPoP proof claims and nonce lifecycle, full refresh request/response schema and bounded retry policy. Design a legitimate non-exportable host signer capability; no PEM/file-based fallback or Android key export.
 
 ## Android authentication method reconstruction — 2026-11-25
 

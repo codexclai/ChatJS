@@ -579,3 +579,27 @@ Added private `src/chatgpt/android-authenticated-request-policy.cjs`, pure-only 
 ### Next Android work
 
 Trace actual injected HTTP client/network adapter, actual native CompilerIntrinsics service/provider closures, secure-store and `onCleared` behavior, DPoP proof/material propagation, and authorized service behavior. Complete controller concurrency/generation/foreground/cancellation/sign-out races. No request, login or credential has been used. Android guest session remains a distinct unauthenticated lifecycle, and Android Work/Windows Desktop/Codex CLI remain parked only for sequencing.
+
+ 
+## Latest handoff — Android DEX native auth provider sweep and DPoP stack — 2026-11-25
+
+### Provider implementation census
+
+The supplied XAPK (SHA-256 22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d) and extracted base APK (SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c) were examined at the DEX level. The sweep covered all ten classes*.dex files. Only generated closure adapters directly implement the auth interface types: Lxhq0 forwards OAIAuthenticationService calls, and Ldjq0 forwards OAIRenewableAuthentication calls. OAIPlatformServices stores typed authentication/renewable fields; the no-arg constructor leaves them null, and no direct call to the full constructor with auth parameters was identified in the direct-call-site sweep. The actual provider may be injected through CompilerIntrinsics/native host code or a reflective path not represented by these DEX references. Do not describe the provider as absent; describe it as not found in the inspected direct DEX implementation/call graph.
+
+### DPoP source findings
+
+Android's DEX contains a substantial DPoP/key/refresh subsystem, independent of the small Valdi wrapper modules:
+
+- Signing-key repository uses alias prefix openai.login.dpop. and persists alias/pending cleanup metadata as key_pair_alias / pending_credential_deletion; alias save failure is an explicit SaveCredentialsFailed path.
+- Native key path references AndroidKeyStore, EC/secp256r1 and SHA256withECDSA; there are cleanup/failure paths for partially generated or abandoned login signing keys.
+- DPoP JOSE serialization uses typ=dpop+jwt and alg=ES256; public-key/JWK and lookup-key nonce code is present.
+- The auth network plugin chooses Authorization: DPoP or Bearer depending on whether the AccessToken includes a DPoP signer and adds a separate DPoP proof header. Challenge code reads WWW-Authenticate and X-Nonce.
+- Auth refresh posts to https://auth.openai.com/oauth/token, has separate refresh_token_reused/token_expired/invalid_dpop_proof classifications and includes a corrected-proof-timestamp retry branch; another network branch recognizes dpop_iat_out_of_range. The exact complete proof claims, refresh wire payload and attempt ceilings remain open.
+- android_dpop_signing_concurrency and internal signing timing/queue/result dimensions were seen; these do not authorize ChatJS telemetry or background reporting.
+
+### Product implications and boundaries
+
+The DPoP signer uses AndroidKeyStore-held key material and native/session nonce state. ChatJS must not export/copy such keys, invent a PEM substitute, turn a bearer token into a DPoP credential, or bypass first-party integrity/challenge requirements. A future portable host adapter must expose a legitimate secure non-exportable signing capability and preserve the first-party credential/session contract; absent that, the operation must fail closed. The exact DPoP claims, nonce lifecycle, native provider closures, refresh response schema, and host signer API are not implemented. No DPoP key, credential or OAuth request was created or used.
+
+The current ChatJS runtime remains foundation-only: no live authentication, secure credential storage, DPoP generation, token refresh, authenticated HTTP transport, credential clear or account-switch implementation. The private helpers remain policy/schema-only. Next tasks are reconstructing the underlying platform/native auth provider, secure storage and transport, then complete Node host secure-signer/session contracts before implementation. Android Work/cloud, Windows Desktop/local Work and Codex CLI remain parked for sequencing only; the full target is unchanged.

@@ -110,3 +110,11 @@ This is temporary sequencing, not a change to product scope. Complete the full C
 ## Android source coverage update — 2026-11-25
 
 The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Nineteen module groups contain route-like string candidates, catalogued in [ANDROID_CLIENT_MODULE_INVENTORY.md](ANDROID_CLIENT_MODULE_INVENTORY.md). These are package/string discovery evidence, not proven route callsites, entitlement or available workflows. `chatgpt_ads` is a package marker only and is excluded; telemetry strings are excluded from ChatJS. Android authentication path predicates and the account-check dictionary schema/initial account-selection policy are method-verified private helpers. Authentication lifecycle, secure credential storage, refresh/SSO/DPoP, standalone account switching and authenticated HTTP remain research-only.
+
+ 
+## Android DPoP and native authentication provider evidence — 2026-11-25
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Android native authentication provider injection | Research (DEX interface/adapter census complete; provider not located) | All ten base APK DEX files checked; only generated Function adapters directly implement OAIAuthenticationService/OAIRenewableAuthentication; no direct full OAIPlatformServices constructor call identified. Native/CompilerIntrinsics/reflective provider path remains unknown |
+| Android DPoP signing and refresh | Research (DEX call graph traced; not implemented) | AndroidKeyStore EC/secp256r1 key aliases, SHA256withECDSA, dpop+jwt/ES256, DPoP-vs-Bearer header selection, WWW-Authenticate/X-Nonce, OAuth refresh and invalid-proof timestamp-correction branch observed. Exact claims, nonce lifecycle, complete refresh schema and retry ceilings remain open; no ChatJS signing or token refresh |

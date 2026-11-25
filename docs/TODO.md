@@ -296,3 +296,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Decode automatic renewal option gate at Valdi runtime >=377 and final unauthorized callback behavior, including distinct no-native-context session expiry handling.
 - [x] Implement private pure authenticated request header/JSON/body/recovery-policy helper with 13 deterministic tests; no network, native callbacks, credential use or replay is implemented.
 - [ ] Reconstruct and implement the actual Node.js authenticated HTTP transport, request task state/cancellation semantics and response contract only after real host secure credentials, native token renewal/clear, DPoP and first-party integrity are supported.
+
+ 
+## Android auth provider and DPoP DEX reconstruction — 2026-11-25
+
+- [x] Sweep all ten supplied Android base APK DEX files for direct OAIAuthenticationService/OAIRenewableAuthentication implementors and OAIPlatformServices constructor/call sites; only generated Kotlin closure adapters were identified, while the actual provider closures remain a bounded unknown.
+- [x] Trace Android DPoP key repository metadata: openai.login.dpop. alias prefix, key_pair_alias / pending_credential_deletion metadata, save-failure handling and abandoned-key cleanup paths.
+- [x] Identify DPoP crypto/JWS/network evidence: AndroidKeyStore, EC/secp256r1, SHA256withECDSA, typ=dpop+jwt, alg=ES256, Authorization DPoP-vs-Bearer selection, separate DPoP proof header, WWW-Authenticate/X-Nonce challenge handling, auth.openai.com/oauth/token refresh and invalid_dpop_proof timestamp-correction branch.
+- [x] Identify additional DPoP expiry/error and concurrency configuration evidence: dpop_iat_out_of_range, refresh_token_reused, token_expired and android_dpop_signing_concurrency. Source observation only; no telemetry is to be copied.
+- [ ] Reconstruct the native CompilerIntrinsics/provider closure injection path, exact DPoP proof claims and nonce lifecycle, complete OAuth refresh request/response mapping and all retry ceilings.
+- [ ] Define a portable Node.js host secure, non-exportable signing-key adapter from legitimate host capabilities; preserve Android DPoP/account/session semantics and fail closed when unavailable. Do not export/copy AndroidKeyStore private keys or substitute a bearer-only path.
+- [ ] Keep Android DPoP implementation blocked until complete source/protocol evidence, secure host signer semantics and authorized end-to-end tests are established. Current ChatJS contains no DPoP implementation.

@@ -1519,3 +1519,33 @@ For ordinary requests, a final 401 triggers the optional `onUnauthorized` callba
 Added `src/chatgpt/android-authenticated-request-policy.cjs`, a pure helper for the observed bearer/account header construction, JSON `Content-Type`/UTF-8 body rules, the exact runtime `117` Sheep header gate, the runtime `377` renewal opt-out and the no-recovery/original-response/one-replay decision. Thirteen deterministic tests cover these rules. It is included in lint and the exact distribution allowlist, but is not wired to a transport or auth session; it does not issue requests, invoke `requestCredential`, retry, or call native providers.
 
 The actual `client` transport implementation, authorized live HTTP behavior, native renewal/clear implementation, DPoP proof/header lifecycle, full request-controller cancellation races and end-to-end account-entitled session behavior remain unimplemented in ChatJS.
+
+ 
+## 2026-11-25 — Android native auth provider DEX census and DPoP signing/refresh call graph
+
+### Native authentication service provider boundary
+
+The supplied ChatGPT-Android.xapk (SHA-256 22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d) was re-opened for this pass; the extracted base APK SHA-256 is 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c. All ten base APK DEX files were parsed for implementations, typed references, method descriptors and direct callsites to OAIAuthenticationService, OAIRenewableAuthentication and OAIPlatformServices.
+
+- The only classes directly implementing the two auth-service interfaces in this DEX census are Lxhq0 (OAIAuthenticationService) and Ldjq0 (OAIRenewableAuthentication), the generated Kotlin-function adapters already seen in the earlier bridge pass. Their methods forward to supplied Function0/1/2/3/4 closures; they do not contain a concrete credential provider.
+- OAIPlatformServices has typed _authenticationService and _renewableAuthenticationService fields, a no-argument constructor, and a full constructor that accepts both interfaces (among its other typed service dependencies). The no-argument constructor leaves these auth services unset. The direct DEX callsite sweep found the ordinary platform-service builder path but no direct call to the full constructor that supplies the authentication services.
+- Other DEX classes hold an OAIPlatformServices reference for unrelated contexts, but that alone does not populate either auth field. A service may still be injected from native/runtime code, reflection, or another host integration point not represented as a direct DEX constructor call.
+
+This is a bounded negative result: no concrete auth-service provider closure was identified in the ten DEX class tables/direct call graph. It is not proof that the app has no provider. The actual CompilerIntrinsics/native host provider and the origin of the two Kotlin closures remain unresolved. Do not synthesize success or add a fake provider to ChatJS.
+
+### DPoP signing key lifecycle
+
+The same DEX sweep found a substantial Android DPoP implementation in the auth/network stack:
+
+- A DPoP signing-key repository uses the alias prefix openai.login.dpop. Credential metadata keys include key_pair_alias and pending_credential_deletion; the repository has explicit persistence/cleanup code and reports “Failed to persist DPoP key pair alias” / SaveCredentialsFailed when alias metadata cannot be saved.
+- The backing crypto path references AndroidKeyStore, EC key pairs and the secp256r1 curve. Signing uses SHA256withECDSA. The login-key creation/cleanup path has a separate “Failed to delete a partially generated login key” failure and cleanup for abandoned login signing keys.
+- The JWS serializer/model fixes the DPoP JOSE header values to typ=dpop+jwt and alg=ES256. The call graph also includes DPoP proof creation, public-key/JWK conversion and a URL-safe-base64 nonce/lookup-key parser. The complete proof claim set, signing input encoding and all failure branches have not yet been exhaustively reconstructed.
+- The HTTP auth plugin uses an access-token object that records whether it has a DPoP signer. It chooses the Authorization scheme between DPoP and Bearer and adds a separate DPoP proof header when the signer is present. This is an Android/Ktor source path, not the separate Valdi OAIBearerAPIService helper's simple bearer header builder.
+- Nonce/challenge handling reads WWW-Authenticate and X-Nonce. The refresh/auth repository includes refresh_token_reused, token_expired and invalid_dpop_proof cases and the OAuth token endpoint https://auth.openai.com/oauth/token. Its invalid-proof branch contains a separate retry path explicitly described as retrying after correcting the DPoP proof timestamp; the network stack also recognizes dpop_iat_out_of_range. Exact total retry bounds and all request/response payload fields remain open.
+- A runtime setting named android_dpop_signing_concurrency and internal DPoP signing queue/wait/duration/result dimensions are present. Those are source observations only; ChatJS must not reproduce analytics, telemetry or background reporting.
+
+### What this means for ChatJS
+
+The Android implementation depends on a non-exportable AndroidKeyStore private key and the native/platform session's signer/nonce state. A Node.js client cannot recreate this by generating a random PEM key, copying an Android alias, or treating a bearer token as a DPoP credential. The general Node.js design needs an explicit host signing-key capability with secure, non-exportable key ownership and the exact first-party authorization/session contract; absent that capability it must fail closed. No DPoP key was created, loaded, exported or used in this investigation, and no OAuth request was made.
+
+No DPoP runtime helper was added: the remaining proof claims, nonce lifecycle, token/refresh payload mapping, timestamp-correction conditions, native provider closures and secure-key adapter are not yet complete enough for a correct portable implementation. The current ChatJS runtime still has no authenticated HTTP client, native credential provider, DPoP proof creation, token refresh, credential clear or sign-in implementation.
