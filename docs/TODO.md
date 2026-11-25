@@ -2,6 +2,30 @@
 
 Use this as the single authoritative queue. Mark tasks complete only when evidence supports completion.
 
+## ACTIVE PRIORITY — Complete ChatGPT Android (non-Work) first
+
+**Owner direction, 2026-11-25. This changes execution order only, not the permanent ChatJS product target.** ChatGPT Android, ChatGPT Desktop/Windows, and Codex CLI all remain in the long-term goal. Until the Android non-Work experience is comprehensively reconstructed, implemented, and tested, do not spend the active work phase on Android Work, Windows/Desktop, or Codex CLI. Keep their existing records and tasks preserved as parked backlog.
+
+No feature domain is categorically excluded. Include financial/personal, location/maps, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, and all other source-backed Android capability areas wherever the supplied client and legitimate service/host behavior support them.
+
+### Android non-Work completion sequence
+
+- [ ] Obtain a Valdi-fork-compatible temporary bytecode inspection tool and decode Android ChatGPTDirectResponseClient.prepare/send, exact route selection, request nesting/requiredness, integrity patches, and serialization.
+- [ ] Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP and account switching with legitimate authorization and secret handling.
+- [ ] Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
+- [ ] Decode Android model catalog and chat-requirements decoders, nested challenge variants, requirements-integrity and device-integrity flow, public-build provider selection, cooldown/rate-limit handling, and all failure/retry semantics.
+- [ ] Decode the Android conversation stream/event model, delta operations, assistant/tool/reasoning updates, handoff/resume body and headers, offsets, interruption, errors, completion and history synchronization.
+- [ ] Reconstruct files/attachments end to end: reservation, signed destination, bounded upload, finalize/process, download, image metadata, file indexing, expiry, retry and cancellation.
+- [ ] Inventory and trace the remaining Android non-Work product areas, including Projects, instructions, context, memory/personalization, image generation/input, video, voice/audio, search, tools, connectors, galleries, and all other genuine client workflows.
+- [ ] Reconstruct feature/configuration dependencies only where required for functional parity; preserve functional configuration while excluding SDK analytics, exposure reporting, tracking and telemetry.
+- [ ] Implement the Android non-Work capabilities in native ChatJS modules with ESM/CommonJS parity, accurate TypeScript, validated configuration, bounded async/concurrent streaming, cancellation, backpressure and resource cleanup.
+- [ ] Add deterministic contract tests and authorized account/guest end-to-end tests for success, errors, retries, rate limits, concurrency, cancellation, interruption, restart and persistence.
+- [ ] Mark Android non-Work complete only after the feature inventory has evidence-backed coverage and every claimed implementation passes the required tests. Then advance to Android Work, Windows/Desktop and Codex CLI.
+
+### Parked long-term work (not removed from scope)
+
+Preserve the existing Android Work, Windows/Desktop, and Codex CLI research and tasks below this active phase. Do not start those tracks until the Android non-Work completion gate above is satisfied.
+
 ## P0 — Continuity and governance
 
 - [ ] Confirm rights holder and obtain legal review of the all-rights-reserved notice.
@@ -202,27 +226,3 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Implement bounded 1 MiB frame fragmentation/read-ahead, server message-size handling, event-channel backpressure, response idle timeout, and protocol-acknowledged interruption.
 - [ ] Implement source-verified WebSocket retries, HTTP 426/specific-error fallback and one-way per-session HTTP mode; respect Retry-After, cancellation and bounded policy. Do not enable the upstream feature-gated unbounded retry branch by default.
 - [ ] Add contract and E2E tests for handshake headers, warmup, continuation vs full requests, auth/session changes, large input frames, event backpressure, interrupt acknowledgements, fallback and subsequent same-session HTTP requests.
-
-## ACTIVE PRIORITY — Complete ChatGPT Android (non-Work) first
-
-**Owner direction, 2026-11-25. This changes execution order only, not the permanent ChatJS product target.** ChatGPT Android, ChatGPT Desktop/Windows, and Codex CLI all remain in the long-term goal. Until the Android non-Work experience is comprehensively reconstructed, implemented, and tested, do not spend the active work phase on Android Work, Windows/Desktop, or Codex CLI. Keep their existing records and tasks preserved as parked backlog.
-
-No feature domain is categorically excluded. Include financial/personal, location/maps, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, and all other source-backed Android capability areas wherever the supplied client and legitimate service/host behavior support them.
-
-### Android non-Work completion sequence
-
-- [ ] Obtain a Valdi-fork-compatible temporary bytecode inspection tool and decode Android ChatGPTDirectResponseClient.prepare/send, exact route selection, request nesting/requiredness, integrity patches, and serialization.
-- [ ] Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP and account switching with legitimate authorization and secret handling.
-- [ ] Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
-- [ ] Decode Android model catalog and chat-requirements decoders, nested challenge variants, requirements-integrity and device-integrity flow, public-build provider selection, cooldown/rate-limit handling, and all failure/retry semantics.
-- [ ] Decode the Android conversation stream/event model, delta operations, assistant/tool/reasoning updates, handoff/resume body and headers, offsets, interruption, errors, completion and history synchronization.
-- [ ] Reconstruct files/attachments end to end: reservation, signed destination, bounded upload, finalize/process, download, image metadata, file indexing, expiry, retry and cancellation.
-- [ ] Inventory and trace the remaining Android non-Work product areas, including Projects, instructions, context, memory/personalization, image generation/input, video, voice/audio, search, tools, connectors, galleries, and all other genuine client workflows.
-- [ ] Reconstruct feature/configuration dependencies only where required for functional parity; preserve functional configuration while excluding SDK analytics, exposure reporting, tracking and telemetry.
-- [ ] Implement the Android non-Work capabilities in native ChatJS modules with ESM/CommonJS parity, accurate TypeScript, validated configuration, bounded async/concurrent streaming, cancellation, backpressure and resource cleanup.
-- [ ] Add deterministic contract tests and authorized account/guest end-to-end tests for success, errors, retries, rate limits, concurrency, cancellation, interruption, restart and persistence.
-- [ ] Mark Android non-Work complete only after the feature inventory has evidence-backed coverage and every claimed implementation passes the required tests. Then advance to Android Work, Windows/Desktop and Codex CLI.
-
-### Parked long-term work (not removed from scope)
-
-Preserve the existing Android Work, Windows/Desktop, and Codex CLI research and tasks below this active phase. Do not start those tracks until the Android non-Work completion gate above is satisfied.
