@@ -198,3 +198,62 @@ To bring Codex CLI capabilities into one ChatJS Node.js module without depending
 This Codex local execution engine remains separate from Windows ChatGPT Work Local and Android ChatGPT Work Cloud. Shared low-level Node.js primitives may be reused only where their semantics are demonstrably common; the client-level workflows and security policies remain distinct.
 
 **Evidence boundary:** these are static observations of the pinned Codex ZIP. No commands were executed, no sandbox was disabled, no approval was granted, no MCP server was started, and no local tool operation was run. No ChatJS command, terminal, patch, MCP or approval subsystem has been implemented.
+
+## 2026-11-25 — Codex network approval, permission requests, dynamic tool search and multi-agent collaboration
+
+Further static inspection of the pinned Codex source snapshot adds four more client subsystems. These are distinct from the ChatGPT Codex Responses HTTP/SSE transport and are not proof that all features are enabled in every Codex build/configuration.
+
+### Outbound network access from local commands
+
+`codex-rs/core/src/tools/network_approval.rs` implements an execution-scoped outbound-network decision path for commands/tools running in a local or remote executor environment. This is **not** the ChatGPT backend network transport; it governs network egress initiated by the coding execution environment.
+
+Observed design details:
+
+- A blocked network request carries host, protocol, port, environment identity and, where available, a specific execution ID. Attribution is resolved back to an active command execution; an unknown or ambiguous owner is denied rather than guessed.
+- Host decision keys include environment ID, lowercase hostname, protocol (HTTP, HTTPS, SOCKS5 TCP/UDP), and port.
+- Pending prompts are coalesced by host + turn + optional execution ID; a per-host semaphore serializes manual prompts. This prevents concurrent requests from generating uncontrolled duplicate approval prompts.
+- The typed outcomes are `AllowOnce`, `AllowForSession`, and `Deny`. Session-approved and session-denied host caches are distinct and keyed by the execution environment and network target. A persisted network-policy amendment may add a policy rule; denial is persisted distinctly.
+- Network approval flow is suppressed when the selected `AskForApproval` policy is `Never`, and the inline review path also checks for a managed permission profile. Missing active turns, missing/ambiguous request attribution, cancellation, invalid ownership, policy denial, and dropped approvals fail closed.
+- The network proxy registration is scoped to a command execution and removed on completion/drop. Deferred approvals are checked when the command completes, so an unresolved or cancelled outbound request cannot be silently treated as a successful command outcome.
+- Remote executor setup queries executor capabilities. If a network proxy is required but the selected exec server cannot launch an executor-local proxy, the operation is rejected. Remote credential masking is enabled only when its source feature gate and executor capability allow it.
+
+The source also records analytics/telemetry for outcomes. Those records, IDs, metrics, and observability hooks must not be ported. The native ChatJS implementation would need explicit per-execution egress attribution, environment-scoped policy, cancellation and fail-closed behavior if this capability is included; it must not make arbitrary local commands network-enabled by default.
+
+### Additional permission requests
+
+`codex-rs/core/src/tools/handlers/request_permissions.rs` exposes the `request_permissions` tool. It resolves the selected executor/environment first, converts legacy read/write path arguments into typed filesystem entries, resolves relative paths against the selected environment's cwd/home/path convention, normalizes the permission profile, rejects an empty permission request, and submits a typed approval action through the session. It waits for the actual permission response and returns that response to the model; cancellation before the response is an explicit error.
+
+This is a request for additional scoped permissions, not an immediate permission grant. ChatJS must preserve the approval decision and environment binding. Literal paths must never be resolved using the host's current working directory when the selected executor is remote or uses a different path convention. Symbolic entries such as project roots remain symbolic until the grant is applied.
+
+### Dynamic tool discovery
+
+`codex-rs/core/src/tools/handlers/tool_search.rs` implements deferred tool discovery:
+
+- the tool registry exposes search metadata for deferred tools rather than loading every full definition up front;
+- a search handler builds a local BM25 index lazily, on a blocking worker, then retains and reuses the index;
+- the index is rebuilt when the deferred source listing or its source objects change;
+- queries must be non-empty and limits positive; results are ranked and capped;
+- Code Mode performs an additional per-step policy/router check before exposing a candidate nested tool, so a search result is not itself permission to invoke that tool.
+
+This is a useful example of the owner's dynamic/all-in-one target: discover relevant registered capabilities on demand, but gate availability by the actual registry and current per-operation policy. It is local indexing over known sources, not remote service discovery, telemetry or a reason to ship an arbitrary plugin marketplace.
+
+### Multi-agent collaboration (MultiAgentV2)
+
+The pinned source has a distinct collaboration tool family, gated by runtime configuration/feature support:
+
+| Tool | Observed behavior |
+| --- | --- |
+| `spawn_agent` | Creates a child thread through `ThreadSpawnRequest`; supports task name, message, optional agent role/type, model, reasoning effort, service tier, and fork-turn choice. In V2, `fork_turns` accepts `none` or `all` (legacy positive counts map to full history); `fork_context` is rejected. |
+| `send_message` | Resolves an agent target and delivers a message using `MessageDeliveryMode::QueueOnly`; this queues work for the agent without directly triggering its next turn. |
+| `followup_task` | Uses the same target/message path with `MessageDeliveryMode::TriggerTurn`, which asks the recipient to run the follow-up turn. |
+| `wait_agent` | Subscribes to activity and waits for mailbox activity, new steering input or timeout. Requested timeout is clamped to configured minimum/maximum and default values; the source emits started/completed tool-item states. |
+| `list_agents` | Lists child agents under the current thread/parent/source context, with optional path-prefix filtering and each agent's status. |
+| `interrupt_agent` | Resolves a target and interrupts that agent through the session's agent-control service; returns its previous status and emits an interrupted activity event. |
+
+The collaboration tools use thread IDs, task/path names, agent status/activity, routing, message delivery modes and configured limits. `MultiAgentV2` is separate from legacy V1 collaboration tools and is not guaranteed to be enabled in every configuration. Upstream analytics wrappers are excluded. ChatJS would need a native thread/agent scheduler and collaboration event model; spawning six fake local tasks is not parity.
+
+### Implementation boundary
+
+These are more Codex CLI capabilities to consider under the one ChatJS package. They remain separate from Android cloud Work and Windows local Work. Implement only after feature gates, protocol payloads, approval policy, environment ownership, cancellation and event ordering are reconstructed. No ChatJS network-approval subsystem, permission-request workflow, dynamic tool-search registry, or multi-agent engine exists today.
+
+**Evidence boundary:** static source inspection of the pinned Codex ZIP. No network proxy was started, no host was contacted, no permission was granted, no agent was spawned, no MCP server was started, and no local command was executed. Telemetry present in the source was excluded from the findings and must remain excluded from ChatJS.

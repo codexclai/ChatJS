@@ -959,3 +959,25 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - No command, PTY, sandbox, approval, patch or MCP operation was executed; this was static source inspection only.
 - No production JS/TS, tests, dependencies or public API changed. ChatJS still has no Codex execution engine, approval policy, sandbox, patch system or MCP runtime.
 - The Codex local coding engine remains separate from Windows ChatGPT Work Local and Android ChatGPT Work Cloud; no shared Work runtime was inferred.
+
+## 2026-11-25 — Codex network egress, scoped permissions, dynamic tool search and multi-agent collaboration
+
+### Source inspected
+
+Pinned Codex source: `codex-rs/core/src/tools/network_approval.rs`, `tools/handlers/request_permissions.rs`, `tools/handlers/tool_search.rs`, `tools/handlers/multi_agents_v2.rs`, `multi_agents_v2/spawn.rs`, `message_tool.rs`, `send_message.rs`, `followup_task.rs`, `wait.rs`, `list_agents.rs` and `interrupt_agent.rs`.
+
+### New findings
+
+- Mapped command-scoped network egress approval to active command executions and executor environments. Unattributed/ambiguous ownership and cancelled executions fail closed. Host approval key includes environment, lowercase hostname, protocol and port; prompts are serialized per host and concurrent pending approvals are coordinated.
+- Identified explicit `AllowOnce`, `AllowForSession`, `Deny` outcomes, session-scoped allow/deny caches, policy amendment persistence and cancellation/deferred outcome handling. The inline review path respects `AskForApproval` and managed permission-profile policy.
+- Mapped remote executor network proxy negotiation and fail-closed behavior when a required executor-local proxy is unsupported; credential masking is feature/capability-gated.
+- Mapped `request_permissions`: selected executor resolution precedes path normalization; relative read/write permissions are converted to typed filesystem entries, normalized, and passed to a session approval request. Empty permission sets fail validation; cancellation is explicit.
+- Mapped `tool_search` as lazy local BM25 search over registered deferred tools, with a cached index rebuilt when sources change and additional per-step Code Mode/router filtering before definitions are exposed.
+- Mapped MultiAgentV2 actions: spawn with child-thread request and fork/model/reasoning/service-tier options; queue-only send; trigger-turn followup; activity-based wait with bounded configured timeout; list under current parent/source context; interrupt by resolved child target.
+- Kept collaboration analytics wrappers and all upstream telemetry out of ChatJS scope.
+
+### Limits
+
+- Static inspection only; no network proxy, approval UI, permission grant, agent thread, tool-search index, or MCP server was executed.
+- No production ChatJS JS/TS, API, tests or dependencies changed. No ChatJS network policy, permission system, tool search or multi-agent runtime is implemented.
+- Dynamic discovery and multi-agent availability are source/configuration gated; this research does not prove universal availability across all Codex releases/hosts.

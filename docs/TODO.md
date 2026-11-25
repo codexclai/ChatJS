@@ -163,3 +163,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Implement the verified `apply_patch` parser/application/progress path and robust conflict/error reporting rather than delegating arbitrary patch text to a shell.
 - [ ] Reconstruct MCP server/tool discovery, readiness, namespacing, schema validation, invocation, approvals, result flow and cancellation where needed for Codex CLI parity.
 - [ ] Test all local execution paths on supported real hosts, including cancellation, process-tree cleanup, policy denial, sandbox denial, invalid/foreign paths, output truncation, concurrent sessions and host-adapter absence.
+
+## P1 — Codex network/permission policy, dynamic discovery and collaboration
+
+- [ ] Implement command-scoped outbound network approval with strict command/environment/request attribution, fail-closed ambiguous ownership, host/protocol/port policy, bounded per-host prompts, once/session/deny decisions, cancellation and deferred completion.
+- [ ] Implement remote executor proxy capability negotiation and credential masking only where the source requires it and the host capability genuinely exists; fail closed when required proxy support is unavailable.
+- [ ] Implement `request_permissions` with selected-executor-aware path resolution, typed filesystem permissions, normalized additional grants, user approval, explicit denial and revocation semantics.
+- [ ] Implement deferred tool discovery using a local indexed registry, lazy definition loading, bounded ranked queries and per-step policy filtering; do not add remote tool discovery or hidden network calls.
+- [ ] Reconstruct MultiAgentV2 feature gates, child-thread lifecycle, agent count limits, fork modes and thread state before implementing.
+- [ ] Implement native agent collaboration actions (spawn, queue-only message, trigger-turn followup, activity wait, status list and interrupt) with real thread IDs, bounded concurrency, cancellation and correctly ordered activity events.
+- [ ] Exclude source analytics/telemetry and test that policy decisions, tool search and agent operations work without hidden network activity.

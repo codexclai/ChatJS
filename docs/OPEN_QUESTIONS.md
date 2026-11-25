@@ -145,3 +145,14 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Map the `apply_patch` fast path, parser/validation, diff tracking, permission evaluation, atomicity/failure semantics and file-change events.
 - [ ] Trace MCP server discovery/configuration, tool schema lifecycle, readiness, namespacing, user approval, dispatch, result handling and cancellation. Decide which MCP capabilities are required for parity and which are optional extensions.
 - [ ] Preserve separation between Codex CLI local execution, Windows ChatGPT Work Local, and Android ChatGPT Work Cloud. Do not infer a shared security or workspace contract without explicit source evidence.
+
+## Codex permissions, outbound network and collaboration — 2026-11-25
+
+- [ ] Reconstruct execution-scoped network-proxy setup and outbound-request attribution, including execution IDs, environment ownership, ambiguous attribution fail-closed rules, protocol/host/port keys and cleanup.
+- [ ] Reconstruct exact network review rules: AskForApproval policy, managed permission profile gate, once/session/deny semantics, persisted policy amendments, session allow/deny caches, serialized prompts, cancellation and deferred completion outcomes.
+- [ ] Determine exact local/remote executor network-proxy requirements, proxy capability negotiation and credential-masking gates. Keep command egress approval distinct from ChatJS's own explicit ChatGPT API connection.
+- [ ] Reconstruct `request_permissions` schemas and response states, filesystem read/write permission variants, symbolic roots, relative path resolution, selected executor/path conventions, user approval and denial/revocation behavior.
+- [ ] Determine which Codex deferred tools are exposed through `tool_search`, how definitions are loaded, when the lazy local search index is invalidated/rebuilt, exact rank/limit semantics, and how per-step tool/router policies suppress results.
+- [ ] Map MultiAgentV2 feature/config gates, maximum agent counts, default roles and models, child-thread creation/resume/retirement, persistence, concurrency and event ordering.
+- [ ] Reconstruct the full collaboration lifecycle: spawn fork modes, queue-only messages, trigger-turn followups, mailbox/steering wait outcomes, list filtering/statuses and target resolution/interrupt semantics.
+- [ ] Distinguish collaboration features from command/process execution and MCP tools. Exclude all analytics and telemetry attached to these paths.

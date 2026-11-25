@@ -176,3 +176,13 @@ The pinned official Codex snapshot `50aeac27d825007a0ac6bd846087ed4e7095bdb3` no
 ## Codex local tool/runtime source map — 2026-11-25
 
 The pinned Codex source also reveals the local coding tool system: interactive `exec_command` + `write_stdin` terminal sessions, separate one-shot execution (observed 10-second default timeout and no resume), path-URI workdir and executor selection, feature-gated TTY, command policy states (skip/needs approval/fresh human approval/forbidden), sandbox and session-scoped approval keys, a verified `apply_patch` interception path, and separate MCP server/tool dispatch. See the 2026-11-25 local execution section of `CODEX_SOURCE_FINDINGS.md`. This is static source research only. ChatJS has none of these Codex local engines implemented; they must be native Node.js components with optional real host adapters, explicit approvals and sandbox enforcement. Keep Codex's local coding engine separate from Windows ChatGPT Work Local and Android Work Cloud.
+
+## Codex network/permission/tool-search/multi-agent source map — 2026-11-25
+
+The pinned Codex source additionally maps:
+- command-scoped outbound network approvals attributed to the active execution/environment; once/session/deny outcomes; per-host serialized prompts and fail-closed ambiguous attribution; executor-local proxy capability checks and gated credential masking;
+- `request_permissions` for normalized, selected-executor-aware filesystem grants submitted for user approval;
+- lazy local BM25 discovery over deferred tool definitions, with per-step Code Mode/router filtering;
+- configuration/feature-gated MultiAgentV2 child-thread collaboration: spawn, queue-only send, trigger-turn followup, mailbox/steering wait, list and interrupt.
+
+See the latest dated additions to `CODEX_SOURCE_FINDINGS.md`, `CHATGPT_CAPABILITY_INVENTORY.md` and `OPEN_QUESTIONS.md`. These are source observations only; no ChatJS implementation exists. Command egress approval is not the ChatGPT backend transport; a permission request is not an automatic grant; tool search is local over registered source definitions (not a plugin marketplace); multi-agent V2 requires actual source feature/config support. All upstream telemetry/analytics is excluded.

@@ -190,3 +190,14 @@ The pinned Codex source reveals a separate native local-coding subsystem alongsi
 - **MCP:** configured MCP tools are registered separately and wait for their server to be ready before invocation.
 
 This source evidence broadens the native implementation work needed for Codex parity. It does not mean ChatJS currently has a process manager, terminal, sandbox, command approval, patch runtime or MCP integration. These capabilities remain Research/Planned, not supported.
+
+## 2026-11-25 — Codex network policy, dynamic tools, permissions and collaboration
+
+The pinned Codex source documents additional client subsystems that are in the ChatJS Codex capability target but not yet implemented:
+
+- **Command egress approval:** execution-scoped outbound network policy, attribution to a real running command/environment, per-host prompt serialization, once/session/deny decisions, persisted policy amendments, cancellation and fail-closed behavior; remote executor proxy support is capability-checked, with gated credential masking.
+- **Scoped permission requests:** `request_permissions` resolves an executor before converting relative paths, normalizes additional filesystem permissions and asks the session approval flow for a decision. The permission response is returned to the tool; it is not silently granted.
+- **Dynamic tool search:** deferred tool definitions are searched through a lazy local BM25 index and exposed only after current Code Mode/router policy checks.
+- **MultiAgentV2 collaboration:** `spawn_agent`, `send_message` (queue only), `followup_task` (trigger turn), `wait_agent` (mailbox/steering/timeout), `list_agents`, and `interrupt_agent`; thread IDs, child status and activity events are part of the model. Runtime support is configuration/feature-gated.
+
+These findings show that Codex parity extends beyond Responses transport and shell execution. They do not establish any working ChatJS feature; the corresponding APIs and native Node.js state machines remain Research/Planned. All source analytics/telemetry is excluded.
