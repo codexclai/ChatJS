@@ -910,3 +910,10 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - The repository has no local working-tree checkout in this session; local npm run check and local archive inspection could not be run.
 - New-head CI and CodeQL verification remain pending.
 - Overall implementation progress remains approximately 3%; documentation/source research is not implemented product functionality.
+
+## 2026-11-25 — Host-adapter terminology tightened
+
+- Reviewed the owner's earlier objection to optional “providers” and audited product-standard/architecture language.
+- Clarified that ChatGPT is the sole AI service; no AI-provider selection or multi-provider abstraction belongs in ChatJS.
+- Reworded generic extensibility/reliability references as host adapters or actual platform-integrity mechanisms. Kept exact first-party Android integrity interface names only where documenting source evidence.
+- No implementation or public API behavior changed.

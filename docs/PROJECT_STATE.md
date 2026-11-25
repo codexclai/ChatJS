@@ -120,6 +120,7 @@
 100. Decompressed and inspected compiled Android chatgpt_services Valdi module regions for DirectResponseClient, generated model/chat-requirements API decoders, stream contracts/event decoder, and upload service; documented the field/event/upload contract inventory and its static-analysis limits without guessing a production schema.
 101. Recorded the owner's definitive product identity: one ChatJS Node.js package consolidating ChatGPT mobile, ChatGPT desktop and Codex CLI client capabilities; Codex CLI behavior is in scope for native implementation, while its separate executable/app-server are not runtime dependencies.
 102. Expanded PRODUCT_STANDARD.md with testable dynamic, automatic, customization/control, real-time, async/concurrent, sustained-operation, performance and compatibility requirements; updated user docs, architecture, roadmap, decisions and future-chat continuity.
+103. Clarified that ChatGPT is the sole AI service target and removed ambiguous generic AI-provider selection language from product/architecture requirements.
 
 ## Not implemented
 

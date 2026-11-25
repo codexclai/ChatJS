@@ -19,7 +19,7 @@ The target is the broadest useful and legitimately implementable coverage suppor
 
 - **Comprehensive:** implement every in-scope client workflow that can be reconstructed, legitimately used, and verified, and record the remaining gaps.
 - **All-in-one:** expose cohesive capabilities through the ChatJS module with consistent lifecycle, configuration, errors, types, events, and documentation.
-- **Maximum practical capability:** avoid arbitrary omissions and shallow feature-name clones; use actual client evidence and real providers.
+- **Maximum practical capability:** avoid arbitrary omissions and shallow feature-name clones; use actual client evidence and genuinely supported host integrations.
 - **Portable:** keep the core independent of any one operating system, device, UI, or hardware facility; isolate host-specific dependencies behind optional adapters.
 - **Customizable and controllable:** make meaningful behavior explicit and configurable without allowing configuration to bypass authentication, authorization, service requirements, or safety invariants.
 - **Dynamic:** support runtime capability discovery and deliberate adaptation to verified client/protocol changes, without hidden background traffic or guessing.
@@ -54,7 +54,7 @@ Do not add a feature merely because a name appears in a package. Trace its imple
 The portable core must be usable by different Node.js applications, operating systems and deployment styles. Do not assume that a Node.js process has a phone runtime, desktop UI, browser session, camera, microphone, screen capture, GPU, particular filesystem layout, shell, package manager, or special OS permission.
 
 - Keep the core free of mandatory host-specific APIs and optional device permissions.
-- Provide optional adapters for real browser, desktop, microphone, camera, screen, sandbox, process, secure-storage, and integrity providers only when the consumer environment supplies them.
+- Provide optional host adapters for real browser, desktop, microphone, camera, screen, sandbox, process, secure-storage, and platform-integrity facilities only when the consuming environment genuinely supplies them.
 - Define adapter contracts, capability checks, lifecycle, errors, cancellation, cleanup, and security expectations explicitly.
 - Report actual runtime/OS/architecture facts accurately; do not turn those facts into a synthetic device identity or integrity claim.
 - State a tested support matrix. A runtime or operating system is supported only after it is exercised in CI or documented manual verification. Unknown environments should fail clearly or use a portable fallback that is genuinely correct.
@@ -81,7 +81,7 @@ Where applicable, configurable controls should include:
 - retry policy and idempotency behavior within source-verified bounds;
 - local workspace roots, file-size/depth limits, write policies and cleanup;
 - command approval, executable/argument policy, working directory and output caps;
-- optional host capabilities and provider selection;
+- optional host-adapter registration and selection;
 - explicit logging/diagnostic verbosity with secrets and private content redacted;
 - local retention, deletion and persistence choices;
 - event handling and progress observation.
@@ -94,15 +94,15 @@ Every option needs a clear type, default, allowed range, precedence rule, effect
 
 ChatJS should be dynamic in what it can truthfully discover and adapt to, not in silently changing behavior behind the user's back.
 
-- Maintain a capability registry describing the capability, implementation/provider, prerequisites, evidence level, and current availability.
+- Maintain a capability registry describing the capability, implementation or host adapter, prerequisites, evidence level, and current availability.
 - Distinguish supported, partial, experimental, unsupported, unavailable, blocked, and unknown where appropriate. Do not collapse these states into one boolean.
-- Discover capabilities from the actual runtime and registered adapters. A host capability is available only after the provider exists and validates; an OS name alone is not enough.
+- Discover capabilities from the actual runtime and registered host adapters. A host capability is available only after its adapter exists and validates; an OS name alone is not enough.
 - Keep client protocol profiles and compatibility observations traceable to the source package/version or other evidence used to establish them.
 - Detect known protocol drift through deliberate source/package comparisons and contract tests. Update profiles only with evidence; unknown fields, signatures, challenges, and algorithms must not be guessed.
 - Make compatibility changes deliberate and testable. Do not download or execute remote code, update protocols, probe services, or send telemetry in the background.
 - Do not make unsolicited requests on module import, client construction, or capability discovery. Network activity must follow an explicit user-invoked operation and only serve that operation.
 - Preserve explicit caller control over opt-in host integrations, storage, logging, and persistence.
-- When a provider or protocol is missing, stale, unsupported or blocked, preserve the status and explain what is needed. Never silently downgrade a security requirement or represent an unverified path as working.
+- When a required host adapter, platform-integrity facility, or protocol is missing, stale, unsupported or blocked, preserve the status and explain what is needed. Never silently downgrade a security requirement or represent an unverified path as working.
 
 Dynamic adaptation should improve forward compatibility while retaining reproducible behavior. Protocol changes can still make an integration unavailable until the new behavior is understood and implemented.
 
@@ -111,16 +111,16 @@ Dynamic adaptation should improve forward compatibility while retaining reproduc
 Production behavior must be predictable under normal use, failure, cancellation, concurrency, and partial availability.
 
 - Use finite, documented deadlines and bounded resource consumption.
-- Propagate cancellation through network requests, streaming, provider calls, child processes and filesystem tasks where the underlying APIs allow it.
+- Propagate cancellation through network requests, streaming, host-adapter operations, child processes and filesystem tasks where the underlying APIs allow it.
 - Use bounded retries only where source-verified semantics permit them. Respect server and local rate limits, retry-after signals and cooldowns. Never reset or evade a throttle to force progress.
 - Never automatically repeat a non-idempotent operation unless the actual protocol establishes safe idempotency.
 - Implement cleanup for streams, sockets, timers, files, child processes, listeners, temporary data, adapters and session resources.
 - Define concurrency limits, memory/output/file caps, backpressure, queue semantics and overload errors.
-- Distinguish timeout, cancellation, rate-limit, authentication, authorization, entitlement, integrity, provider, parse, transport and service errors.
+- Distinguish timeout, cancellation, rate-limit, authentication, authorization, entitlement, integrity, host-adapter, parse, transport and service errors.
 - Preserve the original cause without exposing credentials or private user content.
 - Avoid background daemons, hidden tasks and implicit work after a client closes.
 
-No library can guarantee that a remote service, account, network, entitlement or third-party provider stays available forever. ChatJS should maximize practical reliability, recover within verified limits, and report external blockers accurately—not promise uninterrupted success.
+No library can guarantee that a remote service, account, network, entitlement or required platform integration stays available forever. ChatJS should maximize practical reliability, recover within verified limits, and report external blockers accurately—not promise uninterrupted success.
 
 ## 8. Security and privacy by design
 
@@ -152,13 +152,13 @@ The product should be approachable for a first-time Node.js user and precise eno
 A feature may be labelled **supported** only when the evidence and tests for that feature establish all applicable items below:
 
 1. **Source evidence:** actual client behavior and protocol prerequisites are traced and recorded, including unresolved differences.
-2. **Implementation:** real Node.js production code exists; no placeholder, fake provider, canned response or silent no-op.
+2. **Implementation:** real Node.js production code exists; no placeholder, fake implementation, canned response or silent no-op.
 3. **API contract:** behavior is documented, typed, validated, and consistent across ESM/CommonJS.
 4. **Correctness tests:** success, malformed input, failure, cancellation, timeout, concurrency and cleanup paths are tested.
 5. **Compatibility tests:** all declared Node.js/OS targets are covered at the appropriate level; adapters are tested on their real supported hosts.
 6. **Integration evidence:** protocol contracts are tested with safe fixtures, and authorized end-to-end checks confirm real service behavior where required. Test fixtures never count as proof of real service compatibility.
 7. **Security/privacy:** authorization, secret redaction, filesystem/process boundaries, opt-in persistence, network intent and zero-telemetry constraints are checked.
-8. **Resilience:** retry/idempotency, rate limits, deadlines, backpressure, resource bounds and provider unavailability are tested as applicable.
+8. **Resilience:** retry/idempotency, rate limits, deadlines, backpressure, resource bounds and host-adapter/platform-integrity unavailability are tested as applicable.
 9. **Performance:** meaningful hot paths have measured baselines and defensible resource budgets; avoid unsupported speed claims.
 10. **Packaging:** the archive contains the intended files, passes integrity checks, and ESM/CommonJS/TypeScript entry points work from the packaged artifact.
 11. **Documentation:** quick start, options, capability states, host prerequisites, errors, side effects and known limitations are current.
@@ -175,7 +175,7 @@ Evaluate each meaningful feature and release candidate against:
 | Functional completeness | Broad, coherent coverage of in-scope, source-supported workflows |
 | Correctness | Exact request/response, serialization and state behavior supported by evidence |
 | Compatibility | Declared Node.js and host matrix, with optional adapters |
-| Customization | Validated configuration, explicit overrides and provider control within safe boundaries |
+| Customization | Validated configuration, explicit overrides and host-adapter control within safe boundaries |
 | Reliability | Bounded retries, timeouts, cancellation, cleanup and honest failure states |
 | Performance | Measured latency, throughput, memory and concurrency behavior |
 | Security | Legitimate auth, least privilege, secret protection and safe local execution |
@@ -187,7 +187,7 @@ Evaluate each meaningful feature and release candidate against:
 
 ## 12. Non-guarantees and honest boundaries
 
-ChatJS cannot guarantee literal support for every operating system, host, device, service version, account, entitlement, provider, network condition, or future change. It cannot guarantee uninterrupted availability forever or override decisions made by the official service. It must not fabricate capabilities when the host lacks them.
+ChatJS cannot guarantee literal support for every operating system, host, device, service version, account, entitlement, platform integration, network condition, or future change. It cannot guarantee uninterrupted availability forever or override decisions made by the official service. It must not fabricate capabilities when the host lacks them.
 
 The commitment is to pursue maximum practical and verifiable capability, broad portability, strong customization, and high engineering quality; keep the implementation adaptive and well-documented; expand support when source evidence and tests allow; and clearly report limitations instead of hiding them.
 
