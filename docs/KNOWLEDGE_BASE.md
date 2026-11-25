@@ -41,7 +41,7 @@ A static Zstandard decompression/string scan of selected Valdi modules found gen
 
 The Android archive is the extracted APK payload, not a metadata summary. It contains compiled DEX and Valdi modules, assets, manifest/configuration data, schemas, and notices. Source-level decompilation and request-flow tracing remain open.
 
-The Windows MSIX package previously showed Electron/Node/Codex, an ASAR bundle, sandbox, terminal, browser/computer-use, plugins/skills, and shell integration. The full extracted archive is not currently verified in Library. The owner asked to defer further Windows work.
+The Windows MSIX pieces are retained in ChatJS Project → Sources, reconstructed and ZIP-tested on 2026-11-25. Selective ASAR inspection found an Electron host that spawns bundled codex.exe over stdio app-server RPC, plus a separate origin-restricted ChatGPT/OpenAI bearer-auth fetch bridge for selected wham/Estuary path families. The user-visible Work UI mapping remains incomplete, and the bundled subprocess must not become a ChatJS runtime dependency. This supersedes the earlier 2026-11-20 Library/deferred status.
 
 ## Canonical research locations
 

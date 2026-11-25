@@ -1,6 +1,6 @@
 # ChatGPT Client Implementation Inventory — Mobile and Desktop
 
-**Reviewed:** 2026-11-20. ChatJS is one general-purpose Node.js module intended to adapt the actual client-side systems and workflows of official ChatGPT mobile and desktop (including Work/Codex).
+**Reviewed:** 2026-11-25. ChatJS is one general-purpose Node.js module intended to adapt the actual client-side systems and workflows of official ChatGPT mobile and desktop (including Work/Codex).
 
 This inventory is a guide to the supplied client implementation material and the intended Node.js adaptation. It is not a claim that the present foundation already supports the listed features.
 
@@ -22,7 +22,7 @@ The compiled payload contains actual client implementation material. Source-leve
 
 ### Windows
 
-The MSIX inspection recorded Electron/Node/Chromium, ChatGPT and Codex executables, an ASAR app bundle, command-runner/code-mode-host components, sandbox/PTY, browser/native-host, computer-use, plugin/skill, shell and file integration. The owner has deferred Windows archive work. The current Library ZIP is metadata-only; a prior chat recorded a larger remote extracted archive with incomplete transfer to Library, not reverified in this session. See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md).
+The two Windows MSIX pieces are retained in ChatJS Project → Sources and were reassembled and ZIP-tested on 2026-11-25. The Appx manifest identifies ChatGPT / OpenAI.Codex x64 version 26.1117.4957.0; selective ASAR inspection found the packaged Electron host, local codex.exe stdio app-server path, and a separate ChatGPT/OpenAI-origin-restricted bearer-auth bridge. This first pass is not a full Work UI-to-service mapping and does not make the Codex subprocess a ChatJS dependency. It supersedes the earlier 2026-11-20 note that Windows work was deferred and only a metadata ZIP was available. See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md).
 
 ## First-pass Android protocol findings
 

@@ -40,7 +40,7 @@ For each investigation include question, setup/method, actual result, conclusion
 - Prior Chat-1 transcript reported a remote extracted ZIP of about 1.1 GB and 3,758 entries, with a SHA-256 value and successful remote integrity check. Transfer to the personal Library was incomplete.
 - Current Library item `ChatJS-Windows.zip` was materialized on 2026-11-20: 418,238 bytes, seven entries, metadata/indexes/notices only.
 - Conclusion: current Library item is not the full application payload archive. The larger remote result is not reverified in this session.
-- Follow-up: explicitly deferred at the owner's request; do not resume unless asked.
+- Follow-up at the time of this 2026-11-20 record: deferred at the owner's request. This historical status was superseded on 2026-11-25 when the owner supplied both installer pieces; see the later **Windows MSIX / ASAR local execution inspection** entry.
 
 ### Earlier mistaken scope and superseded integration exclusions
 

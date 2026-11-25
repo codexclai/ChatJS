@@ -830,6 +830,10 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - No local `npm run check` was run because the repository working tree is not mounted locally. New-commit CI/CodeQL must be checked after the documentation commit. The prior main head's CI and CodeQL runs passed; they are not validation of this new docs commit.
 - Windows package CRC was checked; Appx publisher signature, app launch, live account/session behavior and runtime traffic were not verified.
 
+### Historical-status correction
+
+- Corrected the 2026-11-20 Windows reference notes in the capability inventory, knowledge base, and experiments so the earlier Library-only/deferred status is explicitly historical and superseded by the 2026-11-25 owner-supplied MSIX reassembly and first-pass ASAR inspection.
+
 ### Handoff
 
 - Decode the Android direct conversation request-body serializer, route/method selection, complete Sentinel requirements response and first-party integrity provider flow; keep telemetry excluded.
