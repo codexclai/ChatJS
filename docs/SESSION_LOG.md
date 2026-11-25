@@ -1100,3 +1100,8 @@ The documentation/scope correction at commit `326e31ea27ed659e63291ae691b79e8c1e
 Downloaded the latest CI artifact and inspected it independently: artifact ZIP 12,011 bytes (SHA-256 `9094face7dfad57daba89728471f396761e0f506a4e54292d55b99c95a86d3b0`); contained `ChatJS.tar.gz` 11,866 bytes (SHA-256 `5694b717d5371ae4cdb0f8e174dacf9f6e5b460cfca07db530307848bbdf3c9b`). The gzip tar passed parsing and contains the expected package metadata, README/manual, license, CommonJS/ESM entry points, SSE implementation, and TypeScript declarations. The only branch remains `main`, at the final TODO-normalization commit at time of check.
 
 A local clone and local `npm run check` were unavailable because this container could not resolve `github.com`; the CI workflow ran the repository check/build and installed-module smoke-test steps successfully. No runtime product capability was added in this documentation-only correction. The next implementation work remains the Android non-Work request-contract reconstruction described in TODO and ANDROID_CLIENT_PROTOCOL_FINDINGS.
+
+
+## 2026-11-25 — Architecture non-goal wording clarification
+
+Clarified the former category-blacklist line under `docs/ARCHITECTURE.md`'s explicit non-goals so it unambiguously rejects blanket feature-domain restrictions instead of reading like a capability exclusion. No product capability or runtime code changed.

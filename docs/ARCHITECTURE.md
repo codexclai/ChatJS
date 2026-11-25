@@ -114,7 +114,7 @@ Persistence must be explicit and have clear retention/deletion semantics. Protec
 - Recreating ChatGPT's server-side infrastructure.
 - Substituting OpenAI Platform API/key workflows for the consumer ChatGPT client integration.
 - Fake generated output or a different model provider masquerading as ChatGPT.
-- Any source-backed client capability solely because of its feature-domain label. Feature coverage is determined by actual client behavior and legitimate service/host support.
+- Blanket feature-domain restrictions on first-party client capabilities. Determine coverage from actual client behavior, source evidence, legitimate service/host support, authorization and entitlements.
 - Git branches/worktrees or automation that creates them.
 - Telemetry, hidden collection, unsolicited network requests, or automatic content uploads.
 
