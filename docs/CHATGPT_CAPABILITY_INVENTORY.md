@@ -159,3 +159,9 @@ The Android 1.2026.321 `chatgpt_services` module now provides a concrete static 
 The newly supplied Windows MSIX was reconstructed and its ZIP integrity passed. First-pass ASAR inspection confirms a packaged local Codex app-server process path for the desktop coding-agent surface, plus a separate restricted ChatGPT/OpenAI authenticated fetch bridge. This is not yet a complete mapping of the user-visible Windows Work surface. The Windows local path must remain separate from Android cloud Work, and ChatJS must not spawn or depend on the packaged `codex.exe` / app-server runtime. See [REFERENCE_DESKTOP.md](REFERENCE_DESKTOP.md).
 
 No production client functionality changed in this research slice. The runtime remains foundation-only; the overall product is not yet functionally connected to ChatGPT.
+
+## 2026-11-25 — Android direct-response and upload field inventory
+
+The compiled `chatgpt_services` module's direct-response string region exposes conversation/message/context identifiers (`conversation_id`, `parent_message_id`, `conversation_mode`, `primary_assistant`, `history_and_training_disabled`, `author`, `user`, `text`, `content_type`, `parts`, `multimodal_text`, `metadata`, model-written DIL fields, skills overrides, `stream`, timezone offset and file/image asset references). The generated API module exposes schema decoders for model catalog and Sentinel requirements. The event decoder exposes delta operations, handoff/resume tokens, conversation-state metadata, DIL/reasoning and entity references. The upload module exposes reservation/process metadata, trusted destination suffixes, Azure block-blob headers and Estuary fallback paths.
+
+This is a stronger field/contract inventory than a route-only scan, but compiled strings alone do not establish JSON nesting, exact route selection, field validation rules, numeric upload limits or complete resume semantics. No production ChatJS conversation, streaming or upload capability is implemented.
