@@ -1128,3 +1128,10 @@ Clarified the former category-blacklist line under `docs/ARCHITECTURE.md`'s expl
 ## 2026-11-25 — Generated project-state synchronization correction
 
 The first CI run for the Android bytecode-trace documentation commit failed in the "Run checks, tests, and build archive" step. Source inspection identified the reason: project-state.json had the revised Android next-action queue, but the generated PROJECT_STATE.md still contained the previous queue. Regenerated PROJECT_STATE.md from the current JSON using the repository generator's exact rendering rules. No runtime code or tests changed; a fresh main-branch CI run is required to establish the corrected result.
+
+
+## 2026-11-25 — Generated Android catalog/requirements schema reconstruction
+
+Continued decoding the generated `ChatGPTConversationApiClient` validators. Recovered required/optional properties and primitive/nested array types for ModelCatalogRequest, ModelCatalogModel, ModelCatalogPreset, ModelCatalogVersion, ModelCatalogResponse, ChatRequirementChallenge, and ChatRequirementsResponse. Optional field checks are against undefined, so explicit null fails the declared decoder. The generated decoder copies additional object keys, so unknown model/requirements fields remain pass-through and their actual consumers still need tracing.
+
+Updated Android protocol findings, TODO/open questions, AI memory, continuation handoff, and session log. No production runtime code was changed. Current local disassembler and third-party sources remain isolated outside Git.

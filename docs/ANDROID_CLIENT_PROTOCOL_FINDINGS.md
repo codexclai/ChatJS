@@ -742,3 +742,24 @@ The sender maps HTTP 401 to session-expired, HTTP 403 to account/device-integrit
 Still open: full generated nested schemas; native device-integrity implementation/public-build availability; exact resume wire mapping; file reservation/upload/process lifecycle and size constants; and independent guest create/refresh and guest composer protocols.
 
 **Runtime status:** this is static Android source knowledge only. ChatJS still has no product-specific connection, authenticated/guest session implementation, conversation sender/decoder, file workflow or integrity provider.
+
+
+## Generated model catalog and chat-requirements schema — method-level validation, 2026-11-25
+
+The generated ConversationApiClient decoder functions expose these typed fields. The decoders require an object, validate the listed properties, and preserve additional own properties:
+
+| Decoder | Required fields | Optional fields | Validation |
+| --- | --- | --- | --- |
+| `ModelCatalogRequest` | `iim`, `supports_model_picker_upgrade_presets` | none in the generated request type | Both required booleans |
+| `ModelCatalogModel` | none | `slug` | String |
+| `ModelCatalogPreset` | none | `model_slug` | String |
+| `ModelCatalogVersion` | none | `intelligence_presets` | Array of `ModelCatalogPreset` |
+| `ModelCatalogResponse` | `default_model_slug` | `models`, `versions` | String; arrays of `ModelCatalogModel` and `ModelCatalogVersion` |
+| `ChatRequirementChallenge` | none | `required` | Boolean |
+| `ChatRequirementsResponse` | `token` | `turnstile`, `proofofwork`, `so` | String; arrays of `ChatRequirementChallenge` |
+
+The optional checks are specifically against `undefined`. If an optional field is present as `null`, the subsequent string/boolean/array decoder rejects it; null is not treated as omission. Nested model/preset/version/challenge decoders preserve other object properties without exhaustively typing their contents. This is the concrete generated validation contract, not a closed schema for every field the service may return.
+
+The catalog API method calls the `ModelCatalogRequest` decoder and serializes scalar query properties with `encodeURIComponent`; array-valued query parameters are serialized as repeated keys. The inspected direct client supplies `iim=true` and `supports_model_picker_upgrade_presets=false` on GET `/backend-api/models`.
+
+The requirements API calls `ChatRequirementsResponse`; its `token` is required. Each challenge item preserves extra properties but only validates the optional `required` flag at this generated layer. Exact payload semantics of Turnstile, proof-of-work and `so` remain to be followed into their consumers and any separate challenge providers.

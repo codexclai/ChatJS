@@ -120,7 +120,8 @@
     "Mapped Codex Responses WebSocket v2: capability/session gating, beta handshake, turn-scoped connection/routing affinity, strict incremental previous_response_id continuation, explicit generate:false warmup, bounded frame/read-ahead/event flow, protocol interrupt acknowledgement and one-way same-session HTTPS fallback.",
     "Superseded the earlier category-based feature exclusions at the owner's direction; documented full source-backed feature-domain coverage and removed the blacklist from current product requirements, capability matrix, Project Instructions, and user documentation.",
     "Recorded the unchanged long-term product goal (ChatGPT Android/mobile + ChatGPT Windows/desktop + Codex CLI in one ChatJS module) and the temporary Android non-Work-first execution sequence. Android Work, Windows/Desktop, and Codex CLI are parked, not removed.",
-    "Verified owner-directed full feature-domain scope correction and Android non-Work-first execution queue on main; CI run 45567211063 and CodeQL run 45567211014 both succeeded, including archive build, installed-package ESM/CommonJS smoke tests and security analysis."
+    "Verified owner-directed full feature-domain scope correction and Android non-Work-first execution queue on main; CI run 45567211063 and CodeQL run 45567211014 both succeeded, including archive build, installed-package ESM/CommonJS smoke tests and security analysis.",
+    "Decoded the Android generated ModelCatalog and ChatRequirements named-field schema, including required/optional fields, nested arrays, null rejection, and preserved extra properties; documented pass-through/challenge-consumer follow-ups (2026-11-25)."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -175,7 +176,7 @@
     "Codex WebSocket incremental continuation is stateful and only valid under strict request-field and ordered-history equality checks. A naive previous_response_id or last-message-only implementation could lose or corrupt conversation context; full request fallback is mandatory unless continuation is proven.",
     "Codex prewarm is an upstream startup optimization that performs network work before user generation. ChatJS must not copy hidden startup prewarm; expose it only as explicit opt-in or as part of an already requested operation."
   ],
-  "lastVerifiedCommit": "bf33b71acd0e0b0680e5781582fe0a38ed1d9db3",
-  "lastVerifiedCI": "45569111404",
-  "lastVerifiedCodeQL": "45569111347"
+  "lastVerifiedCommit": "9467a4b2f3d6de50a65edf27e193f565a9e406ce",
+  "lastVerifiedCI": "45574916026",
+  "lastVerifiedCodeQL": "45574916102"
 }

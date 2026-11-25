@@ -141,7 +141,7 @@ Never create branches or worktrees. Keep all repository work on main.
 ## P1 — Android compiled-client reconstruction follow-up (2026-11-25)
 
 - [x] Decode Valdi bytecode/control flow for authenticated DirectResponseClient send/prepare: exact `/backend-api/f/conversation` send route, separate GET `/backend-api/conversation/{id}` parent lookup, selected-user-message body construction, conditional conversation/skills fields, attachment mapping, JSON serialization and requirements/device-integrity provider boundaries. Full nested model/requirements schemas, public native integrity behavior, upload protocol and resume mapping remain separate tasks.
-- [ ] Decode generated ModelCatalog and ChatRequirements response decoder bytecode to recover required/optional/null fields and nested challenge variants.
+- [x] Decode generated ModelCatalog/ChatRequirements named-field requiredness, optionality, and types: request flags; default_model_slug; models/versions; model slug/model_slug; intelligence_presets; requirements token and turnstile/proofofwork/so challenge arrays; challenge required flag. Extra properties are preserved and optional nulls fail validation. [ ] Trace pass-through catalog fields and challenge descriptor consumers/provider schemas.
 - [ ] Decode event decoder and direct resume request bytecode, including delta operations, entity references, `resume_conversation_token`, `stream_handoff`, `resume_sse_endpoint`, `x-conduit-token`, offsets and maximum handoff count.
 - [ ] Decode upload reservation response, numeric file/count/total-size limits, URL expiry, retry/cancellation and accepted MIME/image constraints.
 

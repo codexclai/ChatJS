@@ -130,6 +130,7 @@
 110. Superseded the earlier category-based feature exclusions at the owner's direction; documented full source-backed feature-domain coverage and removed the blacklist from current product requirements, capability matrix, Project Instructions, and user documentation.
 111. Recorded the unchanged long-term product goal (ChatGPT Android/mobile + ChatGPT Windows/desktop + Codex CLI in one ChatJS module) and the temporary Android non-Work-first execution sequence. Android Work, Windows/Desktop, and Codex CLI are parked, not removed.
 112. Verified owner-directed full feature-domain scope correction and Android non-Work-first execution queue on main; CI run 45567211063 and CodeQL run 45567211014 both succeeded, including archive build, installed-package ESM/CommonJS smoke tests and security analysis.
+113. Decoded the Android generated ModelCatalog and ChatRequirements named-field schema, including required/optional fields, nested arrays, null rejection, and preserved extra properties; documented pass-through/challenge-consumer follow-ups (2026-11-25).
 
 ## Not implemented
 

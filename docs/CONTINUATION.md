@@ -265,3 +265,10 @@ Full method-level evidence and caveats are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.
 5. Continue independent Android guest create/refresh and guest composer route reconstruction. `/backend-anon` constants in LocationCookieInitializer remain unrelated evidence.
 
 **No ChatJS production code changed:** request, auth, file, SSE and integrity workflows remain unimplemented. The new results improve source evidence only; do not report functional support.
+
+
+## Latest handoff — Android generated schema validation trace — 2026-11-25
+
+The decoded generated ConversationApiClient now provides the concrete ModelCatalog/ChatRequirements named-field contract. ModelCatalogRequest requires boolean iim and supports_model_picker_upgrade_presets. ModelCatalogResponse requires string default_model_slug and has optional models[] / versions[] arrays; ModelCatalogModel.slug and ModelCatalogPreset.model_slug are optional strings; ModelCatalogVersion.intelligence_presets is an optional ModelCatalogPreset[] array. ChatRequirementChallenge.required is optional boolean. ChatRequirementsResponse.token is required string; turnstile, proofofwork and so are optional arrays of challenge descriptors. Optional fields are checked against undefined, so null is rejected; extra object keys are preserved.
+
+See ANDROID_CLIENT_PROTOCOL_FINDINGS.md. Continue into consumers of extra/pass-through catalog fields and the separate Turnstile/proof-of-work/so challenge types. Native device-integrity exchange/public-build availability, resume wire request, upload lifecycle, and anonymous guest network flows remain open. No ChatJS runtime implementation changed.
