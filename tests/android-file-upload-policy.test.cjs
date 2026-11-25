@@ -37,6 +37,7 @@ test('decodes only matching, valid Base64 attachment data URLs of the declared b
  assertPolicyError(()=>policy.decodeAttachmentDataUrl(file({dataUrl:'data:text/plain;base64,YWJj'})),'CHATGPT_ATTACHMENT_INVALID_DATA_URL');
  assertPolicyError(()=>policy.decodeAttachmentDataUrl(file({dataUrl:'data:application/pdf;base64,YWJ!'})),'CHATGPT_ATTACHMENT_INVALID_DATA_URL');
  assertPolicyError(()=>policy.decodeAttachmentDataUrl(file({size:4,dataUrl:'data:application/pdf;base64,YWJj'})),'CHATGPT_ATTACHMENT_INVALID_DATA_URL');
+ assertPolicyError(()=>policy.decodeAttachmentDataUrl(file({size:3,dataUrl:'data:application/pdf;base64,'+'A'.repeat(4*1024*1024)})),'CHATGPT_ATTACHMENT_INVALID_DATA_URL');
 });
 test('accepts the backend origin and the explicit Azure, S3, and OAI storage hosts',()=>{
  const cases=[['https://chatgpt.com/backend-api/files/upload','chatgpt.com'],['https://acct.blob.core.windows.net/container/blob?sig=abc','acct.blob.core.windows.net'],['https://acct.blob.storage.azure.net/container/blob?sig=abc','acct.blob.storage.azure.net'],['https://bucket.s3.amazonaws.com/object?sig=abc','bucket.s3.amazonaws.com'],['https://uploads.oaiusercontent.com/object?sig=abc','uploads.oaiusercontent.com']];

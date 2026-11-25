@@ -35,6 +35,8 @@ function decodeAttachmentDataUrl(file){
  if(typeof dataUrl!=='string'||!dataUrl.startsWith(prefix))fail('CHATGPT_ATTACHMENT_INVALID_DATA_URL','The attachment contents do not match the declared MIME type.');
  const encoded=dataUrl.slice(prefix.length);
  if(encoded.length===0||encoded.length%4!==0||!BASE64_PATTERN.test(encoded))fail('CHATGPT_ATTACHMENT_INVALID_DATA_URL','The attachment contents are not valid padded Base64.');
+ const expectedEncodedLength=4*Math.ceil(metadata.size/3);
+ if(encoded.length!==expectedEncodedLength)fail('CHATGPT_ATTACHMENT_INVALID_DATA_URL','The attachment Base64 length does not match its declared size.');
  const bytes=Buffer.from(encoded,'base64');
  if(bytes.byteLength!==metadata.size)fail('CHATGPT_ATTACHMENT_INVALID_DATA_URL','The attachment content length does not match its declared size.');
  return bytes;
