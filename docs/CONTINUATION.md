@@ -378,7 +378,7 @@ The module has nine focused deterministic tests and is included in syntax checks
 
 ### Validation and current limits
 
-The helper file passes `node --check`; all nine focused tests pass. The repository-wide `npm run check` and GitHub CI/CodeQL for this change are pending. The runtime remains foundation-only: no authenticated or guest ChatGPT session, conversation transport, product streaming, real file transfer, or public-build device-integrity provider is implemented. The supplied public Android native worker's internal-package rejection remains intact.
+The helper file passes `node --check`; all nine focused tests pass. The initial CI run failed only because `tests/archive.test.cjs` still expected the old nine-file archive manifest. That assertion was updated to include the new helper, then GitHub CI run `45600962485` passed `npm run check` (44/44 tests), generated-state/link checks (27 Markdown files), 10-file archive generation, and installed CommonJS/ESM smoke tests. CodeQL run `45600962380` also succeeded on commit `6eff5056dc95db2c2780097d026aa1e7c2b82305`. The downloaded artifact's gzip/tar integrity passed; its `ChatJS.tar.gz` is 17,944 bytes, SHA-256 `0f99e0639f97d8926caedee5bba182ffb6a446576bc929d1fdc854072fe8b05c`. The runtime remains foundation-only: no authenticated or guest ChatGPT session, conversation transport, product streaming, real file transfer, or public-build device-integrity provider is implemented. The supplied public Android native worker's internal-package rejection remains intact.
 
 ### Next Android non-Work work
 

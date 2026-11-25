@@ -1226,5 +1226,6 @@ The native DEX user-agent is ChatGPT/1.2026.209 (build 2620909), unlike the encl
 ### Validation and limits
 - `node --check src/chatgpt/android-conversation-api-schema.cjs`: passed.
 - Focused Node test run: 9 tests passed, 0 failed.
-- Full repository `npm run check`, distribution archive inspection and GitHub CI/CodeQL for this change remain pending.
+- The initial CI run failed because `tests/archive.test.cjs` still expected the previous nine-file archive. Updated the exact expected manifest to include the new helper, then reran the workflow successfully: CI `45600962485` passed `npm run check` with 44/44 tests, docs checks, archive build and installed CommonJS/ESM smoke tests; CodeQL `45600962380` passed on `6eff5056dc95db2c2780097d026aa1e7c2b82305`.
+- Downloaded and inspected the CI artifact: `ChatJS.tar.gz` contains exactly ten intended files, is 17,944 bytes, passes gzip/tar integrity, and has SHA-256 `0f99e0639f97d8926caedee5bba182ffb6a446576bc929d1fdc854072fe8b05c`. Extracted-helper smoke checks passed.
 - No authenticated HTTP request, model fetch, conversation send, guest flow, upload, device-integrity exchange or account credential handling was implemented or executed. The supplied public Android package's internal-only integrity gate is unchanged.
