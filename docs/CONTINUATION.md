@@ -188,3 +188,9 @@ The accepted high-level quality direction remains in PRODUCT_STANDARD.md section
 The pinned Codex source snapshot now has a concrete source map for the ChatGPT Codex Responses transport/auth/stream and the CLI JSONL event contract. See `CODEX_SOURCE_FINDINGS.md` and the latest Codex section of `CHATGPT_CAPABILITY_INVENTORY.md`.
 
 Next, trace the full core Responses builder and transport selection; request/session ID lifecycle; ChatGPT OAuth refresh/account-switch handling; full SSE/WebSocket events and recovery; tool/approval/result continuation; and local workspace/process/patch/MCP semantics. Implement these natively under ChatJS, without spawning the CLI or app-server. Codex credential-less configuration is not the ChatGPT guest session. No live requests or credentials were accessed, and no Codex feature is implemented in ChatJS yet.
+
+## Latest handoff — Codex local tool runtime and security model (2026-11-25)
+
+The pinned Codex CLI source now has a first-pass local tool/runtime map in `CODEX_SOURCE_FINDINGS.md`: interactive `exec_command` and `write_stdin`, one-shot execution, path-URI workdir and executor selection, explicit sandbox/approval states, session-scoped approval caching, verified `apply_patch` routing, and MCP server/tool readiness and dispatch. The native ChatJS implementation must reproduce required semantics rather than spawn or embed app-server. It needs explicit optional filesystem/process/PTY/sandbox/network adapters and cannot auto-approve or bypass human decisions.
+
+Next: trace remaining local tool/security source paths (filesystem operations, sandbox and networking, patch atomicity and MCP lifecycle); meanwhile continue the full Codex Responses WebSocket/auth/event mapping and Android Valdi bytecode inspection. Preserve distinct Codex, Windows Work Local and Android Work Cloud engines. No production behavior is implemented.

@@ -134,3 +134,14 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Confirm the exact Codex ChatGPT auth refresh/reload and account-switch semantics; keep credential persistence under explicit ChatJS storage policy and never reuse credentials from an unrelated process.
 - [ ] Keep the Codex credential-less state separate from Android/ChatGPT accountless guest mode. The Codex source pass does not establish guest-session creation or guest conversation requests.
 - [ ] Confirm all telemetry, OpenTelemetry, feedback, profiling and remote-diagnostic code paths are excluded from any native ChatJS adaptation.
+
+## Codex CLI local execution and tool security — 2026-11-25
+
+- [ ] Identify the minimal native Node.js process/PTY lifecycle required for Codex CLI parity, including interactive vs one-shot execution, process IDs, stdin polling, output streaming/truncation, timeout, cancellation and process-tree cleanup.
+- [ ] Reconstruct the command workdir/path-URI resolver, shell detection/selection, environment selection and local-vs-remote executor contracts. Do not assume a local path applies to a remote host or vice versa.
+- [ ] Map all approval states and policy inputs, including session-scoped approval cache keys, fresh-human-approval requirements, explicit denial and forbidden states. Verify which Codex policy/config concepts are user-facing and which are internal.
+- [ ] Reconstruct sandbox types, filesystem read/write policies, network restrictions/proxy/credential masking, Windows sandbox selection, extra permissions and policy escalation paths before implementing local command execution.
+- [ ] Trace command execution events and terminal session IDs across `exec_command` and `write_stdin`; ensure the future ChatJS stream can report true progress without unbounded buffering or fake events.
+- [ ] Map the `apply_patch` fast path, parser/validation, diff tracking, permission evaluation, atomicity/failure semantics and file-change events.
+- [ ] Trace MCP server discovery/configuration, tool schema lifecycle, readiness, namespacing, user approval, dispatch, result handling and cancellation. Decide which MCP capabilities are required for parity and which are optional extensions.
+- [ ] Preserve separation between Codex CLI local execution, Windows ChatGPT Work Local, and Android ChatGPT Work Cloud. Do not infer a shared security or workspace contract without explicit source evidence.

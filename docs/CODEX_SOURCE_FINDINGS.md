@@ -160,3 +160,41 @@ The same `codex exec` entry point starts an `InProcessAppServerClient` and maps 
 The pinned source snapshot sets `DEFAULT_ANALYTICS_ENABLED = true` for `codex exec` and contains telemetry/tracing/feedback/profile pathways. Those are explicitly excluded from ChatJS. No upstream analytics, OpenTelemetry exporters, telemetry hooks, feedback uploads, profiling or remote diagnostics may be ported.
 
 **Evidence limit:** this source pass inspected files in the pinned ZIP; it did not execute Codex CLI, start an app-server, perform OAuth, read credentials, issue any network request, or test a live account. Tests visible in source are evidence of intended assertions only; they were not run as part of this inspection. No ChatJS Codex transport, auth, Responses decoder, task engine or CLI JSONL API has been implemented. Overall ChatJS runtime status remains foundation-only.
+
+## 2026-11-25 — Codex local coding execution, sandbox and approvals
+
+Additional inspection of the same pinned Codex source snapshot establishes the local tool execution boundary more concretely. The relevant files include `codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs`, `unified_exec/preparation.rs`, `unified_exec/write_stdin.rs`, `codex-rs/core/src/tools/runtimes/unified_exec.rs`, `codex-rs/core/src/tools/sandboxing.rs`, `codex-rs/core/src/tools/approvals.rs`, `codex-rs/core/src/tools/handlers/apply_patch.rs`, and `codex-rs/core/src/tools/handlers/mcp.rs`.
+
+### Command and terminal lifecycle
+
+- The `exec_command` handler selects a real execution environment, parses a working directory as a `PathUri`, resolves command/shell details, prepares policy and permission context, and then delegates process startup to `UnifiedExecProcessManager`.
+- Interactive command execution may allocate a terminal/PTY and expose a resumable process session. The separate `write_stdin` tool requires a terminal session; it can send characters to an existing process or poll for more output with an empty input. It has a yield-time/output-token interface and propagates the operation cancellation token.
+- The one-shot command mode is a distinct contract: it removes `tty` and `yield_time_ms`, adds `timeout_ms` (the observed default is 10,000 ms), runs to completion, and says the process is terminated on timeout/cancellation and cannot be resumed.
+- TTY is feature-gated (`UnifiedExecTty`) in the observed source. Do not assume every ChatJS Node.js host can supply an interactive terminal.
+- Command output is bounded/truncated using model/runtime policy. A sandbox denial is terminal and does not leave a resumable process.
+- The source differentiates local and remote executor environments. A remote executor is responsible for its URI-native sandbox/path rules; host-local sandboxing requires a valid native working directory and path convention. ChatJS should not reinterpret a foreign host path as local just because it can be parsed.
+
+### Approval and sandbox policy
+
+The source models command permission as a typed policy result, not a single boolean:
+
+- `Skip`: policy permits execution without an approval prompt, but sandbox policy still applies unless a specific policy says otherwise;
+- `NeedsApproval`: an approval flow is required;
+- `NeedsHumanApproval`: a fresh human decision is required for each execution attempt;
+- `Forbidden`: policy forbids the action.
+
+The requirement is computed from approval policy, execution policy, permission profile, sandbox permissions, Windows sandbox settings, command/shell platform classification and turn-level context. The runtime then coordinates approval, sandbox selection, command launch and cancellation. The source explicitly distinguishes fresh human approval from cached session approval: an approved-for-session cache cannot satisfy a fresh human approval requirement. The cache is scoped to specific approval keys such as command/environment/cwd/TTY/permission context; it is not a global allow-list.
+
+### Patch and tool execution
+
+- The `exec_command` path can intercept a verified `apply_patch` command and route it through the dedicated patch parser/handler rather than blindly invoking a shell. The dedicated handler parses and verifies patch structure, checks environment identity, applies the sandbox context and emits file-change progress/results.
+- MCP tools have a separate handler that uses the selected server/tool definitions, waits for the configured MCP server to become ready, dispatches its tool invocation and records the result. This is distinct from the ChatGPT Codex Responses tool-call stream and from host filesystem/process APIs.
+- The CLI JSONL task contract is an output projection of tool/process/item events; it does not replace the underlying approval, process and patch state machines.
+
+### ChatJS implementation consequence
+
+To bring Codex CLI capabilities into one ChatJS Node.js module without depending on the upstream executable/app-server, ChatJS needs its own verified implementations of the required process/terminal manager, command lifecycle, approval router, sandbox/permission policy, patch engine, tool dispatcher and task/event state machine. These must be native Node.js components and use explicit optional host adapters only for real facilities available to the consuming application. They must preserve the official client's user approvals and denial outcomes; no configuration switch may force-approve a command, skip required sandboxing, or convert a denied action into success.
+
+This Codex local execution engine remains separate from Windows ChatGPT Work Local and Android ChatGPT Work Cloud. Shared low-level Node.js primitives may be reused only where their semantics are demonstrably common; the client-level workflows and security policies remain distinct.
+
+**Evidence boundary:** these are static observations of the pinned Codex ZIP. No commands were executed, no sandbox was disabled, no approval was granted, no MCP server was started, and no local tool operation was run. No ChatJS command, terminal, patch, MCP or approval subsystem has been implemented.

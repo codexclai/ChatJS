@@ -122,6 +122,7 @@
 102. Expanded PRODUCT_STANDARD.md with testable dynamic, automatic, customization/control, real-time, async/concurrent, sustained-operation, performance and compatibility requirements; updated user docs, architecture, roadmap, decisions and future-chat continuity.
 103. Clarified that ChatGPT is the sole AI service target and removed ambiguous generic AI-provider selection language from product/architecture requirements.
 104. Mapped the pinned Codex CLI ChatGPT Responses request/session/transport, ChatGPT OAuth refresh/account handling, selected SSE event/error mapping and the separate CLI JSONL thread/turn/item event contract; documented that the native ChatJS implementation must not depend on the external CLI/app-server.
+105. Mapped Codex CLI local tool source architecture: interactive/one-shot commands, resumable terminal stdin polling, path-URI and local/remote executor handling, TTY gate, cancellation/output controls, typed approval/deny states, session approval cache, apply_patch interception and MCP dispatch; recorded native Node.js implementation gaps.
 
 ## Not implemented
 
@@ -144,15 +145,16 @@
 3. Reconstruct Codex ChatGPT OAuth session persistence, refresh provenance, single-flight locking, account-switch safety and error classes for a secure ChatJS-owned session manager.
 4. Decode the complete Codex Responses SSE event/error schema, including tool handoffs/results, reasoning, usage, incomplete/interrupted, content-filter and metadata paths.
 5. Trace Codex tool approval/decline/result continuation and local coding-engine semantics: workspaces, file operations, patches, commands, process cleanup, Git, collaboration and MCP; implement only verified features using optional host adapters.
-6. Implement the Codex typed async event lifecycle in ChatJS, preserving the distinct mapping between backend Responses SSE and the CLI JSONL thread/turn/item contract.
-7. Build a compatible Valdi/QuickJS bytecode inspection utility to decode Android DirectResponseClient.prepare/send and exact route/serializer branches.
-8. Decode generated Android ModelCatalog and ChatRequirements decoder instruction graphs, including nested challenge variants and optional/null rules.
-9. Decode Android conversation event/delta and direct resume bytecode, including resume body/header mapping, offsets, handoff limit and supported event variants.
-10. Recover Android upload reservation/response layout, numeric file/count/total-size limits, URL expiry/retry/cancellation and accepted MIME/image constraints.
-11. Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.
-12. Trace the exact Windows Work Local UI/runtime/network flow separately from Android Work Cloud; do not depend on the packaged Codex app-server subprocess.
-13. Implement actual authenticated/accountless ChatGPT sessions, ChatGPT conversation streaming, attachment handling, Codex CLI workflows and separate Work engines only after exact protocols are reconstructed and genuine end-to-end tests can run.
-14. Implement PRODUCT_STANDARD.md section 14 acceptance gates: validated customization, capability readiness, async/concurrent/backpressure behavior, real-time streams, lifecycle/soak/recovery, performance budgets and a tested Node.js/OS compatibility matrix.
+6. Trace Codex filesystem/workspace operations, platform sandbox and network-approval paths, command process tree/output lifecycle, patch conflict/atomicity semantics and MCP server configuration/approval/result handling.
+7. Implement the Codex typed async event lifecycle in ChatJS, preserving the distinct mapping between backend Responses SSE and the CLI JSONL thread/turn/item contract.
+8. Build a compatible Valdi/QuickJS bytecode inspection utility to decode Android DirectResponseClient.prepare/send and exact route/serializer branches.
+9. Decode generated Android ModelCatalog and ChatRequirements decoder instruction graphs, including nested challenge variants and optional/null rules.
+10. Decode Android conversation event/delta and direct resume bytecode, including resume body/header mapping, offsets, handoff limit and supported event variants.
+11. Recover Android upload reservation/response layout, numeric file/count/total-size limits, URL expiry/retry/cancellation and accepted MIME/image constraints.
+12. Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.
+13. Trace the exact Windows Work Local UI/runtime/network flow separately from Android Work Cloud; do not depend on the packaged Codex app-server subprocess.
+14. Implement actual authenticated/accountless ChatGPT sessions, ChatGPT conversation streaming, attachment handling, Codex CLI workflows and separate Work engines only after exact protocols are reconstructed and genuine end-to-end tests can run.
+15. Implement PRODUCT_STANDARD.md section 14 acceptance gates: validated customization, capability readiness, async/concurrent/backpressure behavior, real-time streams, lifecycle/soak/recovery, performance budgets and a tested Node.js/OS compatibility matrix.
 
 ## Reference artifact
 

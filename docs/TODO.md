@@ -153,3 +153,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Implement Codex task/tool lifecycle and typed async events corresponding to the source JSONL contract; do not fake progress or terminal states.
 - [ ] Reimplement safe local coding workflows within ChatJS using explicit optional host adapters and approval/policy boundaries; do not invoke Codex CLI or app-server.
 - [ ] Remove/exclude all upstream analytics, OpenTelemetry, feedback, profiling and remote-diagnostics behavior. Preserve the permanent zero-telemetry/no-unsolicited-network rules.
+
+## P1 — Codex local tool runtime, policy and execution parity
+
+- [ ] Reconstruct a native Node.js interactive terminal/process manager for Codex CLI workflows, including interactive `exec_command`, `write_stdin`, one-shot commands, true streaming output, bounded output, deadlines, cancellation and cleanup.
+- [ ] Define host adapters for actual filesystem, shell/process/PTY, network sandboxing, secure credential masking and platform sandbox facilities. The core must remain importable/useful without terminal or shell support.
+- [ ] Implement policy-driven command approvals with typed skip/needs-approval/fresh-human-approval/forbidden outcomes, explicit denial and session-scoped approved keys. Never bypass or auto-satisfy required human approval.
+- [ ] Reconstruct and implement workspace/path confinement, filesystem permissions, sandbox selection, network restrictions and platform-specific behavior without assuming Windows/Linux/macOS equivalence.
+- [ ] Implement the verified `apply_patch` parser/application/progress path and robust conflict/error reporting rather than delegating arbitrary patch text to a shell.
+- [ ] Reconstruct MCP server/tool discovery, readiness, namespacing, schema validation, invocation, approvals, result flow and cancellation where needed for Codex CLI parity.
+- [ ] Test all local execution paths on supported real hosts, including cancellation, process-tree cleanup, policy denial, sandbox denial, invalid/foreign paths, output truncation, concurrent sessions and host-adapter absence.

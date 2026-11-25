@@ -942,3 +942,20 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - No production ChatJS JS/TS, API, test or dependency changed. No Codex authenticated/guest session, Responses client, WebSocket transport, event decoder, tool lifecycle, or local coding engine is implemented.
 - Codex auth is not evidence for ChatGPT guest chat. Android guest create/refresh and composer routes remain separate unresolved questions.
 - Overall completion remains approximately 3%; research does not count as shipped Node.js behavior.
+
+## 2026-11-25 — Codex local execution, approval and sandbox source trace
+
+### Work performed
+
+- Inspected the pinned Codex CLI source for unified command execution, one-shot mode, terminal continuation, sandbox/approval policy, apply-patch interception and MCP tool handling.
+- Mapped `exec_command` as an environment-selected command preparation and process-manager lifecycle; interactive execution may be resumed through `write_stdin`, while one-shot mode is bounded and non-resumable.
+- Traced workdir resolution through a `PathUri`, distinct local/remote executor and host-native path requirements, TTY feature gating, bounded output, cancellation and terminal-session semantics.
+- Recovered typed command policy outcomes (`Skip`, `NeedsApproval`, `NeedsHumanApproval`, `Forbidden`) and session-keyed approval reuse. Fresh human approvals cannot be satisfied by a session approval cache.
+- Mapped the verified `apply_patch` interception path and separate MCP readiness/tool invocation handling.
+- Added these findings and new Codex local-runtime tasks to the canonical source map, capability inventory, open questions, TODO, AI memory, continuation and this session log.
+
+### Limits
+
+- No command, PTY, sandbox, approval, patch or MCP operation was executed; this was static source inspection only.
+- No production JS/TS, tests, dependencies or public API changed. ChatJS still has no Codex execution engine, approval policy, sandbox, patch system or MCP runtime.
+- The Codex local coding engine remains separate from Windows ChatGPT Work Local and Android ChatGPT Work Cloud; no shared Work runtime was inferred.

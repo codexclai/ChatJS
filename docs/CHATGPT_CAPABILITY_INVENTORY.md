@@ -177,3 +177,16 @@ The pinned `CodexCLI.zip` source snapshot provides a concrete path for the Codex
 - **CLI task events:** JSONL `thread.started`, `turn.started/completed/failed`, `item.started/updated/completed` and `error` event types, with typed agent-message, reasoning, command, file, MCP, collaboration, web-search, todo and error item kinds.
 
 These are pinned-source observations. They do not mean ChatJS already has a Codex client, auth/session flow, Responses API, WebSocket transport, local coding execution, MCP adapter or JSONL event API. The external Codex CLI and app-server remain prohibited runtime dependencies. The Codex CLI client family is separate from Windows Work Local and Android Work Cloud; preserve all three surfaces through one package without collapsing their protocols.
+
+## 2026-11-25 — Codex CLI local execution and tool-system evidence
+
+The pinned Codex source reveals a separate native local-coding subsystem alongside its ChatGPT Codex Responses client:
+
+- **Interactive commands:** `exec_command` selects an execution environment, resolves a path-URI working directory and shell, prepares policy/sandbox permissions, launches through a shared process manager, and may return a resumable terminal session.
+- **Terminal continuation:** `write_stdin` sends input or polls a live terminal session; empty input is an output poll. One-shot command mode has a separate bounded timeout and is not resumable.
+- **Policy:** command authorization distinguishes skip, approval required, fresh human approval required, and forbidden. Session approvals are keyed and cannot replace fresh human decisions.
+- **Sandbox:** local and remote executor environments use different path/sandbox handling; TTY is feature-gated; cancellation, timeout, bounded output and terminal cleanup are part of the command contract.
+- **Patching:** a verified `apply_patch` command may be intercepted and routed to the dedicated patch parser/application path with environment and sandbox checks.
+- **MCP:** configured MCP tools are registered separately and wait for their server to be ready before invocation.
+
+This source evidence broadens the native implementation work needed for Codex parity. It does not mean ChatJS currently has a process manager, terminal, sandbox, command approval, patch runtime or MCP integration. These capabilities remain Research/Planned, not supported.

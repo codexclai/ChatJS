@@ -112,7 +112,8 @@
     "Recorded the owner's definitive product identity: one ChatJS Node.js package consolidating ChatGPT mobile, ChatGPT desktop and Codex CLI client capabilities; Codex CLI behavior is in scope for native implementation, while its separate executable/app-server are not runtime dependencies.",
     "Expanded PRODUCT_STANDARD.md with testable dynamic, automatic, customization/control, real-time, async/concurrent, sustained-operation, performance and compatibility requirements; updated user docs, architecture, roadmap, decisions and future-chat continuity.",
     "Clarified that ChatGPT is the sole AI service target and removed ambiguous generic AI-provider selection language from product/architecture requirements.",
-    "Mapped the pinned Codex CLI ChatGPT Responses request/session/transport, ChatGPT OAuth refresh/account handling, selected SSE event/error mapping and the separate CLI JSONL thread/turn/item event contract; documented that the native ChatJS implementation must not depend on the external CLI/app-server."
+    "Mapped the pinned Codex CLI ChatGPT Responses request/session/transport, ChatGPT OAuth refresh/account handling, selected SSE event/error mapping and the separate CLI JSONL thread/turn/item event contract; documented that the native ChatJS implementation must not depend on the external CLI/app-server.",
+    "Mapped Codex CLI local tool source architecture: interactive/one-shot commands, resumable terminal stdin polling, path-URI and local/remote executor handling, TTY gate, cancellation/output controls, typed approval/deny states, session approval cache, apply_patch interception and MCP dispatch; recorded native Node.js implementation gaps."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -133,6 +134,7 @@
     "Reconstruct Codex ChatGPT OAuth session persistence, refresh provenance, single-flight locking, account-switch safety and error classes for a secure ChatJS-owned session manager.",
     "Decode the complete Codex Responses SSE event/error schema, including tool handoffs/results, reasoning, usage, incomplete/interrupted, content-filter and metadata paths.",
     "Trace Codex tool approval/decline/result continuation and local coding-engine semantics: workspaces, file operations, patches, commands, process cleanup, Git, collaboration and MCP; implement only verified features using optional host adapters.",
+    "Trace Codex filesystem/workspace operations, platform sandbox and network-approval paths, command process tree/output lifecycle, patch conflict/atomicity semantics and MCP server configuration/approval/result handling.",
     "Implement the Codex typed async event lifecycle in ChatJS, preserving the distinct mapping between backend Responses SSE and the CLI JSONL thread/turn/item contract.",
     "Build a compatible Valdi/QuickJS bytecode inspection utility to decode Android DirectResponseClient.prepare/send and exact route/serializer branches.",
     "Decode generated Android ModelCatalog and ChatRequirements decoder instruction graphs, including nested challenge variants and optional/null rules.",
@@ -159,7 +161,8 @@
     "The new Android payload evidence is a compiled Valdi module string/symbol-region scan, not a bytecode decompilation. Field names and route constants do not establish request nesting, requiredness, exact route selection, resume mapping or numeric upload limits; a production serializer must not be guessed.",
     "The Windows desktop package's packaged coding-agent path spawns bundled codex.exe over stdio app-server RPC. This path must not be used as a ChatJS runtime dependency; map actual Windows Work separately and implement the distinct Codex CLI capability family natively from source evidence.",
     "Codex CLI source evidence does not establish a working ChatJS implementation. Direct request/session behavior, event/task mapping and local coding workflows need reconstruction and real tests; do not confuse target scope with current runtime support.",
-    "The Codex CLI direct client source map is static research from the pinned ZIP; the full request builder, session lifecycle, WebSocket/SSE recovery, tool approval loop and local coding engine remain incomplete, and no corresponding ChatJS behavior is implemented."
+    "The Codex CLI direct client source map is static research from the pinned ZIP; the full request builder, session lifecycle, WebSocket/SSE recovery, tool approval loop and local coding engine remain incomplete, and no corresponding ChatJS behavior is implemented.",
+    "Codex local execution source shows complex platform-specific sandbox and approval state machines. Do not implement command execution until policy, path confinement, cancellation/process cleanup and fresh-human-approval semantics are fully reconstructed and host integration tests exist."
   ],
   "lastVerifiedCommit": "e76cf5c81efddd371f4af5e837dc127993c2e74d",
   "lastVerifiedCI": "45562908157",
