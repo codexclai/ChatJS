@@ -1364,3 +1364,30 @@ This controller queue is distinct from ChatJS's future general request concurren
 Added private `src/chatgpt/android-auth-credential-record.cjs` with the version-1 record constants, strict outer token/native-session envelope decoder, nested stored-session/account validation, JWT `exp` metadata extraction and source-shaped record builder. Sixteen focused tests cover the record forms, null/undefined/invalid fields, optional snapshot handling, account snapshot validation, expiry decoding and both builder branches. The helper is pure and private; it does not open files, persist credentials, encrypt/decrypt, invoke native services or perform network requests.
 
 The Android persistence metadata/encryption key lifecycle, encryption algorithm, key storage, atomicity/crash recovery, multi-process locking, secure clear guarantees, exact native credential callback payloads and public Node host secure-storage adapter remain unimplemented. A portable ChatJS host must supply a genuine secure storage capability or authentication must fail closed; never use an ordinary file or in-memory fallback as durable credential storage.
+
+## 2026-11-25 — Android rejected-credential recovery classifier
+
+The compiled `OAIRequestCredential` module exports `recoverRejectedCredential` and four recovery outcomes: `None`, `Renew`, `Revoked`, and `RequiresSSO`. Its generated error envelope contains optional/resilient `detail` and top-level `error` objects. `detail.code` is an optional string; `detail.error` is an optional/resilient `APIError`. `APIError.message` is required string, while `code` and `type` are optional strings. An invalid optional/resilient nested APIError is discarded; an invalid `detail.code` invalidates the detail object. Invalid/absent response data is treated as `None` by the classifier.
+
+### Exact classification order
+
+1. No response body or failed JSON/schema decoding -> `None`.
+2. When `detail.error` decoded successfully, only its `code` is examined: `token_revoked` or `token_invalidated` -> `Revoked`; any other/missing code -> `None`. It does not consult `detail.error.type` and does not fall through to the top-level `error` after this branch.
+3. Otherwise, if `detail.code` exists: `require_sso_login` -> `RequiresSSO`; `token_expired` -> `Renew`; any other code -> `None`. An unrecognized detail code does not fall through to top-level error.
+4. Otherwise the top-level `error` is examined: `code` or `type` equal to `token_revoked`/`token_invalidated` -> `Revoked`; `code` or `type` equal to `require_sso_login` -> `RequiresSSO`; all other/missing values -> `None`. In particular, top-level `token_expired` is **not** classified as `Renew` by this source helper.
+
+### Recovery action side effects and caller gate
+
+`recoverRejectedCredential(requestCredentialContext, accountId, responseBody, allowRenewal)` first classifies the response:
+
+- `Revoked` and `RequiresSSO` both call and await `requestCredentialContext.reportRevoked(accountId, requiresSSO)`, with the boolean true only for `RequiresSSO`. Failure is caught and only emits the guarded warning `Unable to invalidate the rejected account credential.`; the method then resolves without a token.
+- `Renew` calls `requestCredentialContext.accessToken(accountId)` only when `allowRenewal` is truthy; otherwise it resolves without a token. The permission is an explicit caller-supplied gate, not an automatic refresh on every expiry-like response.
+- `None` has no recovery action.
+
+This function delegates actual invalidation and token acquisition to the session request-credential context. It does not itself identify the secure-store clear operation or prove whether a renewed token is accepted by the original request; those semantics must be traced through its caller/session context separately. No API request is replayed here.
+
+### ChatJS implementation and limits
+
+Added private `src/chatgpt/android-request-credential-recovery.cjs`, a pure ErrorEnvelope/APIError decoder, exact source-ordered recovery classifier and a side-effect-free recovery plan. Seventeen deterministic tests cover generated optional/resilient schema behavior, the nested-vs-top-level precedence, the absence of top-level expiry renewal, and explicit renewal permission. The helper does not call `reportRevoked`, call `accessToken`, clear credentials, refresh, retry a request, or access a session. It is private and not wired to authenticated transport.
+
+The remaining native request-credential/session context, actual revoke/clear implementation, token renewal and retry semantics, SSO reauthentication flow, DPoP lifecycle and authorized end-to-end behavior remain unimplemented in ChatJS.

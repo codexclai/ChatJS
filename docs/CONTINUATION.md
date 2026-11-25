@@ -510,8 +510,28 @@ The controller's `pendingCredentialOperation` promise chain serializes credentia
 
 ### Implementation and boundary
 
-Added private `src/chatgpt/android-auth-credential-record.cjs` for the record constants, top-level envelope decode, nested stored session/account validation, finite JWT `exp` extraction and controller-shaped record builder. Fifteen deterministic tests pass. It is included in lint and the distribution archive allowlist. It is a pure codec only: no file, network, native keystore, encryption, credential persistence, sign-in or restore.
+Added private `src/chatgpt/android-auth-credential-record.cjs` for the record constants, top-level envelope decode, nested stored session/account validation, finite JWT `exp` extraction and controller-shaped record builder. Sixteen deterministic tests pass. It is included in lint and the distribution archive allowlist. It is a pure codec only: no file, network, native keystore, encryption, credential persistence, sign-in or restore.
 
 ### Still open
 
 Underlying PersistentStore cryptography, key alias/source/rotation, Android Keystore/native ownership, authenticated encryption details, crash/atomicity/durability/clear guarantees, multi-process semantics, exact foreground retry race behavior, and portable host secure-store adapter remain unimplemented. ChatJS must not replace this with an ordinary JSON file or plaintext fallback. Exact native sign-in request/result/cancel callback payloads, token renewal/SSO/DPoP and remaining Android non-Work modules remain open. Android Work/cloud, Windows/Desktop/local Work and Codex CLI remain parked for execution sequencing only.
+
+## Latest handoff — Android rejected-credential recovery method — 2026-11-25
+
+### Method-level source findings
+
+The compiled `OAIRequestCredential` module exposes recovery actions `None`, `Renew`, `Revoked` and `RequiresSSO`, and a generated schema for ErrorEnvelope/ErrorDetail/APIError. ErrorEnvelope contains optional/resilient `detail` and top-level `error`. ErrorDetail contains optional `code: string` (not individually resilient) and optional/resilient APIError. APIError requires `message: string`; optional `code` and `type` must be strings when present. A malformed nested resilient APIError is discarded; a malformed detail.code causes the optional/resilient detail object to be discarded.
+
+Classifier precedence is source-specific:
+1. Absent response body or invalid JSON/schema -> `None`.
+2. If `detail.error` exists, only `detail.error.code` is tested; `token_revoked`/`token_invalidated` -> `Revoked`; anything else -> `None`, with no fallback.
+3. Otherwise, `detail.code` `require_sso_login` -> `RequiresSSO`, `token_expired` -> `Renew`, any other detail code -> `None`, with no fallback.
+4. Otherwise top-level `error.code` or `.type` recognizes revoked/invalidated and require_sso_login. Top-level `token_expired` deliberately does not produce `Renew`.
+
+`recoverRejectedCredential` reports Revoked/RequiresSSO through the request-credential context's `reportRevoked(accountId, requiresSSO)` callback, awaited but warning-only on failure; the second flag is true only for SSO. `Renew` asks the context for `accessToken(accountId)` only when the caller's allow-renewal argument is truthy. `None` does no work. This module does not itself clear the store, acquire a native token, retry a request or run SSO UI.
+
+### Implementation and limits
+
+Added private `src/chatgpt/android-request-credential-recovery.cjs` with the generated error-envelope decoder, exact branch precedence and side-effect-free recovery plan. Seventeen focused tests cover malformed vs valid payloads, resilient nested member behavior, precedence and explicit renewal permission. It is in syntax checks and the approved archive allowlist. No callbacks, native service, token retrieval, storage clearing, retry or network were invoked.
+
+Next: trace the actual request-credential context implementations for `reportRevoked` and `accessToken`, including session persistence invalidation, renewable-auth native bridge, DPoP/token result propagation, request replay and SSO user interaction. Until then this pure classifier is not a working renewal or revocation workflow. Android guest SessionManager remains a separate flow.

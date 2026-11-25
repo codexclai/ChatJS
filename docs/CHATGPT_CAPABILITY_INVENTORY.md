@@ -265,3 +265,6 @@ The Android authentication controller's restore/direct-token/interactive sign-in
 
 
 The Android `OAICredentialStore` wrapper is now method-decoded, including the browser in-memory/unavailable/encrypted variants, namespace/key/user metadata, `enableEncryption`/`disableBatchWrites` configuration, lifecycle-based foreground admission, JSON load/save/clear wrapper, version-1 token/native-session envelope and nested session/account snapshot validators. A private, tested `android-auth-credential-record.cjs` codec builds/decodes those records and extracts only finite JWT `exp` metadata. It does **not** encrypt, decrypt, access a filesystem/keystore, persist credentials or authenticate. The underlying PersistentStore crypto/key lifecycle remains unresolved.
+
+
+The Android `OAIRequestCredential` rejection classifier is now method-decoded and represented by a private pure helper. It preserves nested `detail.error` vs `detail.code` vs top-level `error` precedence, recognizes top-level revocation/SSO but not top-level expiry, and only plans a token renewal when the caller-supplied renewal flag is truthy. The source's `reportRevoked` and `accessToken` callbacks are not implemented or invoked in ChatJS; request replay, token replacement, secure clearing and full SSO/DPoP remain unimplemented.

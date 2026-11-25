@@ -278,3 +278,11 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Decode the version-1 credential envelope: mutually exclusive accessToken or nativeSessionId, optional accountId, and optional validated nested session/account snapshot. Decode finite JWT `exp` only as optional snapshot metadata.
 - [x] Implement the exact outer record codec, nested stored account/session validators, expiry metadata parser and source-shaped record builder as a private side-effect-free module; 16 deterministic tests pass.
 - [ ] Decode the actual underlying PersistentStore encryption primitive, key source/alias/rotation, native ownership, atomicity, clear durability and multi-process semantics. Do not assume the `enableEncryption` option reveals these details.
+
+## Android rejected-credential recovery classifier — 2026-11-25
+
+- [x] Decode the generated ErrorEnvelope/ErrorDetail/APIError schema, required `APIError.message`, optional code/type strings, optional/resilient nested members and invalid nested-object fallback behavior.
+- [x] Decode exact recovery precedence: nested detail.error.code revocation only; otherwise detail.code SSO/expiry; otherwise top-level error code/type revocation/SSO only; malformed/absent response -> None.
+- [x] Decode recovery callback gate: Revoked/RequiresSSO report the account and SSO boolean; Renew invokes accessToken only when the caller-supplied renewal flag is truthy; no action for None.
+- [x] Implement private pure decoder/classifier/recovery-plan helper with 17 deterministic tests; no callbacks, token retrieval, invalidation, request retry or network.
+- [ ] Trace the requestCredentialContext `reportRevoked` and `accessToken` implementations/callers, including actual credential clearing, native renewal, result propagation and request replay/SSO handling.
