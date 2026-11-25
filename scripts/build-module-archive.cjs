@@ -17,6 +17,7 @@ const includedFiles = [
   'src/index.mjs',
   'src/sse.cjs',
   'src/chatgpt/file-upload-policy.cjs',
+  'src/chatgpt/android-conversation-api-schema.cjs',
   'types/index.d.ts'
 ];
 

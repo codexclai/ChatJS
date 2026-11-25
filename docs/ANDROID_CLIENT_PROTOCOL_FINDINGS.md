@@ -1048,3 +1048,16 @@ The native helper hardcodes User-Agent ChatGPT/1.2026.209 (Android ; build 26209
 ### Evidence boundary
 
 This is static DEX and packaged-asset analysis only. No Android method was executed, no Play Integrity token or cookie was requested, and no HTTP endpoint was called. The package gate still makes this native exchange unavailable to the supplied public package. Remaining details include retry attempt ceilings, DeviceRateLimits scope/retention and cooldown persistence, exact cookie-name/lifetime/rotation/deletion, device UUID rotation/deletion, the UA mismatch, a distinct public provider in another authentic build, and live service behavior.
+
+
+## 2026-11-25 — ChatJS Android model-catalog and chat-requirements schema helpers
+
+The source-traced generated API contract now has a private Node.js implementation in `src/chatgpt/android-conversation-api-schema.cjs`:
+
+- `buildModelCatalogRequest` validates the two required boolean request fields and produces the `GET /backend-api/models` path with `iim` and `supports_model_picker_upgrade_presets` query values in the observed order.
+- `buildChatRequirementsRequest` returns the observed `POST /backend-api/sentinel/chat-requirements` descriptor with an empty JSON object body.
+- The response decoders implement `ModelCatalogResponse` and its nested model/version/preset arrays, plus `ChatRequirementsResponse` and its Turnstile/proof-of-work/`so` challenge arrays. Required fields and optional field types match the generated decoder contracts documented above.
+- Optional values are omitted only when `undefined`; present `null` values are passed to the corresponding primitive/array validator and rejected. Additional object properties are preserved rather than stripped.
+- `resolveDefaultRequirementsIntegrityHeader` requires a non-empty requirements token and returns the source-named header only when no challenge descriptor is marked `required === true`. Any required challenge throws `CHATGPT_ANDROID_API_DEVICE_INTEGRITY_REQUIRED`; no challenge result is fabricated or bypassed.
+
+The helper is internal and side-effect-free. Nine deterministic tests cover the request descriptors, schema nesting, optional/null behavior, extension-field pass-through and fail-closed challenge routing. It makes no network requests and is not authentication, a public native integrity provider, a challenge solver, or an implemented conversation workflow. The supplied public XAPK's `com.openai.chatgpt.internal` package preflight remains respected. Authorized end-to-end service tests and public-build device-integrity support remain open.

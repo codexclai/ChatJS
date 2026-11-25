@@ -50,6 +50,12 @@ The current 2026-11-24 XAPK scan adds method-reference evidence for separate req
 
 Core APIs must be reusable without a phone/desktop device or hardware. If the caller's host offers a camera, microphone, screen, browser, desktop-control API, or another facility, an optional adapter may integrate it. The package itself must not assume or request those facilities on behalf of every consumer.
 
+## Android schema helper implementation — 2026-11-25
+
+`src/chatgpt/android-conversation-api-schema.cjs` now contains private, deterministic helpers for the observed model-catalog GET descriptor and chat-requirements POST descriptor, plus the generated nested response decoders. It preserves unknown properties and enforces required/optional primitive and array types, including rejecting present `null` values where the generated source checks only for `undefined`. The default requirements-token header helper is fail-closed when a required Turnstile, proof-of-work, or `so` challenge is present.
+
+The module is included in the distributable archive and has focused tests. This does not implement HTTP, authenticated sessions, attestation, conversation send/receive, or a model catalog fetch; the overall runtime remains foundation-only.
+
 ## Not implemented yet
 
 The current ChatJS repository is foundation-only. Actual ChatGPT service connection, authentication/session handling, request transport, conversation features, files, voice, images, Work tasks, and Codex integrations are not implemented. No end-to-end compatibility claims are made.

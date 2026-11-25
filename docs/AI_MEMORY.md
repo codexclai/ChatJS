@@ -269,3 +269,10 @@ The HTTP helper path is also method-level reconstructed: bearer/account/device h
 The helper hardcodes User-Agent ChatGPT/1.2026.209 (build 2620909), while the enclosing public XAPK is 1.2026.321 (2632129). The mismatch is observed and unexplained. The service worker still rejects public com.openai.chatgpt before HTTP because it requires com.openai.chatgpt.internal. No native operation was executed and no token/cookie/network request was generated.
 
 Remaining source questions are retry attempt/backoff ceilings, DeviceRateLimits persistence/scope, cookie and UUID lifecycle, the UA mismatch, and any separate public-build implementation in another authentic source.
+
+
+### Android catalog and chat-requirements helper implementation — 2026-11-25
+
+The current main implementation adds private `src/chatgpt/android-conversation-api-schema.cjs`. It builds the observed `GET /backend-api/models` descriptor and `POST /backend-api/sentinel/chat-requirements` descriptor, validates the generated model-catalog and requirements response structures, preserves additional object fields, and rejects present null optional fields where the generated client checks only for undefined. The default requirements-token helper is fail-closed if any Turnstile/proof-of-work/`so` challenge is required. Nine focused tests passed locally; it is packaged and syntax-checked.
+
+This is a pure schema/request-descriptor helper only. No HTTP, account authentication, conversation send/stream, upload, challenge solving, or device integrity is implemented. The public XAPK's internal-only native package gate must remain intact. Full repository CI/CodeQL validation is pending until this change is committed.

@@ -19,13 +19,14 @@
 | Error base type | Partial | Foundation validation/closed-client errors |
 | TypeScript declarations | Partial | Foundation API plus generic SSE parser |
 | Generic Server-Sent Events framing | Implemented | Async byte-iterable parser, UTF-8/chunk boundaries, event fields, limits, abort and iterator cleanup; does not connect to ChatGPT or decode a product-specific event schema |
+| Android generated model-catalog and chat-requirements schema helpers | Implemented (internal helper only) | Exact GET/POST descriptors, generated nested response validation, undefined-vs-null behavior, extra-field pass-through and fail-closed default requirements-header decision; no network, auth or device attestation |
 | No telemetry in current foundation | Verified for inspected source | Re-review with every network-capable change |
 
 ## Actual ChatGPT client integration
 
 | Capability | Status | Evidence / acceptance boundary |
 | --- | --- | --- |
-| Client request/response construction | Research (first-pass module evidence) | Generated API clients and request paths observed in Android Valdi modules; full call graphs and body schemas remain open |
+| Client request/response construction | Research (partial internal helpers) | Android model-catalog and chat-requirements route descriptors/typed response decoders have tested internal helpers; conversation send body, authenticated transport, session lifecycle and live server behavior remain unimplemented |
 | Connection and transport | Research (first-pass module evidence) | Bearer transport, WebSocket integration, SSE clients, and stream processors observed; exact runtime state machine remains open |
 | Authenticated account session | Research | Android client exposes account/session services, secure credential storage and bearer transport; exact sign-in, refresh, revocation and Node.js storage flow remain open |
 | Accountless / anonymous guest session | Research | Android method-level DEX traces the Unauthenticated/AnonymousSession/LoggedInSession state enum, nine-field session metadata, SessionManager startup/logout/refresh paths, guest storage/retirement cleanup, a global backend-anon base URL/path family and an anonymous-session-labelled local profile descriptor. Exact guest create/refresh network schema and composer send routes remain open. Lof70 is Statsig/experimentation, not auth/session; the unauthenticated refresh path inspected is local state transition. A separate AuthSession DPoP/token refresh path is credential-backed and not proven guest creation; observed /backend-anon/f/conversation constants belong to LocationCookieInitializer during location-cookie setup. "Continue as Guest" is a Shop UI string, not ChatGPT |

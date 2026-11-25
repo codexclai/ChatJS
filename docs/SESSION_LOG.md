@@ -1213,3 +1213,18 @@ The first Standard Integrity token is nonce-bound using 256 SecureRandom bytes; 
 The native DEX user-agent is ChatGPT/1.2026.209 (build 2620909), unlike the enclosing 1.2026.321 (2632129) XAPK.
 
 **Limits:** the worker still rejects the public com.openai.chatgpt package before HTTP because it requires com.openai.chatgpt.internal. This static trace did not invoke native code, request a Play Integrity token, create a cookie or contact an endpoint. Retry ceilings, DeviceRateLimits scope/retention, cooldown persistence, exact cookie and UUID lifecycle, UA-version explanation and a distinct public-build provider remain open.
+
+
+## 2026-11-25 — Android model-catalog and chat-requirements schema helper
+
+### Implementation
+- Added private `src/chatgpt/android-conversation-api-schema.cjs` with the exact source-traced model-catalog GET descriptor, chat-requirements POST descriptor, generated request/response decoders and fail-closed default requirements-header decision.
+- Added `tests/android-conversation-api-schema.test.cjs` covering the request paths and query ordering, required flags, nested model/version/preset/challenge schemas, unknown-property preservation, optional-versus-null behavior, non-empty token requirement and device-integrity-required failure.
+- Added the helper to package syntax checks and `ChatJS.tar.gz` inclusion. It remains private; no public export or transport code was added.
+- Updated `ChatJS.md`, `CAPABILITY_MATRIX.md`, `CHATGPT_CAPABILITY_INVENTORY.md`, `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`, `TODO.md`, `OPEN_QUESTIONS.md`, `AI_MEMORY.md`, and `CONTINUATION.md` to record the exact implementation boundary and handoff.
+
+### Validation and limits
+- `node --check src/chatgpt/android-conversation-api-schema.cjs`: passed.
+- Focused Node test run: 9 tests passed, 0 failed.
+- Full repository `npm run check`, distribution archive inspection and GitHub CI/CodeQL for this change remain pending.
+- No authenticated HTTP request, model fetch, conversation send, guest flow, upload, device-integrity exchange or account credential handling was implemented or executed. The supplied public Android package's internal-only integrity gate is unchanged.

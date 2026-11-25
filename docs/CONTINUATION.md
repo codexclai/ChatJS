@@ -361,3 +361,31 @@ The native DEX pass verifies the response bridge and transport methods, not only
 Full DEX/asset hashes and method evidence are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. No Android method was executed; no Play Integrity token was requested, cookie minted, or endpoint called.
 
 Remaining work: exact retry/attempt ceilings; DeviceRateLimits scope, retention and restart persistence; cookie-name/lifetime/rotation/deletion; UUID rotation/deletion; UA mismatch explanation; and a distinct public-build provider only if found in another authentic client source. Keep the internal package gate intact.
+
+
+## Latest handoff — Android model-catalog and chat-requirements helpers — 2026-11-25
+
+### Implemented source-backed helper slice
+
+Added private `src/chatgpt/android-conversation-api-schema.cjs` with:
+- The exact model-catalog GET descriptor and required boolean query validation.
+- The chat-requirements POST descriptor with an empty JSON body.
+- Generated response decoders for model catalog, nested models/versions/intelligence presets, requirements token and Turnstile/proof-of-work/`so` challenge descriptors.
+- The generated optional-field behavior (only `undefined` means omitted; `null` is validated and rejected for mismatched declared types) and preservation of additional object properties.
+- A default requirements-header decision that returns the actual non-empty token only when no challenge is marked required; required device integrity fails closed.
+
+The module has nine focused deterministic tests and is included in syntax checks and the distribution archive. The helper is internal and has no network behavior. It does not authenticate, fetch models, send conversations, solve challenges, or provide Android device attestation.
+
+### Validation and current limits
+
+The helper file passes `node --check`; all nine focused tests pass. The repository-wide `npm run check` and GitHub CI/CodeQL for this change are pending. The runtime remains foundation-only: no authenticated or guest ChatGPT session, conversation transport, product streaming, real file transfer, or public-build device-integrity provider is implemented. The supplied public Android native worker's internal-package rejection remains intact.
+
+### Next Android non-Work work
+
+1. Reconstruct account sign-in/session refresh and credential/DPoP lifecycle without exposing or persisting secrets unsafely.
+2. Continue the independent guest create/refresh/composer route investigation; local SessionManager transitions and LocationCookieInitializer constants are not guest message endpoints.
+3. Implement authenticated ChatGPT transport only after request/session ownership, challenge consumers and available integrity requirements are fully evidenced; preserve fail-closed behavior.
+4. Continue history recovery, remaining stream variants, full upload/download/index lifecycle, and the exhaustive Android non-Work feature inventory.
+5. Continue authorized end-to-end tests only with legitimate user sessions and supported public-build security behavior.
+
+Android Work, Windows/Desktop and Codex CLI remain parked for sequencing only; the permanent three-family product target is unchanged.
