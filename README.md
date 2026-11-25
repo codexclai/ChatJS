@@ -14,6 +14,8 @@ Use the supplied ChatGPT Android and Windows client packages and the pinned Code
 
 Optional host-specific facilities belong behind integrations so consumers can use the portable package without particular hardware or OS capabilities.
 
+No first-party client feature domain is categorically excluded. Personal/financial, location/maps, commerce, wallet/payment, contacts, calendar, communications, health and other areas are included wherever the actual supplied clients and legitimate service/host behavior support them.
+
 ## Reference packages
 
 The official Android XAPK, the two sequential Windows MSIX parts, and the pinned official CodexCLI.zip source snapshot are retained in **ChatJS Project → Sources**. That is the normal and primary location for supplied source packages. Keep those third-party packages out of public Git.
