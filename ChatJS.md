@@ -23,7 +23,7 @@ The portable core must remain usable without a particular camera, microphone, sc
 
 The long-term target includes comprehensive coverage, dynamic capability awareness, extensive safe customization/control, async and concurrent operations, true real-time streaming where supported, responsive and measured lightweight performance, current compatibility, and consumer-controlled long-running operation. These are requirements to implement and verify, not claims that every capability currently works everywhere or that ChatJS guarantees external-service uptime. Customization must never bypass authentication, entitlements, first-party security checks, or other safety boundaries. See [the Product and Engineering Standard](https://github.com/codexclai/ChatJS/blob/main/docs/PRODUCT_STANDARD.md) for the complete target and acceptance gates.
 
-No first-party client feature domain is categorically excluded by category. Include source-backed capabilities involving personal/financial workflows, location/maps, commerce, wallets/payments, contacts, calendars, communications/telephony, health, and other areas wherever the supplied clients and legitimate service/host behavior support them. Verify real implementation and authorization rather than inferring support from a feature name.
+Every capability evidenced by the supplied first-party clients is within the product's candidate coverage. Feature-domain labels do not limit scope; implementation readiness depends on verified client behavior, legitimate service support, authorization, entitlements, and host capabilities. Verify real implementation and authorization rather than inferring support from a feature name.
 
 ## Client-package references
 

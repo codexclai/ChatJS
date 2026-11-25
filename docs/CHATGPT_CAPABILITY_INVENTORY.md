@@ -56,7 +56,7 @@ The current ChatJS repository is foundation-only. Actual ChatGPT service connect
 
 ## Feature-domain coverage
 
-No first-party client feature domain is excluded merely by category. Include actual client features for personal/financial workflows, location and maps, shopping/commerce, wallet/payments, contacts, calendar, communications/telephony, health, and other domains wherever they are implemented by the supplied sources and legitimately supportable. Do not invent a capability from a package string or assume host permissions exist; verify the implementation, authorization, host requirements, and tests.
+Every capability evidenced by the supplied first-party clients belongs in the feature inventory. Feature-domain labels do not limit scope. Do not infer a working capability from a package string alone or assume host permissions exist; verify implementation, authorization, host requirements, and tests.
 
 
 ## Accountless sessions and execution-surface distinctions — 2026-11-24

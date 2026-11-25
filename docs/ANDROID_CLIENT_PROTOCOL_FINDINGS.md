@@ -628,3 +628,19 @@ The analysis harness should:
 This is a source-supported proposed path, **not a working disassembler**. No QuickJS analysis build was compiled, no method bytecode was dumped, and no ChatGPT protocol method body has yet been reconstructed. The repository's GitHub file wrapper returned an empty body for the very large `quickjs.c`; Firecrawl retrieval provided targeted source excerpts but not a complete local source tree. This session's runtime has GCC but no installed `qjs`, `quickjs` or `qjsc` executable/source tree. A full compatible source checkout/build context is still required before this approach can be tested.
 
 **Safety/evidence boundary:** no Android app was launched; no account/session data, credentials, device identifiers or HTTP traffic were accessed. No app modification, injection, hooking or bypass was attempted. The only library operation was static ELF metadata/string/export inspection. No production ChatJS code or dependency changed.
+
+
+## Android feature-area module inventory — 2026-11-25
+
+**Source verification:** the supplied `ChatGPT-Android.xapk` at `ChatJS Project → Sources` is also mounted at `/mnt/data/ChatGPT-Android.xapk` for this session. Its SHA-256 is `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`, matching the previously recorded provider hash. The outer XAPK ZIP test passed and contains six entries. Its `com.openai.chatgpt.apk` base package contains 5,080 ZIP entries, ten DEX files, and 111 `.valdimodule` assets.
+
+Observed feature-related module assets include:
+
+- Finance and account data: `chatgpt_finance`, `chatgpt_finance_accounts`, `chatgpt_finance_connections`, and `chatgpt_finance_transactions`.
+- Maps and location integration: `chatgpt_maps` and `oai_location_service`.
+- Wallet-related implementation: `chatgpt_wallet`, `chatgpt_wallet_approval`, `chatgpt_wallet_core`, and `chatgpt_wallet_strings`.
+- Health-related implementation: `chatgpt_health`, `chatgpt_health_connect_permissions`, and `chatgpt_health_preview`.
+- Commerce and shopping: `chatgpt_commerce_reporting` and `chatgpt_shopping`.
+- Other shipped client areas: `chatgpt_global_search`, `chatgpt_library`, `custom_instructions_ui`, `memory_settings_ui`, `oai_conversation`, and `oai_voice_service`.
+
+**Evidence boundary:** these are observed filenames inside the supplied public app package. They establish that related implementation assets are shipped; they do not alone prove the active UI path, service route/schema, account entitlement, availability in every region, host support, or a working ChatJS implementation. Trace each workflow from its actual source before coding or claiming support. None of these areas is omitted solely because of its subject-matter category.

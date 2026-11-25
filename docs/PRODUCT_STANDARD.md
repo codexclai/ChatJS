@@ -32,7 +32,7 @@ Use the supplied official ChatGPT application packages and committed analysis as
 
 ChatJS targets the actual consumer ChatGPT mobile and desktop client experience and the Codex CLI client experience. All three are consolidated as first-party client capability families in one ChatJS Node.js module. ChatGPT is the sole AI service target. Do not substitute OpenAI Platform APIs, API keys, another inference provider, a synthetic assistant, or canned/demo output. Preserve genuine user authentication, account authorization, entitlements, and first-party security checks.
 
-No first-party client feature domain is categorically excluded by category. This includes personal/financial workflows, location and map-related capabilities, shopping/commerce, wallet/payment experiences, contacts, calendar, communications/telephony, health, and other feature areas where they are genuinely implemented by the supplied clients or supported through legitimate host integrations. Determine coverage from source evidence, actual service behavior, authorization, and host capabilities—not a category blacklist. Technical privacy/security invariants remain mandatory: no telemetry, tracking, ads, hidden collection, background reporting, phone-home, unsolicited network requests, or automatic content uploads.
+Every capability evidenced by the supplied first-party clients is within the product's candidate coverage. Feature-domain labels do not limit scope. Determine implementation readiness from source evidence, actual service behavior, authorization, entitlements, and host capabilities. Technical privacy/security invariants remain mandatory: no telemetry, tracking, ads, hidden collection, background reporting, phone-home, unsolicited network requests, or automatic content uploads.
 
 ## 3. One cohesive, modular package
 
@@ -253,6 +253,6 @@ This section records the owner's expanded requirement that ChatJS should be dyna
 
 A feature may claim these expanded qualities only to the extent its relevant behavior, resource bounds, compatibility, concurrency, cancellation, lifecycle, and sustained-operation tests have actually passed. The existing production-readiness gate in section 10 remains mandatory.
 
-## Owner scope clarification — full feature-domain coverage (2026-11-25)
+## Owner scope clarification — comprehensive source-backed coverage (2026-11-25)
 
-The owner has superseded the earlier category-based exclusions. The ChatJS product target does not categorically exclude finance/personal workflows, location/maps, shopping/commerce, wallets/payments, contacts, calendars, communications/telephony, health, or comparable feature domains. Include every relevant capability actually present in the supplied ChatGPT mobile/desktop and Codex client sources, and use legitimate service/host integrations where evidenced. This does not authorize invented features, unsupported endpoints, security bypasses, or hidden data collection. Feature evidence and tested support status—not an arbitrary domain blacklist—determine implementation.
+The owner confirmed that the complete feature surface shipped by the supplied first-party clients remains within the ChatJS product target. Feature-domain labels do not restrict scope. Implementation depends on verified client behavior, legitimate service support, authorization, entitlements, and genuine host capabilities. This does not authorize invented features, unsupported endpoints, security bypasses, or hidden data collection.

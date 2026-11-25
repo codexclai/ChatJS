@@ -1075,3 +1075,14 @@ No production JS/TS, dependencies, public APIs, or tests changed in this documen
 - The latest TODO-ordering commit 7fc0dec69fcefbce9915043eed73cd004e417d4f passed CI run 45567211063 and CodeQL run 45567211014. CI ran npm checks/tests/archive build, extracted the package and smoke-tested ESM/CommonJS loading; CodeQL analysis succeeded.
 - The latest repository tree has 57 entries, one branch (main), zero open issues and zero open pull requests. No production JS/TS, API, test or dependency changed in this documentation correction; ChatJS remains foundation-only.
 - This final state/log commit records the latest verified parent commit and run IDs. No claim is made that the ChatGPT Android runtime features are implemented; those remain the active engineering target.
+
+
+## 2026-11-25 — Android-first scope and project-charter correction
+
+**Owner direction reaffirmed:** ChatJS remains the single Node.js module targeting ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI. The active phase is to complete ChatGPT Android non-Work first. Android Work, Windows/Desktop, and Codex CLI are parked until Android non-Work is fully reconstructed, implemented, and tested. This is a sequencing rule only; the permanent target is unchanged.
+
+**Scope audit:** found live domain blacklists in `docs/KNOWLEDGE_BASE.md` and the explicit non-goals list in `docs/ARCHITECTURE.md`. Removed those exclusions and standardized the product charter, README, user manual, feature inventory, capability matrix, decisions, continuity, product standard, and structured state so feature-domain labels no longer restrict first-party source-backed coverage. Rewrote `docs/CHATGPT_PROJECT_INSTRUCTIONS.md` as an enduring project charter, without a mutable priority list or enumerated domain blacklist.
+
+**Android source re-verification:** checked the supplied XAPK at `/mnt/data/ChatGPT-Android.xapk`. SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`; ZIP test passed; six outer entries; base APK 5,080 entries, ten DEX files and 111 Valdi modules. Recorded the exact observed feature-area asset names and evidence limitations in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Static package presence does not establish entitlement, route/schema reconstruction, or a working ChatJS implementation.
+
+**Implementation status:** no production runtime capability was added in this documentation/scope correction. ChatJS remains foundation-only; Android request schemas, guest create/send, full streaming decode, integrity providers, and attachment processing still require deeper source reconstruction before implementation. Local `npm run check` was not run because the container could not resolve GitHub to clone the live repository; run and record the main-branch CI result for this commit before treating validation as complete.

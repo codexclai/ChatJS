@@ -60,7 +60,7 @@ ChatJS is a reusable Node.js library, not a device-specific application. Do not 
 
 ## Feature-domain coverage
 
-No feature domain is categorically excluded by category. Financial/personal, location/map, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, and other first-party client domains are included wherever the supplied client sources and legitimate service/host capabilities implement them. Capability statuses describe evidence and implementation readiness, not domain-level exclusion.
+Every capability evidenced by the supplied first-party clients is eligible for coverage. Feature-domain labels do not determine scope; capability status reflects source evidence, legitimate service support, authorization, entitlements, host prerequisites, and actual implementation readiness.
 
 ## Evidence and promotion
 

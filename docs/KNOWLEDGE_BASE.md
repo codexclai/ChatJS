@@ -29,7 +29,7 @@ Index of durable product, technical, compatibility, security, and research knowl
 | Android analysis | Payload extraction complete; first-pass Valdi protocol strings/components mapped; full call graphs, exact schemas, and behavior tracing remain open | ANDROID_CLIENT_PROTOCOL_FINDINGS.md |
 | Windows source | Two sequential installer pieces in ChatJS Project → Sources; exact reassembly verified byte-for-byte | Source upload and local verification, 2026-11-24 |
 | Sources | ChatJS Project → Sources is primary; personal Library is optional only when genuinely useful, needed, accessible, and Sources cannot supply the material | Owner direction, 2026-11-24 |
-| Out-of-scope domains | Health, finance, maps, shopping, wallet, contacts, calendar, telephony, unrelated permissions | Explicit owner direction |
+| Feature-domain scope | Source-driven coverage across the first-party client feature surface; no category-based domain restrictions | Current owner direction, 2026-11-25 |
 | Public API manual | Root ChatJS.md | Repository |
 | Distribution | ChatJS.tar.gz built and checked by npm/CI workflow | Script/CI workflow |
 

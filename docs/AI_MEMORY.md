@@ -86,7 +86,7 @@ The current installer files are held in ChatJS Project → Sources, not public G
 - No unsolicited network requests or automatic content uploads. Network activity must be part of an explicit ChatJS operation and limited to its intended function.
 - No fake/canned/predefined/hardcoded/demo/placeholder/no-op production behavior. Test fixtures/mocks are tests-only.
 - No filler, bloat, unrelated features, pointless abstractions, or unjustified dependencies.
-- Do not categorically exclude any feature domain by label. The owner explicitly restored source-backed coverage for all client feature areas, including personal/financial, location/maps, commerce, wallet/payment, contacts, calendar, communications, health, and comparable domains. Only actual client/source support, legitimate service behavior, host capabilities, authorization, and security determine whether a feature can be implemented.
+- Every capability evidenced by the supplied first-party clients remains eligible for coverage. Feature-domain labels do not restrict scope; actual client/source support, legitimate service behavior, host capabilities, authorization, entitlements, privacy, and security determine implementation.
 - Host/device features are optional; do not make the core assume camera, microphone, screen, or a specific permission model.
 - Main only. Never create, delete, rename, switch, or publish another branch or worktree. Never force-push. Do not configure branch protection, rulesets, or repository topics.
 
@@ -203,6 +203,15 @@ The pinned Codex source now provides a deeper WebSocket trace in CODEX_SOURCE_FI
 
 **Long-term product target is unchanged:** one ChatJS Node.js module consolidates the actual ChatGPT mobile, ChatGPT desktop and Codex CLI client capabilities. No one of those source/client families has been removed from the goal. Android Work, Windows/Desktop, and Codex CLI remain part of the overall target.
 
-**Category exclusions are superseded:** do not exclude financial/personal, location/maps, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, or other client feature domains merely by category. Include the features actually present in the supplied client implementations and legitimately supportable by the service/host. Keep evidence, authorization, privacy and safety requirements intact.
+**Feature coverage is source-driven:** the complete capability surface evidenced by the supplied first-party clients remains in scope. Feature-domain labels do not restrict coverage. Preserve evidence, authorization, entitlements, privacy, host requirements, and service security.
 
 **Temporary execution priority, not a scope change:** complete the ChatGPT Android client comprehensively first, covering the non-Work Android experience. During this phase, set aside Android Work, ChatGPT Desktop/Windows, and Codex CLI. This is sequencing only; preserve those capabilities and source findings in the long-term product backlog. Once Android non-Work coverage is genuinely complete and tested, resume the other source families. See CONTINUATION.md, TODO.md, and project-state.json.
+
+
+## Owner scope confirmation and Android package inventory — 2026-11-25
+
+The final ChatJS target remains ChatGPT Android/mobile + ChatGPT Windows/desktop + Codex CLI in one Node.js module. The current phase is Android non-Work only; Android Work, Windows/Desktop, and Codex CLI remain parked until Android non-Work is fully reconstructed, implemented and tested. This does not remove or reduce any long-term target.
+
+The supplied Android XAPK was reverified in this session: SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`, successful ZIP test, six outer entries, base APK 5,080 entries, ten DEX files and 111 Valdi modules. Static module assets include finance/account, maps/location, wallet, health, commerce/shopping, global search, Library, custom instructions, memory settings, conversation and voice areas. Exact asset names and evidence limitations are recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+
+Feature-domain labels do not restrict Android non-Work coverage. Module presence is package evidence only—not entitlement, active route, reconstructed schema, or ChatJS implementation.

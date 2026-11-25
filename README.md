@@ -14,7 +14,7 @@ Use the supplied ChatGPT Android and Windows client packages and the pinned Code
 
 Optional host-specific facilities belong behind integrations so consumers can use the portable package without particular hardware or OS capabilities.
 
-No first-party client feature domain is categorically excluded. Personal/financial, location/maps, commerce, wallet/payment, contacts, calendar, communications, health and other areas are included wherever the actual supplied clients and legitimate service/host behavior support them.
+Every capability evidenced by the supplied first-party clients is within the product's candidate coverage. Feature-domain labels do not limit scope; implementation readiness depends on verified client behavior, legitimate service support, authorization, entitlements, and host capabilities.
 
 ## Reference packages
 
