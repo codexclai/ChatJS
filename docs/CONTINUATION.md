@@ -13,11 +13,11 @@ Every ChatJS conversation continues the same repository and shared project memor
 
 ## Product direction
 
-ChatJS is one comprehensive, general-purpose Node.js module bringing together the real client-side systems and workflows of official ChatGPT mobile and desktop (Work/Codex). It is not a device-specific app, a feature-name imitation, a replacement model provider, or a recreation of ChatGPT's server.
+ChatJS is one conventional, general-purpose Node.js client module consolidating the actual client-side capabilities and workflows of ChatGPT mobile, ChatGPT desktop, and Codex CLI under the single ChatJS package/API. ChatGPT mobile/desktop and Codex CLI are three real source/client families inside one Node.js module. It is not three separate packages, a replacement app/server, a generalized multi-AI-provider SDK, or a recreation of ChatGPT's server.
 
 Use the actual shipped client code and package contents as the primary technical basis, including request/response construction, schemas, transport, connection/auth/session flows, local persistence, modules, tools, and resources. Do not prohibit a client interface merely because public developer documentation does not describe it. The server-side code that is not shipped in the clients is not needed to reproduce the client behavior.
 
-The Node.js package must be usable by different hosts and applications. Do not assume a particular device, operating system, camera, microphone, screen, browser, or deployment model. Such capabilities are optional integrations when the consuming environment supports them.
+The Node.js package must implement the real in-scope ChatGPT mobile and desktop workflows plus Codex CLI client workflows through one cohesive API. It must not spawn or require the separate codex executable or a Codex app-server. Android cloud Work, Windows local Work, and Codex CLI remain distinct surfaces, not aliases for one engine. The package must be usable by different hosts and applications; do not assume a particular device, operating system, camera, microphone, screen, browser, or deployment model. Optional host adapters expose only facilities the consuming environment genuinely supports.
 
 Current implementation remains foundation-only. First-pass Android client findings are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; they are not full source reconstruction or a working Node.js integration. Never present intended scope or research as implemented behavior.
 
@@ -176,3 +176,9 @@ The supplied XAPK is mounted at `/mnt/data/ChatGPT-Android.xapk` for this sessio
 New evidence is in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`: DirectResponseClient conversation/message field inventory; generated model and Sentinel decoder names plus primitive validation strings; event delta operations, entity-reference spans, handoff/resume identifiers; upload metadata keys, Azure block-blob PUT headers and trusted storage suffixes. The field inventory is not a complete schema. Object nesting, requiredness, route selection, exact resume mapping, maximum handoff count and upload numeric limits remain unknown. Do not implement a guessed request builder.
 
 Next: decode Valdi bytecode/control flow for DirectResponseClient prepare/send and generated decoders; decode stream event/resume branch; recover upload constants and reservation response layout. Continue the independent guest-session HTTP search and preserve first-party integrity requirements. No production behavior changed in this slice.
+
+## Owner clarification — one ChatJS client, three source families (2026-11-25)
+
+The owner explicitly clarifies that ChatJS is simply one ordinary Node.js client module that brings ChatGPT mobile + ChatGPT desktop + Codex CLI together as one singular all-in-one ChatJS package. This is the permanent product identity. Implement the source/client capabilities inside ChatJS rather than creating a new application/platform or requiring multiple external products. The Codex CLI capability family is in scope; its executable and app-server are not runtime prerequisites. ChatGPT is the only AI service target. Keep Android cloud Work, Windows local Work and Codex CLI's own coding-client behavior distinct internally, even though the user consumes them through the same Node.js package. Optional adapters are for host facilities, never alternate AI providers.
+
+The accepted high-level quality direction remains in PRODUCT_STANDARD.md sections 1 and 14. Current implementation remains foundation-only; no real ChatGPT/Codex client operation is implemented yet.

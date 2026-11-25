@@ -867,3 +867,46 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - This was compiled Valdi module string/symbol-region inspection, not bytecode decompilation. It narrows the field inventory but does not justify implementing a guessed serializer.
 - No local npm run check was executed in this remote-only repository session. Verify the documentation commit using GitHub CI; the previous main head's CI and CodeQL success are not proof for the new commit.
 - Keep the overall completion estimate unchanged: research progress is not a working ChatGPT integration.
+
+## 2026-11-25 — Owner product-identity clarification, expanded quality target and Valdi format reconstruction
+
+### Owner directions recorded
+
+- The owner clarified the exact product identity: ChatJS is one ordinary, general-purpose Node.js client module consolidating the actual client capabilities/workflows of ChatGPT mobile, ChatGPT desktop and Codex CLI into one ChatJS package/API.
+- All three source/client families are in scope. The Codex CLI capability family is not merely a source-only reference; its verified client/workflow behavior is to be implemented natively inside ChatJS. The separate codex/codex.exe executable and Codex app-server remain excluded as runtime dependencies.
+- ChatGPT is the only AI service target. This is not a generalized multi-provider AI SDK, replacement application, server, or daemon. Optional host adapters provide real host facilities only.
+- Preserve actual distinctions: Android ChatGPT Work is cloud execution; Windows ChatGPT desktop Work is local execution; Codex CLI is its own terminal-oriented coding client.
+- The expanded user quality requirement covers dynamic/automatic capability awareness, full safe customization/control, asynchronous/concurrent operations, real-time streaming where supported, measured low-latency/lightweight performance, current compatibility, and consumer-controlled long-running/24×7 readiness. Requirements and acceptance gates are in PRODUCT_STANDARD.md sections 1 and 14; they do not promise universal support or uninterrupted service.
+
+### Android format research
+
+- Cross-referenced the owner-supplied Android assets/chatgpt_services.valdimodule structure with public Snapchat/Valdi source pinned at f5bc2dcfcb880109c908e0675968cb532231ca71.
+- Verified from source that the archive packet uses magic 0x0100C633; repeated archive entries use high-bit padding lengths; compiled JS wrappers use magic 0x0100C634; the Valdi QuickJS backend reads bytecode with JS_ReadObject(..., JS_READ_OBJ_BYTECODE), then evaluates it via JS_EvalFunction.
+- Identified the vendored QuickJS reference version as 2021-03-27, with Valdi-specific modifications and upstream merges.
+- This narrows the next analysis tool requirement to a Valdi-fork-compatible bytecode inspector. No method-body disassembly was achieved; direct conversation serializer, model/requirements decoder, SSE resume and upload branch semantics remain unknown.
+
+### Changes
+
+- docs/PRODUCT_STANDARD.md
+- ChatJS.md
+- README.md
+- docs/CHATGPT_PROJECT_INSTRUCTIONS.md
+- docs/AI_MEMORY.md
+- docs/CONTINUATION.md
+- docs/DECISIONS.md
+- docs/ARCHITECTURE.md
+- docs/ROADMAP.md
+- docs/CAPABILITY_MATRIX.md
+- docs/CODEX_SOURCE_FINDINGS.md
+- docs/TODO.md
+- docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md
+- docs/project-state.json
+- Generated docs/PROJECT_STATE.md
+- This session log
+
+### Verification and limits
+
+- No production JS/TS, test, dependency or public API implementation changed. No feature is newly claimed as supported.
+- The repository has no local working-tree checkout in this session; local npm run check and local archive inspection could not be run.
+- New-head CI and CodeQL verification remain pending.
+- Overall implementation progress remains approximately 3%; documentation/source research is not implemented product functionality.

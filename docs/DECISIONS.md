@@ -106,3 +106,11 @@ Record durable project and technical decisions with rationale. Preserve supersed
 **Rationale:** the supplied Android build contains anonymous session states, guest UI/plan/storage identifiers and anonymous route constants. The owner has clarified the Windows local versus Android cloud Work split.
 
 **Consequences:** do not invent guest tokens, bypass force_login or server limits, or infer Windows guest Work from generic browser code. Exact Android guest message-route attribution remains open. Do not require Codex CLI/app-server for either Work implementation.
+
+## Owner clarification — unified ChatGPT mobile, desktop and Codex CLI client (2026-11-25)
+
+**Decision:** ChatJS is one conventional general-purpose Node.js client module that consolidates the actual client-side capabilities/workflows of ChatGPT mobile, ChatGPT desktop and Codex CLI into the single package/API ChatJS. All three client/source families are in product scope. Implement their verified behavior in Node.js rather than wrapping the external applications.
+
+**Runtime boundary:** The separate codex/codex.exe executable and Codex app-server are not required runtime dependencies. CodexCLI.zip is a source reference for native implementation, not a binary/runtime to launch. ChatGPT is the only AI service target; no multi-AI-provider framework or OpenAI Platform API substitution is intended.
+
+**Preserved distinctions:** Android ChatGPT Work is cloud execution; Windows ChatGPT desktop Work is local execution; Codex CLI is a distinct terminal-oriented coding-client capability family. Keep their protocols and execution semantics separate internally and expose them through the one ChatJS module. This clarification supersedes any interpretation of earlier “Codex source reference only” notes as excluding Codex CLI capability behavior from ChatJS scope. It does not supersede the prohibition on a separate CLI/app-server runtime dependency.

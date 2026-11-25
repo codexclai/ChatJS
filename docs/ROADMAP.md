@@ -44,3 +44,18 @@ Keep the package reusable across applications, Node.js environments, OSes, and d
 Focus on correctness, tests, measurable performance, memory/concurrency limits, reliable cancellation/cleanup, Node.js host compatibility, security, dependency governance, accurate API docs, and reproducible checks.
 
 No fake features or version/release automation. Use PRODUCT_STANDARD.md as the feature acceptance gate; the target is maximum practical verified quality, not a promise of universal availability or indefinite compatibility.
+
+## 8. Implement the unified ChatGPT mobile + desktop + Codex CLI client
+
+ChatJS is one Node.js package consolidating three actual client/source families. Treat Codex CLI workflows as in-scope product capabilities rather than a source-only/non-goal, but implement them directly in Node.js without requiring the separate Codex executable or app-server. Keep ChatGPT Android cloud Work, ChatGPT Windows local Work, and Codex CLI coding-client semantics distinct behind the same package API. Reconstruct each source protocol and client capability independently, then expose a consistent lifecycle, configuration, errors, cancellation, events and TypeScript surface. ChatGPT remains the only AI service target.
+
+## 9. Responsive, real-time and sustained-operation quality
+
+The expanded owner quality requirements are normative in PRODUCT_STANDARD.md, section 14. Apply them across all three client families:
+
+- Design I/O workflows around asynchronous execution, explicit cancellation, finite deadlines, bounded concurrency, queue limits and deterministic cleanup.
+- Provide true incremental streaming and progress where the official ChatGPT/Codex client protocol exposes them; measure time-to-first-event and apply backpressure.
+- Treat long-running/24×7 operation as an optional consumer-owned lifecycle with graceful shutdown, recovery and soak testing. Do not add hidden daemons, auto-start behavior, keepalive polling, telemetry or unsolicited network activity.
+- Establish benchmarks and measurable CPU/memory/latency/throughput budgets before claiming performance or lightweight footprint.
+- Keep Node.js/platform/client-protocol compatibility evidence current through explicit source review and contract tests when updated official packages or verified releases become available. Do not self-update or execute remote code.
+- Make automatic capability discovery local and side-effect-free by default; remote readiness operations require explicit caller intent and real evidence.

@@ -1,6 +1,6 @@
 # ChatJS Capability Matrix
 
-**Current implementation status: foundation only.** The product goal is one general-purpose Node.js module bringing together the actual client-side systems of official ChatGPT mobile and desktop (Work/Codex). Source material and intended compatibility are not themselves implementation.
+**Current implementation status: foundation only.** The product goal is one general-purpose Node.js module consolidating the actual client-side capabilities of ChatGPT mobile, ChatGPT desktop and Codex CLI. Their protocols remain distinct internally. Source material and intended compatibility are not themselves implementation.
 
 ## Status definitions
 
@@ -38,8 +38,8 @@
 | Voice/image/video | Research/Planned | Use actual client behavior where evidenced; optional host/device facilities |
 | Windows desktop Work Local | Research | Owner-confirmed local execution surface; actual desktop client/native-host call graph remains to be reconstructed; no CLI/app-server dependency |
 | Android Work Cloud | Research | Owner-confirmed cloud execution surface; Codex-related Android request paths observed, full Work protocol not yet reconstructed |
-| Codex CLI | Source reference only | Official source archived/pinned; not a ChatJS Work runtime or an external prerequisite |
-| Search/tools/Work/Codex workflows | Research/Planned | Trace each actual client surface and implement tested direct Node.js transports/adapters |
+| Codex CLI client workflows | Research / Planned | Codex CLI's ChatGPT-backed coding-client capabilities are in-scope for native Node.js implementation inside ChatJS; CodexCLI.zip is the pinned source reference, not a required executable/app-server runtime |
+| Search/tools/ChatGPT Work/Codex CLI workflows | Research/Planned | Trace each source/client surface independently and implement tested Node.js transports and local host operations under one ChatJS API |
 
 ## Portable Node.js and desktop workflows
 

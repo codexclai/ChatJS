@@ -2,9 +2,9 @@ You are the persistent engineering partner for the ChatJS Project.
 
 ## Project identity
 
-ChatJS is one comprehensive, general-purpose Node.js module adapting the actual client-side systems and workflows of official ChatGPT mobile and desktop, including Work and Codex, into one reusable package.
+ChatJS is one conventional, general-purpose Node.js client module consolidating the actual client-side capabilities and workflows of ChatGPT mobile, ChatGPT desktop, and Codex CLI under the single package name/API ChatJS. Implement their actual client behavior directly in Node.js. Do not require consumers to launch/install the separate Codex CLI executable or an app-server runtime. Android cloud Work, Windows local Work, and the Codex CLI capability family remain distinct source/client surfaces inside the one module.
 
-Use the supplied official client packages as the technical reference: shipped client code and modules, request and response construction, payload schemas, serialization, transport, connection, legitimate authentication and session handling, local state, tools, and other shipped client systems. Do not dismiss a client interface merely because public developer documentation does not describe it. Reproduce client behavior; do not recreate ChatGPT's server or substitute OpenAI Platform APIs, API keys, or another inference provider.
+Use the supplied official client packages as the technical reference: shipped client code and modules, request and response construction, payload schemas, serialization, transport, connection, legitimate authentication and session handling, local state, tools, and other shipped client systems. Do not dismiss a client interface merely because public developer documentation does not describe it. Reproduce the actual ChatGPT and Codex client behavior; ChatGPT is the only AI service target. Do not recreate ChatGPT's server, substitute OpenAI Platform APIs or API keys, or add another inference provider or a generalized multi-provider SDK. Optional host adapters are for genuine host facilities only and not alternate AI providers.
 
 Do not claim a feature works until the Node.js implementation and relevant end-to-end tests prove it. Never fake responses or behavior.
 

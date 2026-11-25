@@ -5,7 +5,13 @@
 
 ## 1. Product ambition
 
-ChatJS is intended to become one cohesive, general-purpose Node.js module that brings together the real client-side systems and workflows of official ChatGPT mobile and desktop, including Work and Codex, while adding the portable Node.js foundations needed to use those workflows from many different applications and hosts.
+ChatJS is one conventional, general-purpose Node.js client module that brings together the actual client-side capabilities and workflows of **ChatGPT mobile, ChatGPT desktop, and Codex CLI** under the single package name and API, **ChatJS**. These are three source/client families consolidated into one Node.js module—not three separate packages and not three runtime products that consumers must install or launch independently.
+
+The aim is to adapt their real client-side behavior into Node.js: ChatGPT mobile and desktop sessions/conversations and their Work surfaces, plus the Codex CLI's ChatGPT-backed coding-client workflows and local coding-agent capabilities. ChatJS itself implements those workflows in Node.js using verified first-party behavior. It must not require users to install or spawn the separate Codex CLI executable, run a Codex app-server, or embed the app-server as a dependency. The Codex source archive is essential reference material for implementing its in-scope client behavior, not a substitute runtime.
+
+Keep the actual product boundaries accurate: Android ChatGPT Work is the cloud execution surface; Windows ChatGPT desktop Work is the local execution surface; Codex CLI is a distinct terminal-oriented coding client/capability family. Consolidating them in ChatJS does not mean treating these three experiences as identical or merging their different protocols into one guessed transport. Expose them through one coherent Node.js API while retaining the source-specific session, protocol, security, and execution semantics.
+
+ChatJS is a normal reusable Node.js library—not a replacement ChatGPT app, server, framework, daemon, generalized multi-AI-provider SDK, or unrelated automation platform. ChatGPT remains the only AI service/product target. Optional host adapters are only for genuine host facilities that are not universal (such as filesystem/process/browser/desktop integration), not alternative AI providers.
 
 The target is the broadest useful and legitimately implementable coverage supported by the supplied official client implementations and verified host capabilities. Prefer a complete, coherent user experience over disconnected feature demos. Prefer a small number of well-integrated APIs over a pile of unrelated packages or one-off adapters. Keep optional capabilities composable so consumers can use only what their environment supports.
 
@@ -24,7 +30,7 @@ The target is the broadest useful and legitimately implementable coverage suppor
 
 Use the supplied official ChatGPT application packages and committed analysis as primary technical evidence for client requests, payloads, serialization, transport, connection, legitimate authentication/session behavior, persistence, tools, and workflows. Public developer documentation is not the sole test of whether a client-side interface exists. Do not recreate ChatGPT server-side code that is not shipped in the clients.
 
-ChatJS targets the actual consumer ChatGPT client experience. Do not substitute OpenAI Platform APIs, API keys, another inference provider, a synthetic assistant, or canned/demo output. Preserve genuine user authentication, account authorization, entitlements, and first-party security checks.
+ChatJS targets the actual consumer ChatGPT mobile and desktop client experience and the Codex CLI client experience. All three are consolidated as first-party client capability families in one ChatJS Node.js module. ChatGPT is the sole AI service target. Do not substitute OpenAI Platform APIs, API keys, another inference provider, a synthetic assistant, or canned/demo output. Preserve genuine user authentication, account authorization, entitlements, and first-party security checks.
 
 Keep all existing project exclusions: health/Health Connect, finance, maps/navigation, shopping, wallet, contacts, calendar, telephony, unrelated Android permissions/features, telemetry, tracking, ads, background reporting, phone-home, unsolicited network requests, and automatic content upload.
 
@@ -39,7 +45,7 @@ The intended package is one ChatJS entry point with coherent capability areas. I
 - ESM and CommonJS parity with accurate TypeScript declarations;
 - a discoverable public API and complete reference documentation.
 
-Feature groups should compose naturally: client connection and sessions; conversations, messages, threads and streaming; projects and context; files and attachments; image, video and voice workflows where supported; search and tools present in the client; Work/Codex tasks; workspaces, filesystem operations and artifacts; approvals, command/test execution and Git/review workflows; and optional browser/desktop/host integrations where real providers exist.
+Feature groups should compose naturally: ChatGPT mobile/desktop client connection and sessions; conversations, messages, threads and streaming; projects and context; files and attachments; image, video and voice workflows where supported; search and tools present in the client; Android cloud Work and Windows local Work as separate surfaces; Codex CLI-equivalent coding-client workflows; workspaces, filesystem operations and artifacts; approvals, command/test execution and Git/review workflows; and optional host integrations where the consuming environment supplies the real facility.
 
 Do not add a feature merely because a name appears in a package. Trace its implementation, host requirements, dependencies, security boundaries, and real request/response behavior first. Do not build unrelated functionality or abstraction layers without a concrete use and tests.
 
@@ -64,11 +70,11 @@ The intended API should expose meaningful control over client behavior. Design c
 2. per-client configuration;
 3. named consumer profiles where useful;
 4. per-operation options for narrowly scoped overrides;
-5. optional injected host providers/adapters for capabilities the host genuinely implements.
+5. optional host adapters for capabilities the consuming host genuinely implements.
 
 Where applicable, configurable controls should include:
 
-- connection, transport, proxy and storage providers where verified and safe;
+- connection and transport options where verified and safe;
 - authentication/session sources and explicit persistence strategy;
 - request deadlines, connection/read timeouts and cancellation signals;
 - concurrency, queueing, backpressure and resource limits;
@@ -188,3 +194,61 @@ The commitment is to pursue maximum practical and verifiable capability, broad p
 ## 13. Current implementation status
 
 This standard is a target requirement, not a completion report. At the time this standard was recorded, ChatJS's runtime remained foundation-only: the real ChatGPT connection, authentication/session lifecycle, protocol workflows, capability registry, adapter system, expanded configuration API, and end-to-end mobile/desktop behavior were not implemented. The official Android/Windows source research remains separate from tested Node.js support. See project-state.json, TODO.md, CAPABILITY_MATRIX.md, CHATGPT_CAPABILITY_INVENTORY.md, and the relevant client findings.
+
+## 14. Expanded owner quality requirements — 2026-11-25
+
+This section records the owner's expanded requirement that ChatJS should be dynamic and automatic, comprehensive and all-in-one, highly customizable and controllable, friendly, stable, responsive, smooth, current, fast, lightweight, real-time where the client supports it, asynchronous, concurrent, and suitable for sustained operation. It extends the quality dimensions above; it does not assert that these capabilities are currently implemented.
+
+### 14.1 Dynamic, automatic, and adaptive by default
+
+- Discover local runtime, operating-system, architecture, registered host adapters, and their validated capabilities automatically when safe and local.
+- Present a live, queryable capability/readiness view with evidence and explicit states such as available, partial, unsupported, unavailable, blocked, stale, and unknown.
+- Select a compatible implementation path only from verified client/protocol behavior and genuinely available host facilities. Keep selection explainable and controllable.
+- Adapt to changed official client/protocol behavior only after source comparison, compatibility analysis, and tests. Never guess new fields, challenge algorithms, request routes, entitlements, or security semantics.
+- No work on import or construction that causes external traffic, remote updates, hidden polling, or user-data collection. Every network operation remains explicit and attributable to a caller operation.
+
+### 14.2 Full customization and control
+
+- Provide validated, composable configuration with documented precedence across package defaults, client instances, optional named profiles, and per-operation overrides.
+- Expose meaningful controls for timeouts, cancellation, concurrency, queueing, backpressure, storage, logging/redaction, transport choices, host-adapter registration, progress/events, and local work policy as each feature is implemented.
+- Make configuration immutable for an in-flight operation unless a documented safe live-update contract exists. Avoid cross-client global mutable state.
+- Give consumers visibility into capability selection, operation progress, retries, limits, resource use where measurable, and cleanup outcomes.
+- No override may turn off account authorization, entitlements, service-required integrity/challenges, rate limits/cooldowns, origin checks, approvals, privacy requirements, or other security invariants.
+
+### 14.3 Asynchronous, concurrent, and real-time behavior
+
+- Make I/O-bound public operations asynchronous and promise-based or async-iterable as appropriate. Streaming APIs should deliver real events incrementally when the official protocol supports streaming.
+- Support multiple independent operations concurrently with per-client and per-operation limits, bounded queues, deterministic ordering where required, and clear overload behavior.
+- Propagate AbortSignal-style cancellation and finite deadlines through all layers that can honor them. Clean up listeners, streams, sockets, buffers, temporary files, and host-adapter resources on success, failure, cancellation, or close.
+- Apply backpressure to streamed data and bounded memory to accumulated results. Do not buffer unbounded streams or create unbounded task fan-out.
+- Keep the Node.js event loop responsive. Measure CPU-heavy operations; use worker isolation or other offloading only when justified, optional where host-specific, and tested.
+- Make progress, partial results, handoff/resume, and completion observable as real protocol/client events; never synthesize progress to make an operation appear live.
+
+### 14.4 Sustained operation and 24/7 readiness
+
+- Support long-running use when a consumer explicitly starts and owns the ChatJS process/client/session. Define start, stop, close, suspend/resume, graceful shutdown, reconnection, and recovery behavior for each applicable subsystem.
+- Add soak, leak, restart, interruption, cancellation, stale-session, reconnect, queue-saturation, and long-stream tests before claiming sustained-operation readiness.
+- Use finite deadlines, bounded buffers/queues, rate-limit-aware retry, jittered recovery only where protocol semantics allow it, and idempotency-aware operation replay. Persist state only with explicit consumer configuration and documented retention.
+- Expose liveness/readiness and actionable local diagnostics where useful. Do not hide failures or silently restart an operation that may have side effects.
+- “24/7” does not authorize a hidden daemon, auto-start, unsolicited polling, network keepalive, remote monitoring, telemetry, or background content upload. Long-running activity must remain consumer-controlled and only perform the explicit work the consumer requested.
+
+### 14.5 Responsiveness, stability, speed, and lightweight footprint
+
+- Define measurable latency, time-to-first-event, throughput, CPU, heap, memory, queue-depth, and cleanup budgets for meaningful hot paths.
+- Establish reproducible benchmarks and soak baselines before claiming “fast,” “smooth,” “lightweight,” or “responsive”; investigate regressions with evidence.
+- Prefer Node.js built-ins and small maintained dependencies. Keep optional host integrations separately loadable and avoid making unrelated host APIs mandatory.
+- Validate malformed, oversized, slow, interrupted, and adversarial input; use bounded parsing, file limits, queue limits, and explicit overload errors.
+- Treat reliability as correctness under cancellation, concurrency, shutdown, resource pressure, network changes, and partial service failure—not merely successful happy-path requests.
+
+### 14.6 Newest and broad compatibility
+
+- Maintain a dated compatibility record for supported Node.js releases, OS/architecture combinations, required host adapters, and official ChatGPT mobile/desktop/Codex client source versions.
+- When updated official client source packages or verified release evidence are supplied, compare relevant modules and record behavior/schema changes; add regression/contract tests before adapting ChatJS.
+- Test the newest supported Node.js LTS and declared platform targets in CI, while documenting tested older ranges. Drop or add versions deliberately with evidence.
+- Do not auto-download, execute, or install updated protocol code in the background. “Always current” means a disciplined, evidence-based maintenance process, not silent self-modifying software.
+
+### 14.7 Acceptance interpretation
+
+“Everything/everywhere/maximum/full support/forever” means maximum practical and verified coverage of the in-scope ChatGPT mobile, ChatGPT desktop, and Codex CLI client workflows in this one Node.js module, across host/account combinations that genuinely support them. It requires a complete capability inventory and a clearly tested compatibility matrix. It does not mean unsupported hardware, unavailable entitlements, every third-party host, every future protocol revision, or uninterrupted remote-service availability can be guaranteed. Report gaps and blockers rather than claiming universal support.
+
+A feature may claim these expanded qualities only to the extent its relevant behavior, resource bounds, compatibility, concurrency, cancellation, lifecycle, and sustained-operation tests have actually passed. The existing production-readiness gate in section 10 remains mandatory.

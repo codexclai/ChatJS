@@ -569,3 +569,17 @@ The code has explicit error branches for invalid/untrusted destinations, invalid
 This narrows the next reverse-engineering target, but does not justify implementing a guessed authenticated sender. Next decode compiled method bodies/constructor field layouts for direct request creation and route selection, integrity result assembly, event decoder/resume, and upload reservation/numeric limits. Guest create/refresh and guest composer routes remain a separate unresolved investigation.
 
 **Evidence boundary:** static inspection of the owner-supplied public Android 1.2026.321 compiled Valdi module. No app launch, account access, token extraction, HTTP request, guest-session creation, or telemetry operation occurred. No production ChatJS code changed.
+
+## 2026-11-25 — Compiled Valdi archive and QuickJS bytecode boundary
+
+The supplied Android assets/chatgpt_services.valdimodule was previously decompressed and inspected as a compiled archive. A source-level format cross-check is now available from the public Snapchat/Valdi repository, pinned for this investigation to commit f5bc2dcfcb880109c908e0675968cb532231ca71:
+
+- valdi_core/cpp/Resources/ValdiPacket.cpp defines the packet header as two 32-bit fields: magic 0x0100C633 and data length.
+- valdi_core/cpp/Resources/ValdiArchive.cpp parses repeated filename/data length fields. The high bit 0x80000000 indicates four-byte padding; lower 31 bits are the payload length.
+- valdi/runtime/JavaScript/JavaScriptUtils.cpp declares precompiled-JS wrapper magic 0x0100C634; makePreCompiledJsModule prefixes the bytecode with this four-byte marker, and getPreCompiledJsModuleData removes it.
+- valdi/quickjs/QuickJSJavaScriptContext.cpp evaluates the unwrapped payload using JS_ReadObject(..., JS_READ_OBJ_BYTECODE) followed by JS_EvalFunction.
+- third-party/quickjs/README.md records the fork lineage and upstream merges through 2021-03-27; third-party/quickjs/VERSION is 2021-03-27. This is a modified/forked QuickJS implementation, not a guarantee that arbitrary upstream QuickJS tools will accept every emitted module.
+
+The compiled module entries inspected here begin with the 0x0100C634 wrapper marker. This explains why a printable-string scan finds method names but not the executable control flow. It provides a concrete next route: a bytecode inspection utility must match the precise Valdi QuickJS fork/build and its serialized object format. No such disassembler has yet been run, and no method body, request serializer, branch condition or schema has been decoded by this step.
+
+**Scope and evidence boundary:** the only Android artifact was the owner-supplied ChatGPT-Android.xapk; the Valdi source is third-party format/runtime reference material. No APK launch, account access, credential/session extraction, HTTP request or telemetry occurred. Do not bundle the third-party Valdi/QuickJS runtime into ChatJS merely to ease static analysis; first assess license, compatibility, and whether temporary analysis tooling suffices.

@@ -145,3 +145,9 @@ The product objective is maximum practical reliability across supported Node.js 
 - Keep diagnostics local and explicit. No background probing, telemetry, hidden reporting or unsolicited requests may be added as a reliability shortcut.
 
 The intended result is graceful support for every genuinely supported host/provider and precise failure information where the official service requires a capability that the host cannot provide.
+
+## Unified product boundary — owner clarification (2026-11-25)
+
+The single ChatJS package brings together three source/client families: ChatGPT mobile, ChatGPT desktop and Codex CLI. The Codex CLI's client workflows/capabilities are in scope for native Node.js implementation; the upstream CLI executable and its app-server are not required at runtime. The Codex source archive is used to reconstruct its behavior, not to spawn or embed its program. ChatGPT is the only AI service target. Do not create a generalized multi-provider AI SDK.
+
+Internally preserve three distinct behavioral surfaces: Android ChatGPT Work uses cloud execution, Windows ChatGPT desktop Work uses local execution, and Codex CLI is a separate terminal-oriented coding client. One public Node.js module may expose them cohesively without collapsing their protocols or security requirements. Optional host adapters supply actual host facilities such as filesystem/process/browser/desktop access; they are not alternate AI providers.

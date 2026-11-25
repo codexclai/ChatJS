@@ -4,7 +4,7 @@ This is the user-facing documentation for the **ChatJS Node.js module**. It is s
 
 ## Overview
 
-ChatJS is one comprehensive, general-purpose Node.js module intended to bring together the actual client-side systems and workflows of official ChatGPT mobile and ChatGPT desktop (including Work and Codex).
+ChatJS is one conventional, general-purpose Node.js client module that consolidates the actual client-side capabilities and workflows of **ChatGPT mobile, ChatGPT desktop, and Codex CLI** under the single package name and API, **ChatJS**. These are three client/source families implemented through one Node.js module, not three separate packages or runtime products consumers need to install and launch.
 
 The goal is to adapt the real client behavior to Node.js—not to imitate visible feature names, substitute a different model service, or recreate ChatGPT's server. The supplied APK/MSIX contents are the technical references for the client-side implementation. This includes code and compiled modules, request and response construction, payload schemas, serialization, transport, connection/authentication/session flows, local state, tools, and packaged resources. A client interface must not be dismissed solely because public developer documentation does not describe it.
 
@@ -13,15 +13,15 @@ ChatJS must remain reusable across different Node.js applications, hosts, operat
 ## Product shape
 
 Intended areas include:
-- the real ChatGPT client connection and the client-side request/response, transport, authentication/session, and streaming behavior found in the supplied packages;
-- conversations, threads, context, project containers, instructions, and memory;
-- file and attachment handling and local processing;
-- desktop Work/Codex patterns such as workspaces, file operations, task progress, approvals, command/test execution, repository inspection, diffs/review, and local artifacts;
-- optional host integrations for browser, voice, image, camera, microphone, screen, or desktop facilities where the consuming environment provides the relevant mechanism.
+- actual ChatGPT mobile and desktop client connection, request/response, transport, authentication/session, and streaming behavior;
+- ChatGPT conversations, threads, context, projects, instructions, memory, files, attachments, images, video, voice, search, and tools where supported by the clients;
+- Android cloud Work and Windows local Work as separate execution surfaces;
+- Codex CLI-equivalent ChatGPT-backed coding-client workflows, including sessions/threads, task and event streaming, tools, local workspaces/files, command/test operations, approvals and artifacts where evidenced;
+- optional host adapters for browser, voice, image, camera, microphone, screen, filesystem, process, or desktop facilities where the consuming environment provides the relevant mechanism.
 
-The portable core must remain usable without a particular camera, microphone, screen, browser, operating system, or device API.
+The portable core must remain usable without a particular camera, microphone, screen, browser, operating system, or device API. ChatGPT is the only AI service target; ChatJS is not a multi-provider AI SDK, replacement app, server, or background daemon. Codex CLI is an in-scope capability family to implement inside ChatJS, not a subprocess dependency: consumers should not need to install or run the separate Codex executable or a Codex app-server for ChatJS to provide its implemented Codex workflows.
 
-The long-term product target is a comprehensive, all-in-one, highly customizable and dynamically adaptable module with broad host portability and production-grade behavior. These are requirements to implement and verify, not claims that every capability currently works everywhere. Customization must never bypass authentication, entitlements, first-party security checks, or other safety boundaries. See [the Product and Engineering Standard](https://github.com/codexclai/ChatJS/blob/main/docs/PRODUCT_STANDARD.md) for the complete target, control model, capability states, quality gates, and external-service limits.
+The long-term target includes comprehensive coverage, dynamic capability awareness, extensive safe customization/control, async and concurrent operations, true real-time streaming where supported, responsive and measured lightweight performance, current compatibility, and consumer-controlled long-running operation. These are requirements to implement and verify, not claims that every capability currently works everywhere or that ChatJS guarantees external-service uptime. Customization must never bypass authentication, entitlements, first-party security checks, or other safety boundaries. See [the Product and Engineering Standard](https://github.com/codexclai/ChatJS/blob/main/docs/PRODUCT_STANDARD.md) for the complete target and acceptance gates.
 
 Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features are out of scope.
 
@@ -171,6 +171,6 @@ For product evidence, architecture, capability status, and continuity, see [the 
 
 The Android source now identifies a concrete **authenticated** ChatGPT direct-conversation sender and its generated model/chat-requirements client, first-party integrity providers, SSE stream/resume pipeline, upload service and history client. These remain static research findings; request serializers and end-to-end behavior are not yet implemented. A scan of all 111 decompressed Valdi modules found no `/backend-anon` route string, so Android guest create/refresh and guest composer routes remain unknown.
 
-The reconstructed Windows desktop package contains a local coding-agent path that spawns its bundled `codex.exe` through a stdio app-server host, as well as a distinct authenticated ChatGPT/OpenAI fetch bridge. This does not prove the exact UI mapping for every Windows Work feature. ChatJS will not depend on Codex CLI or an app-server process; Windows local execution and Android cloud Work remain separate.
+The reconstructed Windows desktop package contains a local coding-agent path that spawns its bundled `codex.exe` through a stdio app-server host, as well as a distinct authenticated ChatGPT/OpenAI fetch bridge. This does not prove the exact UI mapping for every Windows Work feature. ChatJS implements Codex CLI client capabilities inside its own Node.js module, without depending on the separate executable or app-server; Windows local Work and Android cloud Work remain separate.
 
 These source findings do not change the API status above: the production module is still foundation-only and makes no ChatGPT service requests.

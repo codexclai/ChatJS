@@ -61,7 +61,7 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Implement project/context/instruction handling.
 - [ ] Implement file and attachment workflows using observed client request formats.
 - [ ] Implement Work Local for the Windows desktop client and Work Cloud for Android as separate client/service flows; neither may depend on Codex CLI/app-server.
-- [ ] Decide and implement a distinct Codex CLI-equivalent coding capability only where source evidence proves user-visible behavior materially separate from Work.
+- [ ] Reconstruct and implement the Codex CLI client capability family as part of ChatJS: direct ChatGPT Codex session/transport, Responses HTTP/SSE/WebSocket behavior, event mapping, tool/task lifecycle, approval semantics and local coding workflows. Implement natively in Node.js; do not spawn the external CLI or app-server.
 - [ ] Implement Work/Codex task, workspace, command, approval, Git review, and artifact workflows.
 - [ ] Add optional voice/image/video and host integrations only where actual client and host evidence supports them.
 - [ ] Add security/regression tests for auth lifecycle, secret redaction, cancellation, concurrency, timeouts, and no unsolicited traffic.
@@ -120,3 +120,25 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Decode generated ModelCatalog and ChatRequirements response decoder bytecode to recover required/optional/null fields and nested challenge variants.
 - [ ] Decode event decoder and direct resume request bytecode, including delta operations, entity references, `resume_conversation_token`, `stream_handoff`, `resume_sse_endpoint`, `x-conduit-token`, offsets and maximum handoff count.
 - [ ] Decode upload reservation response, numeric file/count/total-size limits, URL expiry, retry/cancellation and accepted MIME/image constraints.
+
+## P1 — Unified ChatGPT mobile + desktop + Codex CLI product target
+
+- [ ] Build a complete capability map for all three client/source families: ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI.
+- [ ] Trace Codex CLI's ChatGPT-backed Responses HTTP/SSE/WebSocket client, legitimate account/session headers, request models, event stream, tool lifecycle, approvals and task/thread state; implement verified behavior directly in ChatJS.
+- [ ] Reconstruct Codex local coding-agent behavior and safe Node.js equivalents for workspace/files/commands/tests/Git/artifacts; do not ship or invoke Codex CLI/app-server as a runtime shortcut.
+- [ ] Expose mobile, desktop and Codex CLI capability families through one consistent ChatJS factory/client/resource lifecycle, configuration model, errors, cancellation, event/progress system, and TypeScript API while preserving distinct source-specific protocols.
+- [ ] Keep ChatGPT as the only AI service target; host adapters may provide genuine host facilities only and must not become an alternate AI-provider abstraction.
+- [ ] Ensure README, ChatJS.md, architecture, capability inventory, roadmap and future-session instructions retain this exact product identity.
+
+## P1 — Dynamic, real-time, concurrent and sustained-operation quality
+
+- [ ] Define a capability/readiness API that reports actual runtime, OS/architecture, host-adapter and protocol readiness with evidence-backed states; keep local discovery side-effect-free and remote checks explicit.
+- [ ] Define a fully validated configuration/override model with stable in-flight snapshots, transparent precedence and consumer control without security-bypass switches.
+- [ ] Specify async operation contracts, per-client/per-operation concurrency limits, bounded queues, ordering, overload behavior, cancellation propagation and backpressure before expanding concurrent workflows.
+- [ ] Specify real-time streaming/progress/resume contracts from the official clients; expose only genuine incremental events and never synthetic progress.
+- [ ] Design consumer-controlled long-running lifecycle (start/stop/close, graceful shutdown, reconnect/recovery and state retention) without auto-start daemons, hidden polling or unsolicited keepalive traffic.
+- [ ] Add soak, memory-leak, repeated start/stop, restart/recovery, network interruption, cancellation, stale-session, queue saturation and long-stream tests for implemented long-running workflows.
+- [ ] Add reproducible latency/time-to-first-event/throughput/CPU/heap/memory benchmarks and resource ceilings; only make speed, responsiveness or lightweight claims from measured evidence.
+- [ ] Maintain a dated tested Node.js and OS/architecture compatibility matrix and compare supplied official client-source updates through evidence review and contract/regression tests; no self-modifying runtime or background updater.
+- [ ] Measure and protect Node.js event-loop responsiveness; add worker offloading only for justified CPU-heavy work and keep host-specific implementations optional.
+- [ ] Update public examples and API reference for async usage, concurrency, streaming, cancellation, progress, safe customization, lifecycle and capability readiness as those APIs are actually implemented.
