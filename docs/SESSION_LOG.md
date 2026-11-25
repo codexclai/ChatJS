@@ -1302,7 +1302,7 @@ Decoded the version-1 outer record forms: either non-empty accessToken without n
 
 **Implementation:** added private `src/chatgpt/android-request-credential-recovery.cjs` with generated error-envelope decoding, exact action classifier and pure recovery-plan helper. Added 17 deterministic tests, syntax validation and the allowlisted distribution archive entry. It performs no token retrieval, revocation report, storage, native callback, retry or network request.
 
-**Validation:** focused 15-test suite and lint passed. Full `npm run check`, 14-file archive rebuild, extracted package smoke, CI/CodeQL and publication remain pending. Existing verified baseline before this change is `a4b7a44` (CI `45625383769`, CodeQL `45625383930`).
+**Validation:** focused 17-test suite and lint passed. Full `npm run check`, 14-file archive rebuild, extracted package smoke, CI/CodeQL and publication remain pending. Existing verified baseline before this change is `a4b7a44` (CI `45625383769`, CodeQL `45625383930`).
 
 **Local validation:** `npm run check` passed: lint, generated-state sync, all 28 Markdown local links and 99/99 tests. The rebuilt archive contains exactly 14 approved files (24,691 bytes; SHA-256 `0127b06f11ae90849ff364a2c82c82e994f1a90eb385848d6b11c2bbfb0a0e79`), passes gzip/tar integrity, and extracted CommonJS/ESM consumer smoke tests passed. New-commit GitHub CI and CodeQL are pending publication.
 
@@ -1332,3 +1332,8 @@ Also mapped controller failures: interactive sign-in maps Cancelled to Cancelled
 **DPoP findings:** mapped auth key repository/metadata (openai.login.dpop. alias prefix; key_pair_alias and pending_credential_deletion), AndroidKeyStore EC/secp256r1 key material, SHA256withECDSA signing, JWS typ=dpop+jwt/alg=ES256, DPoP signer-dependent Authorization scheme/header injection, WWW-Authenticate/X-Nonce handling, OAuth refresh endpoint and error classifications (refresh_token_reused, token_expired, invalid_dpop_proof) including timestamp-correction retry path; dpop_iat_out_of_range and android_dpop_signing_concurrency were also found. Complete DPoP claims/nonce lifecycle, exact retry bounds, refresh schema and actual native provider remain open. No key, credential or request was used. No DPoP code was added because a correct portable host signer and exact protocol are not yet established.
 
 **Verification baseline:** the immediately preceding implementation commit 8914fe5ff8b8f4fc8c973a564d2cc09e706d184b has GitHub CI run 45634100721 and CodeQL run 45634100513 both successful. This documentation/state handoff is being prepared against that exact main parent; its own CI/CodeQL will be checked after publication.
+
+
+## 2026-11-25 — Generated project-state correction
+
+GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989cdec found one generated-file mismatch: an extra leading space before the generated PROJECT_STATE.md notice. Corrected the generated file to match scripts/generate-project-state.cjs exactly and corrected the earlier rejected-recovery test count to 17. No runtime source or tests changed in this follow-up.
