@@ -516,3 +516,56 @@ Observed operations include `startDirect`, `connectDirect`, `createStream`, `rec
 A string scan of all 111 decompressed Valdi modules found no `/backend-anon` route string. The `chatgpt_services` conversation client is explicitly account-oriented: its types and method context use authenticated account/session fields and it is named `AuthenticatedChatGPT...`. This does **not** prove that no guest service exists elsewhere in the app; it means this concrete authenticated service module does not identify the guest composer route. The DEX `/backend-anon/f/conversation*` constants remain attributable to `LocationCookieInitializer`, not to this send client.
 
 **Evidence boundary:** static symbol/string inspection of the official Android 1.2026.321 package only. No request was sent, no account/session data was accessed, and no complete source body serializer or live response was recovered. The Android authenticated send path is a strong implementation lead, not a working ChatJS integration. Guest create/refresh and guest composer prepare/send remain unresolved.
+
+## 2026-11-25 — Direct-response payload, stream decoder, and upload contract string reconstruction
+
+### Scope and method
+
+Reopened the owner-supplied `ChatGPT-Android.xapk` (1.2026.321), extracted its base APK, selected `assets/chatgpt_services.valdimodule`, and decompressed its Zstandard frame with the system Zstandard utility. Inspected the compiled module's file/module table, symbol/string pools and bytecode-adjacent string regions for the direct-response client, generated API client, streaming worker/contracts/event decoder, and file-upload service. This is a deeper static string/symbol pass than the earlier 111-module scan; it is not a Valdi bytecode decompilation or runtime trace.
+
+### Direct authenticated request builder: field inventory
+
+The `ChatGPTDirectResponseClient.js` module string region contains these conversation and message identifiers:
+
+- Conversation/context: `conversation_id`, `parent_message_id`, `conversation_mode`, `primary_assistant`, and `history_and_training_disabled`.
+- Message/content: `author`, `user`, `text`, `content_type`, `parts`, and `multimodal_text`.
+- Additional metadata: `metadata`, `model_written_dil`, `model_written_dil_v2`, and `skills_settings_overrides`.
+- Request controls/context: `stream` and `timezone_offset_min`.
+- Attachment/content references: `file`, `mimeType`, `fileId`, `imageDimensions`, `file-service://`, `asset_pointer`, `image_asset_pointer`, `height`, `width`, `size`, `size_bytes`, and `mime_type`.
+
+The same module has both `/backend-api/f/conversation` and `/backend-api/conversation` route constants, a `POST` method string, and a request body serialized through `JSON.stringify` after construction. It also has a separate `bodyPatchJson` value supplied by the integrity preparation path, and the requirements response header `OpenAI-Sentinel-Chat-Requirements-Token`.
+
+**Not established:** precise object nesting, required/optional/nullability rules, exact route-selection condition, whether every listed key is emitted for every message, and byte-for-byte serializer order. Some strings are shared by request, response, and helper code in the same compiled module. Do not turn this inventory into a public request schema or production serializer yet.
+
+### Generated model and chat-requirements decoders
+
+The generated `ChatGPTConversationApiClient.js` region identifies decoder functions for `ModelCatalogRequest`, `ModelCatalogModel`, `ModelCatalogPreset`, `ModelCatalogVersion`, `ModelCatalogResponse`, `ChatRequirementChallenge`, and `ChatRequirementsResponse`. Its validation strings distinguish object, array, string, finite number, integer, boolean and null expectations, plus supported enum values and scalar query values.
+
+Observed model/catalog keys include `slug`, `model_slug`, `intelligence_presets`, `supports_model_picker_upgrade_presets`, `default_model_slug`, `models`, and `versions`. Chat-requirements keys include `required`, `token`, `turnstile`, and `proofofwork`. Operations are GET `/backend-api/models` and POST `/backend-api/sentinel/chat-requirements`. The current scan does not recover the complete decoder instruction graph, per-field optionality, or all nested challenge variants.
+
+### Streaming and event-decoder contract
+
+The event decoder exposes these concrete identifiers:
+
+- Stream completion and handoff: `[DONE]`, `complete`, `resume_conversation_token`, `stream_handoff`, `continuation.message_stream_complete`, and `resume_sse_endpoint`.
+- Resume context: `conversation_id`, `type`, `token`, `conversationId`, `resumeToken`, and `eventOffset`.
+- Message state: `author`, `assistant`, `role`, `tool`, `metadata`, `content`, `thoughts`, `content_type`, `recipient`, and `channel`.
+- Delta operations: Add, append, Patch, Remove, Replace, and Truncate; delta paths are validated and unsafe/nested paths produce explicit errors.
+- Entity references: `$content_references`, `start_idx`, `end_idx`, `entity`, `category`, `notes`, and `extra_params`.
+- DIL/reasoning: model-written DIL result decoding, assistant reasoning accumulation, reasoning snapshots and delta state.
+
+The streaming contracts additionally expose `body`, `conversationId`, `conversation_id`, `model`, `eventOffset`, `offset`, `stream`, `token`, `x-conduit-token`, and the `/resume` path suffix. The worker has separate direct and polling paths; the observed direct stream uses POST and an SSE client, while the development polling path is explicitly unavailable in this worker. The decoder rejects missing/invalid resume tokens and a handoff targeting a different conversation. Exact resume request body, header/value mapping, offset semantics, handoff ceiling, and every event variant remain unverified.
+
+### Upload service: concrete metadata and destination rules
+
+The upload module exposes `createFileUpload`, `uploadFileContents`, and `processUploadedFile`, with reservation and processing routes `/backend-api/files` and `/backend-api/files/process_upload_stream`. Metadata identifiers include `client_resolved_mime_type`, `chat_composer`, `entry_surface`, `file_name`, `size`, `file_size`, `declared_mime`, `mime_resolution_source`, `reset_rate_limits`, `file_picker`, `selection_method`, `timezone_offset_min`, `image`, `multimodal`, `ace_upload`, and `use_case`.
+
+The byte-upload code includes a PUT path with `Authorization: Bearer`, `x-ms-blob-type: BlockBlob`, and `x-ms-version: 2020-04-08`. It validates upload destinations and contains allow-list suffixes `.blob.core.windows.net`, `.blob.storage.azure.net`, `.amazonaws.com`, and `.oaiusercontent.com`. Additional Estuary paths are `/api/estuary/upload_content_and_finalize` and `/api/estuary/upload_content_bytes`. The module has constants `MAX_PICKED_FILES`, `MAX_PICKED_FILE_BYTES`, and `MAX_PICKED_TOTAL_BYTES`, but their numeric values were not decoded. It also validates base64/data-URL content and inspects PNG/GIF/JPEG/WebP image dimensions.
+
+The code has explicit error branches for invalid/untrusted destinations, invalid processing responses, expired sessions, upload-limit errors, cancellation and HTTP/service errors. Reservation response schema, signed URL lifetime, retries, numeric limits and all MIME rules remain unresolved.
+
+### Implementation consequence
+
+This narrows the next reverse-engineering target, but does not justify implementing a guessed authenticated sender. Next decode compiled method bodies/constructor field layouts for direct request creation and route selection, integrity result assembly, event decoder/resume, and upload reservation/numeric limits. Guest create/refresh and guest composer routes remain a separate unresolved investigation.
+
+**Evidence boundary:** static inspection of the owner-supplied public Android 1.2026.321 compiled Valdi module. No app launch, account access, token extraction, HTTP request, guest-session creation, or telemetry operation occurred. No production ChatJS code changed.

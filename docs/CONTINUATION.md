@@ -168,3 +168,11 @@ The same-instance conversation callback is mapped: `Lxjk1.f` captures its `Lgqk0
 ### Current completion assessment
 
 The overall estimate remains approximately **3%**. Source research and documentation do not count as implemented product functionality. The production runtime still has no authenticated or guest ChatGPT connection, product-specific conversation transport/decoder, file workflow, or Work engine.
+
+## Latest handoff — 2026-11-25 (Android request-contract deepening)
+
+The supplied XAPK is mounted at `/mnt/data/ChatGPT-Android.xapk` for this session. The base APK member is `com.openai.chatgpt.apk`; its `assets/chatgpt_services.valdimodule` Zstandard frame was decompressed and compiled module regions inspected.
+
+New evidence is in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`: DirectResponseClient conversation/message field inventory; generated model and Sentinel decoder names plus primitive validation strings; event delta operations, entity-reference spans, handoff/resume identifiers; upload metadata keys, Azure block-blob PUT headers and trusted storage suffixes. The field inventory is not a complete schema. Object nesting, requiredness, route selection, exact resume mapping, maximum handoff count and upload numeric limits remain unknown. Do not implement a guessed request builder.
+
+Next: decode Valdi bytecode/control flow for DirectResponseClient prepare/send and generated decoders; decode stream event/resume branch; recover upload constants and reservation response layout. Continue the independent guest-session HTTP search and preserve first-party integrity requirements. No production behavior changed in this slice.

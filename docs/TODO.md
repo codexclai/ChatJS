@@ -113,3 +113,10 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Locate the Android guest service and the real anonymous create/refresh and composer prepare/send calls. Keep this independent from the authenticated ChatGPT service module and the LocationCookieInitializer route strings.
 - [ ] Map the exact user-visible Windows ChatGPT Work Local UI call path to its local process/RPC and service network behavior. The packaged Codex app-server subprocess is a source finding, not a ChatJS dependency; ChatJS must not spawn `codex.exe` or a separate app-server process.
 - [ ] Reconstruct the desktop `/wham` and Estuary client schemas and identify which UI features use them; do not equate every visible Work surface with the Codex app-server path.
+
+## P1 — Android compiled-client reconstruction follow-up (2026-11-25)
+
+- [ ] Decode Valdi bytecode/control flow for authenticated DirectResponseClient `prepare` and `send`, including exact selection between `/backend-api/f/conversation` and `/backend-api/conversation`, complete nested JSON schema, integrity body patch and serializer semantics. The field-name inventory is not a validated schema.
+- [ ] Decode generated ModelCatalog and ChatRequirements response decoder bytecode to recover required/optional/null fields and nested challenge variants.
+- [ ] Decode event decoder and direct resume request bytecode, including delta operations, entity references, `resume_conversation_token`, `stream_handoff`, `resume_sse_endpoint`, `x-conduit-token`, offsets and maximum handoff count.
+- [ ] Decode upload reservation response, numeric file/count/total-size limits, URL expiry, retry/cancellation and accepted MIME/image constraints.

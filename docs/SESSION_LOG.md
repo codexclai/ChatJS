@@ -840,3 +840,30 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Decode direct SSE events and resume/handoff behavior, then upload reservation/PUT/process semantics.
 - Locate guest create/refresh and guest composer prepare/send independently of the authenticated Android sender.
 - Trace Windows Work UI separately from the packaged Codex coding-agent app-server path and determine how to reproduce local execution without subprocess dependency.
+
+## 2026-11-25 — Android authenticated request/event/upload contract deepening
+
+### Work performed
+
+- Restored ChatJS context from live GitHub main, reading AI_MEMORY.md and CONTINUATION.md first, then project state, TODO and canonical technical records. Verified main-only workflow, recent commits and latest CI/CodeQL.
+- Reopened the supplied `ChatGPT-Android.xapk` at `/mnt/data/ChatGPT-Android.xapk`, extracted its base APK member, extracted `assets/chatgpt_services.valdimodule`, and decompressed its Zstandard frame.
+- Located and inspected compiled module regions for DirectResponseClient, generated model/chat-requirements API client, streaming worker/contracts/event decoder, and file-upload service.
+- Added a direct-response field inventory, generated decoder names and primitive validation indicators, SSE delta/handoff/resume identifiers, entity-reference fields, upload metadata keys, Azure block-blob headers and trusted storage suffixes to the Android findings. Explicitly recorded what the string pool cannot establish: object nesting, requiredness, route branch condition, full decoder graph, resume mapping, handoff ceiling and numeric upload limits.
+- No app launch, account/session access, token extraction, live HTTP request, guest-session creation or telemetry operation occurred. No production source, public API, test or dependency changed.
+
+### Changed files
+
+- `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`
+- `docs/OPEN_QUESTIONS.md`
+- `docs/TODO.md`
+- `docs/SESSION_LOG.md`
+- `docs/CONTINUATION.md`
+- `docs/AI_MEMORY.md`
+- `docs/project-state.json`
+- Generated `docs/PROJECT_STATE.md`
+
+### Verification and limits
+
+- This was compiled Valdi module string/symbol-region inspection, not bytecode decompilation. It narrows the field inventory but does not justify implementing a guessed serializer.
+- No local npm run check was executed in this remote-only repository session. Verify the documentation commit using GitHub CI; the previous main head's CI and CodeQL success are not proof for the new commit.
+- Keep the overall completion estimate unchanged: research progress is not a working ChatGPT integration.

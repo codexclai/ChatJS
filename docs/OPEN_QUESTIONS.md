@@ -114,3 +114,10 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Determine which local execution components must be reimplemented inside ChatJS to avoid spawning `codex.exe` or a separate app-server process, while retaining genuine authorization, sandbox/approval semantics, and optional host capability boundaries.
 - [ ] Reconstruct the desktop `/wham` and Estuary service-client request/response schemas and auth lifecycle; current evidence only identifies auth-attachment path families, not Work payloads.
 - [ ] Verify the Windows signed-out/guest state through the actual client path; it remains unknown.
+
+## 2026-11-25 — Direct-response method-body and schema reconstruction follow-up
+
+- [ ] Decode compiled `ChatGPTDirectResponseClient.prepare/send` method bodies and route-selection branch. A deeper string-pool pass inventories conversation/message/context keys, but nesting, requiredness, exact route condition and serialized order remain unknown.
+- [ ] Decode generated model-catalog and chat-requirements decoder instruction graphs to recover complete nested schemas, nullable/optional behavior and all challenge variants.
+- [ ] Decode event decoder delta-operation and handoff logic, including exact event variants, resume body/header mapping, eventOffset/offset semantics, and maximum direct-stream handoff count.
+- [ ] Recover numeric `MAX_PICKED_FILES`, `MAX_PICKED_FILE_BYTES`, and `MAX_PICKED_TOTAL_BYTES` constants plus upload reservation response layout, URL expiry and retry policy.

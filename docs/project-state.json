@@ -2,8 +2,8 @@
   "project": "ChatJS",
   "repository": "codexclai/ChatJS",
   "moduleName": "ChatJS",
-  "phase": "Authenticated Android client protocol reconstruction and Windows local execution-surface research; Node.js runtime remains foundation-only",
-  "status": "The Android 1.2026.321 chatgpt_services module now identifies the authenticated model/catalog and Sentinel chat-requirements clients, direct conversation sender, separate requirements/device-integrity providers, SSE worker/decoder/resume pipeline, file upload/process service, and conversation history client. All 111 decompressed Valdi modules were scanned; none contains a /backend-anon route string, so the guest create/refresh and guest composer protocols remain unresolved. The reconstructed Windows MSIX/ASAR shows a packaged local coding-agent path that spawns codex.exe through a stdio app-server RPC host, plus a separate OpenAI/ChatGPT-origin-restricted bearer auth bridge for selected wham/Estuary paths. This is reference evidence only; ChatJS must not depend on Codex CLI/app-server, and the exact Work UI mapping remains incomplete. The production Node.js runtime remains foundation-only with no actual ChatGPT session, conversation, file, or Work workflow.",
+  "phase": "Android authenticated request/event/upload contract reconstruction; runtime remains foundation-only",
+  "status": "A deeper static pass of the supplied Android 1.2026.321 chatgpt_services Valdi module now inventories authenticated conversation/message/context fields, model and Sentinel decoder names, SSE delta/handoff/resume identifiers, entity-reference fields, and upload metadata/storage rules. Both authenticated conversation route constants and POST/JSON serialization are present, but exact route selection, JSON nesting, requiredness, complete event schemas, resume mapping, handoff ceiling, and numeric upload limits remain undecoded. No production ChatJS behavior changed. Android guest create/refresh and composer routes remain unknown; Windows local Work UI mapping remains incomplete. The production Node.js runtime remains foundation-only.",
   "defaultBranch": "main",
   "lastReviewed": "2026-11-25",
   "runtimePolicy": "Use the supported Node.js LTS in CI.",
@@ -107,7 +107,8 @@
     "Traced same-instance Compose dispatch into Android conversation recovery: Lxjk1.f captures supplied Lgqk0 in Llu2, which maps via Lhkk1.t and calls virtual Lv6a.G on the captured receiver. When supplied a Ljqk0, dispatch reaches that coordinator's guarded Lkmk0 handler, which emits the no-messages/all-unsupported MessageNotFoundException and invokes local Lgs31.b. Lkmk0 semantics and subsequent HTTP guest creation remain unproven.",
     "Located the Android authenticated ChatGPT service-client modules: generated model/chat-requirements API client, ChatGPTDirectResponseClient, separate requirements/device-integrity provider interfaces, direct SSE streaming worker/decoder/resume path, file upload/process service, and conversation history/pin client. Recorded route and symbol evidence plus explicit serializer/event-schema limitations; no live request was sent.",
     "Scanned all 111 decompressed Android Valdi modules for /backend-anon and guest service identifiers. No /backend-anon route string was present in those modules; this narrows, but does not close, the guest create/refresh and guest composer route investigation.",
-    "Reconstructed the owner-supplied Windows MSIX and verified ZIP CRC integrity; parsed the Appx manifest and ASAR index, then inspected selected Electron bootstrap and app-server-host code. Confirmed the packaged local coding-agent path spawns bundled codex.exe through a stdio app-server RPC host and found a separate restricted ChatGPT/OpenAI bearer-auth fetch bridge. This remains reference-only and is not a ChatJS runtime dependency."
+    "Reconstructed the owner-supplied Windows MSIX and verified ZIP CRC integrity; parsed the Appx manifest and ASAR index, then inspected selected Electron bootstrap and app-server-host code. Confirmed the packaged local coding-agent path spawns bundled codex.exe through a stdio app-server RPC host and found a separate restricted ChatGPT/OpenAI bearer-auth fetch bridge. This remains reference-only and is not a ChatJS runtime dependency.",
+    "Decompressed and inspected compiled Android chatgpt_services Valdi module regions for DirectResponseClient, generated model/chat-requirements API decoders, stream contracts/event decoder, and upload service; documented the field/event/upload contract inventory and its static-analysis limits without guessing a production schema."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -123,12 +124,13 @@
     "Working authenticated/accountless ChatGPT connection, conversation send/receive and Windows Work Local / Android Work Cloud workflows."
   ],
   "nextActions": [
-    "Reconstruct the Android authenticated DirectResponseClient request body serializer and exact method-to-route binding; decode complete model-catalog and Sentinel chat-requirements schemas and first-party requirements/device-integrity provider behavior.",
-    "Decode the direct Android SSE event contracts and resume/handoff state, including resume_conversation_token, x-conduit-token, offset semantics and maximum handoff count; then reconstruct attachment upload reservation, signed PUT and processing behavior.",
-    "Locate the separate Android guest service and exact anonymous create/refresh plus guest composer prepare/send calls. Keep them distinct from the authenticated chatgpt_services sender and LocationCookieInitializer route constants.",
-    "Map the exact user-visible Windows Work Local UI path to its local runtime and ChatGPT network calls; reproduce needed local behavior inside ChatJS without spawning codex.exe or requiring an app-server process. Do not assume this package's Codex coding-agent path is identical to every Work feature.",
-    "Reconstruct desktop wham and Estuary request/response schemas and account-token lifecycle, while preserving first-party origin/account checks and excluding telemetry.",
-    "Implement real authenticated and accountless ChatGPT sessions, conversation streaming, file workflows and Work only after the protocols are sufficiently established for genuine end-to-end tests."
+    "Decode Valdi bytecode/control flow for Android DirectResponseClient prepare/send and establish exact route selection, JSON nesting/requiredness, integrity patch semantics and serialization order.",
+    "Decode generated ModelCatalog and ChatRequirements decoder instruction graphs, including nested challenge variants and optional/null rules.",
+    "Decode conversation event/delta and direct resume bytecode, including resume body/header mapping, offsets, handoff limit and supported event variants.",
+    "Recover Android upload reservation/response layout, numeric file/count/total-size limits, URL expiry/retry/cancellation, and accepted MIME/image constraints.",
+    "Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.",
+    "Map the precise Windows Work Local UI/runtime/network flow separately from Android Work Cloud, without a Codex CLI/app-server runtime dependency.",
+    "Implement actual authenticated and accountless ChatGPT sessions, conversation streaming, attachment handling and separate Work engines only after exact protocols are reconstructed and genuine end-to-end tests can be run."
   ],
   "reference": {
     "source": "ChatJS Project → Sources: ChatGPT-Android.xapk and ChatGPT-Windows.msix.part001/.part002; committed Android/desktop client findings and recovered conversations record the owner's requirements. Official Codex source snapshot CodexCLI.zip is also retained in ChatJS Project → Sources; commit 50aeac27d825007a0ac6bd846087ed4e7095bdb3, 28,071,441 bytes, SHA-256 1ff13fc6e312171f487b0e0f88de302c27c72c9ac20f6bd54325fdee343d66eb.",
@@ -144,7 +146,8 @@
     "No /backend-anon route string was found in 111 Valdi modules, but this does not prove the guest service is absent from another module or native path. Guest create/refresh and composer routes remain unknown; LocationCookieInitializer constants are not send-route evidence.",
     "The Windows desktop package's local coding-agent path spawns bundled codex.exe over stdio app-server RPC. This is not acceptable as a ChatJS runtime dependency. The user-visible Work UI mapping and any separable first-party service path remain incomplete.",
     "No real ChatGPT authenticated/accountless network connection, conversation streaming, attachment workflow, or Work engine is implemented; current production runtime is foundation-only.",
-    "Latest verified CI/CodeQL runs correspond to pre-update main head 29ba5a17f6607ae336f1158dad7f85d7a499f0c9. Local npm run check was not run because the repository working tree is not mounted; verify the new documentation commit with GitHub Actions."
+    "Latest verified CI/CodeQL runs correspond to pre-update main head 29ba5a17f6607ae336f1158dad7f85d7a499f0c9. Local npm run check was not run because the repository working tree is not mounted; verify the new documentation commit with GitHub Actions.",
+    "The new Android payload evidence is a compiled Valdi module string/symbol-region scan, not a bytecode decompilation. Field names and route constants do not establish request nesting, requiredness, exact route selection, resume mapping or numeric upload limits; a production serializer must not be guessed."
   ],
   "lastVerifiedCommit": "29ba5a17f6607ae336f1158dad7f85d7a499f0c9",
   "lastVerifiedCI": "45487942578",
