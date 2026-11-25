@@ -267,7 +267,7 @@ Android Google Play Integrity is platform-specific. A Linux or Windows Node.js h
 
 **Observed:** package version/inventory, compiled Valdi interface names and string contracts, DEX class/field/method identifiers, relevant invoke references, endpoint/header/body-key constants, persistent preference names and error/cancellation strings.
 
-**Not established:** complete decompiled control flow; generated Valdi client's exact chat-requirements request/response schema; exact mapping of every retryable status to retry/refresh/terminal behavior and attempt ceilings; DeviceRateLimits record schema/scope/retention and its relationship to the 300-second cooldown marker; cooldown marker persistence across process restart; exact allowed-cookie path matching and cookie lifetime/deletion semantics; device UUID lifetime/rotation/deletion; why the internal-only package guard exists in this package snapshot; why its user-agent version differs from the XAPK version; Valdi-side validation/application ordering for returned headers; app_attest_challenge semantics; Windows equivalent; or any authorized live-account behavior. The DEX inspection used a purpose-built partial bytecode/reference scanner and selected method disassembly, not a full decompiler or complete call graph. Do not treat this as a complete reconstruction or an implemented ChatJS provider.
+**Not established:** exact mapping of every retryable status to retry/refresh/terminal behavior and attempt ceilings; DeviceRateLimits record schema/scope/retention and its relationship to the 300-second cooldown marker; cooldown marker persistence across process restart; exact cookie name/value, expiry and deletion semantics; device UUID lifetime/rotation/deletion; why the internal-only package guard exists; why the native helper user-agent version differs from the XAPK version; app_attest_challenge semantics outside the null-body-patch native response; Windows equivalent; a separate public-build provider in another authentic source; or any authorized live-account behavior. Selected DEX methods are now disassembled, but this is not a complete decompilation or live service test. Do not treat it as an implemented ChatJS provider.
 
 ### Standard Integrity provider lifecycle and strict endpoint/cookie validation
 
@@ -873,7 +873,7 @@ The upload module reads dimensions for PNG, GIF, JPEG and WebP inputs and reject
 
 ChatJS now contains an internal, side-effect-free policy helper at src/chatgpt/file-upload-policy.cjs. It implements the reconstructed selection metadata/size/type checks, padded Base64 byte-length verification, trusted upload-destination parsing, and Estuary-versus-signed-storage request-plan/header distinction. It is packaged internally and covered by deterministic tests. It is not a public API, uploader, reservation client, authenticated transport, streaming processor, or live ChatGPT operation. No network request is made by the helper.
 
-**Still open:** actual signed-URL expiry and service-side signature semantics; upload retry/cancellation behavior across every transport; file download, image-gallery, and file-indexing workflows; complete process-stream terminal/progress schema; native device-integrity behavior/public-build selection; challenge-specific Turnstile/proof-of-work/so consumers; authenticated account and anonymous guest lifecycles; and authorized end-to-end service tests.
+**Still open:** actual signed-URL expiry and service-side signature semantics; upload retry/cancellation behavior across every transport; file download, image-gallery, and file-indexing workflows; complete process-stream terminal/progress schema; a distinct public-build integrity provider in another authentic source; remaining challenge-specific Turnstile/proof-of-work/so consumers; authenticated account and anonymous guest lifecycles; and authorized end-to-end service tests.
 
 
 ## 2026-11-25 — Android event-dispatch and streaming response-processor lifecycle
@@ -962,7 +962,7 @@ The optional JSON body patch is parsed separately and must be an object with exa
 
 ### Evidence boundary and remaining gaps
 
-The provider selection, default fail-closed behavior, native adapter inputs/callbacks/cancellation, output validation, factory registration, service construction and package preflight are method-level decoded. The native factory is present in the public APK, but the worker rejects the public package com.openai.chatgpt because it requires com.openai.chatgpt.internal; this happens before its HTTP exchange. The internal service's live acceptance and a distinct public-build alternative remain unverified. Do not bypass the service, spoof the package, simulate its result or emit a fabricated token. No ChatJS integrity provider or authenticated request implementation is claimed.
+The provider selection, default fail-closed behavior, native adapter inputs/callbacks/cancellation, output validation, factory registration, service construction, package preflight, and internal DEX request/callback bridge are now method-level decoded. The native factory is present in the public APK, but the worker rejects com.openai.chatgpt because it requires com.openai.chatgpt.internal; this happens before its HTTP exchange. The internal request path is source-reconstructed but has not been executed or accepted by the live service, and a distinct public-build alternative remains unverified. Do not bypass the service, spoof the package, simulate its result or emit a fabricated token. No ChatJS integrity provider or authenticated request implementation is claimed.
 
 
 ## 2026-11-25 — Native module registration, service construction, and public-package gate
@@ -1003,3 +1003,48 @@ No alternate public-build native provider was found in this XAPK trace. Whether 
 ### Earlier wording reconciled
 
 The earlier note that described public-build availability as simply unproven is superseded for this exact XAPK: the native factory is present, and its execution path explicitly rejects the public application package before networking. The internal implementation's full challenge/cookie/retry details remain useful for source understanding, but do not make this flow available to the public package.
+
+
+## 2026-11-25 — Native integrity DEX response bridge and source-version verification
+
+This addendum records the native method-level callback mapping and bytecode provenance. It does not supersede the public-package gate established above.
+
+### Factory, worker and callback mapping
+
+The native factory class DeviceIntegrityNativeModuleFactoryImpl loads the Valdi wrapper; its createDeviceIntegrityService method creates com.openai.valdi.integrity.b, the DEX implementation of DeviceIntegrityService. prepare schedules the worker and returns the cancellable task.
+
+The worker first checks Context.getPackageName() against com.openai.chatgpt.internal. A public package mismatch throws DeviceIntegrityPreparationException with the internal-debug-signed-app message before the HTTP helper is called. The native service being registered or selected by the Valdi adapter therefore does not imply that its prepare operation can run in the public package.
+
+The final callback adapter Ldz2.invoke constructs DeviceIntegrityResponse with bodyPatchJson set to null and six paired headers. In the method's exact returned order, the names are:
+
+1. OpenAI-Sentinel-Chat-Requirements-Token
+2. X-Sentinel-Payload
+3. OAI-Client-Type
+4. OAI-Device-Id
+5. OAI-Package-Name
+6. User-Agent
+
+The X-Sentinel-Payload value is the JSON token bundle containing bot_token, play_integrity_token and chat_requirement_token. It is a header value, not bodyPatchJson. This is distinct from the Valdi adapter's optional app_attest_challenge JSON body-patch validator: that optional field is not populated by this inspected native method.
+
+### Authenticated HTTP helper and cookie path
+
+The native HTTP helper resolves a relative API path against the supplied base URL, uses POST with JSON, disables automatic redirects, and sets 30,000 ms connect/read timeouts. It applies Accept and Content-Type, bearer authorization, ChatGPT-Account-Id, and the native Android client/device/package/user-agent headers. The internal package header is only reached after the package preflight. It rejects non-success responses, bounds response reading, collects Set-Cookie, and disconnects the active connection when its cancellable task is cancelled.
+
+Set-Cookie values are parsed into the active Android CookieManager. The later verification step requires a non-empty, Secure, unexpired, trusted-domain device-verification cookie with a path accepted for the relevant backend API route. This is an internal-only client flow, not a public ChatJS request template.
+
+### Two token roles and source version
+
+The first Google Play Standard Integrity token is requested with a fresh 256-byte SecureRandom nonce, Base64 URL-safe/no-wrap encoded, and is used in the first /backend-api/playintegrity exchange to establish the device-verification cookie. A second token is requested using a SHA-256 hash of canonical identity JSON containing account_id, conversation_id, device_id, and parent_message_id in that order. These are distinct inputs; the request hash is not the initial nonce.
+
+The native helper hardcodes User-Agent ChatGPT/1.2026.209 (Android ; build 2620909), while the enclosing public XAPK manifest is ChatGPT 1.2026.321, version code 2632129. The mismatch is observed; its cause and compatibility implications are unknown. Do not update the native user-agent to match the APK or assume a different version behaves identically without new source evidence.
+
+### Reproducible DEX and asset provenance
+
+- classes2.dex: 9,475,272 bytes; SHA-256 aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a.
+- classes4.dex: 13,680,548 bytes; SHA-256 a9fea19ad93d2d6e48bbb6605df2d538bdd8d01a54db30374d484369ce9c6643.
+- Compressed assets/oai_device_integrity.valdimodule: 252 bytes; SHA-256 70d9ee72d56620d384d7a4ec675a0ed0bf2e1f7a7f16f495bf951e6fafc4b6ba.
+- Decompressed type-module payload: 336 bytes; SHA-256 d087b397d9138492dc3476c65f1390dab6fa0a760f4847d32a1c503ab29713b5.
+
+### Evidence boundary
+
+This is static DEX and packaged-asset analysis only. No Android method was executed, no Play Integrity token or cookie was requested, and no HTTP endpoint was called. The package gate still makes this native exchange unavailable to the supplied public package. Remaining details include retry attempt ceilings, DeviceRateLimits scope/retention and cooldown persistence, exact cookie-name/lifetime/rotation/deletion, device UUID rotation/deletion, the UA mismatch, a distinct public provider in another authentic build, and live service behavior.

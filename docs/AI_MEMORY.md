@@ -258,3 +258,14 @@ The Android direct client normalizes chat-requirements: token must be non-empty,
 The supplied public XAPK contains the native DeviceIntegrityNativeModuleFactoryImpl registration marker and DEX implementation. Its Valdi factory creates a wrapper whose createDeviceIntegrityService constructs the class implementing DeviceIntegrityService. The request/response bridge shapes are confirmed (five string request fields; response bodyPatchJson plus headerNames/headerValues; success/failure callbacks and cancellation task).
 
 However, the worker explicitly compares Context.getPackageName() to com.openai.chatgpt.internal and throws "Install the official-debug-signed internal Android application to verify this device." before HTTP when it differs. The supplied manifest package is com.openai.chatgpt. Therefore the factory code is bundled in the public APK but its native operation is unavailable to this public package. The outgoing internal package fields are behind the guard. Never spoof or bypass this check. A separate public-build provider is not found in this XAPK and remains open only as a cross-version source question.
+
+
+## Android native integrity response bridge confirmed — 2026-11-25
+
+The native DEX callback method is now traced: DeviceIntegrityResponse.bodyPatchJson is null, and the token bundle JSON (bot_token/play_integrity_token/chat_requirement_token) is carried by X-Sentinel-Payload. The other returned headers are OpenAI-Sentinel-Chat-Requirements-Token, OAI-Client-Type, OAI-Device-Id, OAI-Package-Name and User-Agent. This is not the optional Valdi app_attest_challenge body patch.
+
+The HTTP helper path is also method-level reconstructed: bearer/account/device headers, POST JSON, redirects disabled, 30-second connect/read timeouts, Set-Cookie stored through CookieManager, secure first-party cookie validation, bounded response reading and cancellable disconnect. It uses a 256-byte random nonce for the first Standard Integrity token and a separate SHA-256 request hash over account/conversation/device/parent identity for the later token. It creates and persists a random install UUID in oai_device_integrity/device_id.
+
+The helper hardcodes User-Agent ChatGPT/1.2026.209 (build 2620909), while the enclosing public XAPK is 1.2026.321 (2632129). The mismatch is observed and unexplained. The service worker still rejects public com.openai.chatgpt before HTTP because it requires com.openai.chatgpt.internal. No native operation was executed and no token/cookie/network request was generated.
+
+Remaining source questions are retry attempt/backoff ceilings, DeviceRateLimits persistence/scope, cookie and UUID lifecycle, the UA mismatch, and any separate public-build implementation in another authentic source.

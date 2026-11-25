@@ -344,3 +344,20 @@ A fresh direct extraction of the supplied XAPK confirms the native integrity fac
 The exact execution gate is in com.openai.valdi.integrity.a.run: it calls Context.getPackageName() and compares exactly with com.openai.chatgpt.internal. On mismatch it throws DeviceIntegrityPreparationException: "Install the official-debug-signed internal Android application to verify this device." This happens before the helper invokes its HTTP request methods. The supplied XAPK manifest is com.openai.chatgpt, so this native operation cannot pass its guard in the supplied public build. The later hardcoded internal package_name and OAI-Package-Name values belong to the internal-only path after that gate.
 
 This resolves the previous ambiguity: the native factory is bundled but the worker is explicitly restricted to the internal/debug-signed application identity. Do not spoof package identity, alter the guard, send the internal package header/body from ChatJS, or fabricate Play Integrity. A distinct public-build provider in another authentic source remains an open question. Full method evidence is in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+## Latest handoff — Android native integrity response mapping and provenance — 2026-11-25
+
+The native DEX pass verifies the response bridge and transport methods, not only the internal package gate:
+
+- DeviceIntegrityNativeModuleFactoryImpl creates a Valdi wrapper; its service factory constructs the DEX DeviceIntegrityService implementation.
+- The worker checks Context.getPackageName() against com.openai.chatgpt.internal before HTTP. The supplied public package com.openai.chatgpt is rejected and cannot run this native operation.
+- The final callback sets DeviceIntegrityResponse.bodyPatchJson to null. The JSON bundle containing bot_token, play_integrity_token and chat_requirement_token is the value of X-Sentinel-Payload. The other headers are OpenAI-Sentinel-Chat-Requirements-Token, OAI-Client-Type, OAI-Device-Id, OAI-Package-Name and User-Agent.
+- The native HTTP helper uses bearer/account/device headers, JSON POST, redirect disablement, 30-second connect/read timeouts, Set-Cookie/CookieManager handling, a bounded response and cancellable disconnect.
+- The initial Standard Integrity token is bound to a fresh 256-byte random nonce; the later token is bound to a SHA-256 request hash over ordered account/conversation/device/parent identity. The internal request JSON contains package_name, nonce, integrity_token and device_id.
+- The helper persists a random install UUID in SharedPreferences oai_device_integrity/device_id. This is client-install identity, not hardware identity.
+- The helper embeds ChatGPT/1.2026.209 (build 2620909), while the supplied XAPK is 1.2026.321 (code 2632129). The mismatch is observed and unexplained.
+
+Full DEX/asset hashes and method evidence are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. No Android method was executed; no Play Integrity token was requested, cookie minted, or endpoint called.
+
+Remaining work: exact retry/attempt ceilings; DeviceRateLimits scope, retention and restart persistence; cookie-name/lifetime/rotation/deletion; UUID rotation/deletion; UA mismatch explanation; and a distinct public-build provider only if found in another authentic client source. Keep the internal package gate intact.

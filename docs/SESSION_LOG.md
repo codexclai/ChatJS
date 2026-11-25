@@ -1200,3 +1200,16 @@ The native worker com.openai.valdi.integrity.a.run calls Context.getPackageName(
 **Prior validation:** parent commit fcef555fe57971f11e9c111fe16fd7deaadcfc9a passed GitHub CI 45581273364 and CodeQL 45581273282. A clean extracted snapshot of that commit passed npm run check: all 35 tests, generated-state synchronization, 27 valid Markdown local links, and a nine-file 15,678-byte distribution archive (SHA-256 6d8b01f9fa7135fdcb714ee3a5e945a15b18e7c28f06c60db6e68331e2b96cd7). The new research update itself still requires its own checks.
 
 **Still open:** another authentic public-build provider path, if any; internal-build-only cookie/nonce/device UUID/cooldown/retry mechanics; challenge-specific Turnstile/proof-of-work semantics; authenticated and independent guest session routes; remaining event/history payload variants; complete attachment expiry/retry/cancel/download/index flow; comprehensive Android non-Work coverage.
+
+
+## 2026-11-25 — Android native integrity response bridge and DEX provenance
+
+**Source:** supplied ChatGPT Android 1.2026.321 XAPK, package com.openai.chatgpt, version code 2632129. Method-level DEX inspection covers the native module factory, Valdi wrapper, DeviceIntegrityService, package-guarded worker, HTTP/cookie helper, UUID persistence and final response callback. Exact DEX and Valdi asset SHA-256 values are recorded in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+**Result:** the callback constructs DeviceIntegrityResponse with bodyPatchJson=null and six paired headers: OpenAI-Sentinel-Chat-Requirements-Token, X-Sentinel-Payload, OAI-Client-Type, OAI-Device-Id, OAI-Package-Name and User-Agent. X-Sentinel-Payload carries the JSON bot_token/play_integrity_token/chat_requirement_token bundle; it is not a body patch. The authenticated helper uses POST JSON, bearer/account/device headers, redirects disabled, 30-second connect/read timeouts, Set-Cookie/CookieManager handling, bounded response reads and cancellable disconnect.
+
+The first Standard Integrity token is nonce-bound using 256 SecureRandom bytes; the later token uses SHA-256 of ordered account/conversation/device/parent identity JSON. The internal /backend-api/playintegrity body contains package_name, nonce, integrity_token and device_id. The helper persists a random client-install UUID in the app-private oai_device_integrity/device_id preference.
+
+The native DEX user-agent is ChatGPT/1.2026.209 (build 2620909), unlike the enclosing 1.2026.321 (2632129) XAPK.
+
+**Limits:** the worker still rejects the public com.openai.chatgpt package before HTTP because it requires com.openai.chatgpt.internal. This static trace did not invoke native code, request a Play Integrity token, create a cookie or contact an endpoint. Retry ceilings, DeviceRateLimits scope/retention, cooldown persistence, exact cookie and UUID lifecycle, UA-version explanation and a distinct public-build provider remain open.

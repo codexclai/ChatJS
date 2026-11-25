@@ -206,3 +206,12 @@ The native adapter accepts legitimate session/account/backend/conversation conte
 ## Android native integrity availability
 
 The supplied public Android APK includes the native device-integrity factory and service classes, but its actual worker checks the application package name against com.openai.chatgpt.internal and throws before making requests when it differs. The supplied public XAPK is com.openai.chatgpt. Thus the implementation is bundled but not usable by the supplied public app package. It must not be bypassed or imitated. See docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md. The Node.js runtime still has no native integrity provider or authenticated ChatGPT request path.
+
+
+## Additional Android native integrity DEX detail
+
+The method-level DEX trace confirms the native response callback returns DeviceIntegrityResponse with bodyPatchJson=null. The token bundle JSON containing bot_token, play_integrity_token and chat_requirement_token is carried in X-Sentinel-Payload; this is not the Valdi app_attest_challenge body patch. Other returned headers are OpenAI-Sentinel-Chat-Requirements-Token, OAI-Client-Type, OAI-Device-Id, OAI-Package-Name and User-Agent.
+
+The native HTTP helper sends authenticated POST JSON with redirects disabled and 30-second connect/read timeouts, stores Set-Cookie through CookieManager, checks for a valid secure first-party device-verification cookie, bounds response reads and disconnects the connection on cancellation. It obtains one Standard Integrity token using 256 fresh SecureRandom bytes as a nonce, then a separate token using SHA-256 of ordered account/conversation/device/parent identity JSON. The internal request body uses package_name, nonce, integrity_token and device_id. An app-private random install UUID is persisted at oai_device_integrity/device_id.
+
+The DEX helper's User-Agent is ChatGPT/1.2026.209 (build 2620909), while the supplied XAPK is 1.2026.321 (code 2632129). The discrepancy is unverified. The worker requires com.openai.chatgpt.internal and rejects the public com.openai.chatgpt package before HTTP. Do not port the internal-only request as public behavior or generate its attestation token.
