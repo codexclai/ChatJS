@@ -187,3 +187,10 @@ The current Android non-Work reverse-engineering record now includes the streami
 The upload client is method-level traced through POST /backend-api/files reservation, Estuary multipart versus signed-storage PUT, and POST /backend-api/files/process_upload_stream. It validates a narrow trusted HTTPS destination set and keeps ChatGPT session credentials off external signed PUT requests. Android picker limits are ten files, 20 MiB each, and 25 MiB total; accepted document/image types and the 32,768-pixel image dimension ceiling are recorded in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
 
 A small internal attachment-policy validator now ships in the module archive with deterministic tests. It is not a public API or an uploader and does not make network requests. The module still has no ChatGPT authentication, conversation transport, stream processing, attachment transfer, or end-to-end product workflow.
+
+
+## Further Android streaming source detail
+
+The event decoder's core dispatch and the listener-facing processor have been traced beyond the route/worker layer. It advances eventOffset on every non-DONE event before payload decoding, stores valid resume-token events, returns a nonterminal conversation-bound continuation for accepted stream_handoff events, and distinguishes [DONE] and message_stream_complete terminal markers. Message updates separately track assistant text suffixes by message ID, reasoning, conversation-state transitions, model-written DIL payloads, and entity-reference snapshots.
+
+The separate response processor batches Markdown parsing/rendering at 16 ms, forwards distinct content/state/DIL/entity/reasoning callbacks, flushes pending content before completion or failure, delays final completion when a final update has been emitted, and clears timers on stop. Cancellation does not fabricate a completion callback. See docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md. These are static source findings, not a working ChatJS conversation feature.

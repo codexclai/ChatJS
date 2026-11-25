@@ -874,3 +874,50 @@ The upload module reads dimensions for PNG, GIF, JPEG and WebP inputs and reject
 ChatJS now contains an internal, side-effect-free policy helper at src/chatgpt/file-upload-policy.cjs. It implements the reconstructed selection metadata/size/type checks, padded Base64 byte-length verification, trusted upload-destination parsing, and Estuary-versus-signed-storage request-plan/header distinction. It is packaged internally and covered by deterministic tests. It is not a public API, uploader, reservation client, authenticated transport, streaming processor, or live ChatGPT operation. No network request is made by the helper.
 
 **Still open:** actual signed-URL expiry and service-side signature semantics; upload retry/cancellation behavior across every transport; file download, image-gallery, and file-indexing workflows; complete process-stream terminal/progress schema; native device-integrity behavior/public-build selection; challenge-specific Turnstile/proof-of-work/so consumers; authenticated account and anonymous guest lifecycles; and authorized end-to-end service tests.
+
+
+## 2026-11-25 — Android event-dispatch and streaming response-processor lifecycle
+
+This section extends the existing event/resume and worker trace with the top-level dispatch outputs and the separate response-rendering/terminal processor. Source is the supplied ChatGPT Android 1.2026.321 compiled Valdi module set, read with the temporary deserializer only; no app methods were executed.
+
+### Event offset and terminal dispatch
+
+The ChatGPTConversationEventDecoder decode method checks event.data === "[DONE]" before incrementing the offset or passing data to the payload decoder. For this terminal marker it completes the reasoning accumulator and returns complete: true, adding the finalized reasoning snapshot when present.
+
+For every other event, it increments eventOffset first, then decodes the event payload. An undecodable payload or an event rejected by the decoder's object predicate returns complete: false without a message update. Thus offsets advance for non-DONE events even when their payload is not converted into a visible response update.
+
+A resume_conversation_token event is accepted only when token is a non-empty string and conversation_id is a string. When valid, the decoder stores both values and returns a non-terminal result. A stream_handoff event is acted on only when its options array contains an accepted option. It requires previously stored resume token and conversation ID, rejects an explicitly supplied different conversation ID, and returns a non-terminal continuation object with the stored conversation ID, current eventOffset, and token. The event itself does not mean the response is complete; the direct worker uses this continuation to create the separate /resume request.
+
+message_stream_complete is the other explicit terminal event. It completes the reasoning accumulator and returns complete: true, including the final reasoning state when present. Ordinary decoded message updates return complete: false.
+
+### Message and incremental update selection
+
+The normal message branch accepts assistant and tool roles with a non-empty string message ID. Messages classified as visually hidden are skipped. The reasoning accumulator consumes each eligible message before the visible-text branch is selected.
+
+Messages are routed to the reasoning output rather than assistant text when they are tool-role messages, use thoughts or reasoning_recap content types, carry the thinking-preamble metadata flag, or have a recipient other than all or assistant. A reasoning change is returned separately and is never folded into the assistant text delta.
+
+For normal assistant text, the decoder stores the accumulated content by message ID. If the new text starts with the previously stored content, it emits only the suffix; otherwise it emits no appended suffix for that update. This is the basis for the worker/host append-only text-delta path.
+
+Conversation-state output is emitted when the current message supplies a conversation ID different from the decoder's current conversation context; the state includes the new conversation ID and message ID as parent. Model-written DIL is decoded from message metadata and content with the streamed conversation metadata context. Its raw payload is compared with the previous raw payload so repeated values are not emitted. Entity references are similarly decoded and compared by JSON snapshot before an update is emitted.
+
+The ordinary decoder result is complete: false with only the fields that actually changed: optional conversationState, non-empty delta, changed dilResult, changed entityReferences, and changed reasoning.
+
+### Response processor
+
+ChatGPTStreamingResponseProcessor is a separate listener-facing rendering/terminal state machine. Its constructor stores the listener, initializes content to an empty string, and initializes dirty, finished, and hasDILResult to false.
+
+- append(text) ignores calls after finish and empty text, appends to accumulated content, and schedules a single 16 ms render timer when a render is not already pending and DIL content has not taken over the update path.
+- The timer clears its own handle and calls flush(true). flush(streaming) only emits while the processor is active, the content is eligible for a flush, and no DIL result is active.
+- emitPreparedContent(streaming) calls listener.onPreparedContent with the full accumulated content, parsed Markdown blocks from Markdown.parse(content).blocks, and the streaming flag.
+- conversationState, entityReferences, and reasoning call their corresponding listener callbacks while active; entity-reference and reasoning callbacks are optional.
+- dilResult(result) flushes pending text, marks that a DIL result has been received, then calls listener.onDILResult.
+- complete() emits any final pending text with streaming: false when no DIL result has superseded text rendering. When text or DIL output exists, it stops the processor and schedules onComplete after the completion delay; when neither exists, it stops and calls onComplete immediately.
+- fail(error, code) emits final pending text under the same no-DIL condition, stops, then calls listener.onError(error, code).
+- cancel() stops without synthesizing completion or an error callback. hasReceivedText() reflects whether accumulated content is non-empty.
+- stop() marks the processor finished, clears the render and completion timers, and removes their handles. All subsequent append/state/DIL/entity/reasoning updates are ignored.
+
+This processor delay is a UI/render lifecycle detail, distinct from transport reconnect, resume handoff, server completion, or request cancellation.
+
+### Remaining boundary
+
+The static trace now maps the core decoder's event offsets, resume-token/handoff, terminal markers, assistant/tool/reasoning selection, content suffix, DIL/entity-reference deduplication, and the complete response-processor terminal behavior. It still does not establish every possible generated payload subtype, server behavior under interruption, history synchronization after completion, or an authorized live session. ChatJS has not implemented this event decoder or response processor as production conversation behavior.

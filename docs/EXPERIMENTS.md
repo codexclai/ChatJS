@@ -347,3 +347,20 @@ Decoded the upload reservation POST, multipart Estuary finalize/content paths, e
 **Verification:** npm run check passed in a disposable local snapshot of the current main commit. All 35 tests passed, generated docs and links were valid, and dist/ChatJS.tar.gz contained nine module files. The source helper is included in the distribution archive. This result does not establish a live ChatGPT upload, conversation or streaming implementation.
 
 **Limits:** this is static client-source reconstruction and a partial deterministic policy implementation. It does not establish live endpoint availability, service authorization, signed-URL lifetime, retry/cancellation semantics, download/indexing, all process-stream terminal states, or public-build native device-integrity availability. The temporary disassembler, QuickJS source/build, app payloads and extracted bytecode remained outside the ChatJS repository and distribution.
+
+
+## 2026-11-25 — Android conversation event dispatch and response processor trace
+
+**Question:** What exact terminal/continuation decisions occur after parsing an SSE event, and how are prepared content, reasoning, DIL, errors and completion delivered to the conversation listener?
+
+**Method:** Read the retained QuickJS disassemblies for ChatGPTConversationEventDecoder.js and ChatGPTStreamingResponseProcessor.js from Android XAPK 1.2026.321. The tool only deserializes compiled function objects and dumps their bytecode; it does not execute Android functions.
+
+**Result:**
+- [DONE] is handled before eventOffset increments and before payload decoding; it completes the reasoning accumulator and returns complete:true.
+- Every other SSE event increments the offset before payload decoding, so even ignored, unknown or undecodable non-DONE events advance the continuation offset.
+- Valid resume_conversation_token stores the token and conversation ID. An accepted stream_handoff requires that saved state, rejects conversation changes, and returns a nonterminal continuation {conversationId,eventOffset,token}. The worker makes the separate /resume request.
+- message_stream_complete finalizes reasoning and returns complete:true; ordinary messages return complete:false.
+- Visible assistant/tool message filtering, hidden-message skipping, reasoning message classification, per-message assistant-text accumulation/suffix extraction, conversation-state transitions, raw DIL payload deduplication, and entity-reference snapshot deduplication were traced.
+- The response processor accumulates text, batches Markdown parsing/rendering on a 16 ms timer, reports distinct state/DIL/entity/reasoning callbacks, flushes final text before completion/error, defers completion when text/DIL has been emitted, and clears timers on stop. Cancellation stops without inventing completion.
+
+**Limits:** core event/processor control flow is reconstructed but not a live server protocol test, complete generated nested-event schema, or complete history sync. No ChatJS runtime event/processor implementation was added in this slice.

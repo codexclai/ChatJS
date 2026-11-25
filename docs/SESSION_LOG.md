@@ -1157,3 +1157,18 @@ Updated Android protocol findings, TODO/open questions, AI memory, continuation 
 ## Validation update — 2026-11-25
 
 Commit `49f27e3b946489d0c37854a62d384e8876bf08c2` passed GitHub CI run `45579506954` and CodeQL run `45579507125`. A clean extraction of that exact commit also passed `npm run check`: all 35 tests passed, generated project state was synchronized, all 27 Markdown link targets existed, and `dist/ChatJS.tar.gz` was inspected (9 module files, 14,932 bytes, SHA-256 `1accbb3ea4def56e19220c78e4664b7d11f41b7058b8c8c3021dd9ba00e9f992`). The attachment data URL validator now verifies the expected Base64 encoded length from the declared file size before calling `Buffer.from`, preventing an oversized encoded value from triggering a disproportionate allocation.
+
+
+## 2026-11-25 — Android event dispatcher and response processor completion trace
+
+**Active phase:** Android non-Work only. Android Work, Windows/Desktop and Codex CLI remain parked as execution priority; the long-term target is unchanged.
+
+**Source work:** read the complete retained ChatGPTConversationEventDecoder and ChatGPTStreamingResponseProcessor QuickJS disassemblies from supplied Android XAPK 1.2026.321. No Android bytecode was evaluated or executed and no temporary analysis artifact was added to Git.
+
+**New findings:** decoded [DONE] versus non-DONE event offset order; valid resume token capture; nonterminal stream_handoff continuation and conversation binding; message_stream_complete terminal behavior; assistant/tool/hidden/reasoning message filtering; assistant-text suffix tracking by message ID; DIL and entity-reference deduplication; conversation-state update conditions; response processor 16 ms render batching, Markdown block parsing, separate callbacks, final text flush, delayed completion, error flush, cancel-without-terminal-callback, and timer/resource cleanup.
+
+**Repository changes:** updated ANDROID_CLIENT_PROTOCOL_FINDINGS.md, EXPERIMENTS.md, TODO.md and OPEN_QUESTIONS.md with method-level evidence and marked the core event/processor source reconstruction complete. Also updated the current-main continuation, AI memory, root guide, state snapshot and this session log. No new product runtime feature is claimed; the live ChatGPT conversation/stream/history workflow remains unimplemented.
+
+**Prior validation preserved:** parent commit 96b46051976cf0f3230fae95f49feebc244c372a passed GitHub CI run 45579851986 and CodeQL run 45579852002. The attachment helper’s full 35-test package check and nine-file archive were previously inspected; this documentation-only source trace still needs its own npm run check and CI verification after commit.
+
+**Still open:** challenge-specific requirements providers and native public-build integrity behavior; authenticated and accountless guest session lifecycle; remaining event payload types; history synchronization after terminal streams; authorized interruption/resume/cancel tests; full upload lifecycle (expiry/retry/cancel/download/indexing); and comprehensive Android non-Work inventory.

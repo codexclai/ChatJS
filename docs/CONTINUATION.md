@@ -310,3 +310,21 @@ The disposable local copy of current main passed npm run check: 35 tests passed,
 3. Finish all remaining stream event/processor and history behavior; add authorized tests for resume, interruption, cancellation and errors.
 4. Implement the real authenticated attachment reservation/transfer/process/download lifecycle with bounded resources, secure signed-URL handling, retries, cancellation and cleanup.
 5. Continue the exhaustive Android non-Work inventory and implementation. Android Work, Windows/Desktop and Codex CLI stay parked; the permanent three-family product goal is unchanged.
+
+
+## Latest handoff — Android event decoder and response processor lifecycle — 2026-11-25
+
+The retained Android bytecode dumps have now been read through the full top-level event dispatcher and listener-facing response processor. Core event outcomes are no longer just inferred from string identifiers:
+
+- [DONE] is checked before eventOffset increments; it completes reasoning and returns terminal complete:true.
+- Every other event increments eventOffset before payload decoding, including unknown/ignored payloads.
+- resume_conversation_token stores the non-empty token and conversation ID.
+- An accepted stream_handoff requires stored resume state, rejects a different conversation ID, and returns a non-terminal continuation with the current event offset; the direct worker then performs the separately reconstructed /resume call.
+- message_stream_complete finalizes reasoning and is terminal. Normal message deltas are not terminal.
+- Assistant text is tracked per message ID and emitted as appended suffixes. Hidden messages are skipped; tool/thoughts/reasoning_recap/thinking-preamble and non-user-facing recipient messages go through reasoning rather than user-visible text.
+- Model-written DIL raw payload and decoded entity-reference snapshots are deduplicated before emission. Conversation-state changes are separately emitted.
+- The response processor batches Markdown/render callbacks on a 16 ms timer, preserves distinct text/state/DIL/entity/reasoning callbacks, flushes final text before completion/error, delays terminal completion when a final text/DIL update was emitted, and clears timers on stop. Cancellation stops without a fabricated completion callback.
+
+The exact function-level evidence and conditions are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. This is still static client behavior, not authorized live stream behavior or complete history synchronization. ChatJS has not implemented the Android event decoder/processor as a live conversation runtime.
+
+Next Android non-Work work: complete remaining event/schema variants and history recovery; reconstruct the actual authenticated and independent guest session lifecycles; trace Turnstile/proof-of-work/so and native public-build device integrity; implement/test real authorized ChatGPT operations. Android Work, Windows/Desktop and Codex CLI remain parked.
