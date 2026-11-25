@@ -253,3 +253,17 @@ It also mirrors the controller's initial account choice preparation: explicit or
 The Android controller's separate `selectAccount` method is now method-decoded. It accepts a requested choice but resolves the canonical account entry by ID from the current session's account list. It no-ops outside an allowed signed-in state or for an unknown/already-active ID; otherwise it cancels current validation, clears revalidation, advances the operation generation, rebuilds an account-bound session and updates in-memory `SignedIn` state. Secure persistence is started afterward without being awaited; its rejection is handled by a warning rather than a rollback in this method. The method makes no new account-check request and does not render the selection UI.
 
 These are Android source findings only. ChatJS still has no login, account-switching controller, session persistence or authenticated network path. The UI caller and underlying encrypted store durability contract remain open. See `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+
+
+## Android authentication restore/sign-in findings — 2026-11-25
+
+The Android authentication controller's restore and sign-in orchestration is now method-reconstructed. Restore loads its saved credential, restores a native session when `nativeSessionId` is present, verifies the restored native ID, checks operation generation and only then establishes the session. Direct access-token sign-in validates the trimmed bearer token and account before saving the session; the controller enters `SignedIn` only after that save succeeds. Interactive sign-in gates on first-party host/method support, foreground state and operation generation, and distinguishes a renewable native Browser sign-in from a host-interactive credential request. Failed unfinished native sessions are cleared where possible.
+
+These findings reinforce that a token-only request shortcut is not Android sign-in parity. ChatJS still does not implement authentication, native credential callbacks, secure credential storage, restore or authenticated transport. See the detailed limits and branch behavior in `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+
+
+## Android credential-store record findings — 2026-11-25
+
+The Android store factory and wrapper methods are now method-decoded. It uses a browser memory-only store, a fail-closed unavailable store, or a `PersistentStore` configured with encryption enabled, batch writes disabled, and lifecycle-sensitive foreground admission. The persistent namespace/key/user metadata are recorded in the protocol findings. The wrapper JSON-serializes records; the underlying PersistentStore owns encryption.
+
+Private `src/chatgpt/android-auth-credential-record.cjs` now decodes/builds the version-1 credential envelope, validates the optional account/session snapshot, distinguishes bearer-token and native-session identity, and extracts a finite JWT `exp` value only for cache metadata. Fifteen deterministic tests cover the record contract. This is not a storage adapter: ChatJS still performs no credential persistence or encryption, and the actual encryption/key/keystore/atomicity semantics remain open. A durable ChatJS auth implementation must require a genuine secure-storage host capability and fail closed without it.

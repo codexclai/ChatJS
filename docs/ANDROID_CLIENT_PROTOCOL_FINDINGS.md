@@ -1229,3 +1229,138 @@ Observed behavior, in method order:
 The method contains no account-check network request and does not show a user-facing picker; it receives a choice from its caller. The caller/UI wiring that supplies that choice remains untraced. The persistence call is routed through the controller's `saveSession` wrapper to the credential-store save method, but this does not establish the encrypted store's serialization, key ownership, atomicity or durability semantics. Those remain separate work.
 
 This is method-level source evidence only. ChatJS does not yet implement an authenticated controller, account selection UI, session mutation, credential persistence or account switching. The private account-check helper implements only the initial account-choice normalization/preference function; it must not be described as a complete switch workflow.
+
+## 2026-11-25 — Android authentication restore and sign-in orchestration
+
+The decoded controller methods also establish these distinct entry paths. They are static method behavior, not an operational ChatJS authentication client.
+
+### Restore
+
+- `restore()` begins a new credential operation in `Restoring` state and runs its work through the controller's credential-operation wrapper.
+- It loads the saved record from the credential store. If there is no record, the controller returns to `SignedOut` for the still-current operation.
+- If the saved record has a `nativeSessionId`, the controller stores that ID as the expected native session and calls `restoreNativeToken`. A missing access token from that native restore is treated as a storage/restore failure. If the operation generation has changed, the restore result is discarded rather than establishing a session.
+- `restoreNativeToken(record)` requires a configured `renewableAuthenticationService`; when absent it raises a `Storage` failure saying `The saved session requires its native credential provider.` It calls the native service's `restore(record)` and requires the returned `nativeSessionId` to exactly equal the saved record's ID. A mismatch is `InvalidResponse` (`The saved sign-in has changed.`). It returns the restored access token only after this check.
+- If there is no saved `nativeSessionId`, the saved `accessToken` is used directly as the candidate token. Both branches call `establishSession` only after the operation-generation guard.
+- An `InvalidToken` restore failure triggers `clearExpiredCredential`; other errors go through `failOperation`. Unknown restore errors are mapped to `Storage` (`The secure session could not be restored.`). Cancellation/generation changes prevent stale work from establishing a new session.
+
+### Direct access-token sign-in
+
+`signIn(accessToken)` begins a `SigningIn` operation and delegates to `authenticateAccessToken`. That method trims the supplied token, validates its syntax with `isValidOAIBearerToken`, then runs the account-validation path. It saves the validated session before setting the controller state to `SignedIn`; if secure save fails, it raises a `Storage` failure (`The access token could not be saved securely.`). Operation-generation checks prevent an outdated operation from overwriting newer state.
+
+### Interactive sign-in
+
+`signInInteractively(method)` first requires an available first-party authentication service and a supported method. Unsupported host/method combinations fail as `InvalidResponse` (`This host does not provide the selected first-party sign-in method.`). It begins a `SigningIn` operation and waits for app foreground admission when necessary.
+
+- For the `Browser` method when a renewable/native authentication service is available, it calls that service's `signIn()`, stores the interactive task, awaits its result, and uses the returned access token and native session ID. If the operation generation changed during the wait, it clears the unfinished native session instead of continuing.
+- Otherwise it delegates to `requestInteractiveCredential(authenticationService, method, generation)` and awaits the host-interactive credential result.
+- After either branch it rechecks operation generation and calls `authenticateAccessToken` with the token. If a newly-created native session fails authentication, the controller attempts to clear that unfinished native session. Failure to clear is only logged as `The unfinished native login could not be removed.` when logging is enabled; the original failure is then surfaced.
+
+### Security and implementation boundary
+
+The controller uses a serialized/guarded credential-operation lifecycle, foreground admission, operation generations, native-session ownership checks, save-before-`SignedIn` for initial direct-token authentication, and cleanup of unfinished native sign-in. These are distinct from the accountless guest `SessionManager` state machine. The source trace does not justify a Node.js token-only login shortcut: native session IDs, legitimate host authentication service, secure credential storage, account validation, cancellation and first-party integrity requirements remain material parts of the lifecycle.
+
+ChatJS still does not implement `restore`, sign-in, native credential bridge, secure persistence, or authenticated transport. No credential was requested/read, no native operation was invoked, and no network request was made during this analysis.
+
+## 2026-11-25 — Android restore, direct-token and interactive sign-in controller methods
+
+### Restore and native-session identity
+
+`restore()` starts a new credential operation in `Restoring`, then runs credential-store loading through the controller operation wrapper. With no saved record it transitions back to `SignedOut` for the current generation. When a saved record contains `nativeSessionId`, the controller records that ID as the expected native owner and calls `restoreNativeToken(record)`. The native restore result must contain the same `nativeSessionId`; a mismatch is `InvalidResponse` (`The saved sign-in has changed.`). The returned native access token is used to establish a session only after the operation-generation guard. A record with no native session ID uses its saved access token as the candidate. An invalid-token restore failure clears the expired credential; unknown restore failures are mapped to `Storage` (`The secure session could not be restored.`). Stale generations do not establish a session.
+
+`restoreNativeToken(record)` fails with a storage error if `renewableAuthenticationService` is unavailable (`The saved session requires its native credential provider.`). Otherwise it awaits that service's restore operation, validates native session ID equality, and only then returns the access token. This is why a Node.js bearer-token string alone is not equivalent to restoring an Android credential-backed session.
+
+### Direct access-token sign-in
+
+`signIn(accessToken)` begins an operation in `SigningIn` and delegates to `authenticateAccessToken`. That method trims the input, applies `isValidOAIBearerToken`, runs `validateCredential` (including authenticated account-check and account choice), then awaits `saveSession`. Only after secure save succeeds and the operation generation still matches does it update controller state to `SignedIn`. A non-authentication persistence failure becomes a `Storage` error with message `The access token could not be saved securely.` The controller does not accept invalid tokens or silently treat them as a saved session.
+
+### Interactive sign-in
+
+`signInInteractively(method)` requires both an available first-party authentication service and `supportsAuthenticationMethod(method)`. Missing/unsupported host capability fails as `InvalidResponse` (`This host does not provide the selected first-party sign-in method.`). It begins a `SigningIn` operation, waits for foreground admission if necessary, and checks the operation generation before requesting credentials.
+
+- When `method === Browser` and a `renewableAuthenticationService` is available, the controller calls that service's `signIn()`, stores the returned interactive task, awaits its typed result, and receives an access token plus native session ID. It records the native ID and uses the token for authenticated account validation. If the operation generation changes while waiting, it clears the unfinished native session instead of continuing.
+- Otherwise it calls `requestInteractiveCredential(authenticationService, method, generation)` and awaits the host-interactive credential result.
+- After either branch it checks the generation again and invokes `authenticateAccessToken`. If the newly-created native sign-in fails after obtaining a native session ID, the controller attempts native `clear`; failure to remove that unfinished login is only logged (`The unfinished native login could not be removed.`) and the original authentication error is preserved.
+
+### Boundaries
+
+These traces identify controller orchestration and sequencing only. The native service request/result/cancel payloads, exact host capability contracts, secure credential-store serialization/key management, full operation queue/concurrency rules and DPoP/renewal semantics remain open. No native sign-in/restore method was invoked, no access token or account was used, and no ChatGPT network request was made. ChatJS does not implement login, restore, native credential handling, persistence or authenticated transport. Android guest `SessionManager` is separate from this authenticated `AuthSession` lifecycle.
+
+## 2026-11-25 — Android encrypted credential-store method reconstruction
+
+The compiled `OAICredentialStore` entry is now method-decoded. It defines three distinct store implementations:
+
+- `OAIMemoryCredentialStore`: `isPersistent === false`; `load` resolves the current in-memory record, `save` replaces it, and `clear` sets it to `undefined`.
+- `OAIUnavailableCredentialStore`: `isPersistent === false`; `load` and `save` reject with `Secure native credential storage is unavailable.`; `clear` resolves without a durable write.
+- `OAIEncryptedCredentialStore`: `isPersistent === true`; delegates durable data operations to the app `PersistentStore` adapter.
+
+### Encrypted-store construction and admission
+
+`createOAICredentialStore` uses these method-level branches:
+
+- If a lifecycle is supplied and the application is not foregrounded at construction, it throws `PersistentStoreTemporarilyUnavailableError` rather than creating a store in an unavailable state.
+- On the web platform, it warns that browser authentication remains in memory because secure native credential storage is unavailable and returns `OAIMemoryCredentialStore`. This is explicitly non-persistent, not a durable browser fallback.
+- On Android, it parses the system version and rejects non-integer or API levels below 23 with `Secure authentication requires Android API level 23 or newer.`
+- The persistent adapter is constructed with store identifier `com.openai.valdi.authenticated_session`, `enableEncryption: true`, `disableBatchWrites: true`, and store user identifier `authenticated-session-bootstrap`. Its access policy is `ForegroundOnly` when a lifecycle is configured, or `AnyAppState` when no lifecycle is supplied.
+- A `PersistentStoreTemporarilyUnavailableError` from construction is propagated. Other native secure-store construction failures are logged when enabled and select `OAIUnavailableCredentialStore`; the factory does not silently fall back to plaintext or an ordinary persistent string store.
+
+Before store operations, `checkAdmission` invokes an optional `checkOperation` callback. If a lifecycle is configured, it also checks the application foreground state and throws `PersistentStoreTemporarilyUnavailableError` when backgrounded. Load/save/clear call this admission gate around persistent-store operations.
+
+### Serialized record validation and operations
+
+`load` checks whether the credential key exists. If absent it returns `undefined`. Otherwise it fetches the stored string and parses JSON. Malformed JSON becomes `The encrypted authentication credential could not be decoded.`; an invalid record becomes `The encrypted authentication credential has an invalid format.`
+
+The top-level record must be a non-array object and must carry exactly one credential identity form:
+- a non-empty string `accessToken` with no `nativeSessionId`, or
+- a non-empty string `nativeSessionId` with no `accessToken`.
+
+An optional `accountId` must be a string when present. An optional `session` snapshot is validated separately; invalid snapshots are dropped rather than accepted. The snapshot requires `version === 1`, a string `baseUrl`, optional finite-number `expiresAt`, a non-empty `accounts` array, and every account choice must have a string `id` and `name`; optional `accountUserId`/`planLabel`/`pictureURL` must be strings and `isWorkspace` must be boolean. The decoded record preserves its other top-level properties, carries back only the validated credential identity form, and includes the validated account ID/session snapshot when present.
+
+`save(record)` checks admission then writes `JSON.stringify(record)` through `PersistentStore.storeString`. `clear()` checks admission, tests key existence, and removes the key only when it exists. This module does not contain the encryption algorithm or key derivation; `enableEncryption: true` is a configuration handed to the native `PersistentStore` implementation. Its crypto provider, key ownership/rotation, backing database, transactional atomicity, crash consistency and user/logout deletion semantics are not established by this entry.
+
+### ChatJS implementation boundary
+
+These findings are method-level source evidence, not permission to store ChatGPT credentials in a Node.js plaintext file or to assume an arbitrary host has Android's native secure store. ChatJS still has no secure credential-store adapter or authentication session. A future portable host must expose a real protected-storage capability with explicit ownership, encryption, atomicity, foreground/availability and clear semantics; where that capability is unavailable, authenticated persistence must fail closed. No token or credential record was loaded, saved, cleared or otherwise accessed during this static analysis.
+
+## 2026-11-25 — Android credential-store record, persistence configuration and admission lifecycle
+
+### Persistent-store configuration
+
+`createOAICredentialStore(options)` selects among three stores:
+
+- `OAIMemoryCredentialStore` is selected for the Web device path. It holds a single credential object in memory, reports `isPersistent === false`, and its load/save/clear operations only read/write/clear that in-memory property. The source logs that browser authentication remains in memory because secure native credential storage is unavailable.
+- `OAIUnavailableCredentialStore` is the fail-closed fallback. `load` and `save` reject with `Secure native credential storage is unavailable.`; `clear` resolves without persistence. It reports `isPersistent === false`.
+- `OAIEncryptedCredentialStore` wraps the Valdi `PersistentStore`. On Android, the factory checks that `Device.getSystemVersion()` parses as an integer at least 23, otherwise throws `Secure authentication requires Android API level 23 or newer.` The persistent store is constructed with namespace `com.openai.valdi.authenticated_session`, storage key `credential`, and options `enableEncryption: true`, `disableBatchWrites: true`, `userId: 'authenticated-session-bootstrap'`. Its access policy is `AnyAppState` when no application lifecycle is supplied and `ForegroundOnly` when lifecycle is supplied. A non-temporary construction failure logs and selects the unavailable store; `PersistentStoreTemporarilyUnavailableError` is propagated so the controller can wait for foreground admission.
+
+The auth module delegates encryption to `PersistentStore`; no cipher, key derivation, keystore alias, key rotation, serialized ciphertext format or atomicity guarantee is established by this module's bytecode. Do not infer any of those from `enableEncryption: true`.
+
+### Encrypted store operation contract
+
+`checkAdmission()` first calls the optional controller-supplied `checkOperation()` callback. When an application lifecycle is supplied, it also requires `ApplicationState.isApplicationForeground(lifecycle.getState())`; otherwise it throws `PersistentStoreTemporarilyUnavailableError`.
+
+- `load()` checks admission, calls `store.exists('credential')`, checks admission again, and returns `undefined` if absent. It then calls `fetchString('credential')`, checks admission, parses JSON, validates the top-level credential envelope and normalizes its optional nested session snapshot. JSON parse errors become `The encrypted authentication credential could not be decoded.`; invalid top-level shape becomes `The encrypted authentication credential has an invalid format.`. Invalid nested session metadata is discarded (and logged when enabled) while the outer credential can still be returned.
+- `save(record)` checks admission and calls `store.storeString('credential', JSON.stringify(record))`. This wrapper performs JSON serialization; the encrypted persistence layer is the separate Valdi `PersistentStore`.
+- `clear()` checks admission, checks whether the `credential` key exists, checks admission again, and removes the key if present.
+
+### Persisted record envelope
+
+The top-level record distinguishes mutually exclusive credential owners:
+
+- Access-token form: `accessToken` must be a non-empty string after trimming; `nativeSessionId` is absent.
+- Native-session form: `nativeSessionId` must be a non-empty string; `accessToken` is absent. The native session ID is the credential owner/restore handle and is not substituted with a bearer token.
+- `accountId` is optional and must be a string when present. Unknown top-level properties are preserved by the decoder.
+
+The optional nested `session` snapshot must be an object with `version === 1`, string `baseUrl`, optional finite-number `expiresAt`, and a non-empty `accounts` array. Each stored account requires string `id` and `name`; optional `accountUserId` and `planLabel` must be strings, `isWorkspace` must be boolean, and `pictureURL` must be a string. Unknown properties are preserved. A malformed nested snapshot is dropped rather than invalidating the outer token/native-session envelope.
+
+`saveSession` builds an access-token record with `accountId` and derives an optional expiry from the JWT payload's finite numeric `exp` claim. It includes the version-1 `session` snapshot only when that expiry is available. For a native-session credential it stores `nativeSessionId` (not `accessToken`), `accountId`, and the version-1 snapshot with `baseUrl`/`accounts`; it does not derive or persist an `expiresAt` from the access token on that path. JWT decoding here is only expiry metadata extraction; it does not verify a JWT signature or establish token validity.
+
+### Serialized controller credential operations
+
+The controller initializes `pendingCredentialOperation` to a resolved promise and chains each credential-store operation after the prior one, swallowing only the prior completion/rejection so a failed operation does not permanently block later operations. `runCredentialOperation` records the operation generation, waits for foreground admission, checks that generation/owner has not changed, lazily constructs the credential store with both the app lifecycle and a generation-check callback, runs the requested store action, and checks generation/foreground state again. A temporary persistent-store unavailability updates the current auth state to `StorageTemporarilyUnavailable`; with an app lifecycle, the operation waits for a lifecycle change/foreground admission and retries. Without lifecycle to observe, that temporary failure is surfaced. The credential operation generation is cleared in a `finally` path.
+
+This controller queue is distinct from ChatJS's future general request concurrency. The trace does not establish safe multi-process coordination or encryption-store atomicity; those remain open.
+
+### ChatJS implementation and limits
+
+Added private `src/chatgpt/android-auth-credential-record.cjs` with the version-1 record constants, strict outer token/native-session envelope decoder, nested stored-session/account validation, JWT `exp` metadata extraction and source-shaped record builder. Sixteen focused tests cover the record forms, null/undefined/invalid fields, optional snapshot handling, account snapshot validation, expiry decoding and both builder branches. The helper is pure and private; it does not open files, persist credentials, encrypt/decrypt, invoke native services or perform network requests.
+
+The Android persistence metadata/encryption key lifecycle, encryption algorithm, key storage, atomicity/crash recovery, multi-process locking, secure clear guarantees, exact native credential callback payloads and public Node host secure-storage adapter remain unimplemented. A portable ChatJS host must supply a genuine secure storage capability or authentication must fail closed; never use an ordinary file or in-memory fallback as durable credential storage.

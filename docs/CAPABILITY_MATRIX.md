@@ -21,6 +21,7 @@
 | Generic Server-Sent Events framing | Implemented | Async byte-iterable parser, UTF-8/chunk boundaries, event fields, limits, abort and iterator cleanup; does not connect to ChatGPT or decode a product-specific event schema |
 | Android generated model-catalog and chat-requirements schema helpers | Implemented (internal helper only) | Exact GET/POST descriptors, generated nested response validation, undefined-vs-null behavior, extra-field pass-through and fail-closed default requirements-header decision; no network, auth or device attestation |
 | Android generated account-check schema and selection helpers | Implemented (internal helper only) | Exact GET descriptor; `accounts` dictionary/map decoder with nested optional/nullable fields; ordered access/deactivation filtering, deduplication and initial-account preference; no network, credentials, session or account-switch side effects |
+| Android persisted credential record codec | Implemented (internal helper only) | Version-1 access-token/native-session record decode/build, optional account/session snapshot validation and JWT `exp` metadata; no encryption, filesystem, native keystore or persistence |
 | Android first-party authentication input/path validators | Implemented (internal helper only) | Method-decoded bearer/account-ID/header/origin regex flags and origin-relative path/service path gates; no credentials, secure storage, request transport or account selection |
 | No telemetry in current foundation | Verified for inspected source | Re-review with every network-capable change |
 

@@ -247,8 +247,17 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Rebuild a temporary pinned Valdi QuickJS deserializer and decode seven authentication-session JavaScript entries without evaluating Android functions.
 - [x] Add private `isSafeOriginRelativePath` and `isSafeAuthenticatedRequestPath` helpers with exact single-backslash, control-character, space and fragment behavior; ten focused tests pass.
 - [x] Complete the AccountCheckResponse object-map schema, all nested optional/nullable field types, account_ordering string array, controller access/deactivation filters, deterministic ordering/deduplication, preferred accountId and first-account fallback. Implemented in the private authentication API schema helper with focused tests.
-- [ ] Finish auth controller state/concurrency/cancellation, native credential bridge, secure credential storage and renewal/SSO/DPoP lifecycle before implementing any login/network flow.
+- [ ] Finish auth controller concurrency/generation/foreground/cancellation/sign-out state transitions; serialized credential-operation and foreground retry behavior is method-decoded, but no controller or login flow is implemented in ChatJS.
 - [ ] Use the full module census to reconstruct all remaining Android non-Work feature workflows from method-level callsites; preserve package/string/traced/implemented evidence levels.
+
+## Android auth restore and sign-in orchestration — 2026-11-25
+
+- [x] Disassemble `restore`: credential-store load under a Restoring operation, no-record SignedOut result, optional native session restoration, operation generation checks, establishSession and invalid-token expiry cleanup.
+- [x] Disassemble `restoreNativeToken`: require the renewable native provider, restore from the saved record, require returned nativeSessionId to equal the saved nativeSessionId, and return only the restored access token.
+- [x] Disassemble direct `signIn`/`authenticateAccessToken`: trim and validate bearer token, account validation, secure save before SignedIn, typed storage error and generation guard.
+- [x] Disassemble `signInInteractively`: first-party method capability gating, foreground admission, Browser/native service branch versus host-interactive credential branch, generation checks and cleanup of unfinished native sessions.
+- [ ] Reconstruct exact native service payload, error and cancellation callback schemas; no native login has been invoked.
+- [ ] Implement actual authentication only with a legitimate host adapter, secure credential store, complete account validation, first-party integrity support and end-to-end contract tests; no arbitrary token-only shortcut.
 
 ## Android account-check schema and account-selection helper — 2026-11-25
 
@@ -256,6 +265,16 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Decode optional nested account metadata with exact `string`, `string | null`, and `boolean` types and preserve extension properties.
 - [x] Implement the source-traced account-ordering and fallback behavior, access/deactivation filters, account-ID validation, deduplication, normalized choice metadata, and preferred-account/first-account default selection.
 - [x] Add 12 deterministic tests covering the request descriptor, map shape, required/optional/null fields, ordering, filtering, normalization, deduplication and empty-access result.
-- [ ] Finish `OAIAuthenticationController` generation/concurrency, foreground/cancellation, restore/sign-out, native credential and secure-store lifecycles; no login or authenticated transport is implemented.
+- [ ] Finish `OAIAuthenticationController` generation/concurrency, foreground/cancellation, sign-out/expiry, native credential and secure-store lifecycles; restore and sign-in orchestration are method-decoded but no login or authenticated transport is implemented.
 - [ ] Trace the Android UI/caller that invokes `selectAccount`, then implement account switching only as part of the complete authenticated session/secure-storage lifecycle; never treat the source method trace as working ChatJS support.
 - [x] Disassemble the standalone `selectAccount` controller method: canonical ID match against the current session account list, no-op guards, validation cancellation/revalidation invalidation, operation-generation/lifecycle notification, account-bound session reconstruction, immediate in-memory state update and background secure-save warning path. Caller/UI wiring is still untraced; ChatJS has no switch implementation.
+
+
+## Android credential-store record reconstruction — 2026-11-25
+
+- [x] Decode Android store factory selection: Browser uses memory-only credentials; Android requires API 23+; persistent storage is configured with encryption enabled and batch writes disabled; temporary unavailability is distinct from permanent secure-store failure.
+- [x] Decode store namespace/key/user metadata and access policy: `com.openai.valdi.authenticated_session` / `credential` / `authenticated-session-bootstrap`; lifecycle-supplied stores use ForegroundOnly admission.
+- [x] Decode `load`/`save`/`clear` wrapper behavior and the serialized credential operation queue/foreground wait-and-retry boundaries.
+- [x] Decode the version-1 credential envelope: mutually exclusive accessToken or nativeSessionId, optional accountId, and optional validated nested session/account snapshot. Decode finite JWT `exp` only as optional snapshot metadata.
+- [x] Implement the exact outer record codec, nested stored account/session validators, expiry metadata parser and source-shaped record builder as a private side-effect-free module; 16 deterministic tests pass.
+- [ ] Decode the actual underlying PersistentStore encryption primitive, key source/alias/rotation, native ownership, atomicity, clear durability and multi-process semantics. Do not assume the `enableEncryption` option reveals these details.

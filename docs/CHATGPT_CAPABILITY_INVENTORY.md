@@ -259,3 +259,9 @@ The private `src/chatgpt/android-authentication-api-schema.cjs` helper now conta
 
 
 The Android standalone `selectAccount` controller method is now separately decoded: it resolves a canonical account by ID from the current session list, guards signed-in/app state and no-op cases, cancels validation/revalidation, advances the operation generation, reconstructs an account-bound in-memory session, updates `SignedIn`, then starts non-awaited credential-store persistence with a warning-only catch. It does not perform a new account lookup request or present the account picker itself. Its UI caller and portable ChatJS switch behavior remain unimplemented.
+
+
+The Android authentication controller's restore/direct-token/interactive sign-in entry methods are now method-decoded. They coordinate secure credential loading/saving, native session-ID restoration, first-party method capability, foreground admission, generation checks and unfinished native-session cleanup. This is source reconstruction only; ChatJS has no sign-in, restore, native bridge, secure credential persistence or authenticated transport.
+
+
+The Android `OAICredentialStore` wrapper is now method-decoded, including the browser in-memory/unavailable/encrypted variants, namespace/key/user metadata, `enableEncryption`/`disableBatchWrites` configuration, lifecycle-based foreground admission, JSON load/save/clear wrapper, version-1 token/native-session envelope and nested session/account snapshot validators. A private, tested `android-auth-credential-record.cjs` codec builds/decodes those records and extracts only finite JWT `exp` metadata. It does **not** encrypt, decrypt, access a filesystem/keystore, persist credentials or authenticate. The underlying PersistentStore crypto/key lifecycle remains unresolved.

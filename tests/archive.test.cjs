@@ -22,6 +22,7 @@ const expectedFiles = [
   'ChatJS/src/chatgpt/android-conversation-api-schema.cjs',
   'ChatJS/src/chatgpt/android-auth-validation.cjs',
   'ChatJS/src/chatgpt/android-authentication-api-schema.cjs',
+  'ChatJS/src/chatgpt/android-auth-credential-record.cjs',
   'ChatJS/types/index.d.ts'
 ];
 

@@ -20,6 +20,7 @@ const includedFiles = [
   'src/chatgpt/android-conversation-api-schema.cjs',
   'src/chatgpt/android-auth-validation.cjs',
   'src/chatgpt/android-authentication-api-schema.cjs',
+  'src/chatgpt/android-auth-credential-record.cjs',
   'types/index.d.ts'
 ];
 
