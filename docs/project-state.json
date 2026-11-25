@@ -137,7 +137,7 @@
     "Working authenticated/accountless ChatGPT connection, conversation send/receive and Windows Work Local / Android Work Cloud workflows."
   ],
   "nextActions": [
-    "Complete generated Android ModelCatalog/ChatRequirements nested decoders and nullable/optional precedence; trace the actual public-build integrity provider boundary and native DEX flow without bypassing it.",
+    "Trace Android pass-through ModelCatalog fields and the separate Turnstile/proof-of-work/so challenge consumers/providers; named required/optional generated decoder schemas are now reconstructed.",
     "Decode the stream resume HTTP request/body/header mapping and the worker/processor transport lifecycle; the authenticated send route/body and parent lookup route are now method-level traced.",
     "Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP, account switching and related session transitions with genuine authorization and secret handling.",
     "Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.",

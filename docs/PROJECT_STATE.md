@@ -148,7 +148,7 @@
 
 ## Next actions
 
-1. Complete generated Android ModelCatalog/ChatRequirements nested decoders and nullable/optional precedence; trace the actual public-build integrity provider boundary and native DEX flow without bypassing it.
+1. Trace Android pass-through ModelCatalog fields and the separate Turnstile/proof-of-work/so challenge consumers/providers; named required/optional generated decoder schemas are now reconstructed.
 2. Decode the stream resume HTTP request/body/header mapping and the worker/processor transport lifecycle; the authenticated send route/body and parent lookup route are now method-level traced.
 3. Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP, account switching and related session transitions with genuine authorization and secret handling.
 4. Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
