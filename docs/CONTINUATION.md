@@ -445,3 +445,7 @@ A temporary read-only reader was rebuilt from pinned public Valdi commit `f5bc2d
 6. Continue history recovery and file expiry/retry/cancel/download/indexing; do not implement service calls until transport/session/challenge rules are verified.
 
 Android Work, Windows/Desktop and Codex CLI remain parked for execution sequencing only; the full three-family target is unchanged.
+
+### Verification checkpoint — 2026-11-25
+
+Latest main checkpoint: `d85ede00c4e1bbaf468867f2f31bb6c5d718aa89`. CI `45612499652` and CodeQL `45612499650` both passed. Fresh checkout `npm run check` passed: lint, generated state, 28 Markdown links and 54/54 tests. The inspected `dist/ChatJS.tar.gz` is 19,267 bytes, SHA-256 `7d20d275ef98ae435e5127d5bb429e21d6207ce62a80d7bfa7e8d62cb393086e`, with exactly 11 approved runtime files. An earlier CI attempt on `b0ec75a` failed only because generated `docs/PROJECT_STATE.md` lost its final LF in the transfer reader; `d85ede0` fixed this and passed. Repository is clean on its sole `main` branch; no open issues or PRs.
