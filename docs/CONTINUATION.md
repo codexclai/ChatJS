@@ -449,3 +449,23 @@ Android Work, Windows/Desktop and Codex CLI remain parked for execution sequenci
 ### Verification checkpoint — 2026-11-25
 
 Latest main checkpoint: `d85ede00c4e1bbaf468867f2f31bb6c5d718aa89`. CI `45612499652` and CodeQL `45612499650` both passed. Fresh checkout `npm run check` passed: lint, generated state, 28 Markdown links and 54/54 tests. The inspected `dist/ChatJS.tar.gz` is 19,267 bytes, SHA-256 `7d20d275ef98ae435e5127d5bb429e21d6207ce62a80d7bfa7e8d62cb393086e`, with exactly 11 approved runtime files. An earlier CI attempt on `b0ec75a` failed only because generated `docs/PROJECT_STATE.md` lost its final LF in the transfer reader; `d85ede0` fixed this and passed. Repository is clean on its sole `main` branch; no open issues or PRs.
+
+## Latest handoff — Android account-check schema and initial account selection — 2026-11-25
+
+### Method-level source findings
+
+The generated `AccountCheckResponse.accounts` field is an object map keyed by account ID, not an array. Its values are `AccountCheckRecord`; the optional `account_ordering` is `string[]`. Record `account` and `can_access_with_session` are optional; account metadata fields are optional with these exact types: `account_id: string`, `account_user_id: string | null`, `is_deactivated: boolean`, `name: string | null`, `plan_type: string`, `structure: string | null`, and `profile_picture_url: string | null`. The generated decoder treats only `undefined` as optional omission; explicit null is valid only for fields declared nullable. Additional properties are preserved.
+
+Controller account normalization builds candidate order from `account_ordering`, then appends `Object.keys(accounts)`. It ignores missing records, excludes `can_access_with_session === false`, missing account objects, invalid/empty account IDs and `is_deactivated === true`; it deduplicates by normalized account ID with first occurrence winning. Name falls back to `Personal account`; non-empty plan type becomes `planLabel`; a valid account user ID becomes `accountUserId`; `personal`/`workspace` structures produce `isWorkspace`; HTTPS-prefix profile-picture strings produce `pictureURL`. No accessible accounts yields `InvalidResponse` with `The access token did not provide an accessible account.`
+
+For initial credential validation, the controller prefers the normalized account whose ID equals the credential's `accountId`; if no account matches, it selects the first eligible account in the resolved order. This path does not itself show a user picker. The separate `selectAccount` method and its complete user interaction/secure-save behavior remain a lifecycle investigation item.
+
+### Implementation
+
+Added private `src/chatgpt/android-authentication-api-schema.cjs`. It builds the exact GET descriptor, decodes the object-map response and nested union types, and implements source-backed accessible-account normalization, ordering, deduplication and preferred-account fallback. It imports the existing private account-ID validator. It contains no HTTP, login, credentials, persistence or session state. Twelve focused tests pass. The helper is being included in syntax checks and the exact archive allowlist; it is not a public API.
+
+### Correction and remaining work
+
+Earlier interim notes called `accounts` an array. That was incorrect and is superseded by the decoded object-map semantics above. Remaining Android auth work is controller concurrency/generation/foreground/cancellation, native sign-in/restore callbacks and native session ID ownership, secure-store encryption/atomicity, token refresh/SSO/DPoP and full account switching. Keep guest `SessionManager` operations separate. No account request, login, account operation or credential use was performed.
+
+Android Work, Windows/Desktop and Codex CLI remain parked for sequencing only; the full product scope is unchanged.

@@ -19,6 +19,7 @@ const includedFiles = [
   'src/chatgpt/file-upload-policy.cjs',
   'src/chatgpt/android-conversation-api-schema.cjs',
   'src/chatgpt/android-auth-validation.cjs',
+  'src/chatgpt/android-authentication-api-schema.cjs',
   'types/index.d.ts'
 ];
 

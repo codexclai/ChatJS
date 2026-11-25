@@ -1140,7 +1140,7 @@ The private ChatJS helper now ports both path layers separately as `isSafeOrigin
 The generated operation is **GET** `/backend-api/accounts/check/v4-2023-04-27`. Its request descriptor contains only `method: GET` and `path`; it adds no query or body fields. The transport operation is named `checkAccounts`.
 
 The generated response decoder establishes:
-- `AccountCheckResponse.accounts` is a required array of `AccountCheckRecord`; `account_ordering` is optional and decoded as an array. Additional response properties are preserved.
+- `AccountCheckResponse.accounts` is a required object map keyed by account ID, with each value decoded as `AccountCheckRecord`; `account_ordering` is optional and decoded as `string[]`. Additional response properties are preserved. (Corrected by the later method-level map/schema section.)
 - `AccountCheckRecord.account` and `can_access_with_session` are optional decoded properties; extra record properties are preserved.
 - `AccountCheckAccount` has optional decoded `account_id`, `account_user_id`, `is_deactivated`, `name`, `plan_type`, `structure`, and `profile_picture_url`; extra account properties are preserved.
 
@@ -1169,3 +1169,45 @@ Private `src/chatgpt/android-auth-validation.cjs` now includes seven pure predic
 5. Trace status/error precedence, renewal authorization, SSO reauthentication, invalidation and retry.
 6. Trace DPoP/token refresh/account switching separately from accountless guest `SessionManager` operations.
 7. Do not implement authenticated network operations until credential ownership, request contract, public-build integrity requirements, cancellation and legitimate authorization are established and tested.
+## 2026-11-25 — Android account-check map schema and account-selection policy
+
+### Corrected generated response shape
+
+The generated `AccountCheckResponse.accounts` field is an **object map keyed by account ID**, not an array. The generated decoder validates the value as an object, enumerates its own keys and decodes each value as an `AccountCheckRecord`. Unknown properties are preserved at the response, record and account levels. Earlier notes that described `accounts` as an array were incorrect and are superseded by this method-level reconstruction.
+
+`account_ordering` is optional and, when present, is a `string[]`. The generated decoder treats only `undefined` as omission; a present `null` is sent through the array decoder and rejected.
+
+Each map value (`AccountCheckRecord`) has optional:
+- `account`: `AccountCheckAccount` object when present; a present `null` is rejected.
+- `can_access_with_session`: boolean when present; a present `null` is rejected.
+
+`AccountCheckAccount` has these optional fields and exact decoded types:
+- `account_id`: string.
+- `account_user_id`: string or null.
+- `is_deactivated`: boolean.
+- `name`: string or null.
+- `plan_type`: string.
+- `structure`: string or null.
+- `profile_picture_url`: string or null.
+
+### Controller ordering, access filtering and initial selection
+
+The controller's account-normalization method uses `account_ordering` first, then appends every key from `Object.keys(accounts)` in JavaScript property enumeration order. It resolves each key against the account map, ignores missing keys, normalizes valid entries, and deduplicates by the normalized account ID. The first occurrence therefore wins; accounts absent from `account_ordering` are still considered through the map-key fallback.
+
+The normalization method excludes a record when `can_access_with_session === false`, when its `account` object is absent, when `account_id` is not a non-empty valid account identifier, or when `is_deactivated === true`. The method does not require an explicit `can_access_with_session === true` or `is_deactivated === false`; absent values do not trigger those exact-false/exact-true exclusions (the generated decoder still rejects wrong present types). It produces an account choice with:
+- `id` from `account_id`;
+- `name` from a non-empty string `name`, otherwise `Personal account`;
+- `accountUserId` only for a valid string `account_user_id`;
+- `planLabel` only for a non-empty string `plan_type`;
+- `isWorkspace` only for `structure === 'personal'` or `structure === 'workspace'`;
+- `pictureURL` only when `profile_picture_url` is a string matching an HTTPS-prefix check.
+
+If no eligible choices remain, the controller fails with `InvalidResponse` and the message `The access token did not provide an accessible account.`
+
+During this credential-validation path, initial selection prefers the account whose normalized `id` equals the supplied credential's `accountId`; if no match exists it falls back to the first normalized account in the resolved order. This method does not itself issue a user-facing picker prompt. The controller also declares a separate `selectAccount` operation; its complete interaction/state transition and secure-save path remain a separate lifecycle task.
+
+### ChatJS implementation
+
+Added private `src/chatgpt/android-authentication-api-schema.cjs` with the exact GET request descriptor, generated response decoding (including the accounts object map, nested optional/nullable fields and extra-property pass-through), controller account normalization/ordering/deduplication, and preferred-account/first-account selection. Twelve deterministic tests cover request method/path, rejection of array-shaped accounts, nested field types, undefined-versus-null behavior, account ordering, access/deactivation filtering, identifier validation, normalization, deduplication, preferred-account fallback and the no-accessible-account error.
+
+The helper is internal, has no public API or authenticated transport, and makes no network/storage/credential changes. No ChatGPT request or account operation was executed. The Android authentication controller's concurrency, native credential ownership, secure storage, revalidation, DPoP and full account-switching lifecycle remain unimplemented.
