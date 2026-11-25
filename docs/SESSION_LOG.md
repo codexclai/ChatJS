@@ -1123,3 +1123,8 @@ Clarified the former category-blacklist line under `docs/ARCHITECTURE.md`'s expl
 **Open limits:** generated nested model/requirements schemas remain incomplete; the native device-integrity DEX path has an internal package-ID guard and public-build availability is unproven; exact resume HTTP request mapping and worker behavior remain open; upload reservation/PUT/process/limits need separate method-level tracing; guest routes and payloads remain independent and unresolved. The pinned source successfully decoded the three real payloads, but this does not prove the exact native library revision/build flags.
 
 **Changed files:** source/experiment/continuity/memory/TODO/open-question/session records and root manual will be updated in the current documentation commit. No production runtime code/dependencies changed. No ChatGPT network call or account/session access occurred. Tests/CI for the documentation commit will be recorded after commit; prior local clone check was unavailable because of GitHub DNS/connectivity in the container.
+
+
+## 2026-11-25 — Generated project-state synchronization correction
+
+The first CI run for the Android bytecode-trace documentation commit failed in the "Run checks, tests, and build archive" step. Source inspection identified the reason: project-state.json had the revised Android next-action queue, but the generated PROJECT_STATE.md still contained the previous queue. Regenerated PROJECT_STATE.md from the current JSON using the repository generator's exact rendering rules. No runtime code or tests changed; a fresh main-branch CI run is required to establish the corrected result.

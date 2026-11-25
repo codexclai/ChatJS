@@ -147,12 +147,12 @@
 
 ## Next actions
 
-1. Build a temporary Valdi QuickJS bytecode inspector matching the supplied Android client's compiled module format; validate it against a known fixture and dump selected methods without executing application code.
-2. Decode Android ChatGPTDirectResponseClient.prepare/send and its full call graph: exact method-to-route selection, request nesting/requiredness, body patching, serialization, model/account context and failures.
+1. Complete generated Android ModelCatalog/ChatRequirements nested decoders and nullable/optional precedence; trace the actual public-build integrity provider boundary and native DEX flow without bypassing it.
+2. Decode the stream resume HTTP request/body/header mapping and the worker/processor transport lifecycle; the authenticated send route/body and parent lookup route are now method-level traced.
 3. Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP, account switching and related session transitions with genuine authorization and secret handling.
 4. Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
-5. Decode Android model catalog and chat-requirements decoders, nested challenge variants, requirements integrity, device integrity, public-build provider selection, cookie handling, rate limits, cooldowns/retries and security failures.
-6. Decode the Android conversation event model and streaming state machine: deltas, tool/reasoning events, handoff/resume bodies and headers, offsets, interruption, errors, completion and history synchronization.
+5. Complete all nested ModelCatalog/ChatRequirements response fields, nullability/optionality and challenge variants; verify device-integrity provider selection and public-build availability.
+6. Complete stream worker/processor and resume wire mapping; event decoder now has method-level evidence for [DONE], message_stream_complete, resume token/handoff, deltas, reasoning and entity-reference state, with a three-handoff cap and 2,048-character/64-segment delta-path bounds.
 7. Reconstruct files/attachments end to end: reservation, signed destination, bounded upload, finalize/process, download, image metadata, file indexing, expiry, retry and cancellation.
 8. Inventory and trace every remaining Android non-Work client area, including Projects, instructions, context, memory/personalization, search/tools, image/video/voice/audio, galleries, and all other source-backed workflows without feature-domain restrictions.
 9. Implement those verified Android non-Work protocols natively in ChatJS with ESM/CommonJS parity, accurate TypeScript, validated customization, async/concurrent streaming, cancellation, backpressure, bounded resources and clear capability states.
