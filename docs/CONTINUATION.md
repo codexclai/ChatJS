@@ -147,3 +147,24 @@ This is a conversation-level local SessionManager start/recovery path. It does n
 The Android Statsig SDK initialize path is mapped: `Lyx71` routes `Initialize` to `https://featureassets.org/v1/i` and `log_event` to `https://prodregistryv2.org/v1/e`. `Lzy71.g` builds an initialize JSON POST with `user`, `statsigMetadata`, `sinceTime`, `hash`, `previousDerivedFields`, and `full_checksum`; `Lbdb.z` adds JSON content type and SDK type/version/client-time headers; `Lmy71` executes via SDK transport. `PersistedInitializeResponse` becomes the evaluated gate/config/layer model. `Lz381` restores `ondiskvaluecache`, optional per-user `Statsig.CACHE_BY_USER`, local overrides and sticky experiments. The fallback host list (`statsig.network_fallback`) is separate, with seven-day expiry and max ten previous URLs; this is not response-cache TTL. The cache helper takes an age parameter, but effective production default and offline precedence are unknown. `log_event`, exposures, `rgstr_e` and offline event buffering are telemetry and must not be ported. RevenueCat remote-config classes are unrelated.
 
 The same-instance conversation callback is mapped: `Lxjk1.f` captures its `Lgqk0` ViewModel in `Llu2`; the callback maps the event through `Lhkk1.t` and calls virtual `Lv6a.G` on the captured receiver. `Ljqk0` extends `Lgqk0`, so when the renderer is supplied that `Ljqk0` object, dispatch reaches that same coordinator's `G`. Its guarded `Lkmk0` path emits the no-messages/all-unsupported conversation error, then invokes local `Lgs31.b`. The `Lkmk0` producer and semantic meaning, reason-code interpretation, subsequent HTTP guest creation and composer-send request remain open.
+
+## Latest handoff — 2026-11-25
+
+### Verified source position
+
+- The authenticated Android sender is located in `chatgpt_services/src/conversations/ChatGPTDirectResponseClient.js`. Its generated catalog/requirements client, direct SSE worker/decoder/resume modules, file upload service and conversation history client are identified. Exact source evidence is in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. This is static module evidence only; complete request serializers, event schemas and first-party integrity behavior still need reconstruction.
+- A scan of all 111 decompressed Android Valdi modules found no `/backend-anon` route string. Do not assign the guest HTTP route to the authenticated sender or to DEX LocationCookieInitializer constants. Guest create/refresh and guest composer prepare/send remain unresolved.
+- The owner-supplied Windows MSIX pieces were reconstructed and ZIP-tested. The ASAR app is `openai-codex-electron`, shown as ChatGPT in the Appx manifest. Its local coding-agent path launches the bundled `codex.exe` through a stdio app-server host and uses thread/turn RPC. A separate ChatGPT/OpenAI-origin-restricted bearer-auth fetch bridge recognizes `wham` and Estuary path families. This does not prove that every user-visible Windows Work UI is that same path.
+- Owner direction remains binding: ChatJS must not spawn or require Codex CLI or a separate app-server process. Android cloud Work and Windows local execution remain separate implementation surfaces.
+
+### Next work (in priority order)
+
+1. Decode the Android direct client request serializer and exact method-to-route selection; trace model catalog, chat requirements and both first-party integrity providers without simulating or bypassing security.
+2. Decode direct SSE events and resume/handoff behavior, then the attachment upload reservation/PUT/process sequence.
+3. Continue guest-specific call-graph analysis to find the actual HTTP create/refresh and composer prepare/send clients; keep LocationCookieInitializer out of that attribution.
+4. Trace the exact Windows Work UI-to-local-runtime path and the separate `/wham`/Estuary network clients. Design ChatJS local execution without subprocess dependence and do not equate this source's Codex coding-agent path with all Work behavior.
+5. Implement only after the protocol is sufficiently specific for ESM/CommonJS/TypeScript parity, security, cancellation and genuine end-to-end tests.
+
+### Current completion assessment
+
+The overall estimate remains approximately **3%**. Source research and documentation do not count as implemented product functionality. The production runtime still has no authenticated or guest ChatGPT connection, product-specific conversation transport/decoder, file workflow, or Work engine.

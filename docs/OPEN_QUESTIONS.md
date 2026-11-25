@@ -98,3 +98,19 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Resolve the caller-supplied cache age and offline/default precedence for Statsig persisted initialize responses. The initialize route/body and `ondiskvaluecache` / optional per-user cache restoration are identified; seven-day fallback-host expiry is not response-cache TTL.
 - [ ] Determine which fields in the Statsig initialize user/metadata are strictly necessary to obtain Android welcome configuration, and whether they can be fetched without reproducing user analytics/exposures. Do not port SDK telemetry.
 - [ ] Trace the parent `Lkmk0` producer, meaning of integer `a`, route/context meaning of `b`, and resulting `Llnp0` reason semantics. The Compose-to-`Ljqk0.G` dispatch is now mapped; what follows the local `Lgs31.b` transition remains unknown.
+
+## Android authenticated conversation and guest boundary — 2026-11-25
+
+- [ ] Reconstruct the complete request body builder/serializer and method-to-route binding in `ChatGPTDirectResponseClient.js`; the present module scan identifies method/field names and route constants but not a complete validated payload schema.
+- [ ] Reconstruct the full generated model-catalog and Sentinel chat-requirements challenge schemas, including exact response decoding and provider-selection logic.
+- [ ] Trace how the direct client constructs and validates Sentinel headers, how its requirements-integrity provider obtains the required token, and how the separate device-integrity provider is selected on public Android builds. Never fabricate either result.
+- [ ] Decode the full direct SSE event schema and handoff/resume state, including the source of `resume_conversation_token`, the `x-conduit-token` header, offset semantics, and the real maximum handoff count.
+- [ ] Reconstruct file upload reservation, signed destination, PUT headers/body, processing request, cancellation/retry/expiry, and exact attachment limits before implementing uploads.
+- [ ] Find the separate Android guest service. All 111 decompressed Valdi modules had no `/backend-anon` route string; the currently observed DEX route constants remain in LocationCookieInitializer. Identify the actual guest create/refresh and guest composer prepare/send owners independently.
+
+## Windows desktop local execution boundary — 2026-11-25
+
+- [ ] Map the exact user-visible ChatGPT Work Local UI path in the supplied Windows app to its process/RPC and ChatGPT network calls. Do not assume all desktop Work UI is the local Codex app-server path.
+- [ ] Determine which local execution components must be reimplemented inside ChatJS to avoid spawning `codex.exe` or a separate app-server process, while retaining genuine authorization, sandbox/approval semantics, and optional host capability boundaries.
+- [ ] Reconstruct the desktop `/wham` and Estuary service-client request/response schemas and auth lifecycle; current evidence only identifies auth-attachment path families, not Work payloads.
+- [ ] Verify the Windows signed-out/guest state through the actual client path; it remains unknown.

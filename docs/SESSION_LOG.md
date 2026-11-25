@@ -796,3 +796,43 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Prioritize locating the exact anonymous guest create/refresh HTTP request and the separate composer prepare/send route.
 - Resolve Statsig response-cache age/offline precedence only if needed for the presentation behavior; never port telemetry or exposure reporting.
 - Continue Windows Work Local and Android Work Cloud as separate client surfaces.
+
+## 2026-11-25 — Android authenticated service clients and Windows MSIX/ASAR
+
+### Source evidence and actions
+
+- Restored live repository `codexclai/ChatJS` on existing `main`. At start: head `29ba5a17f6607ae336f1158dad7f85d7a499f0c9`; only branch `main`; no open issues or pull requests. Latest prior-head CI run `45487942578` and CodeQL run `45487942606` both completed successfully.
+- Android XAPK SHA-256: `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`. Decompressed all 111 Valdi modules and inspected `chatgpt_services` symbol/string data. Located generated model/chat-requirements client, authenticated direct conversation client, separate requirements/device-integrity provider roles, direct SSE stream/resume pipeline, file upload/process service and conversation history/pin client.
+- Cross-searched all 111 decompressed Valdi modules; no `/backend-anon` route string was present. This is a negative result for the scanned Valdi modules, not proof of global absence. The known DEX anonymous route constants remain attributed to LocationCookieInitializer; guest HTTP create/refresh and composer prepare/send remain unresolved.
+- Reconstructed Windows parts (400,000,000 + 396,523,063 bytes) into 796,523,063-byte MSIX. SHA-256 `561f0b0c6edc4dbf5f00f33b86e0786ea59a0ff926759813b26770a0e8c4d963`; `unzip -t` passed. Parsed Appx manifest and ASAR header/index (15,520 entries); selectively inspected package manifest, early bootstrap chunks and app-server host.
+- Windows static finding: the packaged Electron local coding-agent path spawns the bundled `codex.exe` through a stdio app-server connection and exchanges thread/turn RPC plus progress events. A separate desktop fetch bridge enforces OpenAI/ChatGPT origin restrictions and identifies `wham` and Estuary auth path families. This is not proof that every visible Windows Work feature maps to the same path and does not change the owner requirement that ChatJS must not require Codex CLI/app-server.
+- Reviewed project TODO/state and verified the latest existing main commit and CI/CodeQL status. No credentials, cookies, tokens or private account content were accessed or recorded; no live service request or Windows app launch occurred.
+
+### Changed files
+
+- `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`
+- `docs/REFERENCE_DESKTOP.md`
+- `docs/CHATGPT_CAPABILITY_INVENTORY.md`
+- `docs/KNOWLEDGE_BASE.md`
+- `docs/OPEN_QUESTIONS.md`
+- `docs/EXPERIMENTS.md`
+- `docs/TODO.md`
+- `docs/CONTINUATION.md`
+- `docs/AI_MEMORY.md`
+- `docs/SESSION_LOG.md`
+- `docs/project-state.json`
+- Generated `docs/PROJECT_STATE.md`
+- `ChatJS.md`
+
+### Implementation and verification
+
+- No production JS/TS, tests, dependencies or public APIs changed. The implementation remains foundation-only; no real ChatGPT session, conversation or Work operation has been implemented.
+- No local `npm run check` was run because the repository working tree is not mounted locally. New-commit CI/CodeQL must be checked after the documentation commit. The prior main head's CI and CodeQL runs passed; they are not validation of this new docs commit.
+- Windows package CRC was checked; Appx publisher signature, app launch, live account/session behavior and runtime traffic were not verified.
+
+### Handoff
+
+- Decode the Android direct conversation request-body serializer, route/method selection, complete Sentinel requirements response and first-party integrity provider flow; keep telemetry excluded.
+- Decode direct SSE events and resume/handoff behavior, then upload reservation/PUT/process semantics.
+- Locate guest create/refresh and guest composer prepare/send independently of the authenticated Android sender.
+- Trace Windows Work UI separately from the packaged Codex coding-agent app-server path and determine how to reproduce local execution without subprocess dependency.

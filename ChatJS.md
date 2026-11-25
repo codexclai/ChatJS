@@ -166,3 +166,11 @@ This creates `dist/ChatJS.tar.gz`. The archive contains only distributable modul
 - Keep Git work on `main`; do not create branches or worktrees.
 
 For product evidence, architecture, capability status, and continuity, see [the ChatJS project documentation](https://github.com/codexclai/ChatJS/tree/main/docs).
+
+## Latest reference research status — 2026-11-25
+
+The Android source now identifies a concrete **authenticated** ChatGPT direct-conversation sender and its generated model/chat-requirements client, first-party integrity providers, SSE stream/resume pipeline, upload service and history client. These remain static research findings; request serializers and end-to-end behavior are not yet implemented. A scan of all 111 decompressed Valdi modules found no `/backend-anon` route string, so Android guest create/refresh and guest composer routes remain unknown.
+
+The reconstructed Windows desktop package contains a local coding-agent path that spawns its bundled `codex.exe` through a stdio app-server host, as well as a distinct authenticated ChatGPT/OpenAI fetch bridge. This does not prove the exact UI mapping for every Windows Work feature. ChatJS will not depend on Codex CLI or an app-server process; Windows local execution and Android cloud Work remain separate.
+
+These source findings do not change the API status above: the production module is still foundation-only and makes no ChatGPT service requests.

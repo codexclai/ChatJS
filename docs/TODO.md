@@ -16,7 +16,7 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [x] Record Android DEX and Valdi module counts and analysis limitations.
 - [x] Perform a first-pass decompression/string scan of selected Valdi modules and document concrete auth/session, bearer transport, conversation/streaming, upload, history, image-gallery, and Library components and paths.
 - [x] Establish ChatJS Project → Sources as the primary source location for supplied client packages.
-- [ ] Perform deeper DEX/Valdi method-level analysis to identify call graphs, exact request/response schemas, credential lifecycle, Sentinel/device-integrity behavior, SSE event state machines, and upload signing/retry behavior.
+- [ ] Continue deeper DEX/Valdi analysis to identify exact request/response serializers, credential lifecycle, Sentinel/device-integrity provider behavior, SSE event state machines, upload signing/retry behavior, and the guest service. The authenticated Android direct-response client and collaborators are now located; schemas are incomplete.
 - [ ] Continue reconstructing the Android integrity path's remaining unknowns: generated Valdi chat-requirements schema, app_attest_challenge semantics, public-build provider selection, cookie matching/expiry lifecycle, device UUID rotation/deletion, Valdi header validation/application, retryable-status gates/attempt ceilings, DeviceRateLimits schema/scope/retention, 300-second cooldown marker persistence, and cancellation edge cases. Preserve throttles; do not port SDK telemetry metadata.
 - [ ] Build a deeper source-path-to-behavior map for conversations, streaming, files, Projects, voice, images, search/tools, and other client workflows, including exact call graphs and schemas.
 - [ ] Document actual dependencies and Node.js portability for each major client component.
@@ -26,10 +26,10 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 - [ ] Reconstruct the exact Android guest session create/refresh network request. The RootViewModel first tries the separate install-referrer AccountSelector login Los8.f → LoginGraphManager, then enters the actual initial anonymous fallback Lgs31.b → Lau31.G. G acquires the Lmgo0 coroutine mutex, runs Llzx.n/Lwk8 local eligibility logic and enters Lau31.E local state work. Correction: Lof70 is Statsig/experimentation (not auth/session); Lau31.u is the local snapshot-to-state refresh path, and Lau31.n → Ldt31 → AuthRepository/CredentialsRepository is the separate credential-backed AuthSession token path. Neither inspected path exposes the guest HTTP create request. Continue through untraced service dependencies/call sites. The global /backend-anon base is configured, but the endpoint is unknown.
 - [ ] Trace the origin, generation, persistence, expiry/replacement/retirement policy for the two opaque values used by Lxzp0 to compose sessions/guest-* storage paths.
 - [ ] Trace the actual UI composition/caller for AnonymousSessionLoading (Losk1.a) and its relation to the root unauthenticated-session flow. Do not treat "Continue as Guest" as ChatGPT UI; that string belongs to the Shop plugin model Li230.
-- [ ] Reconstruct the actual guest conversation composer send/prepare route schemas independently of LocationCookieInitializer.
+- [ ] Reconstruct the actual guest conversation composer send/prepare route schemas independently of LocationCookieInitializer. All 111 decompressed Valdi modules were scanned and none contains a `/backend-anon` route string; this does not establish that a guest service is absent.
 - [ ] Reconstruct Windows desktop Work Local and Android Work Cloud as separate execution surfaces; never require Codex CLI or app-server.
 - [ ] Verify whether Windows desktop Work has a real logged-out guest mode; current evidence is insufficient.
-- [ ] Windows extracted-payload archive work is deferred by the owner; resume only when asked.
+- [x] Reconstruct the newly supplied Windows MSIX parts, verify archive integrity, parse the ASAR file tree, and perform a first-pass static inspection of the Electron bootstrap and app-server host. Full UI-to-service mapping and runtime testing remain open.
 
 ## P1 — Product completeness, customization and capability architecture
 
@@ -103,3 +103,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace the Compose-to-conversation ViewModel callback binding: `Lxjk1.f` → `Llu2` captures the supplied `Lgqk0` and dispatches virtual `Lv6a.G`; a supplied `Ljqk0` receives the event on that same instance.
 - [ ] Identify the upstream producer and meaning of conversation `Lkmk0` and its `a`/`b` payload; determine whether local `Lgs31.b` is followed by HTTP guest create/refresh.
 - [ ] Locate the actual Android anonymous guest create/refresh HTTP client and the guest conversation composer prepare/send client; keep them separate from LocationCookieInitializer and Files API.
+
+## P1 — Newly identified protocol reconstruction tasks (2026-11-25)
+
+- [ ] Reconstruct the full Android authenticated DirectResponseClient request builder and exact route/method selection for `/backend-api/f/conversation` vs `/backend-api/conversation`; decode the serialized body and validate it with non-personal fixtures.
+- [ ] Decode complete generated model-catalog and Sentinel chat-requirements request/response schemas. Preserve the separate requirements-integrity and device-integrity provider interfaces; never fake their output or bypass a required provider.
+- [ ] Reconstruct Android direct-stream event decoding, `resume_conversation_token`, `x-conduit-token`, `/resume` request, offset/handoff state and retry limits.
+- [ ] Reconstruct the attachment upload reservation/PUT/process sequence, signed-URL allow-list, cancellation, retry/expiry and size/type limits.
+- [ ] Locate the Android guest service and the real anonymous create/refresh and composer prepare/send calls. Keep this independent from the authenticated ChatGPT service module and the LocationCookieInitializer route strings.
+- [ ] Map the exact user-visible Windows ChatGPT Work Local UI call path to its local process/RPC and service network behavior. The packaged Codex app-server subprocess is a source finding, not a ChatJS dependency; ChatJS must not spawn `codex.exe` or a separate app-server process.
+- [ ] Reconstruct the desktop `/wham` and Estuary client schemas and identify which UI features use them; do not equate every visible Work surface with the Codex app-server path.

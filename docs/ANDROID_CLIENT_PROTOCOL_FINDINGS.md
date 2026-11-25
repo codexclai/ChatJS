@@ -475,3 +475,44 @@ A further instruction-level trace located a second, conversation-specific call i
 - The Compose-to-`Ljqk0.G` callback bridge and guarded local SessionManager recovery are static DEX findings. The `Lkmk0` producer/meaning, exact reason-code semantics, subsequent HTTP guest creation, guest composer request and Work protocol remain unknown. No live request or guest session was created during this research.
 
 **Evidence boundary:** selected static disassembly/reference tracing of the supplied public Android 1.2026.321 APK; not a complete decompilation or runtime network trace.
+
+## Android authenticated conversation, streaming, and upload clients — 2026-11-25
+
+A second-pass scan of the supplied ChatGPT Android 1.2026.321 package decompressed all 111 Valdi modules. The `chatgpt_services` module exposes concrete authenticated service-client modules and route constants that were not present in the earlier first-pass notes.
+
+### Generated conversation API client
+
+`src/generated/ChatGPTConversationApiClient.js` exports `getModels` and `getChatRequirements`. Its generated request/response decoders include `ModelCatalogRequest`, `ModelCatalogResponse`, `ModelCatalogModel`, `ModelCatalogPreset`, `ModelCatalogVersion`, `ChatRequirementChallenge`, and `ChatRequirementsResponse`. The module contains the route constants:
+
+- `/backend-api/models`
+- `/backend-api/sentinel/chat-requirements` (the client strings include `POST` for this operation)
+
+The response model strings include `models`, `default_model_slug`, `model_slug`, `supported_model_picker_upgrade_presets`, `versions`, `required`, `token`, `turnstile`, and `proofofwork`. This is a partial generated-schema inventory, not a complete field/validation reconstruction.
+
+### Direct authenticated conversation client
+
+`src/conversations/ChatGPTDirectResponseClient.js` exports `createChatGPTDirectResponseClient` and `createChatGPTDeviceIntegrityProvider`. Its symbols identify separate requirements-integrity and device-integrity provider roles, plus methods `prepare`, `streamResponse`, `resolveModel`, `resolveParentMessageId`, `send`, and `cancel`. It depends on the generated conversation API client, conversation transport adapter, streaming clients, the platform `OAIDeviceIntegrity` service, and the file upload service.
+
+The client contains authenticated conversation route constants `/backend-api/f/conversation` and `/backend-api/conversation`. Request context symbols include `activeAccount`, `accessToken`, `accountId`, `baseUrl`, `conversationId`, and `parentMessageId`; observed HTTP header names include `Authorization`, `Bearer `, `ChatGPT-Account-Id`, and `Content-Type: application/json`.
+
+Requirements/Sentinel-related symbols include `x-sentinel-dc`, `x-sentinel-payload`, and response header `OpenAI-Sentinel-Chat-Requirements-Token`. The code contains an explicit failure when `result.requiresDeviceIntegrity` is true but a first-party device-integrity provider is unavailable. It also has explicit failures for inability to start or complete the first-party integrity check. ChatJS must preserve these security gates; it must not fabricate Sentinel values, substitute a successful attestation result, or silently bypass a required provider.
+
+The module also contains client-identification header names such as `oai-client-type`, `oai-device-id`, `oai-package-name`, and `user-agent`. Their complete construction/validation requirements are not yet reconstructed. The string `oai-telemetry` is also present but is expressly excluded from ChatJS under the project no-telemetry requirement.
+
+### Streaming and resume pipeline
+
+`ChatGPTStreamingWorkerRuntime.js`, `ChatGPTStreamingWorkerClient.js`, `ChatGPTStreamingResponseProcessor.js`, `ChatGPTStreamingProtocol.js`, `ChatGPTStreamingContracts.js`, and `ChatGPTConversationEventDecoder.js` form a concrete direct-stream path built on the packaged `valdi_http/ServerSentEventClient` and `StreamingHTTPClient`.
+
+Observed operations include `startDirect`, `connectDirect`, `createStream`, `receiveEvent`, `resumeDirect`, `finishTransport`, `cancel`, and `removeStream`. The client passes decoded conversation state, DIL results, entity references, reasoning and text deltas to the response processor. Resume-contract strings include `resume_conversation_token`, `x-conduit-token`, `conversation_id`, `model`, `offset`, `stream`, and the `/resume` path suffix. The decoder also references continuation/handoff and `message_stream_complete` state. The exact handoff limit and all event payload schemas remain to be decoded.
+
+### Files and conversation history
+
+`src/files/ChatGPTFileUploadService.js` exposes `createFileUpload`, `uploadFileContents`, and `processUploadedFile`. Its route strings include `/backend-api/files`, `/backend-api/files/process_upload_stream`, `/api/estuary/upload_content_and_finalize`, and `/api/estuary/upload_content_bytes`. The observed flow includes an upload reservation/URL, `file_id`, a byte upload using `PUT`, Azure block-blob headers, and a subsequent processing request. The client validates the destination origin and includes allow-list suffixes such as `.blob.core.windows.net` and `.blob.storage.azure.net`. Upload signing, retry/expiry behavior, and all size/type constraints are not yet reconstructed.
+
+`ChatGPTConversationHistoryClient.js` exposes load/list, pin, rename, delete, update, and image-resolution methods with route strings `/backend-api/conversations`, `/backend-api/conversation`, `/backend-api/pins`, and `/backend-api/files/download`.
+
+### Guest-session boundary and evidence limit
+
+A string scan of all 111 decompressed Valdi modules found no `/backend-anon` route string. The `chatgpt_services` conversation client is explicitly account-oriented: its types and method context use authenticated account/session fields and it is named `AuthenticatedChatGPT...`. This does **not** prove that no guest service exists elsewhere in the app; it means this concrete authenticated service module does not identify the guest composer route. The DEX `/backend-anon/f/conversation*` constants remain attributable to `LocationCookieInitializer`, not to this send client.
+
+**Evidence boundary:** static symbol/string inspection of the official Android 1.2026.321 package only. No request was sent, no account/session data was accessed, and no complete source body serializer or live response was recovered. The Android authenticated send path is a strong implementation lead, not a working ChatJS integration. Guest create/refresh and guest composer prepare/send remain unresolved.
