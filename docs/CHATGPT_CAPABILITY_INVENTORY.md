@@ -165,3 +165,15 @@ No production client functionality changed in this research slice. The runtime r
 The compiled `chatgpt_services` module's direct-response string region exposes conversation/message/context identifiers (`conversation_id`, `parent_message_id`, `conversation_mode`, `primary_assistant`, `history_and_training_disabled`, `author`, `user`, `text`, `content_type`, `parts`, `multimodal_text`, `metadata`, model-written DIL fields, skills overrides, `stream`, timezone offset and file/image asset references). The generated API module exposes schema decoders for model catalog and Sentinel requirements. The event decoder exposes delta operations, handoff/resume tokens, conversation-state metadata, DIL/reasoning and entity references. The upload module exposes reservation/process metadata, trusted destination suffixes, Azure block-blob headers and Estuary fallback paths.
 
 This is a stronger field/contract inventory than a route-only scan, but compiled strings alone do not establish JSON nesting, exact route selection, field validation rules, numeric upload limits or complete resume semantics. No production ChatJS conversation, streaming or upload capability is implemented.
+
+## 2026-11-25 — Codex CLI client capability evidence deepening
+
+The pinned `CodexCLI.zip` source snapshot provides a concrete path for the Codex CLI client capability family, which is in scope for ChatJS but not yet implemented:
+
+- **Backend:** ChatGPT Codex base route `https://chatgpt.com/backend-api/codex` plus `/responses`; typed JSON request, HTTP POST/SSE and a distinct Responses WebSocket path.
+- **Request/session:** model/context/input/tools/reasoning configuration; `store: false`, streaming, automatic tool choice in the observed builder; conditional `session-id`, `thread-id`, `x-client-request-id`, and source-specific subagent metadata.
+- **Auth:** managed ChatGPT OAuth-derived bearer tokens and account identity; guarded refresh and account-state checks. Other upstream auth/provider modes are outside ChatJS scope.
+- **Stream:** typed Responses output-item, text, tool-input, reasoning, created, completed, incomplete and failed event mapping, with timeout, stream-close, parse and content-filter handling.
+- **CLI task events:** JSONL `thread.started`, `turn.started/completed/failed`, `item.started/updated/completed` and `error` event types, with typed agent-message, reasoning, command, file, MCP, collaboration, web-search, todo and error item kinds.
+
+These are pinned-source observations. They do not mean ChatJS already has a Codex client, auth/session flow, Responses API, WebSocket transport, local coding execution, MCP adapter or JSONL event API. The external Codex CLI and app-server remain prohibited runtime dependencies. The Codex CLI client family is separate from Windows Work Local and Android Work Cloud; preserve all three surfaces through one package without collapsing their protocols.

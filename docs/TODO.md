@@ -142,3 +142,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Maintain a dated tested Node.js and OS/architecture compatibility matrix and compare supplied official client-source updates through evidence review and contract/regression tests; no self-modifying runtime or background updater.
 - [ ] Measure and protect Node.js event-loop responsiveness; add worker offloading only for justified CPU-heavy work and keep host-specific implementations optional.
 - [ ] Update public examples and API reference for async usage, concurrency, streaming, cancellation, progress, safe customization, lifecycle and capability readiness as those APIs are actually implemented.
+
+## P1 — Codex CLI ChatGPT client protocol and native Node.js implementation
+
+- [ ] Reconstruct ChatGPT Codex session/thread ID creation, resume/fork/compact, thread-source metadata, and request correlation semantics from the pinned Codex source.
+- [ ] Implement the verified `/backend-api/codex/responses` request model in native Node.js after all required fields, optionality, routing order, item schemas and model/feature gates are reconstructed.
+- [ ] Implement ChatGPT-only OAuth auth integration with legitimate account/session authorization, guarded single-flight refresh, account-switch safety and explicit secret storage; exclude upstream non-ChatGPT auth modes.
+- [ ] Implement the Responses SSE decoder and error/state machine from source evidence, including output items, text/tool deltas, reasoning, response lifecycle, incomplete/interrupted/content-filter cases, usage and stream idle/close errors.
+- [ ] Reconstruct and implement the Responses WebSocket path, reuse and fallback logic if required for Codex parity; test HTTP and WebSocket transports independently.
+- [ ] Implement Codex task/tool lifecycle and typed async events corresponding to the source JSONL contract; do not fake progress or terminal states.
+- [ ] Reimplement safe local coding workflows within ChatJS using explicit optional host adapters and approval/policy boundaries; do not invoke Codex CLI or app-server.
+- [ ] Remove/exclude all upstream analytics, OpenTelemetry, feedback, profiling and remote-diagnostics behavior. Preserve the permanent zero-telemetry/no-unsolicited-network rules.

@@ -917,3 +917,28 @@ A more careful DEX implementation/call-site pass corrected an earlier misattribu
 - Clarified that ChatGPT is the sole AI service; no AI-provider selection or multi-provider abstraction belongs in ChatJS.
 - Reworded generic extensibility/reliability references as host adapters or actual platform-integrity mechanisms. Kept exact first-party Android integrity interface names only where documenting source evidence.
 - No implementation or public API behavior changed.
+
+## 2026-11-25 — Codex CLI ChatGPT client protocol and event contract research
+
+### Source inspected
+
+- Owner-supplied official `CodexCLI.zip`, pinned to openai/codex commit `50aeac27d825007a0ac6bd846087ed4e7095bdb3`.
+- `codex-rs/model-provider-info/src/lib.rs`, `codex-rs/codex-api/src/lib.rs`, `codex-rs/codex-api/src/endpoint/responses.rs`, `codex-rs/codex-api/src/requests/headers.rs`, `codex-rs/codex-api/src/common.rs`, `codex-rs/codex-api/src/sse/responses.rs`, `codex-rs/core/src/client.rs`, `codex-rs/login/src/auth/manager.rs`, `codex-rs/exec/src/exec_events.rs`, and `codex-rs/exec/src/lib.rs`.
+
+### New findings
+
+- Mapped the ChatGPT Codex backend root and Responses route, typed JSON POST/SSE request, session/thread/request-correlation headers, subagent metadata and special private tool-results 307/308 redirect handling.
+- Recovered the serialized `ResponsesApiRequest` field order and the reason routing fields lead the body. Documented dynamic model/input/tools/reasoning/metadata options and the observed `store: false`, streaming, auto tool-choice builder behavior without turning them into a fixed universal request template.
+- Mapped ChatGPT OAuth-derived bearer/account handling, configurable/provenance-derived refresh endpoint, JSON refresh grant, 45-second timeout, guarded refresh lock and account-state checks. Other upstream authentication modes are explicitly not ChatJS scope.
+- Mapped selected Responses event handling for created, output items, text/tool/reasoning deltas, completed, incomplete/interrupted, failed, error and content-filter conditions; idle timeout and unexpected stream closure are distinct error cases.
+- Mapped the CLI JSONL thread/turn/item/error event types and typed item categories, which are separate from the backend Responses SSE event protocol.
+- Confirmed the source `codex exec` path starts `InProcessAppServerClient`; ChatJS will implement in-scope behavior natively instead of invoking/embedding that server.
+- Confirmed the pinned source defaults analytics on for `codex exec`; all analytics, telemetry, tracing, feedback, profiling and remote diagnostics remain excluded.
+
+### Scope and limits
+
+- Source files were inspected from the pinned ZIP; no Codex CLI command, app-server, OAuth flow, network request or account/session was launched or accessed.
+- Source tests visible in the repository were not executed during this inspection.
+- No production ChatJS JS/TS, API, test or dependency changed. No Codex authenticated/guest session, Responses client, WebSocket transport, event decoder, tool lifecycle, or local coding engine is implemented.
+- Codex auth is not evidence for ChatGPT guest chat. Android guest create/refresh and composer routes remain separate unresolved questions.
+- Overall completion remains approximately 3%; research does not count as shipped Node.js behavior.

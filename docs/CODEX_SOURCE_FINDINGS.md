@@ -71,3 +71,92 @@ The current ChatJS runtime remains an early foundation plus a tested generic SSE
 ## Updated product-scope interpretation — 2026-11-25
 
 The owner has clarified that Codex CLI is not excluded from the ChatJS feature target. The Codex CLI client/workflow capability family is to be consolidated with ChatGPT mobile and desktop in the single ChatJS Node.js package. This source archive is used to implement those behaviors natively. Only the separate executable and app-server runtime are excluded as dependencies. Android cloud Work, Windows local Work, and the Codex CLI client remain distinct source/behavior surfaces. This clarification supersedes wording above that could be read as keeping Codex CLI capability itself out of product scope.
+
+## 2026-11-25 — Codex CLI ChatGPT Responses, auth, streaming and JSONL contract
+
+**Source snapshot:** official `openai/codex` source pinned to `50aeac27d825007a0ac6bd846087ed4e7095bdb3`, retained as `CodexCLI.zip` in ChatJS Project → Sources. The following are source observations for that snapshot, not ChatJS implementation or a statement about every Codex release.
+
+### ChatGPT Codex Responses transport
+
+The Codex ChatGPT backend is a first-party route family distinct from the ordinary ChatGPT conversation sender:
+
+- `codex-rs/model-provider-info/src/lib.rs` defines `CHATGPT_CODEX_BASE_URL` as `https://chatgpt.com/backend-api/codex`.
+- `codex-rs/codex-api/src/lib.rs` defines the Responses route suffix `/responses`.
+- `codex-rs/codex-api/src/endpoint/responses.rs` serializes a typed request as JSON and sends HTTP `POST /responses`, with `Accept: text/event-stream`.
+- `codex-rs/codex-api/src/requests/headers.rs` builds conditional `session-id` and `thread-id` headers. The endpoint adds `x-client-request-id` from the thread ID when supplied, and may add `x-openai-subagent` for a subagent session source.
+- The core client supports both HTTP SSE and a Responses WebSocket transport. Transport choice, WebSocket reuse/routing, and fallback behavior are separate from the simpler HTTP-only source path and still require full call-graph reconstruction before porting.
+
+The serialized `ResponsesApiRequest` in `codex-rs/codex-api/src/common.rs` has routing fields deliberately first because the source comments say gateways may inspect the request incrementally before large input serialization. The observed field order is:
+
+1. `model`
+2. `stream`
+3. optional `service_tier`
+4. `input`
+5. optional `tools`
+6. `tool_choice`
+7. `parallel_tool_calls`
+8. optional `reasoning`
+9. `store`
+10. optional `stream_options`
+11. `include`
+12. optional `prompt_cache_key`
+13. optional `prompt_cache_options`
+14. optional `text`
+15. optional `client_metadata`
+16. optional `access_programs`
+17. `request_country`, omitted when its source-defined predicate says to omit it.
+
+The core builder supplies a dynamic model/input/tool/reasoning configuration. In the observed ChatGPT Codex path it enables streaming, sets `store: false`, selects automatic tool choice, and computes parallel tool calls, include fields, service tier, text controls, metadata, and other options from model and runtime state. Do not copy one observed request as a universal fixed body. The exact contents vary with model, context, tool set, feature gates, session source and execution mode.
+
+When private connector tool results are attached, the HTTP endpoint has a special redirect branch for 307/308 responses with a non-empty Location: it retries the encoded request without the private tool-result patch. This is a narrow source-specific behavior, not a generic retry policy.
+
+### ChatGPT account authentication and refresh
+
+The source's `codex-rs/login/src/auth/manager.rs` contains multiple authentication modes because the upstream Codex application supports several products/configurations. **ChatJS is only targeting the ChatGPT-backed mode** from that code:
+
+- `CodexAuth::Chatgpt` and `CodexAuth::ChatgptAuthTokens` use OAuth-derived access-token data for bearer authentication.
+- The source resolves the ChatGPT account ID from token claims/account metadata where available; tests in the source also cover `ChatGPT-Account-Id`, originator, authorization, session ID, and thread ID header behavior.
+- The token refresh helper sends an OAuth refresh-token grant using JSON encoding, no resource parameter, a source-provided refresh reason and a 45-second timeout.
+- The default refresh URL constant is `https://auth.openai.com/oauth/token`, but the actual endpoint can be selected from stored OAuth provenance/issuer or an explicit source configuration override. It must not be reduced to one hard-coded assumption.
+- Refresh is guarded by a lock; queued callers re-check current auth state and may reuse a refresh already completed by another caller. The code checks account identity across reload/refresh transitions and classifies permanent credential failures (expired, reused/exhausted, revoked) separately from transient failures.
+- The access token is obtained from the managed ChatGPT token state. Credential storage and header debug output have secret-protection behavior; ChatJS must never copy live tokens, auth documents, cookies, keychain state or credentials from another process.
+
+The source's other `CodexAuth` branches (API keys, arbitrary headers, personal access tokens, Agent Identity, and Bedrock modes) are not a reason to add alternative AI services to ChatJS. They are upstream configuration options outside this project's ChatGPT-only product identity. ChatJS also must not interpret missing Codex credentials as proof of the Android/ChatGPT guest session: Codex CLI auth and ChatGPT logged-out guest are distinct questions. The Android guest create/refresh and guest composer routes remain unresolved in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+
+### Responses SSE event mapping
+
+`codex-rs/codex-api/src/sse/responses.rs` parses the Responses event stream and maps selected event types to typed Codex events. Observed mappings include:
+
+- `error` → parsed API error, where present;
+- `response.created` → response ID;
+- `response.output_item.done` → typed `ResponseItem`;
+- `response.output_text.delta` → output-text delta;
+- `response.custom_tool_call_input.delta` → tool-call input delta with item/call identifiers;
+- `response.reasoning_summary_text.delta` and `.done` → reasoning summary updates;
+- `response.reasoning_text.delta` → reasoning-content delta;
+- `response.failed` → failed-response API error;
+- `response.completed` → completion information including usage and end-turn state;
+- `response.incomplete` → incomplete/error handling. A `content_filter` reason is mapped to a content-filter error; `interrupted` is treated differently from other incomplete reasons, while other non-interrupted incomplete responses preserve partial output and usage in an incomplete-response error.
+
+The source also handles additional metadata and intentionally ignores or traces selected event types. The parser uses a stream-idle timeout and a bounded event channel; closing a stream before a completed response or exceeding the idle timeout is an error. Malformed event payloads are handled without treating arbitrary unknown event names as successful completion. Do not promote this selected list into a complete universal ChatGPT stream schema; decode every required variant and error path from the pinned source before implementing.
+
+### CLI JSONL event contract
+
+The public `codex exec --json` output contract is separate from the backend Responses SSE wire protocol. In `codex-rs/exec/src/exec_events.rs`, the serialized `ThreadEvent` is tagged by `type` and includes:
+
+- `thread.started` with `thread_id`;
+- `turn.started`;
+- `turn.completed` with token usage;
+- `turn.failed`;
+- `item.started`, `item.updated`, `item.completed` with a typed thread item;
+- `error`.
+
+The typed item variants include agent message, reasoning, command execution, file change, MCP tool call, collaboration tool call, web search, todo list, and item error. Command and file-change items include status information; collaboration items carry spawn/send/wait/close-agent details and related thread identifiers. This is a useful reference for a coherent ChatJS Codex task/event API, but it must be mapped from actual client events rather than synthesized.
+
+The same `codex exec` entry point starts an `InProcessAppServerClient` and maps app-server events into the JSONL contract. ChatJS must not reproduce this by launching or embedding the upstream app-server. It should implement the relevant session/thread/task/event logic natively in Node.js.
+
+### Telemetry and implementation boundary
+
+The pinned source snapshot sets `DEFAULT_ANALYTICS_ENABLED = true` for `codex exec` and contains telemetry/tracing/feedback/profile pathways. Those are explicitly excluded from ChatJS. No upstream analytics, OpenTelemetry exporters, telemetry hooks, feedback uploads, profiling or remote diagnostics may be ported.
+
+**Evidence limit:** this source pass inspected files in the pinned ZIP; it did not execute Codex CLI, start an app-server, perform OAuth, read credentials, issue any network request, or test a live account. Tests visible in source are evidence of intended assertions only; they were not run as part of this inspection. No ChatJS Codex transport, auth, Responses decoder, task engine or CLI JSONL API has been implemented. Overall ChatJS runtime status remains foundation-only.

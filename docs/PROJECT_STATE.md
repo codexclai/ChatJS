@@ -121,6 +121,7 @@
 101. Recorded the owner's definitive product identity: one ChatJS Node.js package consolidating ChatGPT mobile, ChatGPT desktop and Codex CLI client capabilities; Codex CLI behavior is in scope for native implementation, while its separate executable/app-server are not runtime dependencies.
 102. Expanded PRODUCT_STANDARD.md with testable dynamic, automatic, customization/control, real-time, async/concurrent, sustained-operation, performance and compatibility requirements; updated user docs, architecture, roadmap, decisions and future-chat continuity.
 103. Clarified that ChatGPT is the sole AI service target and removed ambiguous generic AI-provider selection language from product/architecture requirements.
+104. Mapped the pinned Codex CLI ChatGPT Responses request/session/transport, ChatGPT OAuth refresh/account handling, selected SSE event/error mapping and the separate CLI JSONL thread/turn/item event contract; documented that the native ChatJS implementation must not depend on the external CLI/app-server.
 
 ## Not implemented
 
@@ -138,16 +139,20 @@
 
 ## Next actions
 
-1. Build or obtain a bytecode inspection utility compatible with the Valdi QuickJS fork/build and inspect the Android DirectResponseClient prepare/send methods, exact route selection, JSON nesting/requiredness, integrity patch semantics and serialization order.
-2. Decode generated Android ModelCatalog and ChatRequirements decoder instruction graphs, including nested challenge variants and optional/null rules.
-3. Decode Android conversation event/delta and direct resume bytecode, including resume body/header mapping, offsets, handoff limit and supported event variants.
-4. Recover Android upload reservation/response layout, numeric file/count/total-size limits, URL expiry/retry/cancellation and accepted MIME/image constraints.
-5. Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.
-6. Trace the exact Windows Work Local UI/runtime/network flow separately from Android Work Cloud; do not depend on the packaged Codex app-server subprocess.
-7. Trace Codex CLI's ChatGPT-backed Responses client, session/header handling, HTTP SSE/WebSocket transports, request models, event mapping, tool/task lifecycle and local execution semantics; implement the in-scope capability natively in Node.js without spawning the CLI or app-server.
-8. Design one cohesive ChatJS API that exposes ChatGPT mobile, desktop Work, Android cloud Work, Windows local Work and Codex CLI capability families while retaining their distinct protocols and session semantics.
-9. Implement real authenticated and accountless ChatGPT sessions, ChatGPT conversation streaming, attachment handling, Codex CLI workflows and separate Work engines only after exact protocols are reconstructed and genuine end-to-end tests can run.
-10. Implement the section 14 product-quality gates: validated customization, capability readiness, async/concurrent/backpressure behavior, real-time streams, lifecycle/soak/recovery, performance budgets and a tested Node.js/OS compatibility matrix.
+1. Trace the full Codex core Responses builder, all item variants/model-feature gates, session/thread ID lifecycle and request-order semantics.
+2. Trace Codex HTTP SSE versus Responses WebSocket selection/reuse/fallback and complete stream cancellation, idle-timeout and partial-result behavior.
+3. Reconstruct Codex ChatGPT OAuth session persistence, refresh provenance, single-flight locking, account-switch safety and error classes for a secure ChatJS-owned session manager.
+4. Decode the complete Codex Responses SSE event/error schema, including tool handoffs/results, reasoning, usage, incomplete/interrupted, content-filter and metadata paths.
+5. Trace Codex tool approval/decline/result continuation and local coding-engine semantics: workspaces, file operations, patches, commands, process cleanup, Git, collaboration and MCP; implement only verified features using optional host adapters.
+6. Implement the Codex typed async event lifecycle in ChatJS, preserving the distinct mapping between backend Responses SSE and the CLI JSONL thread/turn/item contract.
+7. Build a compatible Valdi/QuickJS bytecode inspection utility to decode Android DirectResponseClient.prepare/send and exact route/serializer branches.
+8. Decode generated Android ModelCatalog and ChatRequirements decoder instruction graphs, including nested challenge variants and optional/null rules.
+9. Decode Android conversation event/delta and direct resume bytecode, including resume body/header mapping, offsets, handoff limit and supported event variants.
+10. Recover Android upload reservation/response layout, numeric file/count/total-size limits, URL expiry/retry/cancellation and accepted MIME/image constraints.
+11. Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.
+12. Trace the exact Windows Work Local UI/runtime/network flow separately from Android Work Cloud; do not depend on the packaged Codex app-server subprocess.
+13. Implement actual authenticated/accountless ChatGPT sessions, ChatGPT conversation streaming, attachment handling, Codex CLI workflows and separate Work engines only after exact protocols are reconstructed and genuine end-to-end tests can run.
+14. Implement PRODUCT_STANDARD.md section 14 acceptance gates: validated customization, capability readiness, async/concurrent/backpressure behavior, real-time streams, lifecycle/soak/recovery, performance budgets and a tested Node.js/OS compatibility matrix.
 
 ## Reference artifact
 

@@ -182,3 +182,9 @@ Next: decode Valdi bytecode/control flow for DirectResponseClient prepare/send a
 The owner explicitly clarifies that ChatJS is simply one ordinary Node.js client module that brings ChatGPT mobile + ChatGPT desktop + Codex CLI together as one singular all-in-one ChatJS package. This is the permanent product identity. Implement the source/client capabilities inside ChatJS rather than creating a new application/platform or requiring multiple external products. The Codex CLI capability family is in scope; its executable and app-server are not runtime prerequisites. ChatGPT is the only AI service target. Keep Android cloud Work, Windows local Work and Codex CLI's own coding-client behavior distinct internally, even though the user consumes them through the same Node.js package. Optional adapters are for host facilities, never alternate AI providers.
 
 The accepted high-level quality direction remains in PRODUCT_STANDARD.md sections 1 and 14. Current implementation remains foundation-only; no real ChatGPT/Codex client operation is implemented yet.
+
+## Latest handoff — Codex CLI protocol research (2026-11-25)
+
+The pinned Codex source snapshot now has a concrete source map for the ChatGPT Codex Responses transport/auth/stream and the CLI JSONL event contract. See `CODEX_SOURCE_FINDINGS.md` and the latest Codex section of `CHATGPT_CAPABILITY_INVENTORY.md`.
+
+Next, trace the full core Responses builder and transport selection; request/session ID lifecycle; ChatGPT OAuth refresh/account-switch handling; full SSE/WebSocket events and recovery; tool/approval/result continuation; and local workspace/process/patch/MCP semantics. Implement these natively under ChatJS, without spawning the CLI or app-server. Codex credential-less configuration is not the ChatGPT guest session. No live requests or credentials were accessed, and no Codex feature is implemented in ChatJS yet.

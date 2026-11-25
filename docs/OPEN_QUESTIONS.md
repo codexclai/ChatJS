@@ -121,3 +121,16 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Decode generated model-catalog and chat-requirements decoder instruction graphs to recover complete nested schemas, nullable/optional behavior and all challenge variants.
 - [ ] Decode event decoder delta-operation and handoff logic, including exact event variants, resume body/header mapping, eventOffset/offset semantics, and maximum direct-stream handoff count.
 - [ ] Recover numeric `MAX_PICKED_FILES`, `MAX_PICKED_FILE_BYTES`, and `MAX_PICKED_TOTAL_BYTES` constants plus upload reservation response layout, URL expiry and retry policy.
+
+## Codex CLI client family — 2026-11-25
+
+- [ ] Map the full ChatGPT Codex session creation/resume lifecycle: where thread/session IDs originate, how they persist, how resume/fork/compact operations affect request metadata, and what happens after auth/account changes.
+- [ ] Reconstruct the complete ChatGPT Codex Responses request builder, all feature/model gates and serialized item variants from the pinned source. Separate stable request shape from optional fields and ensure the field-order/routing behavior is preserved.
+- [ ] Trace how the Codex core chooses HTTP SSE versus Responses WebSocket, connection reuse, auth refresh during active streams, fallback and recovery semantics, and cancellation/idle-timeout behavior.
+- [ ] Reconstruct every Responses event and error variant required for parity, including tool/function handoffs, reasoning, usage, partial output, incomplete/interrupted responses, refusal/content-filter handling, metadata and unknown-event behavior.
+- [ ] Trace tool lifecycle and approvals end to end: tool-call item → argument streaming → dispatch → approval/decline → result attachment → next Responses request. Identify which tools are native Codex client features and which require optional host adapters.
+- [ ] Reconstruct local coding execution semantics without upstream app-server: workspace/cwd policy, file read/write/diff/patch, command process lifecycle, process-tree cancellation, output caps, sandboxing, approvals, Git changes, artifact generation, collaboration and MCP behavior. Keep host-only operations optional and explicit.
+- [ ] Map the JSONL event contract to a ChatJS typed async event API without assuming JSONL itself must be the only public interface. Preserve thread/turn/item ordering, partial updates and terminal states.
+- [ ] Confirm the exact Codex ChatGPT auth refresh/reload and account-switch semantics; keep credential persistence under explicit ChatJS storage policy and never reuse credentials from an unrelated process.
+- [ ] Keep the Codex credential-less state separate from Android/ChatGPT accountless guest mode. The Codex source pass does not establish guest-session creation or guest conversation requests.
+- [ ] Confirm all telemetry, OpenTelemetry, feedback, profiling and remote-diagnostic code paths are excluded from any native ChatJS adaptation.
