@@ -6,7 +6,7 @@ Use this as the single authoritative queue. Mark tasks complete only when eviden
 
 **Owner direction, 2026-11-25. This changes execution order only, not the permanent ChatJS product target.** ChatGPT Android, ChatGPT Desktop/Windows, and Codex CLI all remain in the long-term goal. Until the Android non-Work experience is comprehensively reconstructed, implemented, and tested, do not spend the active work phase on Android Work, Windows/Desktop, or Codex CLI. Keep their existing records and tasks preserved as parked backlog.
 
-No feature domain is categorically excluded. Include financial/personal, location/maps, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, and all other source-backed Android capability areas wherever the supplied client and legitimate service/host behavior support them.
+No Android client capability is removed from consideration by its feature-domain label. The active Android non-Work inventory covers every source-backed area; implementation is determined by verified client behavior, legitimate service support, authorization, entitlements, and host capabilities.
 
 ### Android non-Work completion sequence
 
@@ -100,7 +100,7 @@ Preserve the existing Android Work, Windows/Desktop, and Codex CLI research and 
 
 ## Current position
 
-ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of official ChatGPT mobile and desktop (Work/Codex). The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Current package sources are `ChatGPT-Android.xapk` and the two sequential Windows installer pieces in ChatJS Project → Sources. The personal Library is outside the normal workflow and is not a routine source; access it only for a concrete need when useful and accessible. Any material used there belongs under `ChatJS Project` and must be authentic and necessary. The persistent ChatJS browser profile is the only reusable default profile; temporary sessions are disposable and must not replace it.
+ChatJS is one general-purpose Node.js module targeting the actual client-side behavior of ChatGPT mobile, ChatGPT desktop, and Codex CLI. The permanent product target is unchanged; the active phase is Android non-Work only, with Android Work, Windows/Desktop, and Codex CLI parked until the Android non-Work completion gate is passed. The current runtime remains foundation-only; no real ChatGPT service connection has been implemented. Current package sources are `ChatGPT-Android.xapk` and the two sequential Windows installer pieces in ChatJS Project → Sources. The personal Library is outside the normal workflow and is not a routine source; access it only for a concrete need when useful and accessible. Any material used there belongs under `ChatJS Project` and must be authentic and necessary. The persistent ChatJS browser profile is the only reusable default profile; temporary sessions are disposable and must not replace it.
 
 Never create branches or worktrees. Keep all repository work on main.
 

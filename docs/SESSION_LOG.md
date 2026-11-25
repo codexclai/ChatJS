@@ -1086,3 +1086,8 @@ No production JS/TS, dependencies, public APIs, or tests changed in this documen
 **Android source re-verification:** checked the supplied XAPK at `/mnt/data/ChatGPT-Android.xapk`. SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`; ZIP test passed; six outer entries; base APK 5,080 entries, ten DEX files and 111 Valdi modules. Recorded the exact observed feature-area asset names and evidence limitations in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Static package presence does not establish entitlement, route/schema reconstruction, or a working ChatJS implementation.
 
 **Implementation status:** no production runtime capability was added in this documentation/scope correction. ChatJS remains foundation-only; Android request schemas, guest create/send, full streaming decode, integrity providers, and attachment processing still require deeper source reconstruction before implementation. Local `npm run check` was not run because the container could not resolve GitHub to clone the live repository; run and record the main-branch CI result for this commit before treating validation as complete.
+
+
+## 2026-11-25 — Task-list wording normalization
+
+A final review found the TODO's positive scope sentence still enumerated feature domains. Replaced it with the source-driven coverage rule and clarified the current Android non-Work phase in the current-position paragraph. This removes category lists from live working guidance while retaining the same complete feature coverage requirement.
