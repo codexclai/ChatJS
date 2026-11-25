@@ -251,3 +251,10 @@ The separate response processor batches Markdown parsing/rendering at 16 ms, car
 ## Android requirements-integrity routing — 2026-11-25
 
 The Android direct client normalizes chat-requirements: token must be non-empty, and any required challenge in turnstile/proofofwork/so sets requiresDeviceIntegrity. The default provider returns the requirements-token Sentinel header only when no such challenge is required, and otherwise fails closed. The alternate native adapter is selected only for Valdi >= 11 when a device-integrity service exists. It receives access token/account/backend/conversation/parent context, has explicit success/failure/cancel callbacks, validates paired header arrays and safe names/values, and accepts only a one-property app_attest_challenge JSON patch with a non-empty string. The internal native implementation and public APK availability remain unresolved; no token or challenge is synthesized. Full evidence is in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+
+## Android native integrity availability clarified — 2026-11-25
+
+The supplied public XAPK contains the native DeviceIntegrityNativeModuleFactoryImpl registration marker and DEX implementation. Its Valdi factory creates a wrapper whose createDeviceIntegrityService constructs the class implementing DeviceIntegrityService. The request/response bridge shapes are confirmed (five string request fields; response bodyPatchJson plus headerNames/headerValues; success/failure callbacks and cancellation task).
+
+However, the worker explicitly compares Context.getPackageName() to com.openai.chatgpt.internal and throws "Install the official-debug-signed internal Android application to verify this device." before HTTP when it differs. The supplied manifest package is com.openai.chatgpt. Therefore the factory code is bundled in the public APK but its native operation is unavailable to this public package. The outgoing internal package fields are behind the guard. Never spoof or bypass this check. A separate public-build provider is not found in this XAPK and remains open only as a cross-version source question.

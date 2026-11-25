@@ -1185,3 +1185,18 @@ Commit `49f27e3b946489d0c37854a62d384e8876bf08c2` passed GitHub CI run `45579506
 **Validation baseline:** parent commit 2c6dc3a076c98f37491c98f5560d93535ebeaeeb passed GitHub CI 45580575658 and CodeQL 45580575737. A clean extraction of that exact commit passed npm run check with all 35 tests, synchronized generated state, 27 valid Markdown local links and a nine-file 15,336-byte archive (SHA-256 de215aaa5df00f7c1cf537e9262e4147a71db981a729d318dc2942e32d204835). The new source update still requires its own check/CI.
 
 **Still open:** public-build availability of native device integrity; internal challenge exchange, cookies/device UUID and retry/cooldown persistence; authenticated account and independent guest lifecycles; remaining event/history payloads and authorized live testing; complete attachment lifecycle; exhaustive Android non-Work feature inventory.
+
+
+## 2026-11-25 — Android native integrity factory and internal-package guard confirmed
+
+**Source:** directly extracted the supplied ChatGPT-Android.xapk base APK (manifest package com.openai.chatgpt, version 1.2026.321). Parsed the native Valdi module asset, registration marker, relevant DEX class definitions, class-data fields and bytecode for the factory, request/response marshalling types, service/task interfaces, service implementation and preflight runnable. This is static inspection only; no Android app code or integrity request was executed.
+
+**Findings:** the APK contains the DeviceIntegrityNativeModuleFactoryImpl marker and DEX class. Its onLoadModule method constructs a Valdi wrapper using the application context; the wrapper's createDeviceIntegrityService method instantiates com.openai.valdi.integrity.b, which implements DeviceIntegrityService. Request fields are accessToken, accountId, baseUrl, conversationId and parentMessageId. Response fields are bodyPatchJson, headerNames and headerValues; completion and cancel interfaces are present.
+
+The native worker com.openai.valdi.integrity.a.run calls Context.getPackageName() and checks exact equality with com.openai.chatgpt.internal. On mismatch it throws "Install the official-debug-signed internal Android application to verify this device." before the network exchange. The supplied public package com.openai.chatgpt therefore fails the native worker gate. The later internal package_name JSON field and OAI-Package-Name header are reached only after that guard.
+
+**Repository changes:** findings, TODO/open questions, continuation, AI memory, root guide, project state and this session log now distinguish "factory packaged" from "public package can use it." Marked the exact public XAPK gate reconstructed. No bypass, fake token, package spoofing, Android network request or ChatJS integrity implementation was added.
+
+**Prior validation:** parent commit fcef555fe57971f11e9c111fe16fd7deaadcfc9a passed GitHub CI 45581273364 and CodeQL 45581273282. A clean extracted snapshot of that commit passed npm run check: all 35 tests, generated-state synchronization, 27 valid Markdown local links, and a nine-file 15,678-byte distribution archive (SHA-256 6d8b01f9fa7135fdcb714ee3a5e945a15b18e7c28f06c60db6e68331e2b96cd7). The new research update itself still requires its own checks.
+
+**Still open:** another authentic public-build provider path, if any; internal-build-only cookie/nonce/device UUID/cooldown/retry mechanics; challenge-specific Turnstile/proof-of-work semantics; authenticated and independent guest session routes; remaining event/history payload variants; complete attachment expiry/retry/cancel/download/index flow; comprehensive Android non-Work coverage.

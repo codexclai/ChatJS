@@ -201,3 +201,8 @@ The separate response processor batches Markdown parsing/rendering at 16 ms, for
 The direct sender's requirements-integrity provider has a strict fail-closed rule: it returns the requirements token header only when none of the returned turnstile/proofofwork/so descriptors is marked required. When additional device integrity is required, the default provider throws. The client selects a separate native provider only with Valdi runtime version 11 or later and a resolved native service.
 
 The native adapter accepts legitimate session/account/backend/conversation context, forwards a one-shot success or failure, and supports cancellation. It validates returned header arrays and refuses malformed names, unsafe values or mismatched lengths. It accepts only an exact one-key app_attest_challenge body patch with a non-empty value. The internal native service and its availability in the supplied public Android package are not yet proven. See docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md; no integrity bypass or fabricated challenge response is implemented.
+
+
+## Android native integrity availability
+
+The supplied public Android APK includes the native device-integrity factory and service classes, but its actual worker checks the application package name against com.openai.chatgpt.internal and throws before making requests when it differs. The supplied public XAPK is com.openai.chatgpt. Thus the implementation is bundled but not usable by the supplied public app package. It must not be bypassed or imitated. See docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md. The Node.js runtime still has no native integrity provider or authenticated ChatGPT request path.

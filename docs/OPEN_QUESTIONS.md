@@ -39,7 +39,7 @@ The 2026-11-24 scan of ChatGPT Android 1.2026.321 found distinct requirements-in
 - [ ] What is the exact request/response JSON schema for /backend-api/sentinel/chat-requirements, including the token, Turnstile, proof-of-work and app_attest_challenge fields?
 - [ ] What does app_attest_challenge mean in this Android build, and is it consumed by a provider other than the native Play Integrity path?
 - [ ] How does the server validate the second Standard Integrity token's request hash (SHA-256 over canonical account_id/conversation_id/device_id/parent_message_id JSON), and what is its binding/lifetime relative to the conversation request?
-- [ ] Why does the inspected native implementation require package ID com.openai.chatgpt.internal while the supplied XAPK manifest is com.openai.chatgpt, and is the provider selected or callable in the public app build?
+- [x] Why does the inspected native implementation require package ID com.openai.chatgpt.internal while the supplied XAPK manifest is com.openai.chatgpt? The packaged factory path reaches com.openai.valdi.integrity.a.run, which calls Context.getPackageName() and throws an internal-debug-app-only DeviceIntegrityPreparationException before the network exchange when the package differs. The native factory is present, but this worker cannot run for the supplied public package.
 - [ ] Why does the internal native helper's User-Agent identify ChatGPT 1.2026.209 (build 2620909) while this XAPK is 1.2026.321 (version code 2632129)?
 - [ ] What are the exact JSON body fields/values and status/error behavior for /backend-api/playintegrity, including the bot_token, play_integrity_token and chat_requirement_token values seen in the worker?
 - [ ] The cookie name must end in _playintegrity and it must be Secure, unexpired, first-party-domain scoped, and have a backend API path accepted by the native helper. What exact cookie name, expiry policy, rotation and deletion behavior are used? The inspected native response bridge returns bodyPatchJson: null.
@@ -54,7 +54,7 @@ The internal Android helper calls Google Play Standard Integrity provider prepar
 
 - [ ] What is the complete OpenAI PlayIntegrityTokenGenerator retry/cooldown policy, beyond the observed provider refresh on one invalid-provider status?
 - [ ] Which error codes trigger token retry, initialization retry, cooldown, or terminal failure in the OpenAI wrapper, and what are the exact backoff ceilings?
-- [ ] What public Android build/provider selection path, if any, supplies the same first-party provider without the internal package guard?
+- [ ] Is there a separate first-party provider path for the public ChatGPT Android package in another independently supplied build/version? None was identified in this XAPK; do not bypass the observed internal-only package gate.
 
 ## Integrity SDK retry and local cooldown questions
 
@@ -103,7 +103,7 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 
 - [x] Reconstruct the compiled Android DirectResponseClient request builder and route binding: the selected user-message body, fields/conditionals, attachment mapping, and authenticated send versus separate parent lookup versus requirements request are method-level traced. [ ] Port a validated Node.js serializer and test against non-personal fixtures.
 - [x] Reconstruct the generated ModelCatalog and ChatRequirements named-field schemas, required/optional fields, array element decoders, null handling and pass-through properties. [ ] Trace extra fields and challenge descriptor consumers/providers.
-- [x] Trace how the direct client normalizes chat requirements, detects required turnstile/proofofwork/so descriptors, emits the requirements-token Sentinel header only when no challenge is required, and selects the separate Valdi >= 11 native adapter when available. Adapter header/body-patch validation is decoded. [ ] Reconstruct and verify the internal native service/public-build behavior.
+- [x] Trace direct-client challenge normalization, fail-closed requirements-token behavior, Valdi >= 11 native adapter selection and output validation. Also trace the bundled native factory/service construction and exact internal-package preflight; the supplied public package is rejected before the HTTP exchange. [ ] Check for a distinct public-build provider in another authentic source.
 - [x] Decode core direct SSE events, delta schema/operations, resume-token/handoff state, eventOffset, continuation validation, x-conduit-token mapping, /resume body/path/header, and three-handoff cap. Decode the top-level dispatcher and response processor, including [DONE]/message_stream_complete completion, nonterminal handoff, assistant/reasoning updates, DIL/entity-reference deduplication, render batching, final flush and cancellation. [ ] Complete any remaining event variants, history sync/recovery, and authorized server tests.
 - [x] Reconstruct upload reservation, response validation, Estuary multipart and signed-storage PUT variants, process-upload request, trusted host constraints and picker limits. [ ] Resolve URL expiry/signature semantics, retries/cancellation, download, and file-indexing behavior.
 - [ ] Find the separate Android guest service. All 111 decompressed Valdi modules had no `/backend-anon` route string; the currently observed DEX route constants remain in LocationCookieInitializer. Identify the actual guest create/refresh and guest composer prepare/send owners independently.
@@ -122,7 +122,7 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [x] Decode event message/completion/resume-token/stream-handoff and delta-operation state machine, including c/o/p/v fields, supported operations, JSON-pointer escaping, unsafe-path rejection, 2,048-character and 64-segment limits, and three-handoff ceiling.
 - [x] Recover the direct resume path/body/header builder and its offset/token mapping from ChatGPTStreamingContracts; confirm it is used only for direct streams and capped at three handoffs. [ ] Verify live service acceptance and restart/recovery behavior.
 - [x] Recover MAX_PICKED_FILES=10, MAX_PICKED_FILE_BYTES=20 MiB, MAX_PICKED_TOTAL_BYTES=25 MiB, accepted document/image types, file-name/MIME validation, upload destinations, request bodies and storage headers. [ ] Resolve URL expiry, retry/cancellation and end-to-end upload behavior.
-- [ ] Trace the full native ChatGPTDeviceIntegrityProvider service call and actual public-build availability. The Valdi adapter boundary, version/service selection and response patch/header validation are now traced; the DEX native implementation has a package-ID caveat.
+- [x] Trace the native ChatGPTDeviceIntegrityProvider call path through the packaged module factory and DeviceIntegrityService implementation. The worker explicitly rejects the supplied public package because it requires com.openai.chatgpt.internal; this is an internal/debug-build-only path and fails before HTTP for the public XAPK.
 
 ## Codex CLI client family — 2026-11-25
 
