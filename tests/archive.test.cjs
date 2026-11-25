@@ -19,6 +19,7 @@ const expectedFiles = [
   'ChatJS/src/index.mjs',
   'ChatJS/src/sse.cjs',
   'ChatJS/src/chatgpt/file-upload-policy.cjs',
+  'ChatJS/src/chatgpt/android-conversation-api-schema.cjs',
   'ChatJS/types/index.d.ts'
 ];
 
