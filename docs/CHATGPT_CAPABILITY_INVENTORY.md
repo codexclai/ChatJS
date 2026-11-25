@@ -268,3 +268,12 @@ The Android `OAICredentialStore` wrapper is now method-decoded, including the br
 
 
 The Android `OAIRequestCredential` rejection classifier is now method-decoded and represented by a private pure helper. It preserves nested `detail.error` vs `detail.code` vs top-level `error` precedence, recognizes top-level revocation/SSO but not top-level expiry, and only plans a token renewal when the caller-supplied renewal flag is truthy. The source's `reportRevoked` and `accessToken` callbacks are not implemented or invoked in ChatJS; request replay, token replacement, secure clearing and full SSO/DPoP remain unimplemented.
+
+
+The Valdi-side `OAINativeCredential` wrapper is now separately method-decoded. A runtime/compiler-intrinsic and configured `renewableAuthenticationService` gate controls availability; the wrapper exposes cancellable `signIn` plus `restore`, `accessToken` and `clear`, and validates returned nativeSessionId/accessToken pairs. The related service type module exports Browser/Codex authentication-method and Cancelled/Network/Rejected/Unavailable/Unknown failure enums. The actual native intrinsic, method payload schemas and callback guarantees—particularly `onCleared`—are not present in these interface-only JS modules and remain unresolved.
+
+
+Android DEX interface inspection now confirms the callback types and native service method descriptors, and the controller's `reportRevoked`/`accessToken` requestCredential closures are traced to `clear`/`accessToken` with stable native-session/account identity. The interface classes in DEX are generated Kotlin-function adapters, not the backing host provider. `OAIPlatformServices` stores typed authentication and renewable-auth services, but the actual provider closures, native clear semantics, `onCleared` promise settlement, DPoP renewal result and failed-request replay remain outside the recovered interface/adapter code.
+
+
+The Android `OAIBearerAPIService` caller is now method-decoded: it validates the bearer/account inputs, builds account-bound bearer headers, dispatches supported HTTP verbs through an injected client, and performs a bounded 401 recovery sequence. When the classifier/requestCredential context returns a replacement token, it replays the same request once with renewal disabled; without a token it preserves the original 401. A pure internal helper now tests the headers, body rules, runtime gates and replay decision. This does not provide the transport, call native token APIs, perform actual retries, or implement DPoP/account sessions.

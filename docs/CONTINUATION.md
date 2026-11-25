@@ -535,3 +535,47 @@ Classifier precedence is source-specific:
 Added private `src/chatgpt/android-request-credential-recovery.cjs` with the generated error-envelope decoder, exact branch precedence and side-effect-free recovery plan. Seventeen focused tests cover malformed vs valid payloads, resilient nested member behavior, precedence and explicit renewal permission. It is in syntax checks and the approved archive allowlist. No callbacks, native service, token retrieval, storage clearing, retry or network were invoked.
 
 Next: trace the actual request-credential context implementations for `reportRevoked` and `accessToken`, including session persistence invalidation, renewable-auth native bridge, DPoP/token result propagation, request replay and SSO user interaction. Until then this pure classifier is not a working renewal or revocation workflow. Android guest SessionManager remains a separate flow.
+
+## Latest handoff — Android native credential bridge wrapper — 2026-11-25
+
+### Valdi-side source methods recovered
+
+The sibling `oai_authentication.valdimodule` was decompressed and disassembled along with `OAINativeCredential` from `oai_authentication_session`. `OAIAuthenticationService` defines `OAIAuthenticationMethod` values `Browser` and `Codex`, and `OAIAuthenticationServiceFailureKind` values `Cancelled`, `Network`, `Rejected`, `Unavailable` and `Unknown`; the runtime module contains enum construction only. `OAIRenewableAuthentication` and `OAIScopedAuthorization` are type/interface-only in this bundle and export no runtime implementation.
+
+`OAINativeCredential.getNativeCredentialClient(options)` calls `CompilerIntrinsics.isVersionAtLeast(483)` and requires `options.renewableAuthenticationService` to be present. Only then does it return a wrapper with `signIn`, `restore`, `accessToken` and `clear`. `signIn` is exposed as a task with `result` promise and `cancel()`; cancel delegates to the native task once available and otherwise no-ops. The other wrappers delegate to the configured native service. The clear path registers callbacks named `onCredential`, `onCleared` and `onFailure`.
+
+The `onCredential` path receives a native session ID and access token, requires a non-zero session-ID length and the source bearer-token validator to pass, then forwards `{nativeSessionId, accessToken}`. An invalid pair produces an `Unknown` failure. A separate fallback callback also produces `Unknown`. The `onCleared` callback is registered, but its actual completion/settlement semantics and invocation guarantees are not established from this wrapper bytecode.
+
+### Controller mapping and important gates
+
+Interactive sign-in maps Cancelled -> Cancelled; Rejected/Unavailable -> InvalidResponse; all other or malformed failures -> Network. Native restore maps Rejected -> InvalidToken; Cancelled -> Cancelled; other failures -> Network. A separate helper maps Unavailable to `PersistentStoreTemporarilyUnavailableError` only at its distinct runtime version gate `isVersionAtLeast(14)`. The native-client factory threshold is the separate literal `483`; do not assume the two thresholds are interchangeable.
+
+The `Codex` member of Android `OAIAuthenticationMethod` is a sign-in method enum, not proof that Android contains the Codex CLI client family. Keep the actual Codex CLI family separately in the long-term product goal.
+
+### Limits and next steps
+
+The concrete `CompilerIntrinsics` native service, signIn/restore/accessToken/clear request/result payloads, callback ownership/timing/cancellation, onCleared semantics, secure storage and OS sign-in UI are not in the inspected JavaScript interface modules. They require authentic native implementation evidence; no callback contract should be fabricated from the property names. ChatJS still has no native credential adapter, login or restore. Next: find the actual native implementation in the supplied APK/DEX and map its callback/secure-store behavior, then trace `requestCredentialContext.reportRevoked`/`accessToken` and caller replay/SSO semantics. No native operation or ChatGPT request was executed.
+
+## Latest handoff — Android authenticated bearer service and one-shot recovery policy — 2026-11-25
+
+### Method-level OAIBearerAPIService findings
+
+The `OAIBearerAPIService` Valdi JS entry was deserialized and method-dumped (10,393 bytes; SHA-256 `f0fde9becf87d6efc012ea161b36ad1b50aa452f01142761a3d7ac570ce0d558`). Constructor captures injected client, accessToken, accountId, unauthorized callback and optional requestCredential context. It validates bearer token syntax and any supplied account ID. `makeRequestHeaders` emits `Accept`, `Authorization: Bearer ...`, and optional `ChatGPT-Account-Id`. JSON request `bodyJson` is UTF-8 encoded and Content-Type application/json is inserted only when the body is not undefined. The Sheep gateway header is inserted only when Valdi runtime >=117 and `useSheepGateway === true`. It dispatches GET/POST/PUT/DELETE/PATCH through the injected client; PATCH requires `client.perform` or raises `The authenticated HTTP transport does not support PATCH.`
+
+### 401 recovery/replay sequence
+
+The `performAuthenticated` path runs the request once. It skips recovery when cancelled, when status is not exactly 401, or response body is undefined. Otherwise it TextDecoder-decodes the body and calls the existing `OAIRequestCredential.recoverRejectedCredential(requestCredential, accountId, bodyText, allowRenewal)` classifier/context. If that returns undefined, it returns the original 401 response. If a replacement access token is returned, it executes the exact same request descriptor once with that token and passes false as the next allow-renewal flag, so the replay cannot begin another token-recovery loop.
+
+The allow-renewal flag is source-derived: it is false only when `CompilerIntrinsics.isVersionAtLeast(377)` and `disableAutomaticRetries === true`; otherwise it is true. This controls the Renew/accessToken branch only. Revoked and RequiresSSO still call reportRevoked/native clear even when renewal is disabled. It is not an exponential/general retry mechanism.
+
+The request task transitions Scheduled/Pending/Cancelling/Finished, validates the relative path before transport, handles transport cancellation, calls the final onResponse and reports failures through onFailure. Ordinary request 401 notification and the image-specific 401 branch differ; `reportUnauthorized` only calls local `invalidateExpiredSession` when the captured requestCredential context is absent. The native requestCredential path itself uses `clear(nativeSessionId, accountId, requiresSSO, completion)` or `accessToken(nativeSessionId, accountId, completion)` and checks stable native session/generation before returning a renewed token.
+
+Authenticated image loader accepts a signed first-party Estuary content URL only (trusted production/staging OpenAI/ChatGPT host and `/backend-api/estuary/content?...`); it makes a GET with Accept image/*, checks image content type/non-empty body and an 8 MiB response cap. It is not a generic URL fetcher.
+
+### Implementation and boundaries
+
+Added private `src/chatgpt/android-authenticated-request-policy.cjs`, pure-only functions for Accept/Bearer/account headers, conditional JSON Content-Type/UTF-8 bytes, the runtime-117 Sheep header, runtime-377 renewal opt-out and NoRecovery/ReturnOriginalResponse/ReplayOnce decisions. Thirteen deterministic tests pass. It is in lint and the exact archive allowlist. It has no client transport, credential/native callback, HTTP, image download or actual replay.
+
+### Next Android work
+
+Trace actual injected HTTP client/network adapter, actual native CompilerIntrinsics service/provider closures, secure-store and `onCleared` behavior, DPoP proof/material propagation, and authorized service behavior. Complete controller concurrency/generation/foreground/cancellation/sign-out races. No request, login or credential has been used. Android guest session remains a distinct unauthenticated lifecycle, and Android Work/Windows Desktop/Codex CLI remain parked only for sequencing.

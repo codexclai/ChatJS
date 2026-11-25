@@ -274,3 +274,26 @@ Private `src/chatgpt/android-auth-credential-record.cjs` now decodes/builds the 
 The Android `OAIRequestCredential` module's response schema and recovery branch order are now method-decoded. Nested `detail.error.code` handles revoked/invalidated tokens; `detail.code` distinguishes SSO-required from expiry/renewal; top-level `error.code`/`type` handles revocation and SSO but not token expiry. The native helper reports revoked/SSO to its request-credential context and requests a new access token only when the caller-supplied renewal flag is truthy.
 
 Private `src/chatgpt/android-request-credential-recovery.cjs` implements the schema decoder, pure classification and an explicit side-effect plan with 17 tests. It does not call native session methods, invalidate credentials, refresh a token, retry a request or handle SSO. Those session-context behaviors remain outside ChatJS until fully reconstructed.
+
+
+## Android native credential bridge findings — 2026-11-25
+
+The Android Valdi package's native credential adapter is now method-decoded at the wrapper boundary. It is enabled only behind a compiler-runtime version check and a configured renewable-authentication service. The wrapper exposes a cancellable `signIn` task plus `restore`, `accessToken` and `clear`. Returned credentials are checked for a non-empty native session ID and valid bearer-token syntax; the service exports Browser/Codex method values and Cancelled/Network/Rejected/Unavailable/Unknown failure kinds.
+
+The actual native `CompilerIntrinsics` implementation and callback invocation guarantees (including `onCleared`) are not present in the inspected JavaScript interface modules. This does not make native authentication portable to Node.js and is not implemented in ChatJS. `OAIAuthenticationMethod.Codex` is an Android sign-in method value, not Codex CLI feature support.
+
+
+## Android native authentication interface and requestCredential wiring — 2026-11-25
+
+The supplied Android DEX now confirms the exact native interface signatures: `OAIAuthenticationService.signIn(method, completion)` and `OAIRenewableAuthentication` signIn/restore/accessToken/clear. Renewable credential completion has distinct `onCredential(nativeSessionId, accessToken)`, `onCleared()`, and `onFailure` callbacks; clear receives nativeSessionId, accountId and the SSO boolean. Browser/Codex are capability flags/method values, while failure kinds are Cancelled/Network/Rejected/Unavailable/Unknown. Generated DEX adapters forward these methods to Kotlin function closures; they do not contain the actual host service implementation.
+
+The Android controller's rejected-credential context delegates revocation to native `clear(nativeSessionId, accountId, requiresSSO, completion)` and token renewal to native `accessToken(nativeSessionId, accountId, completion)`. It checks operation generation and requires the returned nativeSessionId to exactly match before using the returned token. The actual closures, onCleared settlement, native clear side effects, DPoP material and replay/SSO policy remain unresolved and are not implemented in ChatJS.
+
+
+## Android authenticated bearer request and replay findings — 2026-11-25
+
+The compiled `OAIBearerAPIService` is now method-decoded. Its private request policy uses `Accept`, `Authorization: Bearer ...`, optional `ChatGPT-Account-Id`, JSON `Content-Type` only when a body exists, and an optional Sheep gateway header behind the source runtime/option gate. The source supports GET/POST/PUT/DELETE/PATCH through an injected transport.
+
+An eligible 401 (not cancelled, exactly status 401, response body defined) is classified through `OAIRequestCredential`. No returned replacement token means the original 401 is preserved; a replacement token causes one replay of the same request with further renewal disabled. The renewal flag respects the runtime-377 `disableAutomaticRetries` gate. Revocation/SSO reporting remains distinct from renewal.
+
+Private `src/chatgpt/android-authenticated-request-policy.cjs` implements only the pure header/body/renewal/replay decisions, with 13 tests. It does not implement HTTP, account sessions, token retrieval, request replay, native clear, DPoP or first-party integrity. ChatJS still has no authenticated transport or live login/renewal workflow.

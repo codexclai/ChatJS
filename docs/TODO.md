@@ -256,7 +256,8 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Disassemble `restoreNativeToken`: require the renewable native provider, restore from the saved record, require returned nativeSessionId to equal the saved nativeSessionId, and return only the restored access token.
 - [x] Disassemble direct `signIn`/`authenticateAccessToken`: trim and validate bearer token, account validation, secure save before SignedIn, typed storage error and generation guard.
 - [x] Disassemble `signInInteractively`: first-party method capability gating, foreground admission, Browser/native service branch versus host-interactive credential branch, generation checks and cleanup of unfinished native sessions.
-- [ ] Reconstruct exact native service payload, error and cancellation callback schemas; no native login has been invoked.
+- [x] Method-decode the Valdi-side OAINativeCredential wrapper, operation names, cancellable signIn task shape, onCredential/onCleared/onFailure callback registrations, token/native-session validation, OAIAuthenticationService method/failure enums and controller error mapping. This does not include the native implementation.
+- [ ] Reconstruct the native CompilerIntrinsics implementation, exact native signIn/restore/accessToken/clear payloads and callback guarantees (especially onCleared), session ownership and OS secure-store behavior; no native login has been invoked.
 - [ ] Implement actual authentication only with a legitimate host adapter, secure credential store, complete account validation, first-party integrity support and end-to-end contract tests; no arbitrary token-only shortcut.
 
 ## Android account-check schema and account-selection helper — 2026-11-25
@@ -286,3 +287,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Decode recovery callback gate: Revoked/RequiresSSO report the account and SSO boolean; Renew invokes accessToken only when the caller-supplied renewal flag is truthy; no action for None.
 - [x] Implement private pure decoder/classifier/recovery-plan helper with 17 deterministic tests; no callbacks, token retrieval, invalidation, request retry or network.
 - [ ] Trace the requestCredentialContext `reportRevoked` and `accessToken` implementations/callers, including actual credential clearing, native renewal, result propagation and request replay/SSO handling.
+
+
+## Android authenticated bearer request policy — 2026-11-25
+
+- [x] Decode OAIBearerAPIService constructor validation, Accept/Bearer/ChatGPT-Account-Id headers, conditional JSON Content-Type/body encoding, Sheep gateway header gate and GET/POST/PUT/DELETE/PATCH method dispatch.
+- [x] Decode authenticated 401 recovery and exact one-shot replay: cancelled/non-401/bodyless responses skip recovery; undefined recovery token returns original 401; replacement token replays same request once with renewal disabled.
+- [x] Decode automatic renewal option gate at Valdi runtime >=377 and final unauthorized callback behavior, including distinct no-native-context session expiry handling.
+- [x] Implement private pure authenticated request header/JSON/body/recovery-policy helper with 13 deterministic tests; no network, native callbacks, credential use or replay is implemented.
+- [ ] Reconstruct and implement the actual Node.js authenticated HTTP transport, request task state/cancellation semantics and response contract only after real host secure credentials, native token renewal/clear, DPoP and first-party integrity are supported.

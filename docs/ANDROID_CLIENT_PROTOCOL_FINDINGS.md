@@ -1391,3 +1391,131 @@ This function delegates actual invalidation and token acquisition to the session
 Added private `src/chatgpt/android-request-credential-recovery.cjs`, a pure ErrorEnvelope/APIError decoder, exact source-ordered recovery classifier and a side-effect-free recovery plan. Seventeen deterministic tests cover generated optional/resilient schema behavior, the nested-vs-top-level precedence, the absence of top-level expiry renewal, and explicit renewal permission. The helper does not call `reportRevoked`, call `accessToken`, clear credentials, refresh, retry a request, or access a session. It is private and not wired to authenticated transport.
 
 The remaining native request-credential/session context, actual revoke/clear implementation, token renewal and retry semantics, SSO reauthentication flow, DPoP lifecycle and authorized end-to-end behavior remain unimplemented in ChatJS.
+
+## 2026-11-25 — Android native credential bridge wrapper and service failure enums
+
+The related `oai_authentication` Valdi package contains small type/interface modules in addition to `OAINativeCredential`:
+
+- `OAIAuthenticationService` exports `OAIAuthenticationMethod` (`Browser`, `Codex`) and `OAIAuthenticationServiceFailureKind` (`Cancelled`, `Network`, `Rejected`, `Unavailable`, `Unknown`). The compiled runtime body is enum construction only; no implementation of the authentication service methods is included in this module.
+- `OAIRenewableAuthentication` and `OAIScopedAuthorization` have no runtime exports in the inspected module payload (their TypeScript/interface-only declarations are erased). They do not reveal a concrete token-renewal or native storage implementation.
+
+### Native-client wrapper availability and methods
+
+`OAINativeCredential.getNativeCredentialClient(options)` first checks the compiler intrinsic `isVersionAtLeast(483)`, then reads `options.renewableAuthenticationService`. It returns `undefined` when the runtime gate fails or that service is absent. When both conditions are met it returns a wrapper exposing `signIn`, `restore`, `accessToken` and `clear` methods. The literal version threshold is recorded as `483`; its display/version interpretation is not inferred here.
+
+The wrapper's `signIn` path creates an operation task containing a `result` promise and `cancel` function. The cancel closure is a no-op until a native task has been recorded, then delegates to the native task's `cancel()`. The underlying native sign-in call is made through the supplied renewable-authentication service. The `restore` and `accessToken` wrappers similarly delegate to that native service; the actual native callback payload contract and all argument semantics are not present in the interface-only JS module.
+
+The `clear` wrapper delegates to the native service and registers callback properties named `onCredential`, `onCleared` and `onFailure`. One callback path validates a returned `(nativeSessionId, accessToken)` pair: session ID length must be non-zero and the token must pass `isValidOAIBearerToken`; a valid pair is forwarded as `{ nativeSessionId, accessToken }`, while an invalid pair is forwarded as a failure with kind `Unknown`. A separate fallback callback also constructs an `Unknown` failure. The detailed completion/error meaning of `onCleared` and all native-side callback invocation guarantees remain unresolved; the callback names alone are not enough to recreate them.
+
+### Controller mapping of service failures
+
+The decoded controller maps service failure kinds differently by operation:
+
+- Interactive first-party sign-in: `Cancelled` becomes controller `Cancelled`; `Rejected` and `Unavailable` become `InvalidResponse` with `The selected first-party sign-in method is unavailable.`; other/malformed failures become `Network` with `First-party sign-in could not be completed.`
+- Native restore: `Rejected` becomes `InvalidToken` (`Your ChatGPT session expired. Sign in again.`); `Cancelled` becomes `Cancelled`; other failures become `Network` (`The saved credential is temporarily unavailable.`).
+- A separate controller mapper only at its own runtime gate `isVersionAtLeast(14)` converts service failure kind `Unavailable` to `PersistentStoreTemporarilyUnavailableError`. This is a distinct gate from the native-client factory's literal threshold `483`.
+
+The method/enum value `OAIAuthenticationMethod.Codex` is an Android first-party authentication-method value. It is not evidence that this Android module contains or invokes the separate Codex CLI client family.
+
+### Evidence boundary
+
+This is the complete recoverable Valdi-side wrapper/interface evidence from the inspected package. The backing native `CompilerIntrinsics` client implementation, actual native request/result/cancel payloads, `onCleared` semantics, native session ownership, secure storage, OS authentication UI and credential renewal implementation are not present in these JavaScript interface modules. Do not invent their payloads, simulate success, or replace the host/native bridge with an arbitrary bearer-token string. ChatJS has no native credential adapter or working sign-in/restore implementation; it will need a legitimate explicit host capability and the complete native protocol before such operations can be implemented.
+
+## 2026-11-25 — Android authentication service DEX interfaces and controller credential callbacks
+
+The supplied public base APK's `classes2.dex` provides the concrete method descriptors for the Java/Kotlin interfaces that were only type declarations in the Valdi modules. This is a source/interface reconstruction, not a native service implementation.
+
+### Exact DEX interface contracts
+
+- `OAIAuthenticationCapabilities` stores two booleans: `browser` and `codex`.
+- `OAIAuthenticationService.getCapabilities()` returns those capabilities. `signIn(method: OAIAuthenticationMethod, completion: OAIAuthenticationCompletion)` returns `OAIAuthenticationTask`.
+- `OAIAuthenticationCompletion.onAuthenticated(accessToken: String)` and `.onFailure(failure: OAIAuthenticationServiceFailure)` are the interactive completion callbacks.
+- `OAIAuthenticationTask.cancel()` is the task cancellation operation.
+- `OAIRenewableAuthentication.signIn(completion: OAIRenewableAuthenticationCompletion)` returns `OAIAuthenticationTask`.
+- `OAIRenewableAuthentication.restore(nativeSessionId: String, completion)` is callback-based and returns `void`.
+- `OAIRenewableAuthentication.accessToken(nativeSessionId: String, accountId: String, completion)` is callback-based and returns `void`.
+- `OAIRenewableAuthentication.clear(nativeSessionId: String, accountId: String, requiresSSO: boolean, completion)` is callback-based and returns `void`.
+- `OAIRenewableAuthenticationCompletion.onCredential(nativeSessionId: String, accessToken: String)`, `.onCleared()`, and `.onFailure(failure)` are distinct callback outcomes. `onCleared` has no result parameters; it is not the same as delivering a replacement credential.
+
+`OAIAuthenticationServiceFailure` wraps one `OAIAuthenticationServiceFailureKind`: `Cancelled`, `Network`, `Rejected`, `Unavailable`, or `Unknown`. The separate `OAIAuthenticationMethod` enum values are `Browser` and `Codex`.
+
+### DEX bridge classes are function adapters, not proof of the host implementation
+
+The APK contains generated adapters that implement these interfaces by forwarding to Kotlin function closures:
+
+- `Lxhq0` implements `OAIAuthenticationService`, forwarding getCapabilities through `Function0` and signIn through `Function2`.
+- `Ldjq0` implements `OAIRenewableAuthentication`, forwarding signIn through `Function1`, restore through `Function2`, accessToken through `Function3`, and clear through `Function4` (the clear boolean is boxed for the Kotlin function call).
+- `Lwhq0` forwards `OAIAuthenticationCompletion.onAuthenticated/onFailure` to two `Function1` callbacks.
+- `Lcjq0` forwards `OAIRenewableAuthenticationCompletion.onCredential` to `Function2`, `onCleared` to `Function0`, and `onFailure` to `Function1`.
+
+These generated adapters prove callback/method bridging shape. They are not the Android authentication backend and do not reveal what the supplied closures do. No other direct DEX class implementation of these interfaces was identified in the ten classes*.dex definitions examined; a native/runtime-provided service may still be injected through Valdi/CompilerIntrinsics.
+
+### Platform-service container and helper gates
+
+`OAIPlatformServices` has typed `_authenticationService`, `_renewableAuthenticationService`, and `_scopedAuthorizationService` members, and its full constructor accepts those service interfaces as separate parameters. Its no-argument constructor initializes the members to null. The inspected `OAIPlatformServices.js` Valdi entry exports no helper logic.
+
+`OAIAuthenticationService.js` in `oai_platform_services.valdimodule` exports three helpers:
+
+- `getAuthenticationService(services)` returns `services.authenticationService` only when `services` is present and `CompilerIntrinsics.isVersionAtLeast(14)`; otherwise it returns undefined.
+- `withAuthenticationService(services, authenticationService)` leaves the input unchanged when it is the same value or the runtime gate is unavailable; otherwise it shallow-copies the service object and fills `authenticationService` only when that property is nullish (an existing service is not overwritten).
+- `supportsAuthenticationMethod(capabilities, method)` returns `capabilities.browser` for Browser and `capabilities.codex` for Codex; other methods return undefined.
+
+The runtime threshold `14` is distinct from the native credential wrapper's literal `isVersionAtLeast(483)` gate. The platform helper exposes `authenticationService`; the renewable service is consumed separately through `OAINativeCredential` options. The exact native container-to-Valdi options wiring is not established by these helper bodies alone.
+
+### Controller's use of the renewable service
+
+Method-level `OAIAuthenticationController.requestCredential` creates a request-credential context only when both the current `renewableAuthenticationService` and `nativeSessionId` are present. The returned context contains:
+
+- `reportRevoked(accountId, requiresSSO)`, which delegates to `renewableAuthenticationService.clear(nativeSessionId, accountId, requiresSSO, completion)`. It does not itself perform a ChatJS/local credential-store clear. The caller's boolean is passed unchanged as the native clear method's third argument; the DEX method signature names that argument only by type, so the semantic meaning beyond the source caller's `requiresSSO` name is not inferred.
+- `accessToken(accountId)`, which delegates to `renewableAuthenticationService.accessToken(nativeSessionId, accountId, completion)` and awaits its credential callback. It checks the current operation generation and then requires the returned credential's `nativeSessionId` to exactly equal the captured ID. A changed native session throws controller `Cancelled` with `The account changed.`; only a matching session's accessToken is returned.
+
+This explains why rejected-credential classification is not equivalent to token renewal itself: the classifier invokes these context functions, and the context delegates to an injected native service with an explicit native-session/account identity pair. Whether native `clear` removes server credentials, locally persisted native credentials, or both; how `onCleared` settles the wrapper promise; whether a renewed access token has DPoP material; and how/when the failed request is retried remain unknown.
+
+### Implementation boundary
+
+No native sign-in, restore, accessToken, clear or callback was invoked. ChatJS does not implement these native interfaces, and a Node host must not fabricate a service response or treat a bearer token as a replacement for native session ownership. Continue only after the actual native provider/caller implementation, secure-store behavior and request retry/SSO/DPoP rules are reconstructed.
+
+## 2026-11-25 — Android authenticated bearer transport, one-shot 401 recovery and request headers
+
+The compiled `OAIBearerAPIService` entry (10,393 bytes; SHA-256 `f0fde9becf87d6efc012ea161b36ad1b50aa452f01142761a3d7ac570ce0d558`) was fully deserialized and method-dumped. It is the authenticated HTTP adapter around an injected client transport; it is not itself the native HTTP implementation.
+
+### Construction and headers
+
+The constructor captures `client`, `accessToken`, `accountId`, `onUnauthorized`, and `requestCredential`. It validates the access token with `isValidOAIBearerToken`. When accountId is not `undefined`, it validates it with `isValidOAIAccountIdentifier`; it does not silently omit an invalid supplied account.
+
+`makeRequestHeaders(accept, accessToken)` builds:
+
+- `Accept: accept`
+- `Authorization: Bearer <accessToken>`
+- `ChatGPT-Account-Id: <accountId>` only when accountId is not `undefined`.
+
+For JSON request descriptors, `Content-Type: application/json` is added only when `bodyJson !== undefined`; in that case `TextEncoder.encode(bodyJson)` produces the body bytes. `undefined` means no JSON body; a defined value is encoded. An additional `x-openai-use-sheep: 1` header is added only when Valdi runtime is at least 117 **and** the request's `useSheepGateway` option is exactly `true`.
+
+Method dispatch supports GET, POST, PUT, DELETE and PATCH. PATCH uses the transport's `perform(request, 'PATCH', body, headers)` path and fails with `The authenticated HTTP transport does not support PATCH.` when the injected client has no `perform` function. The helper module does not reveal transport wire serialization, redirects, connection pooling or socket behavior.
+
+### Exact authenticated 401 recovery and replay
+
+`performAuthenticated` makes the initial request first. Credential recovery is skipped when the request is in its cancelled state, the response status is not exactly 401, or the response `body` is `undefined`. For an eligible response it decodes the body with `TextDecoder` and calls `OAIRequestCredential.recoverRejectedCredential(requestCredential, accountId, bodyText, allowRenewal)`.
+
+- If recovery returns `undefined`, the original 401 response is returned unchanged.
+- If recovery returns an access token, the **same request descriptor** is executed again using that replacement token, and the retry invocation passes `false` for further credential renewal. This is one source-coded credential replay, not an unbounded retry loop.
+- `allowRenewal` is calculated by the caller from the Valdi runtime and request option: it is false only when `CompilerIntrinsics.isVersionAtLeast(377)` and `disableAutomaticRetries === true`; otherwise it is true. This flag only gates the `Renew` -> `requestCredential.accessToken(accountId)` action. `Revoked` and `RequiresSSO` continue to call `reportRevoked`, even when renewal is disabled.
+- A failed/missing replacement credential does not cause a blind replay. The original response remains the result when the recovery helper resolves without a token.
+
+This ties the earlier classifier/context findings together: a 401 can lead to `reportRevoked`/native clear for revoked or SSO-required credentials, or to native `accessToken(nativeSessionId, accountId, completion)` for an eligible expiry response. The controller's request-credential context verifies operation generation and native session ID equality before yielding the renewed token. The bearer service itself does not know how to authenticate a user or manufacture a token.
+
+### Response and unauthorized notifications
+
+The request task transitions through `Scheduled`, `Pending`, `Cancelling` and `Finished`; it validates origin-relative paths before starting transport, forwards the final response to the supplied `onResponse`, and reports failures through `onFailure`. Its cancellation path attempts transport cancellation and reports a cancellation failure; transport cancellation errors are logged and do not replace the cancel path. The final response callback occurs after the recovery/replay helper has settled.
+
+For ordinary requests, a final 401 triggers the optional `onUnauthorized` callback only when a request-credential context exists. The separate authenticated-image path has its own 401 handling and invokes `onUnauthorized` when the request-credential context is absent. The controller's `reportUnauthorized` closure calls `invalidateExpiredSession` only when its captured request-credential context is absent; the native renewable-context path instead uses `reportRevoked`/`clear`. These are distinct paths, not duplicate unconditional local and native clears.
+
+### Authenticated image path
+
+`loadAuthenticatedImage` accepts only a first-party signed content URL matching the source URL pattern under trusted OpenAI/ChatGPT production/staging hosts and `/backend-api/estuary/content?...`. It sends GET with `Accept: image/*`, requires a successful HTTP status, an `image/` content type, a present non-empty body and a response body no larger than 8,388,608 bytes (8 MiB). Its callbacks carry status/body bytes/content type. This matches the separate upload/download trust boundary and is not a general-purpose arbitrary URL fetcher.
+
+### Private ChatJS helper
+
+Added `src/chatgpt/android-authenticated-request-policy.cjs`, a pure helper for the observed bearer/account header construction, JSON `Content-Type`/UTF-8 body rules, the exact runtime `117` Sheep header gate, the runtime `377` renewal opt-out and the no-recovery/original-response/one-replay decision. Thirteen deterministic tests cover these rules. It is included in lint and the exact distribution allowlist, but is not wired to a transport or auth session; it does not issue requests, invoke `requestCredential`, retry, or call native providers.
+
+The actual `client` transport implementation, authorized live HTTP behavior, native renewal/clear implementation, DPoP proof/header lifecycle, full request-controller cancellation races and end-to-end account-entitled session behavior remain unimplemented in ChatJS.
