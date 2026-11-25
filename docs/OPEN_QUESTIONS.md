@@ -219,3 +219,12 @@ The generated request descriptors and catalog/requirements response decoders now
 **Also resolved from method-level bytecode:** controller `restore` loads the credential record under a Restoring operation, uses native restore only when a nativeSessionId is stored, checks the restored native ID for exact equality, and establishes the session only if the operation generation remains current. Without a record it transitions to SignedOut. InvalidToken restore clears expired credential; unknown restore errors map to Storage. Direct `signIn` trims/validates the bearer token, validates the account, awaits secure save before SignedIn, and guards state by operation generation. Interactive sign-in checks first-party host/method capability, waits for foreground admission, uses the renewable native Browser path when available or the host-interactive credential path otherwise, checks generation and attempts to clear unfinished native sessions when authentication fails.
 
 **Still open:** full controller concurrency/cancellation/foreground generation race semantics and native CompilerIntrinsics callback payloads and onCleared semantics; standalone `selectAccount` caller/UI wiring and a portable ChatJS switch implementation; native service callback/session-ID ownership and underlying encryption-key ownership/atomicity/clear durability; actual native renewal/SSO/DPoP/session-context lifecycle and authorized transport; public-build device-integrity support; and the independent guest create/refresh/composer routes. These method traces do not implement sign-in or restore in ChatJS. The temporary pinned QuickJS reader deserializes bytecode only and does not execute Android methods. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md` and `ANDROID_CLIENT_MODULE_INVENTORY.md`.
+
+
+## Android lookup-key signature path — 2026-11-25
+
+- The concrete `Lyt2.b(String)` caller decodes a URL-safe nonce and signs it with `Ljj51.m` while retrieving a public-key JWK. What is the complete return schema and all upstream/downstream consumers of this lookup-key proof?
+- Is this lookup-key nonce proof reused by, or entirely separate from, the main DPoP JWT request-signing and WWW-Authenticate/X-Nonce challenge path? Trace callsites before connecting these flows.
+- Where are the Android native key/provider closures injected, and what host-owned capabilities and lifecycle constraints govern their calls?
+
+The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r || s`; it does not answer these questions or implement the proof flow.

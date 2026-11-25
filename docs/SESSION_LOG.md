@@ -1337,3 +1337,12 @@ Also mapped controller failures: interactive sign-in maps Cancelled to Cancelled
 ## 2026-11-25 — Generated project-state correction
 
 GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989cdec found one generated-file mismatch: an extra leading space before the generated PROJECT_STATE.md notice. Corrected the generated file to match scripts/generate-project-state.cjs exactly and corrected the earlier rejected-recovery test count to 17. No runtime source or tests changed in this follow-up.
+
+
+## 2026-11-25 — Android ES256 signature serialization and Node.js helper
+
+**Source reconstruction:** decoded Android DEX `Ljj51.m(byte[], KeyPair)`: JCA `SHA256withECDSA` emits DER, then the method parses the SEQUENCE and two INTEGER members, treats `r`/`s` as unsigned values, normalizes to 32 bytes each and concatenates 64-byte `r || s`. Traced `Lyt2.b(String)` as one concrete lookup-key nonce path: URL-safe Base64 decode, exact 32-byte nonce check, public JWK lookup, signature generation and URL-safe signature output. This call path is not proof of the main DPoP JWT builder.
+
+**Implementation:** added private `src/chatgpt/android-es256-signature.cjs` and seven focused tests. The helper only converts DER signature bytes to fixed-width ES256 form; the first test verifies a real Node-generated P-256 ECDSA signature with Node's IEEE-P1363 verifier. Added source syntax validation and the module archive allowlist entry; documented private/internal status and the fact that no key, signing provider, keystore, authentication, DPoP request or network integration is implemented.
+
+**Local validation:** focused test command passed 7/7. No full repository checkout is available in this environment, so `npm run check`, built archive inspection and CI for the new commit are pending remote GitHub Actions verification. Prior main baseline at `4ded6` had successful CI and CodeQL; this is not evidence for the new change.

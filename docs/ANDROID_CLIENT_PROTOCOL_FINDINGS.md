@@ -1549,3 +1549,20 @@ The same DEX sweep found a substantial Android DPoP implementation in the auth/n
 The Android implementation depends on a non-exportable AndroidKeyStore private key and the native/platform session's signer/nonce state. A Node.js client cannot recreate this by generating a random PEM key, copying an Android alias, or treating a bearer token as a DPoP credential. The general Node.js design needs an explicit host signing-key capability with secure, non-exportable key ownership and the exact first-party authorization/session contract; absent that capability it must fail closed. No DPoP key was created, loaded, exported or used in this investigation, and no OAuth request was made.
 
 No DPoP runtime helper was added: the remaining proof claims, nonce lifecycle, token/refresh payload mapping, timestamp-correction conditions, native provider closures and secure-key adapter are not yet complete enough for a correct portable implementation. The current ChatJS runtime still has no authenticated HTTP client, native credential provider, DPoP proof creation, token refresh, credential clear or sign-in implementation.
+
+
+
+
+## Android P-256 ES256 signature serialization — 2026-11-25
+
+### Method-level source trace
+
+The Android DEX method `Ljj51.m(byte[], KeyPair)` signs the supplied bytes with JCA `SHA256withECDSA` and the key pair's private key. The returned JCA signature is ASN.1 DER: the method requires a DER SEQUENCE and parses two DER INTEGER members (`r` and `s`), with explicit failures for a missing sequence or unexpected integer tags. It constructs unsigned `BigInteger(1, bytes)` values, normalizes each component through `Ljj51.n(byte[])` to 32 bytes, and concatenates them into a 64-byte `r || s` signature. This is the fixed-width signature representation expected by JOSE ES256.
+
+A specific caller, `Lyt2.b(String)`, decodes a URL-safe Base64 nonce and requires exactly 32 decoded bytes, obtains the key pair and a public-key JWK, signs the nonce through `Ljj51.m`, and returns the JWK plus URL-safe Base64 signature. This establishes that lookup-key nonce proof path. It does **not** by itself prove that this exact caller is the main DPoP JWT proof builder or establish the complete DPoP request protocol.
+
+### ChatJS implementation and limits
+
+Added private `src/chatgpt/android-es256-signature.cjs` with `normalizeAndroidEs256Signature`. It validates the DER sequence and two INTEGER members, strips leading sign padding, left-pads each scalar to 32 bytes, and returns exactly 64 bytes. Seven deterministic tests cover real P-256 `SHA256withECDSA` signatures verified by Node's P-256 verifier, padding, sign-byte handling, malformed tags/lengths, truncation, overflow, trailing bytes, and invalid input types. The module is included in syntax checks and the distribution archive, but is not exported from the public API.
+
+This helper only converts bytes. It does not generate/import/export keys, sign messages, access AndroidKeyStore or a host keystore, prove hardware-backed key ownership, create a JWK, create a DPoP JWT, process a nonce challenge, authenticate, or perform network requests. Android's native key ownership, full DPoP claims/nonce lifecycle, provider injection, OAuth refresh schema and bounded retry policy remain unresolved. The existing DPoP implementation work therefore remains blocked pending full evidence and legitimate secure host capabilities.

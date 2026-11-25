@@ -603,3 +603,20 @@ Android's DEX contains a substantial DPoP/key/refresh subsystem, independent of 
 The DPoP signer uses AndroidKeyStore-held key material and native/session nonce state. ChatJS must not export/copy such keys, invent a PEM substitute, turn a bearer token into a DPoP credential, or bypass first-party integrity/challenge requirements. A future portable host adapter must expose a legitimate secure non-exportable signing capability and preserve the first-party credential/session contract; absent that, the operation must fail closed. The exact DPoP claims, nonce lifecycle, native provider closures, refresh response schema, and host signer API are not implemented. No DPoP key, credential or OAuth request was created or used.
 
 The current ChatJS runtime remains foundation-only: no live authentication, secure credential storage, DPoP generation, token refresh, authenticated HTTP transport, credential clear or account-switch implementation. The private helpers remain policy/schema-only. Next tasks are reconstructing the underlying platform/native auth provider, secure storage and transport, then complete Node host secure-signer/session contracts before implementation. Android Work/cloud, Windows Desktop/local Work and Codex CLI remain parked for sequencing only; the full target is unchanged.
+
+
+## Latest handoff — Android ES256 signature serialization — 2026-11-25
+
+### Source trace
+
+Android DEX method `Ljj51.m(byte[], KeyPair)` calls JCA `SHA256withECDSA`, parses the DER SEQUENCE and its `r`/`s` INTEGER members, interprets each as an unsigned `BigInteger(1, ...)`, normalizes each to 32 bytes through `Ljj51.n`, and concatenates a 64-byte `r || s` signature. The specific `Lyt2.b(String)` caller decodes a URL-safe Base64 nonce, requires 32 bytes, obtains a public-key JWK, signs the nonce, and returns JWK plus Base64URL signature. This proves the lookup-key nonce-signing caller; it does not establish that it is the main DPoP JWT proof builder.
+
+### Implementation
+
+Added private `src/chatgpt/android-es256-signature.cjs` and `tests/android-es256-signature.test.cjs`. The helper performs only DER-to-fixed-width P-256 `r || s` formatting; seven focused tests pass, including cryptographic verification of an actual Node-generated P-256 SHA256 ECDSA signature in IEEE P1363 form. The source is syntax-checked and included in the module archive allowlist. It is not exposed through ChatJS public API.
+
+### Boundary and next work
+
+No signing, key generation, key import/export, keystore access, JWK creation, nonce protocol, DPoP JWT, authentication, transport or network behavior was added. Continue tracing the lookup-key proof schema and its relation (if any) to the main DPoP path. Native provider injection, complete DPoP claims/nonce lifecycle, OAuth refresh payload/retry bounds, secure host signer semantics and authorized E2E tests remain open. Android Work, Windows/Desktop and Codex CLI remain parked only for sequencing; long-term product scope is unchanged.
+
+Local validation in this session: `node --test tests/android-es256-signature.test.cjs` — 7 passed, 0 failed. The full repository checkout is unavailable in this execution environment, so repository-wide `npm run check` and archive inspection are delegated to the main-branch CI run after this commit; no result is claimed in advance.

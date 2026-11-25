@@ -118,3 +118,11 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 | --- | --- | --- |
 | Android native authentication provider injection | Research (DEX interface/adapter census complete; provider not located) | All ten base APK DEX files checked; only generated Function adapters directly implement OAIAuthenticationService/OAIRenewableAuthentication; no direct full OAIPlatformServices constructor call identified. Native/CompilerIntrinsics/reflective provider path remains unknown |
 | Android DPoP signing and refresh | Research (DEX call graph traced; not implemented) | AndroidKeyStore EC/secp256r1 key aliases, SHA256withECDSA, dpop+jwt/ES256, DPoP-vs-Bearer header selection, WWW-Authenticate/X-Nonce, OAuth refresh and invalid-proof timestamp-correction branch observed. Exact claims, nonce lifecycle, complete refresh schema and retry ceilings remain open; no ChatJS signing or token refresh |
+
+
+## Android P-256 ES256 signature-format helper — 2026-11-25
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Android DER ECDSA to ES256 `r || s` serialization | Implemented (private helper only) | `normalizeAndroidEs256Signature` converts DER P-256 ECDSA signature bytes to 64-byte fixed-width form; seven deterministic tests include verification against a real Node P-256 signature. It does not sign, manage keys, access a keystore, create a JWK/DPoP proof, authenticate or send requests. |
+

@@ -307,3 +307,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Reconstruct the native CompilerIntrinsics/provider closure injection path, exact DPoP proof claims and nonce lifecycle, complete OAuth refresh request/response mapping and all retry ceilings.
 - [ ] Define a portable Node.js host secure, non-exportable signing-key adapter from legitimate host capabilities; preserve Android DPoP/account/session semantics and fail closed when unavailable. Do not export/copy AndroidKeyStore private keys or substitute a bearer-only path.
 - [ ] Keep Android DPoP implementation blocked until complete source/protocol evidence, secure host signer semantics and authorized end-to-end tests are established. Current ChatJS contains no DPoP implementation.
+
+
+## Android ES256 signature serialization — 2026-11-25
+
+- [x] Trace `Ljj51.m(byte[], KeyPair)`: JCA `SHA256withECDSA`, DER SEQUENCE/INTEGER parsing, unsigned `r` and `s`, 32-byte scalar normalization and 64-byte concatenation.
+- [x] Trace the specific `Lyt2.b(String)` lookup-key nonce caller: URL-safe Base64 nonce decoding, exact 32-byte check, public JWK retrieval and signature encoding. Do not overgeneralize this caller into the main DPoP request path.
+- [x] Implement private DER-to-64-byte ES256 signature-format helper with seven deterministic tests, including a real P-256 signature round trip; include in lint and the package archive.
+- [ ] Continue mapping the exact lookup-key proof schema and establish whether/how it relates to the main DPoP JWT signer and nonce challenge path.
+- [ ] Keep full DPoP/auth work blocked until provider injection, proof claims, nonce lifecycle, OAuth refresh schemas/retry bounds, secure non-exportable host signing, and authorized end-to-end behavior are established.

@@ -220,3 +220,8 @@ A public-source cross-check against `Snapchat/Valdi` commit `f5bc2dcfcb880109c90
 The supplied Android `config.arm64_v8a.apk` also contains an 8,817,776-byte, stripped ARM64 `libopenai_xplat_export.so` with printable `QuickJS` and `ValdiModuleArchive`/Valdi QuickJS class names. Exported-symbol inspection found no directly reusable dump/deserialize entry points. This corroborates that the package includes the runtime, but does not establish its exact source revision or build flags.
 
 **Status:** viable temporary analysis strategy identified; no compatible tool has yet been built or run. Full QuickJS fork sources and matching build options remain required. Do not mark the Android send serializer or any other method decoded until a narrow method disassembly and call-flow analysis are completed. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+
+
+## 2026-11-25 — Android ES256 DER signature normalization
+
+DEX method `Ljj51.m(byte[], KeyPair)` uses JCA `SHA256withECDSA`, reads the DER sequence's `r` and `s` integers as unsigned big integers, pads both to 32 bytes and concatenates a 64-byte `r || s` value. The concrete `Lyt2.b(String)` caller uses this for a URL-safe 32-byte lookup-key nonce and includes a public-key JWK; this caller alone does not establish the main DPoP JWT proof path. ChatJS now has a private pure DER-to-P1363 formatter with seven tests, including a Node crypto verification test. It does not perform signing, keystore access, JWK construction, nonce handling, DPoP or authentication.
