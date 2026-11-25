@@ -1204,10 +1204,28 @@ The normalization method excludes a record when `can_access_with_session === fal
 
 If no eligible choices remain, the controller fails with `InvalidResponse` and the message `The access token did not provide an accessible account.`
 
-During this credential-validation path, initial selection prefers the account whose normalized `id` equals the supplied credential's `accountId`; if no match exists it falls back to the first normalized account in the resolved order. This method does not itself issue a user-facing picker prompt. The controller also declares a separate `selectAccount` operation; its complete interaction/state transition and secure-save path remain a separate lifecycle task.
+During this credential-validation path, initial selection prefers the account whose normalized `id` equals the supplied credential's `accountId`; if no match exists it falls back to the first normalized account in the resolved order. This method does not itself issue a user-facing picker prompt. The controller also declares a separate `selectAccount` operation; its method body is reconstructed in the later standalone `selectAccount` section. Its caller/UI wiring and underlying secure-store durability semantics remain open.
 
 ### ChatJS implementation
 
 Added private `src/chatgpt/android-authentication-api-schema.cjs` with the exact GET request descriptor, generated response decoding (including the accounts object map, nested optional/nullable fields and extra-property pass-through), controller account normalization/ordering/deduplication, and preferred-account/first-account selection. Twelve deterministic tests cover request method/path, rejection of array-shaped accounts, nested field types, undefined-versus-null behavior, account ordering, access/deactivation filtering, identifier validation, normalization, deduplication, preferred-account fallback and the no-accessible-account error.
 
 The helper is internal, has no public API or authenticated transport, and makes no network/storage/credential changes. No ChatGPT request or account operation was executed. The Android authentication controller's concurrency, native credential ownership, secure storage, revalidation, DPoP and full account-switching lifecycle remain unimplemented.
+
+## 2026-11-25 — Android standalone `selectAccount` controller method
+
+The compiled `OAIAuthenticationController.selectAccount` method is distinct from the automatic preferred-account selection used when first validating an access token. It accepts an account choice, but does not trust that object as the session account. It resolves a canonical entry from the current signed-in session's `accounts` list by matching `candidate.id === requested.id`.
+
+Observed behavior, in method order:
+
+1. Returns without changes when the controller is disposed or the app state is not allowed for the operation.
+2. Returns unless the current state is `SignedIn` and has a current session.
+3. Searches the current session's `accounts` by account ID. Returns if no matching account exists or if the requested ID is already the active account ID.
+4. Cancels the current `validationTask` if present, clears `validationTask` and `revalidation`, increments `operationGeneration`, and emits `lifecycleChanges.next(lifecycleChanges.value)` to notify lifecycle observers.
+5. Calls `makeSession` using the existing access token, current account list, the canonical matched account object, and the new operation generation. `makeSession` constructs a new account-bound API service and request-credential context; it does not itself perform the selected-account HTTP operation.
+6. Updates controller state to `SignedIn` with the newly constructed session, then calls `saveSession(newSession, generation)` and attaches a rejection handler.
+7. The save rejection handler only emits the guarded warning `The selected account could not be saved securely.`. The selection method does not await the save promise, propagate that persistence error, roll back the in-memory session, or transition the UI state to a storage failure in this catch path.
+
+The method contains no account-check network request and does not show a user-facing picker; it receives a choice from its caller. The caller/UI wiring that supplies that choice remains untraced. The persistence call is routed through the controller's `saveSession` wrapper to the credential-store save method, but this does not establish the encrypted store's serialization, key ownership, atomicity or durability semantics. Those remain separate work.
+
+This is method-level source evidence only. ChatJS does not yet implement an authenticated controller, account selection UI, session mutation, credential persistence or account switching. The private account-check helper implements only the initial account-choice normalization/preference function; it must not be described as a complete switch workflow.

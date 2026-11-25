@@ -1273,3 +1273,9 @@ Rebuilt the temporary pinned Valdi QuickJS reader (commit `f5bc2dcfcb880109c908e
 **Validation so far:** all 12 focused tests pass. Full `npm run check`, archive inspection, docs state sync, CI, CodeQL and commit remain pending.
 
 **Remaining:** controller concurrency/generation/foreground/cancellation; standalone account switch operation; native sign-in/restore bridge; encrypted secure store; token refresh/SSO/DPoP; independent guest routes; remaining Android non-Work modules and authorized end-to-end tests. No real account, credentials or ChatGPT network request was used.
+
+## 2026-11-25 — Android standalone account-switch method trace
+
+**Source work:** disassembled the compiled `OAIAuthenticationController.selectAccount` method and its rejection handler. It no-ops outside an allowed app/SignedIn session, for unknown or already-active account IDs; resolves the canonical account from the current session's account list; cancels validation and clears revalidation; increments operation generation and signals lifecycle changes; rebuilds the account-bound session with the existing access token; updates in-memory SignedIn state; then starts non-awaited secure session persistence. Save rejection is handled through a logging-only warning and does not roll back in-memory state in this method. The method itself does not make an account-check request or display a user picker; its caller/UI path remains untraced. The save wrapper delegates to the credential-store save method; encryption/atomicity/durability are still open.
+
+**Capability boundary:** this is decoded Android behavior, not a ChatJS account-switch implementation. No live account, auth credential, session or network request was used. The account-check helper remains only a pure schema/initial-choice utility. Remaining work includes UI caller tracing, controller operation lifecycle, native credential bridge, secure storage, and token refresh/SSO/DPoP.

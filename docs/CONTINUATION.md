@@ -469,3 +469,19 @@ Added private `src/chatgpt/android-authentication-api-schema.cjs`. It builds the
 Earlier interim notes called `accounts` an array. That was incorrect and is superseded by the decoded object-map semantics above. Remaining Android auth work is controller concurrency/generation/foreground/cancellation, native sign-in/restore callbacks and native session ID ownership, secure-store encryption/atomicity, token refresh/SSO/DPoP and full account switching. Keep guest `SessionManager` operations separate. No account request, login, account operation or credential use was performed.
 
 Android Work, Windows/Desktop and Codex CLI remain parked for sequencing only; the full product scope is unchanged.
+
+## Latest handoff — Android standalone account-switch controller method — 2026-11-25
+
+### Method-level source trace
+
+The Android `OAIAuthenticationController.selectAccount` method is separate from initial sign-in account preference. It no-ops when disposed, the app state is not allowed, the controller is not `SignedIn`, there is no session, the requested ID is not found in the current session's `accounts`, or the requested ID already matches the active account. It looks up the canonical account object by ID in the existing session list rather than trusting the caller's supplied object.
+
+When a different, existing account is selected, it cancels any current `validationTask`, clears `validationTask`/`revalidation`, increments `operationGeneration`, emits `lifecycleChanges.next(currentValue)`, and creates a new session using the existing access token, current account list, canonical selected account and new generation. It updates the controller's in-memory state to `SignedIn` with that session, then starts `saveSession` and attaches a catch handler. The method does not await persistence; on rejection the handler only emits `The selected account could not be saved securely.` when logging is enabled. It does not roll back the in-memory selection or surface a storage failure in that catch path.
+
+The method itself does not call the account-check endpoint or render a picker; it receives the requested account object from an upstream caller. The caller/UI route is not yet traced. `saveSession` delegates to the credential-store save method, but encrypted serialization/key/durability guarantees remain open.
+
+### Capability boundary and next work
+
+This raises Android source evidence for the account-switch method to method-level reconstructed. It is **not** a working ChatJS switch feature. ChatJS still has no authentication controller, live account session, account picker/UI, credential storage, or authenticated network. The next safe auth tasks are the `selectAccount` caller/UI trace; controller operation-generation/concurrency/foreground/cancellation and sign-out state machine; native sign-in/restore/session ID; secure credential storage; and token refresh/SSO/DPoP. Keep accountless guest SessionManager flow separate.
+
+The account-check helper implemented in `src/chatgpt/android-authentication-api-schema.cjs` remains only a pure response decoder and initial-account choice helper. It is not the switch method.

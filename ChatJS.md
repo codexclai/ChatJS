@@ -246,3 +246,10 @@ The private authentication helper includes seven pure validation predicates and 
 The private `src/chatgpt/android-authentication-api-schema.cjs` module reconstructs the generated `GET /backend-api/accounts/check/v4-2023-04-27` descriptor and response decoder. `accounts` is an object map keyed by account ID, not an array. The helper validates nested optional account fields, their nullable-string/boolean types, and the optional `account_ordering` string array while preserving additional fields.
 
 It also mirrors the controller's initial account choice preparation: explicit ordered IDs first, remaining map keys second, invalid/inaccessible/deactivated entries excluded, duplicate normalized IDs removed, and a credential-matching `accountId` preferred before falling back to the first eligible account. Twelve tests cover these contracts. This is a private pure helper, not login, an account picker UI, account switching, credential persistence, authenticated HTTP or a ChatGPT session. No account data or credentials are stored, and no network request is made.
+
+
+## Android account-switch source findings — 2026-11-25
+
+The Android controller's separate `selectAccount` method is now method-decoded. It accepts a requested choice but resolves the canonical account entry by ID from the current session's account list. It no-ops outside an allowed signed-in state or for an unknown/already-active ID; otherwise it cancels current validation, clears revalidation, advances the operation generation, rebuilds an account-bound session and updates in-memory `SignedIn` state. Secure persistence is started afterward without being awaited; its rejection is handled by a warning rather than a rollback in this method. The method makes no new account-check request and does not render the selection UI.
+
+These are Android source findings only. ChatJS still has no login, account-switching controller, session persistence or authenticated network path. The UI caller and underlying encrypted store durability contract remain open. See `docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
