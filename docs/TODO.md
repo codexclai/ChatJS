@@ -10,7 +10,7 @@ No Android client capability is removed from consideration by its feature-domain
 
 ### Android non-Work completion sequence
 
-- [ ] Obtain a Valdi-fork-compatible temporary bytecode inspection tool and decode Android ChatGPTDirectResponseClient.prepare/send, exact route selection, request nesting/requiredness, integrity patches, and serialization.
+- [x] Build a temporary read-only bytecode inspector from the pinned Valdi QuickJS fork and disassemble Android ChatGPTDirectResponseClient, the generated conversation API client, and the event decoder. Recovered the authenticated send body, exact send/parent-lookup/requirements routes, requirements-integrity gate, device-integrity adapter boundary, handoff/delta behavior and path bounds. Remaining schema/native-provider/resume/upload questions stay separately open.
 - [ ] Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP and account switching with legitimate authorization and secret handling.
 - [ ] Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
 - [ ] Decode Android model catalog and chat-requirements decoders, nested challenge variants, requirements-integrity and device-integrity flow, public-build provider selection, cooldown/rate-limit handling, and all failure/retry semantics.
@@ -140,7 +140,7 @@ Never create branches or worktrees. Keep all repository work on main.
 
 ## P1 — Android compiled-client reconstruction follow-up (2026-11-25)
 
-- [ ] Decode Valdi bytecode/control flow for authenticated DirectResponseClient `prepare` and `send`, including exact selection between `/backend-api/f/conversation` and `/backend-api/conversation`, complete nested JSON schema, integrity body patch and serializer semantics. The field-name inventory is not a validated schema.
+- [x] Decode Valdi bytecode/control flow for authenticated DirectResponseClient send/prepare: exact `/backend-api/f/conversation` send route, separate GET `/backend-api/conversation/{id}` parent lookup, selected-user-message body construction, conditional conversation/skills fields, attachment mapping, JSON serialization and requirements/device-integrity provider boundaries. Full nested model/requirements schemas, public native integrity behavior, upload protocol and resume mapping remain separate tasks.
 - [ ] Decode generated ModelCatalog and ChatRequirements response decoder bytecode to recover required/optional/null fields and nested challenge variants.
 - [ ] Decode event decoder and direct resume request bytecode, including delta operations, entity references, `resume_conversation_token`, `stream_handoff`, `resume_sse_endpoint`, `x-conduit-token`, offsets and maximum handoff count.
 - [ ] Decode upload reservation response, numeric file/count/total-size limits, URL expiry, retry/cancellation and accepted MIME/image constraints.
@@ -211,10 +211,10 @@ Never create branches or worktrees. Keep all repository work on main.
 
 ## P1 — Android Valdi/QuickJS bytecode inspection tooling
 
-- [ ] Obtain the full pinned Valdi QuickJS source tree and exact fork/build settings; resolve the large-source retrieval blocker and verify source/native-runtime compatibility.
-- [ ] Build a temporary analysis-only fork with a deserialized-function dump hook in `JS_ReadFunctionTag` after its constant pool has been read. Use `DUMP_READ_OBJECT` only as a supplemental serialization trace; the regular `DUMP_BYTECODE` hook is not sufficient for precompiled modules.
-- [ ] Validate the disassembler against a known compiled function fixture and a copy of one module entry; preserve bounds checking and never execute module functions.
-- [ ] Disassemble DirectResponseClient.prepare/send, exact route selection/serialization, generated ModelCatalog/ChatRequirements decoders, SSE event/resume and upload reservation/process functions. Record bytecode, constants, function metadata, branches, callees and remaining uncertainties.
+- [x] Obtain pinned Valdi QuickJS source files and build a temporary analysis-only reader from commit `f5bc2dcfcb880109c908e0675968cb532231ca71`; the Android native binary's exact source revision/build flags remain unverified.
+- [x] Build a temporary analysis-only fork with `js_dump_function_bytecode(ctx, b)` immediately before `JS_ReadFunctionTag` returns, after constant-pool reconstruction. This decodes serialized precompiled functions; the ordinary compilation-side `DUMP_BYTECODE` hook alone was insufficient.
+- [x] Validate the reader on three real compiled Android module entries (direct sender, generated API client and event decoder); all deserialize successfully. The harness reads bytecode and releases objects only; it never invokes/evaluates application functions.
+- [x] Disassemble DirectResponseClient send/prepare, the generated conversation API client and the SSE event decoder; method-level findings are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. [ ] Continue into nested model/requirements schemas, stream worker/resume transport and upload reservation/process modules.
 
 ## P1 — Codex Responses WebSocket v2 and incremental context
 

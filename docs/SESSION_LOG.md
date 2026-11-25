@@ -1105,3 +1105,21 @@ A local clone and local `npm run check` were unavailable because this container 
 ## 2026-11-25 — Architecture non-goal wording clarification
 
 Clarified the former category-blacklist line under `docs/ARCHITECTURE.md`'s explicit non-goals so it unambiguously rejects blanket feature-domain restrictions instead of reading like a capability exclusion. No product capability or runtime code changed.
+
+
+## 2026-11-25 — Android Valdi bytecode disassembly and direct protocol reconstruction
+
+**Active scope:** continued the Android non-Work phase only. Android Work, Windows/Desktop and Codex CLI remain parked as sequencing; the permanent three-family product goal is unchanged.
+
+**Source and tooling:** reverified use of the supplied official Android 1.2026.321 XAPK and its chatgpt_services.valdimodule. Retrieved the pinned public Snapchat/Valdi QuickJS source at commit f5bc2dcfcb880109c908e0675968cb532231ca71 (QuickJS 2021-03-27). Built a temporary analysis-only QuickJS reader with js_dump_function_bytecode(ctx, b) immediately before JS_ReadFunctionTag returns, after constant-pool reconstruction. Compiled with GCC using -O2 -DDUMP_BYTECODE=1 -DCONFIG_VERSION="2021-03-27" -D_GNU_SOURCE and QuickJS sources quickjs.c cutils.c libregexp.c libunicode.c libbf.c, linking -lm -ldl -lpthread. The harness calls JS_ReadObject(...JS_READ_OBJ_BYTECODE) and releases the result; no module function was evaluated or invoked.
+
+**Decoded entries and verification:**
+- ChatGPTDirectResponseClient.js: 24,963-byte bytecode, SHA-256 e3ff57394f265f47c9a6a651e97d1f7fc752183ed06482c1de0bf8e0d2caa4ef, 66 function bodies.
+- ChatGPTConversationApiClient.js: 9,050 bytes, SHA-256 cee4c14430b8527d1b3572dcd44d1e3317ca32f0647c415e833ee4d138c77f74, 56 function bodies.
+- ChatGPTConversationEventDecoder.js: 14,503 bytes, SHA-256 77964ad085e01f1366658a40c60f063933dec6c429baad1c475241a59ee80e48, 22 function bodies.
+
+**New source findings:** reconstructed authenticated sender message selection, body shape/optional fields, attachment mapping, direct POST and distinct parent GET routes, generated requirements operation/body, separation of requirements integrity from device integrity, default provider fail-closed behavior, native provider injection gate and response validation, streaming completion/resume/handoff state, delta schema/operations/path limits, and source error mapping. Exact details and evidence boundaries are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+**Open limits:** generated nested model/requirements schemas remain incomplete; the native device-integrity DEX path has an internal package-ID guard and public-build availability is unproven; exact resume HTTP request mapping and worker behavior remain open; upload reservation/PUT/process/limits need separate method-level tracing; guest routes and payloads remain independent and unresolved. The pinned source successfully decoded the three real payloads, but this does not prove the exact native library revision/build flags.
+
+**Changed files:** source/experiment/continuity/memory/TODO/open-question/session records and root manual will be updated in the current documentation commit. No production runtime code/dependencies changed. No ChatGPT network call or account/session access occurred. Tests/CI for the documentation commit will be recorded after commit; prior local clone check was unavailable because of GitHub DNS/connectivity in the container.

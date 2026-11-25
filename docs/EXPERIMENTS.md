@@ -294,3 +294,24 @@ The conversation callback is traced through the same ViewModel receiver: `Lxjk1.
 **Unsuccessful/blocked step:** no source checkout or compatible QuickJS binary is installed in the analysis runtime. The GitHub connector returned an empty body for the large `quickjs.c` source file, and Firecrawl provided targeted source excerpts rather than a complete build tree. GCC is available, but the QuickJS source/dependency tree and build context are not. No compiler command ran and no method dump was produced.
 
 **Next experiment:** obtain the exact source tree/revision and build settings; patch only a temporary copy of `JS_ReadFunctionTag` to dump functions after constant-pool deserialization; run against selected module entries without invoking the resulting function bodies; validate the dumper on a known compiled fixture before analyzing ChatGPT methods.
+
+
+## 2026-11-25 — Android Valdi QuickJS bytecode reader built and exercised
+
+**Status:** successful analysis tooling; temporary only, no production/runtime integration.
+
+**Pinned source:** Snapchat/Valdi commit `f5bc2dcfcb880109c908e0675968cb532231ca71`, QuickJS version `2021-03-27`, source file `third-party/quickjs/src/quickjs/quickjs.c`. The exact reader source was retrieved from the pinned repository. The analysis copy inserted `js_dump_function_bytecode(ctx, b)` immediately before the successful return from `JS_ReadFunctionTag`, after the serialized function's constant pool had been restored. This is the necessary read-side hook for precompiled Valdi modules; the normal `DUMP_BYTECODE` hook is compilation-side.
+
+**Build:** GCC temporary build with `-O2 -DDUMP_BYTECODE=1 -DCONFIG_VERSION="2021-03-27" -D_GNU_SOURCE`, compiling `dump.c quickjs.c cutils.c libregexp.c libunicode.c libbf.c` and linking `-lm -ldl -lpthread`. No dependency or build file was added to ChatJS. The harness is deliberately limited to `JS_ReadObject(..., JS_READ_OBJ_BYTECODE)`, object disposal and runtime cleanup; it never calls `JS_EvalFunction` or executes a module function.
+
+**Payloads decoded successfully:**
+
+- `ChatGPTDirectResponseClient.js`: 24,963-byte bytecode payload, SHA-256 `e3ff57394f265f47c9a6a651e97d1f7fc752183ed06482c1de0bf8e0d2caa4ef`, 66 decoded function bodies.
+- `ChatGPTConversationApiClient.js`: 9,050-byte payload, SHA-256 `cee4c14430b8527d1b3572dcd44d1e3317ca32f0647c415e833ee4d138c77f74`, 56 decoded function bodies.
+- `ChatGPTConversationEventDecoder.js`: 14,503-byte payload, SHA-256 `77964ad085e01f1366658a40c60f063933dec6c429baad1c475241a59ee80e48`, 22 decoded function bodies (2,180 dump lines).
+
+**Result:** exact sender, generated request-client and streaming-event decoder branches could be reconstructed. Detailed methods, fields, routes, conditions, limits and exceptions are recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. The Android public package successfully deserialized in this temporary pinned build; this does not prove that the supplied stripped native library was built from this exact upstream source commit or with identical flags. The disassembler has not been added to ChatJS and is not a runtime dependency.
+
+**Safety/retention:** the temporary source checkout, C harness, compiler, bytecode inputs and dump files stayed in the isolated analysis VM. No official app payload, extracted third-party code, compiler binary, or QuickJS code was committed. No user/account credentials were used and no network request was sent to ChatGPT.
+
+**Follow-up:** reconstruct complete generated nested model/requirements schemas; inspect the native device-integrity service implementation/public-build gate; decode the exact stream resume wire request; and disassemble upload reservation/PUT/process paths and numeric limits.

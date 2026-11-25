@@ -117,10 +117,12 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 
 ## 2026-11-25 — Direct-response method-body and schema reconstruction follow-up
 
-- [ ] Decode compiled `ChatGPTDirectResponseClient.prepare/send` method bodies and route-selection branch. A deeper string-pool pass inventories conversation/message/context keys, but nesting, requiredness, exact route condition and serialized order remain unknown.
-- [ ] Decode generated model-catalog and chat-requirements decoder instruction graphs to recover complete nested schemas, nullable/optional behavior and all challenge variants.
-- [ ] Decode event decoder delta-operation and handoff logic, including exact event variants, resume body/header mapping, eventOffset/offset semantics, and maximum direct-stream handoff count.
-- [ ] Recover numeric `MAX_PICKED_FILES`, `MAX_PICKED_FILE_BYTES`, and `MAX_PICKED_TOTAL_BYTES` constants plus upload reservation response layout, URL expiry and retry policy.
+- [x] Decode ChatGPTDirectResponseClient send/prepare method bodies, selected-user-message flow, attachment mapping, integrity-provider preparation, JSON body, and route selection. Direct POST is /backend-api/f/conversation; separate parent lookup is GET /backend-api/conversation/{encodedConversationId}; requirements are POST /backend-api/sentinel/chat-requirements with {}. Full findings are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+- [ ] Complete generated model-catalog and chat-requirements decoder instruction graphs: all nested model/preset/version and challenge fields, nullable/optional behavior, and exact public-build challenge combinations.
+- [x] Decode event message/completion/resume-token/stream-handoff and delta-operation state machine, including c/o/p/v fields, supported operations, JSON-pointer escaping, unsafe-path rejection, 2,048-character and 64-segment limits, and three-handoff ceiling.
+- [ ] Recover resume HTTP request body/header/path mapping and reconcile eventOffset with streaming worker offset/continuation protocol.
+- [ ] Recover numeric MAX_PICKED_FILES, MAX_PICKED_FILE_BYTES and MAX_PICKED_TOTAL_BYTES plus upload reservation response layout, signed URL requirements, PUT headers, processing request, URL expiry and retry/cancellation policy.
+- [ ] Trace the full native ChatGPTDeviceIntegrityProvider service call and actual public-build availability. The Valdi adapter boundary, version/service selection and response patch/header validation are now traced; the DEX native implementation has a package-ID caveat.
 
 ## Codex CLI client family — 2026-11-25
 

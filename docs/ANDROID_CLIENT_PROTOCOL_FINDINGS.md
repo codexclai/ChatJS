@@ -644,3 +644,101 @@ Observed feature-related module assets include:
 - Other shipped client areas: `chatgpt_global_search`, `chatgpt_library`, `custom_instructions_ui`, `memory_settings_ui`, `oai_conversation`, and `oai_voice_service`.
 
 **Evidence boundary:** these are observed filenames inside the supplied public app package. They establish that related implementation assets are shipped; they do not alone prove the active UI path, service route/schema, account entitlement, availability in every region, host support, or a working ChatJS implementation. Trace each workflow from its actual source before coding or claiming support. None of these areas is omitted solely because of its subject-matter category.
+
+
+## Method-level Android conversation protocol reconstruction — 2026-11-25
+
+### Analysis method and provenance
+
+A temporary read-only disassembler was built from the pinned public Valdi QuickJS source at Snapchat/Valdi commit f5bc2dcfcb880109c908e0675968cb532231ca71, QuickJS version 2021-03-27. The compiled tool inserts js_dump_function_bytecode(ctx, b) immediately before JS_ReadFunctionTag returns, after the deserialized function's constant pool is restored. The ordinary DUMP_BYTECODE hook is compilation-side and does not decode precompiled module entries.
+
+The harness calls JS_ReadObject(..., JS_READ_OBJ_BYTECODE), releases the resulting object and runtime, and never evaluates, invokes, or executes an Android application function. No QuickJS/Valdi source or analysis binary was added to ChatJS or its production dependencies.
+
+| Android module entry | Bytecode bytes after Valdi wrapper | SHA-256 | Decoded function bodies |
+| --- | ---: | --- | ---: |
+| src/conversations/ChatGPTDirectResponseClient.js | 24,963 | e3ff57394f265f47c9a6a651e97d1f7fc752183ed06482c1de0bf8e0d2caa4ef | 66 |
+| src/generated/ChatGPTConversationApiClient.js | 9,050 | cee4c14430b8527d1b3572dcd44d1e3317ca32f0647c415e833ee4d138c77f74 | 56 |
+| src/conversations/ChatGPTConversationEventDecoder.js | 14,503 | 77964ad085e01f1366658a40c60f063933dec6c429baad1c475241a59ee80e48 | 22 |
+
+The successful reads establish bytecode-format compatibility for these entries. They do not prove that the stripped Android native runtime was built from this exact upstream source commit or identical flags. The native library remains stripped; no app function was executed.
+
+### Authenticated direct-response request
+
+The decoded ChatGPTDirectResponseClient call graph establishes: resolve model; resolve parent message ID; validate and upload selected-user-message attachments; prepare first-party integrity headers/body patch; build and JSON-serialize the request; then send it through the direct streaming client/worker.
+
+The sender searches the supplied messages from newest to oldest and selects the last message whose author role is user. If none exists or its trimmed content is empty, it throws "Enter a message before starting a ChatGPT conversation." The original content string is used in the body after this non-empty validation.
+
+The no-attachment payload shape is:
+
+    {
+      "action": "next",
+      "conversation_mode": {
+        "kind": "primary_assistant",
+        "history_and_training_disabled": false
+      },
+      "messages": [{
+        "author": { "role": "user" },
+        "content": {
+          "content_type": "text",
+          "parts": ["<selected user message>"]
+        },
+        "id": "<new client message ID>",
+        "metadata": {}
+      }],
+      "model": "<resolved model>",
+      "parent_message_id": "<resolved parent message ID>",
+      "stream": false,
+      "timezone_offset_min": 0
+    }
+
+Optional/conditional behavior:
+- conversation_id is emitted only when the requested conversation differs from the session's current conversationId; it is omitted when equal.
+- With attachments, content_type is multimodal_text and mapped file parts precede the text. A separate attachments array is also added to the message.
+- Image parts are {asset_pointer: "file-service://" + fileId, content_type: "image_asset_pointer", size_bytes, height?, width?}. Other file parts use {id, mime_type, name, size, source: "local"}.
+- skills_settings_overrides appears only when enableModelWrittenDIL === false, setting model_written_dil and model_written_dil_v2 false.
+- timezone_offset_min is Date.getTimezoneOffset(); stream is false; message metadata is {}.
+- The request is built after the integrity provider returns. This is not permission to skip that step.
+
+The direct conversation POST is /backend-api/f/conversation. Headers include Authorization: Bearer <session access token>, ChatGPT-Account-Id: <active account id>, and Content-Type: application/json, merged only with validated first-party integrity headers.
+
+### Parent-message lookup
+
+resolveParentMessageId returns a caller-supplied parent ID when present; otherwise it creates a new client message ID when the target conversation equals the current session conversation. For a different conversation it performs GET /backend-api/conversation/{encodeURIComponent(conversationId)} and requires a string current_node. This is parent/context lookup, not the direct send endpoint.
+
+### Requirements integrity versus device integrity
+
+The default ChatGPTRequirementsIntegrityProvider calls generated getChatRequirements({}). The generated operation is POST /backend-api/sentinel/chat-requirements with JSON body {}. Its typed ChatRequirementsResponse contains a required token and optional turnstile, proofofwork and so challenge descriptors.
+
+For the default provider, requiresDeviceIntegrity is true when any challenge descriptor has required === true. If true, it throws rather than sending without a device-integrity provider. Otherwise, it returns OpenAI-Sentinel-Chat-Requirements-Token. That requirements token is not device attestation.
+
+A separate ChatGPTDeviceIntegrityProvider can be injected only when Valdi.isVersionAtLeast(11) and getDeviceIntegrityService(session) returns a service. It receives session access token, active account ID, base URL, applicable conversation ID and resolved parent message ID. Its response can supply bodyPatchJson and parallel header-name/header-value arrays.
+
+Response validation requires equal-length header arrays; lowercase token-style names; names beginning openai-sentinel- or in an explicit allowlist; string values without CR, LF or NUL; and no duplicate normalized names. The inspected JSON body patch must be an object with exactly one key, app_attest_challenge, whose value is a non-empty trimmed string. Malformed or additional-key patches fail closed.
+
+Public availability of the native Android OAIDeviceIntegrity provider remains unresolved: inspected DEX requires com.openai.chatgpt.internal while the supplied public XAPK is com.openai.chatgpt. Do not fabricate a proof or skip any required stage.
+
+### Generated model/requirements API
+
+The generated client has getModels and getChatRequirements operations. The observed catalog operation is GET /backend-api/models with query values iim=true and supports_model_picker_upgrade_presets=false. Decoder identifiers include ModelCatalogRequest, ModelCatalogModel, ModelCatalogPreset, ModelCatalogVersion, ModelCatalogResponse, ChatRequirementChallenge and ChatRequirementsResponse. This pass establishes routes, challenge fields consumed by the provider and selected primitive validation, not every nested field's optionality/nullability.
+
+### SSE event decoder, deltas and resume state
+
+The decoded event consumer establishes:
+- [DONE] flushes reasoning and completes; message_stream_complete also flushes reasoning and completes.
+- Every non-[DONE] event increments eventOffset before payload decoding, including ignored/unknown events.
+- resume_conversation_token stores a non-empty token string and string conversation_id.
+- stream_handoff requires an options array containing at least one object option and a previously stored resume token/conversation. Missing resume state throws; a conflicting string conversation_id throws. Valid continuation is {conversationId, eventOffset, token}.
+- Direct stream handoff count is capped at three. The exact resume HTTP body/header/path mapping remains open.
+- Normal message updates accept assistant/tool roles and non-empty message IDs; visually hidden messages are skipped. Assistant text is accumulated by message ID and emitted as the newly appended suffix. The decoder also tracks conversation state, DIL result changes, entity-reference changes and reasoning snapshots.
+
+The delta decoder reads c (channel), o (operation), p (path), and v (value), retaining prior channel/operation/path values when subsequent delta events omit them. Supported operations are Add, Append, Patch, Remove, Replace and Truncate. Add inserts into an array at a numeric index or assigns an object property. Append concatenates strings, appends array values, or merges plain-object values. Patch recursively applies an array of nested operations. Remove splices/deletes. Replace assigns. Truncate requires a non-negative integer and truncates a string or array.
+
+Paths are slash-delimited JSON-pointer-like strings, limited to 2,048 characters and 64 segments. The decoder maps ~1 to slash and ~0 to tilde, converts canonical non-negative integer segments to indices, and rejects __proto__, constructor and prototype. Invalid paths, unknown operations and malformed nested patches throw explicit errors.
+
+### Error and evidence limits
+
+The sender maps HTTP 401 to session-expired, HTTP 403 to account/device-integrity error, and HTTP 429 to temporary rate-limit error. These are source-derived branches, not evidence that ChatJS currently handles them.
+
+Still open: full generated nested schemas; native device-integrity implementation/public-build availability; exact resume wire mapping; file reservation/upload/process lifecycle and size constants; and independent guest create/refresh and guest composer protocols.
+
+**Runtime status:** this is static Android source knowledge only. ChatJS still has no product-specific connection, authenticated/guest session implementation, conversation sender/decoder, file workflow or integrity provider.

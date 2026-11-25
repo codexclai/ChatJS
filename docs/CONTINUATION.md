@@ -235,3 +235,33 @@ The Android work target is the complete relevant shipped Android client experien
 The final ChatJS target remains ChatGPT Android/mobile + ChatGPT Windows/desktop + Codex CLI in one Node.js module. The current phase is Android non-Work only; Android Work, Windows/Desktop and Codex CLI remain parked until Android non-Work is fully reconstructed, implemented and tested. This does not remove or reduce any long-term target.
 
 The supplied Android XAPK was reverified during this session (SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`; outer ZIP integrity passed; six entries; base APK 5,080 entries, ten DEX files and 111 Valdi modules). Static module assets include finance/account, maps/location, wallet, health, commerce/shopping, global search, Library, custom instructions, memory settings, conversation and voice areas. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Presence of an asset does not prove active route, entitlement, complete behavior, or ChatJS support. Feature-domain labels do not restrict coverage.
+
+
+## Latest handoff — Android direct-response and stream decoder bytecode trace — 2026-11-25
+
+### Tooling completed
+
+A temporary read-only QuickJS disassembler was built from pinned `Snapchat/Valdi` commit `f5bc2dcfcb880109c908e0675968cb532231ca71` / QuickJS `2021-03-27`. Its dump hook is inserted before `JS_ReadFunctionTag` returns, after constant-pool reconstruction. A small harness calls `JS_ReadObject(...JS_READ_OBJ_BYTECODE)`, frees the decoded object and runtime, and never evaluates or invokes app functions. Three actual Android entries deserialize successfully: DirectResponseClient (24,963 bytes / 66 functions), generated ConversationApiClient (9,050 bytes / 56 functions) and ConversationEventDecoder (14,503 bytes / 22 functions). All tool/source/payload artifacts remained temporary and outside the ChatJS repository and runtime.
+
+### Reconstructed behavior
+
+- Authenticated direct send POST: `/backend-api/f/conversation`.
+- Separate parent lookup GET: `/backend-api/conversation/{encodeURIComponent(conversationId)}`, requiring decoded `current_node`.
+- Requirements operation: POST `/backend-api/sentinel/chat-requirements` with JSON body `{}`.
+- Default `ChatGPTRequirementsIntegrityProvider` emits `OpenAI-Sentinel-Chat-Requirements-Token` only if no `turnstile`, `proofofwork`, or `so` descriptor has `required === true`; otherwise it throws and does not send.
+- A different `ChatGPTDeviceIntegrityProvider` is selected only when Valdi >= 11 and a device-integrity service is available. Header arrays and body patch are validated; the inspected body patch is exactly one `app_attest_challenge` key with non-empty text. Public package availability of the native service remains unproven due to its DEX internal package-ID guard.
+- Request builder uses the newest user-role message, checks non-empty trimmed text, uploads attachments first, then creates a `next` payload with primary-assistant mode, model, parent ID, client message ID, metadata, optional file parts, `stream:false` and timezone offset. `conversation_id` is included only when the selected target differs from the session's current conversation.
+- Stream decoder tracks event offsets for every non-DONE event, resume tokens, conversation-bound handoffs, assistant/tool message text, reasoning, DIL and entity-reference changes. It emits continuation `{conversationId,eventOffset,token}`; the direct sender allows at most three handoffs.
+- Delta payload uses `c/o/p/v` fields and Add/Append/Patch/Remove/Replace/Truncate operations. Path bounds are 2,048 characters / 64 segments; JSON-pointer escaping is applied, and `__proto__`, `constructor`, and `prototype` are rejected.
+
+Full method-level evidence and caveats are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
+
+### Current next work
+
+1. Complete generated ModelCatalog/ChatRequirements nested response schemas and nullable/optional precedence.
+2. Reconstruct native device-integrity service internals and whether a public Android build exposes it; do not bypass or simulate.
+3. Decode the exact streaming resume HTTP path/body/headers and worker/processor state.
+4. Disassemble FileUploadService reservation, signed destination, PUT, process/finalize and download paths; recover numeric file limits and cancellation/expiry/retry behavior.
+5. Continue independent Android guest create/refresh and guest composer route reconstruction. `/backend-anon` constants in LocationCookieInitializer remain unrelated evidence.
+
+**No ChatJS production code changed:** request, auth, file, SSE and integrity workflows remain unimplemented. The new results improve source evidence only; do not report functional support.
