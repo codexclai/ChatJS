@@ -1065,3 +1065,13 @@ Rewrote docs/CHATGPT_PROJECT_INSTRUCTIONS.md as a stable, enduring project chart
 ### Verification limits
 
 No production JS/TS, dependencies, public APIs, or tests changed in this documentation correction. The repository had no local checkout in this session, so local npm run check and local archive inspection were not run. Parent main commit b2a2b310cb91cee2e6b0ec8ea6cf4418ea6dd793 had successful CI run 45565771152 and CodeQL run 45565771054; the new documentation commit requires fresh CI/CodeQL verification.
+
+## 2026-11-25 — Final closeout verification and documentation synchronization
+
+- Updated the package description and README to name all three permanent source/client families: ChatGPT mobile, ChatGPT desktop, and Codex CLI.
+- Moved the Android non-Work-first execution queue to the top of TODO; Android Work, Windows/Desktop, and Codex CLI remain parked, not removed from the long-term target.
+- Confirmed the Project Instructions charter is 7,455 characters, contains no temporary priority or feature-domain blacklist, and keeps ongoing priorities/tasks in the repository state/continuation/TODO records.
+- Confirmed the prior category-based exclusions were removed from current requirements, capability matrix, manual, and instructions; historical references are explicitly marked superseded. No category-level feature exclusions remain in current product scope.
+- The latest TODO-ordering commit 7fc0dec69fcefbce9915043eed73cd004e417d4f passed CI run 45567211063 and CodeQL run 45567211014. CI ran npm checks/tests/archive build, extracted the package and smoke-tested ESM/CommonJS loading; CodeQL analysis succeeded.
+- The latest repository tree has 57 entries, one branch (main), zero open issues and zero open pull requests. No production JS/TS, API, test or dependency changed in this documentation correction; ChatJS remains foundation-only.
+- This final state/log commit records the latest verified parent commit and run IDs. No claim is made that the ChatGPT Android runtime features are implemented; those remain the active engineering target.
