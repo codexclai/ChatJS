@@ -297,7 +297,7 @@ The pinned source has `list_available_plugins_to_install` and `request_plugin_in
 - The source has special client-mode availability restrictions (the plugin install flow is not available in the observed `codex-tui` path). The install action is not complete merely because a user clicked Accept; completion is checked after the request.
 - The upstream code emits install-request analytics and session telemetry. Those event/tracking systems are excluded from ChatJS.
 
-This is a Codex client integration/consent surface, not AI-model selection. Any ChatJS implementation must preserve current-catalog ID validation, explicit user consent, completion verification and runtime refresh semantics. It must also respect ChatJS's own explicit scope exclusions and never imply that every discoverable plugin/connector is automatically supported or safe to install.
+This is a Codex client integration/consent surface, not AI-model selection. Any ChatJS implementation must preserve current-catalog ID validation, explicit user consent, completion verification and runtime refresh semantics. It must follow ChatJS's full source-backed product scope and never imply that every discoverable plugin/connector is automatically supported or safe to install.
 
 ### Implementation consequence
 

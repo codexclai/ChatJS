@@ -212,7 +212,7 @@ Additional pinned Codex CLI control contracts:
 - **User interaction:** blocking root-thread `request_user_input`, non-blocking structured `request_user_input_async`, and non-blocking `send_message_to_user_async`. These need a genuine host interaction path; no display/answer may be fabricated.
 - **MCP resources:** list resources, list resource templates, and read resources are distinct from MCP tool calls and are scoped to selected server/environment and current model access.
 - **Dynamic tools:** registered tools supplied by the current Codex thread can be direct/deferred, namespaced, and invoked through a real asynchronous request/response callback with start/completion events and cancellation.
-- **Plugin/connector catalog:** current discoverable entries can be listed; install requests are checked against that catalog and delivered via explicit MCP elicitation consent, then installation completion is verified before MCP refresh/connector selection update. This is not alternate AI-provider selection. Respect product exclusions and do not assume all entries are in scope.
+- **Plugin/connector catalog:** current discoverable entries can be listed; install requests are checked against that catalog and delivered via explicit MCP elicitation consent, then installation completion is verified before MCP refresh/connector selection update. This is not alternate AI-provider selection. Apply the full source-backed product scope, while treating catalog discovery as evidence of availability—not automatic support or approval.
 
 All findings are static source evidence. ChatJS has no plan/clock/context/user-input/environment/MCP-resource/dynamic-tool/plugin-install implementation yet.
 
