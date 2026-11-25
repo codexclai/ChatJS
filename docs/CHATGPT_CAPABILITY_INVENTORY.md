@@ -1,6 +1,6 @@
 # ChatGPT Client Implementation Inventory — Mobile and Desktop
 
-**Reviewed:** 2026-11-25. ChatJS is one general-purpose Node.js module intended to adapt the actual client-side systems and workflows of official ChatGPT mobile and desktop (including Work/Codex).
+**Reviewed:** 2026-11-25. ChatJS is one general-purpose Node.js module consolidating actual client capabilities from ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI. The overall target includes all three client families; the temporary active execution priority is ChatGPT Android excluding Android Work.
 
 This inventory is a guide to the supplied client implementation material and the intended Node.js adaptation. It is not a claim that the present foundation already supports the listed features.
 
@@ -54,9 +54,9 @@ Core APIs must be reusable without a phone/desktop device or hardware. If the ca
 
 The current ChatJS repository is foundation-only. Actual ChatGPT service connection, authentication/session handling, request transport, conversation features, files, voice, images, Work tasks, and Codex integrations are not implemented. No end-to-end compatibility claims are made.
 
-## Explicit exclusions
+## Feature-domain coverage
 
-Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.
+No first-party client feature domain is excluded merely by category. Include actual client features for personal/financial workflows, location and maps, shopping/commerce, wallet/payments, contacts, calendar, communications/telephony, health, and other domains wherever they are implemented by the supplied sources and legitimately supportable. Do not invent a capability from a package string or assume host permissions exist; verify the implementation, authorization, host requirements, and tests.
 
 
 ## Accountless sessions and execution-surface distinctions — 2026-11-24
@@ -230,3 +230,7 @@ The pinned Codex CLI source maps the WebSocket transport in greater detail:
 - **Fallback:** HTTP 426 triggers immediate HTTPS fallback; specific WebSocket errors and exhausted retry budgets can switch a model-client session permanently to HTTP. A feature-gated exponential retry path starts at five seconds and caps at sixty seconds for a limited set of external sampling sessions.
 
 This is a different implementation from the existing bounded generic SSE parser in ChatJS and remains unimplemented. No transport support should be claimed until ESM/CommonJS/TypeScript and real authorized end-to-end tests pass.
+
+## Current implementation priority
+
+Complete the full non-Work ChatGPT Android client experience first. The Android Work cloud surface, Windows/Desktop client, and Codex CLI remain in the long-term ChatJS target but are parked until Android non-Work is fully reconstructed, implemented and tested. This is a sequencing decision only.

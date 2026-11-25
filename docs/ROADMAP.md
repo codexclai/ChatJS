@@ -59,3 +59,14 @@ The expanded owner quality requirements are normative in PRODUCT_STANDARD.md, se
 - Establish benchmarks and measurable CPU/memory/latency/throughput budgets before claiming performance or lightweight footprint.
 - Keep Node.js/platform/client-protocol compatibility evidence current through explicit source review and contract tests when updated official packages or verified releases become available. Do not self-update or execute remote code.
 - Make automatic capability discovery local and side-effect-free by default; remote readiness operations require explicit caller intent and real evidence.
+
+## Owner-directed implementation order — 2026-11-25
+
+The product goal remains unchanged: ChatJS ultimately consolidates ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI. The active implementation order is now explicitly:
+
+1. Complete ChatGPT Android's entire non-Work client experience.
+2. Complete Android Work Cloud as a distinct client engine.
+3. Complete ChatGPT Windows/Desktop, including its local Work surface.
+4. Complete the Codex CLI client capability family natively within ChatJS.
+
+Steps 2–4 remain in the product target; they are parked for the current phase. No domain category is blanket-excluded from feature coverage. Use actual source evidence and legitimate host/service support to determine what can be implemented.

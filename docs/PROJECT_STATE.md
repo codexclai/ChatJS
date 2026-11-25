@@ -9,8 +9,8 @@
 | Project | ChatJS |
 | Repository | codexclai/ChatJS |
 | Node module name | ChatJS |
-| Phase | Unified ChatGPT mobile + desktop + Codex CLI client target documented; Android Valdi bytecode analysis; runtime remains foundation-only |
-| Status | The owner clarified that ChatJS is one general-purpose Node.js client module consolidating ChatGPT mobile, ChatGPT desktop and Codex CLI client capabilities under one ChatJS package/API. All three are in scope; the Codex executable/app-server are not runtime dependencies. Android cloud Work, Windows local Work and Codex CLI remain distinct surfaces. The expanded dynamic, customizable, real-time, async/concurrent, performance, compatibility and consumer-controlled sustained-operation requirements are recorded in PRODUCT_STANDARD.md sections 1 and 14. Android chatgpt_services is confirmed as a Valdi-wrapped QuickJS bytecode archive; exact ChatGPT serializers remain undecoded. No production client behavior changed; the runtime remains foundation-only. |
+| Phase | Active priority: complete ChatGPT Android non-Work client first; overall mobile + desktop + Codex CLI target unchanged |
+| Status | The long-term product remains one general-purpose Node.js module consolidating ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI client capabilities. Owner direction dated 2026-11-25 sets the temporary active execution priority to completing the full ChatGPT Android non-Work client experience. Android Work, Windows/Desktop and Codex CLI are parked until that phase is genuinely complete and tested; this is sequencing only and does not reduce product scope. The owner also revoked category-level feature exclusions: personal/financial, location/maps, commerce, wallet/payment, contacts, calendar, communications/telephony, health and all other relevant source-backed feature domains are included where actual client implementations and legitimate service/host support exist. The runtime remains foundation-only; no ChatGPT product-specific client operation is yet implemented. |
 | Default branch | main |
 | Last reviewed | 2026-11-25 |
 | Runtime policy | Use the supported Node.js LTS in CI. |
@@ -36,7 +36,7 @@
 16. Reviewed current OpenAI developer documentation, selected Responses API as the new-integration foundation, and documented the Assistants API shutdown and Sign in with ChatGPT preview restrictions.
 17. Reviewed current ChatGPT Work/Codex, desktop app, Voice, Projects and Codex documentation as product-reference evidence.
 18. Reclassified ChatJS as mobile-first with applicable desktop Work/Codex capabilities; removed OpenAI API/key/OAuth integration from product scope. (the earlier local-only/account-client exclusion was superseded 2026-11-20 by the owner's requirement to reproduce actual ChatGPT client behavior).
-19. Explicitly excluded health, finance, maps, shopping, wallet, contacts, calendar, telephony and unrelated Android permission domains.
+19. Historical category blacklist (superseded 2026-11-25): an earlier decision excluded health, finance, maps, shopping, wallet, contacts, calendar, telephony and some Android permissions. The owner has revoked those category-level exclusions; no first-party feature domain is categorically excluded.
 20. Recorded Windows Codex, command runner, code-mode host, sandbox, terminal, browser/native-host, computer-use, plugin/skill, shell and file-association observations in docs/REFERENCE_DESKTOP.md.
 21. Updated future-chat continuity and Project Instructions to rely on committed mobile/desktop findings instead of repeatedly requesting reference binaries.
 22. Copied the supplied Android ChatGPT.zip archive into private ChatGPT Library at /ChatJS-Reference-Archives/ChatGPT-Android.zip and verified it by materializing the Library copy back successfully (54,869,202 bytes).
@@ -127,6 +127,8 @@
 107. Mapped Codex core turn-control tools (plan/context/time/environment readiness), blocking/asynchronous user-interaction flows, separate MCP resource operations, current-thread dynamic tool callbacks and catalog-validated plugin/connector installation via explicit user elicitation consent and completion verification.
 108. Confirmed Android arm64 split embeds stripped Valdi/QuickJS runtime strings in libopenai_xplat_export.so and identified a source-supported temporary disassembly hook: invoke js_dump_function_bytecode after JS_ReadFunctionTag has reconstructed opcode data and constant pool.
 109. Mapped Codex Responses WebSocket v2: capability/session gating, beta handshake, turn-scoped connection/routing affinity, strict incremental previous_response_id continuation, explicit generate:false warmup, bounded frame/read-ahead/event flow, protocol interrupt acknowledgement and one-way same-session HTTPS fallback.
+110. Superseded the earlier category-based feature exclusions at the owner's direction; documented full source-backed feature-domain coverage and removed the blacklist from current product requirements, capability matrix, Project Instructions, and user documentation.
+111. Recorded the unchanged long-term product goal (ChatGPT Android/mobile + ChatGPT Windows/desktop + Codex CLI in one ChatJS module) and the temporary Android non-Work-first execution sequence. Android Work, Windows/Desktop, and Codex CLI are parked, not removed.
 
 ## Not implemented
 
@@ -144,19 +146,17 @@
 
 ## Next actions
 
-1. Reconstruct exact Codex WebSocket feature/config gates, handshake response headers, connection-key/auth-revision lifecycle and turn-affinity reset semantics.
-2. Implement and test Codex Responses WebSocket v2 handshake and typed response.create request with source-specific headers/integrity requirements.
-3. Implement conservative previous_response_id/input delta continuation with exact property and ordered-item comparator; full-body fallback whenever proof fails.
-4. Implement explicit consumer-controlled generate:false prewarm, first-generation reuse and timeout/budget handling; do not add startup background network traffic.
-5. Implement bounded fragmentation/read-ahead/event buffering, maximum message checks, response-specific interrupt acknowledgements and cleanup.
-6. Implement bounded HTTP 426/specific-error fallback, Retry-After, session-level HTTPS lockout and cancellation; do not enable the upstream unbounded retry feature by default.
-7. Trace the full Codex Responses HTTP request/item builder and complete SSE event/error schema, OAuth/session refresh and account switch lifecycle.
-8. Reconstruct Codex local execution/sandbox/approval/network egress/patch/MCP and MultiAgentV2/user interaction lifecycles for safe native Node.js implementation.
-9. Build the temporary Valdi QuickJS deserialized-method disassembler and recover Android DirectResponseClient, generated decoders, SSE resume and upload behavior.
-10. Continue the separate Android guest create/refresh and guest composer call-graph search; keep guest mode distinct from Codex credentials.
-11. Trace Windows ChatGPT Work Local separately from Android Work Cloud and Codex CLI local execution.
-12. Implement the unified ChatGPT mobile/desktop/Codex CLI client only after source-exact protocols and relevant end-to-end tests are available.
-13. Implement PRODUCT_STANDARD.md section 14 acceptance gates: dynamic readiness, customization, async/concurrency/backpressure, genuine real-time events, soak/recovery, measured resource/performance budgets and a tested Node.js/OS matrix.
+1. Build a temporary Valdi QuickJS bytecode inspector matching the supplied Android client's compiled module format; validate it against a known fixture and dump selected methods without executing application code.
+2. Decode Android ChatGPTDirectResponseClient.prepare/send and its full call graph: exact method-to-route selection, request nesting/requiredness, body patching, serialization, model/account context and failures.
+3. Reconstruct authenticated Android account creation/sign-in/session refresh, token lifecycle, DPoP, account switching and related session transitions with genuine authorization and secret handling.
+4. Reconstruct the true accountless guest create/refresh/session lifecycle and guest composer prepare/send routes; distinguish guest session HTTP from local SessionManager state and LocationCookieInitializer constants.
+5. Decode Android model catalog and chat-requirements decoders, nested challenge variants, requirements integrity, device integrity, public-build provider selection, cookie handling, rate limits, cooldowns/retries and security failures.
+6. Decode the Android conversation event model and streaming state machine: deltas, tool/reasoning events, handoff/resume bodies and headers, offsets, interruption, errors, completion and history synchronization.
+7. Reconstruct files/attachments end to end: reservation, signed destination, bounded upload, finalize/process, download, image metadata, file indexing, expiry, retry and cancellation.
+8. Inventory and trace the remaining relevant Android non-Work product areas, including Projects, instructions, context, memory/personalization, search/tools, image/video/voice/audio, galleries, and all other client surfaces—including financial, location/map, commerce and similar domains where source-backed.
+9. Implement those verified Android non-Work protocols natively in ChatJS with ESM/CommonJS parity, accurate TypeScript, validated customization, async/concurrent streaming, cancellation, backpressure, bounded resources and clear capability states.
+10. Add deterministic contract tests and authorized authenticated/guest end-to-end tests for success and failure, integrity, rate limits, cancellation, concurrency, interruption, persistence, recovery and upload processing.
+11. Complete the Android non-Work capability inventory and pass the evidence and test gate before moving active work to Android Work Cloud, then ChatGPT Windows/Desktop, then Codex CLI.
 
 ## Reference artifact
 

@@ -9,7 +9,6 @@
 - **Research:** package/client behavior or host mechanism is being examined.
 - **Planned:** intended but not started.
 - **Blocked:** a necessary engine, toolchain, host interface, or test environment is unavailable.
-- **Out of scope:** explicitly excluded.
 
 ## Current foundation
 
@@ -59,9 +58,9 @@
 
 ChatJS is a reusable Node.js library, not a device-specific application. Do not assume any consumer has a particular OS, camera, microphone, screen, browser, or desktop UI. Make such capabilities optional integrations that are absent unless the consuming host provides them.
 
-## Explicit scope exclusions
+## Feature-domain coverage
 
-Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.
+No feature domain is categorically excluded by category. Financial/personal, location/map, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, and other first-party client domains are included wherever the supplied client sources and legitimate service/host capabilities implement them. Capability statuses describe evidence and implementation readiness, not domain-level exclusion.
 
 ## Evidence and promotion
 
@@ -97,3 +96,7 @@ Pinned Codex CLI research also identifies plan/context/clock controls; deferred 
 ## 2026-11-25 — Codex Responses WebSocket source detail
 
 The pinned Codex source now maps WebSocket v2 more specifically: provider capability/session-state gating, beta handshake headers and optional attestation, turn-scoped connection and routing affinity, strict incremental continuation using previous_response_id, optional generate:false prewarm, bounded frame/read-ahead/event buffering, protocol-acknowledged interrupts, and session-scoped permanent HTTPS fallback when required. These remain Research/Planned; no ChatJS WebSocket transport or Codex Responses client is implemented.
+
+## Current execution priority — Android non-Work first (2026-11-25)
+
+This is temporary sequencing, not a change to product scope. Complete the full ChatGPT Android client other than Android Work first. Android Work, Windows/Desktop and Codex CLI remain part of the long-term target but are parked until Android non-Work has been fully traced, implemented and tested. See CONTINUATION.md, TODO.md, and project-state.json.

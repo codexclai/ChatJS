@@ -43,10 +43,10 @@ Record durable project and technical decisions with rationale. Preserve supersed
 **Decision:** ChatJS must be usable from different Node.js applications and host environments, not bound to one phone, desktop OS, hardware device, or deployment model.  
 **Consequences:** camera, microphone, screen, browser, and desktop functions are optional host integrations. The portable core must work without them.
 
-## Explicit product scope exclusions
-**Status:** accepted; permanent owner direction  
-**Decision:** health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features are out of scope.  
-**Consequences:** do not add these domains merely because they occur in reference package metadata.
+## Historical category-based exclusions — superseded 2026-11-25
+**Status:** superseded by the owner's later explicit direction.  
+**Historical decision:** an earlier project state excluded health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and some Android permission/features.  
+**Current direction:** this category blacklist is no longer in force. No first-party client feature domain is categorically excluded. Implement all relevant source-backed capabilities where legitimate service and host support exists; preserve security, authorization, privacy, and technical invariants. The earlier text is retained here only to preserve the decision chronology.
 
 ## Main-only repository workflow
 **Status:** accepted; permanent owner requirement  
@@ -114,3 +114,9 @@ Record durable project and technical decisions with rationale. Preserve supersed
 **Runtime boundary:** The separate codex/codex.exe executable and Codex app-server are not required runtime dependencies. CodexCLI.zip is a source reference for native implementation, not a binary/runtime to launch. ChatGPT is the only AI service target; no multi-AI-provider framework or OpenAI Platform API substitution is intended.
 
 **Preserved distinctions:** Android ChatGPT Work is cloud execution; Windows ChatGPT desktop Work is local execution; Codex CLI is a distinct terminal-oriented coding-client capability family. Keep their protocols and execution semantics separate internally and expose them through the one ChatJS module. This clarification supersedes any interpretation of earlier “Codex source reference only” notes as excluding Codex CLI capability behavior from ChatJS scope. It does not supersede the prohibition on a separate CLI/app-server runtime dependency.
+
+## Complete source-backed feature-domain coverage
+**Status:** accepted; current owner direction (2026-11-25).  
+**Decision:** do not categorically exclude first-party ChatGPT mobile/desktop or Codex CLI client feature domains because of category labels. Personal/financial, location/maps, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health and other areas remain included wherever the supplied clients actually implement them and legitimate service/host support exists.  
+**Rationale:** the owner explicitly revoked the earlier domain blacklist and requires comprehensive coverage of the actual client capabilities.  
+**Consequences:** inventory the actual source behavior, host requirements, authorization and tests; do not invent endpoints or claim a capability merely from a string.

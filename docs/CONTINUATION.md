@@ -51,7 +51,7 @@ Never sign out of Google or ChatGPT in the ChatJS profile. Never clear its cooki
 - Do not hardcode, log, or commit credentials or user session material. Preserve legitimate user authentication and authorization; do not bypass access controls or entitlements.
 - No fake runtime behavior, canned output, bloat, unrelated features, or unjustified dependencies.
 - Keep ESM/CommonJS parity and accurate TypeScript declarations.
-- Exclude health, finance, maps, navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions.
+- Do not categorically exclude first-party feature domains by label. Implement relevant source-backed capabilities across all product domains where legitimate service and host support exist; preserve privacy, authorization, and security invariants.
 
 ## Documentation and finish
 
@@ -203,7 +203,7 @@ Next: reconstruct full network prompt and persisted-policy semantics; all permis
 
 ## Latest handoff — Codex core control tools and extension interactions (2026-11-25)
 
-The Codex source map now includes the built-in plan/context/clock controls, deferred environment readiness, blocking/asynchronous user question/message contracts, MCP resources, current-thread dynamic tool callbacks and the catalog-validated plugin/connector install consent flow. See the latest corresponding section of `CODEX_SOURCE_FINDINGS.md`. For ChatJS, these require truthful host-interaction/environment adapters and explicit consent; do not fake UI display, user answers, readiness, tool responses or installations. MCP tools/resources and dynamic tools remain separate from ChatGPT inference. Keep source exclusions and no-telemetry rules intact.
+The Codex source map now includes the built-in plan/context/clock controls, deferred environment readiness, blocking/asynchronous user question/message contracts, MCP resources, current-thread dynamic tool callbacks and the catalog-validated plugin/connector install consent flow. See the latest corresponding section of `CODEX_SOURCE_FINDINGS.md`. For ChatJS, these require truthful host-interaction/environment adapters and explicit consent; do not fake UI display, user answers, readiness, tool responses or installations. MCP tools/resources and dynamic tools remain separate from ChatGPT inference. Keep privacy, security, authorization, user-consent, and no-telemetry invariants intact.
 
 Next: complete control-tool schema/event lifecycle, MCP resource URI/result limits, dynamic-source refresh/namespace lifecycle and install/decline/cancel behavior. Then design the native Node.js Codex orchestration layer while continuing the unresolved Responses/WebSocket/auth and local sandbox/process traces.
 
@@ -218,3 +218,13 @@ No disassembler has been built; full QuickJS sources and matching build options 
 The pinned Codex source map now includes WebSocket v2 handshake, provider/session gating, turn-scoped reuse/routing, strict incremental continuation (previous_response_id), optional generate:false warmup, bounded message framing/read-ahead/event queue, interrupt acknowledgements, and session-scoped HTTPS fallback. See the latest dated section of CODEX_SOURCE_FINDINGS.md.
 
 Next: implement none of this until exact header gates/handshake responses, session/auth ownership, every incremental comparator field, warmup state, interrupt semantics and retry/fallback behavior are reconstructed into contract tests. Prewarm must be explicit/opt-in; no implicit network on package startup. The HTTP/SSE and WebSocket decoders need ESM/CommonJS/TypeScript parity and authorized E2E coverage.
+
+## Owner priority reset — 2026-11-25 (sequencing only)
+
+The owner has clarified that the long-term ChatJS product goal is **not changing**: the single Node.js module must ultimately consolidate ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI client capabilities, preserving Android cloud Work, Windows local Work, and Codex CLI as distinct surfaces.
+
+For the current execution phase, focus exclusively on completing the supplied ChatGPT Android client **except Android Work**. Set aside Android Work, all ChatGPT Desktop/Windows work, and Codex CLI work until the Android non-Work client coverage is genuinely complete and tested. This is a temporary priority/order instruction, not a removal or reduction of the product target. Keep all other source findings and tasks in the backlog; do not spend the current phase on them.
+
+The Android work target is the complete relevant shipped Android client experience, not just chat sending: account sign-in/session refresh, genuine logged-out guest sessions, normal conversations and streaming, model/requirements/integrity, files and attachments, history, Projects/context/instructions/memory, image/video/voice, search/tools, and every other source-backed Android client area. Android Work remains parked. Do not impose category-level exclusions on feature domains: finance/personal, location/maps, shopping/commerce, wallet/payments, contacts, calendar, communications/telephony, health, and comparable areas are included wherever the actual client source implements them and legitimate service/host behavior supports them.
+
+**Next phase transition:** only after the Android non-Work capability inventory has been fully traced, implemented, and tested should the active queue move to Android Work, Windows/Desktop, and Codex CLI.

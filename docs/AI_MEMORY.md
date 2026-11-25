@@ -86,7 +86,7 @@ The current installer files are held in ChatJS Project → Sources, not public G
 - No unsolicited network requests or automatic content uploads. Network activity must be part of an explicit ChatJS operation and limited to its intended function.
 - No fake/canned/predefined/hardcoded/demo/placeholder/no-op production behavior. Test fixtures/mocks are tests-only.
 - No filler, bloat, unrelated features, pointless abstractions, or unjustified dependencies.
-- Exclude health/Health Connect, finance, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features.
+- Do not categorically exclude any feature domain by label. The owner explicitly restored source-backed coverage for all client feature areas, including personal/financial, location/maps, commerce, wallet/payment, contacts, calendar, communications, health, and comparable domains. Only actual client/source support, legitimate service behavior, host capabilities, authorization, and security determine whether a feature can be implemented.
 - Host/device features are optional; do not make the core assume camera, microphone, screen, or a specific permission model.
 - Main only. Never create, delete, rename, switch, or publish another branch or worktree. Never force-push. Do not configure branch protection, rulesets, or repository topics.
 
@@ -198,3 +198,11 @@ The public pinned Valdi QuickJS source contains `js_dump_function_bytecode`, whi
 ## Codex Responses WebSocket v2 source map — 2026-11-25
 
 The pinned Codex source now provides a deeper WebSocket trace in CODEX_SOURCE_FINDINGS.md: eligibility requires provider capability and session state; handshake uses OpenAI-Beta: responses_websockets=2026-02-06 plus session/thread/request IDs, optional routing and integrity headers; connection and routing affinity are turn-scoped; the wire request is tagged response.create; previous_response_id and input delta are used only after strict property/history checks; optional generate:false prewarm can be reused by the first generation; flow uses 1 MiB fragmentation/read-ahead and bounded event channel; interrupts require response-specific acknowledgements; HTTP 426 and selected retry errors switch a session to HTTPS. Special unbounded connection retries are feature-gated and tightly scoped. All this remains source research only; no ChatJS WebSocket client is implemented. Consumer-controlled prewarm must remain explicit and network-free by default.
+
+## Owner scope and priority clarification — 2026-11-25
+
+**Long-term product target is unchanged:** one ChatJS Node.js module consolidates the actual ChatGPT mobile, ChatGPT desktop and Codex CLI client capabilities. No one of those source/client families has been removed from the goal. Android Work, Windows/Desktop, and Codex CLI remain part of the overall target.
+
+**Category exclusions are superseded:** do not exclude financial/personal, location/maps, shopping/commerce, wallet/payment, contacts, calendar, communications/telephony, health, or other client feature domains merely by category. Include the features actually present in the supplied client implementations and legitimately supportable by the service/host. Keep evidence, authorization, privacy and safety requirements intact.
+
+**Temporary execution priority, not a scope change:** complete the ChatGPT Android client comprehensively first, covering the non-Work Android experience. During this phase, set aside Android Work, ChatGPT Desktop/Windows, and Codex CLI. This is sequencing only; preserve those capabilities and source findings in the long-term product backlog. Once Android non-Work coverage is genuinely complete and tested, resume the other source families. See CONTINUATION.md, TODO.md, and project-state.json.

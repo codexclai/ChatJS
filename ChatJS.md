@@ -23,7 +23,7 @@ The portable core must remain usable without a particular camera, microphone, sc
 
 The long-term target includes comprehensive coverage, dynamic capability awareness, extensive safe customization/control, async and concurrent operations, true real-time streaming where supported, responsive and measured lightweight performance, current compatibility, and consumer-controlled long-running operation. These are requirements to implement and verify, not claims that every capability currently works everywhere or that ChatJS guarantees external-service uptime. Customization must never bypass authentication, entitlements, first-party security checks, or other safety boundaries. See [the Product and Engineering Standard](https://github.com/codexclai/ChatJS/blob/main/docs/PRODUCT_STANDARD.md) for the complete target and acceptance gates.
 
-Health/Health Connect, finance/banking, maps/navigation, shopping, wallet, contacts, calendar, telephony, and unrelated Android permissions/features are out of scope.
+No first-party client feature domain is categorically excluded by category. Include source-backed capabilities involving personal/financial workflows, location/maps, commerce, wallets/payments, contacts, calendars, communications/telephony, health, and other areas wherever the supplied clients and legitimate service/host behavior support them. Verify real implementation and authorization rather than inferring support from a feature name.
 
 ## Client-package references
 
@@ -174,3 +174,7 @@ The Android source now identifies a concrete **authenticated** ChatGPT direct-co
 The reconstructed Windows desktop package contains a local coding-agent path that spawns its bundled `codex.exe` through a stdio app-server host, as well as a distinct authenticated ChatGPT/OpenAI fetch bridge. This does not prove the exact UI mapping for every Windows Work feature. ChatJS implements Codex CLI client capabilities inside its own Node.js module, without depending on the separate executable or app-server; Windows local Work and Android cloud Work remain separate.
 
 These source findings do not change the API status above: the production module is still foundation-only and makes no ChatGPT service requests.
+
+## Current implementation priority
+
+The long-term goal remains the complete combination of ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI capabilities in one Node.js module. The current execution phase is to complete ChatGPT Android's full non-Work experience first; Android Work, Windows/Desktop, and Codex CLI are parked until that phase is genuinely complete and tested. This changes task order only, not product scope.

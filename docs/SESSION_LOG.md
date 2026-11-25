@@ -1045,3 +1045,23 @@ Owner-supplied pinned Codex source: codex-rs/core/src/client.rs, responses_retry
 - Static source inspection only; no WebSocket handshake or live request was sent.
 - No ChatJS WebSocket, Codex Responses client, context continuation or fallback state machine is implemented. No production JS/TS, test, dependency or API changed.
 - No prewarm/keepalive behavior is approved by this research; ChatJS must retain explicit-operation-only network behavior.
+
+## 2026-11-25 — Owner reinstates full feature-domain coverage and sets Android-first execution order
+
+### Product scope correction
+
+The owner clarified that the long-term ChatJS target remains the complete consolidation of ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI capabilities in one Node.js module. The owner's request to set desktop/Codex and Android Work aside is a temporary sequencing instruction only; none of those source families or capabilities has been removed from the target.
+
+The owner explicitly revoked the earlier category-level exclusions for health, finance, location/maps, shopping/commerce, wallets/payments, contacts, calendars, telephony/communications and other domains. No entire first-party client feature domain is excluded merely by category. Implement what the actual source clients expose and what legitimate service/host capabilities support, with source evidence, authorization, user consent, privacy/security, and tests.
+
+### Active execution priority
+
+Complete the ChatGPT Android client comprehensively, excluding Android Work, before resuming any other client-family work. During this phase, Android Work Cloud, ChatGPT Desktop/Windows (including Windows local Work), and Codex CLI are parked in the backlog. After Android non-Work is genuinely complete and tested, resume Android Work, Windows/Desktop, and Codex CLI in that order.
+
+### Project Instructions field correction
+
+Rewrote docs/CHATGPT_PROJECT_INSTRUCTIONS.md as a stable, enduring project charter. It contains product identity, full source-backed capability scope, technical and security invariants, Project Sources/browser continuity, main-only workflow and verification rules. It no longer contains a mutable task list, temporary active priority, or category-level feature exclusions. Active priorities and detailed task queues remain in CONTINUATION.md, TODO.md, and project-state.json.
+
+### Verification limits
+
+No production JS/TS, dependencies, public APIs, or tests changed in this documentation correction. The repository had no local checkout in this session, so local npm run check and local archive inspection were not run. Parent main commit b2a2b310cb91cee2e6b0ec8ea6cf4418ea6dd793 had successful CI run 45565771152 and CodeQL run 45565771054; the new documentation commit requires fresh CI/CodeQL verification.

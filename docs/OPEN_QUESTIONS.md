@@ -167,7 +167,7 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Reconstruct asynchronous user question/message events and how later user replies re-enter the thread; preserve ordering and cancellation without pretending the host showed the content.
 - [ ] Reconstruct MCP resource list/templates/read schemas, server catalog/authorization rules, environment scoping, URI handling, errors and resource result limits.
 - [ ] Trace dynamic-tool source registration/refresh, current-thread lifecycle, namespace/schema validation, deferred/direct exposure, response callback and cancellation. It must not be treated as another model provider or a fake local tool.
-- [ ] Map catalog-sourced plugin/connector discovery and install flow, exact elicitation request, consent outcomes, verification, MCP refresh, connector merge and client availability gates. Decide which candidates are in scope while preserving the project's category exclusions and no-unsolicited-network policy.
+- [ ] Map catalog-sourced plugin/connector discovery and install flow, exact elicitation request, consent outcomes, verification, MCP refresh, connector merge and client availability gates. Determine support from the current full-source-backed product charter and owner direction; preserve explicit consent, security, category-independent feature coverage, and no-unsolicited-network rules.
 - [ ] Confirm all upstream analytics/tracking attached to tool or install paths are excluded.
 
 ## Android QuickJS method disassembly — 2026-11-25
