@@ -328,3 +328,10 @@ The retained Android bytecode dumps have now been read through the full top-leve
 The exact function-level evidence and conditions are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. This is still static client behavior, not authorized live stream behavior or complete history synchronization. ChatJS has not implemented the Android event decoder/processor as a live conversation runtime.
 
 Next Android non-Work work: complete remaining event/schema variants and history recovery; reconstruct the actual authenticated and independent guest session lifecycles; trace Turnstile/proof-of-work/so and native public-build device integrity; implement/test real authorized ChatGPT operations. Android Work, Windows/Desktop and Codex CLI remain parked.
+
+
+## Android requirements-integrity routing handoff — 2026-11-25
+
+The compiled direct client now has a method-level trace for challenge routing and adapter validation. It normalizes the chat-requirements response, requires a non-empty token, and checks required descriptors in turnstile/proofofwork/so. The default requirements provider returns OpenAI-Sentinel-Chat-Requirements-Token only when none is required; it fails closed otherwise. The native provider is selected only for Valdi runtime >= 11 and an available device-integrity service.
+
+The native adapter receives legitimate session/account/backend/conversation context, forwards one-shot success/failure callbacks and supports native cancellation. Returned header arrays and values are strictly validated, and the only accepted JSON body patch is exactly {app_attest_challenge: nonEmptyString}. This validates the adapter boundary; it does not prove the internal native service exists in the supplied public APK. DEX package-ID mismatch remains unresolved. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md.

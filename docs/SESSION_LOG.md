@@ -1172,3 +1172,16 @@ Commit `49f27e3b946489d0c37854a62d384e8876bf08c2` passed GitHub CI run `45579506
 **Prior validation preserved:** parent commit 96b46051976cf0f3230fae95f49feebc244c372a passed GitHub CI run 45579851986 and CodeQL run 45579852002. The attachment helper’s full 35-test package check and nine-file archive were previously inspected; this documentation-only source trace still needs its own npm run check and CI verification after commit.
 
 **Still open:** challenge-specific requirements providers and native public-build integrity behavior; authenticated and accountless guest session lifecycle; remaining event payload types; history synchronization after terminal streams; authorized interruption/resume/cancel tests; full upload lifecycle (expiry/retry/cancel/download/indexing); and comprehensive Android non-Work inventory.
+
+
+## 2026-11-25 — Android requirements-integrity routing and native adapter trace
+
+**Source:** retained method-level disassembly of ChatGPTDirectResponseClient from supplied Android XAPK 1.2026.321. Read-only deserialization; no Android code execution.
+
+**Findings:** decoded challenge normalization and detection for required turnstile/proofofwork/so descriptors; default requirements provider returns the OpenAI-Sentinel-Chat-Requirements-Token only when no challenge requires device integrity and otherwise fails closed; alternate native adapter selection requires Valdi >= 11 and an available service. Reconstructed native adapter session/account/backend/conversation context, one-shot success/failure callback and cancellation behavior. Reconstructed strict header pair/name/value validation and exact one-key app_attest_challenge JSON body-patch constraint.
+
+**Repository changes:** extended ANDROID_CLIENT_PROTOCOL_FINDINGS.md and EXPERIMENTS.md; reconciled TODO and OPEN_QUESTIONS to distinguish decoded routing/adapter behavior from unresolved native internals; updated continuation, AI memory, root guide, project state and session log. No Node.js integrity provider was implemented and no network operation was performed.
+
+**Validation baseline:** parent commit 2c6dc3a076c98f37491c98f5560d93535ebeaeeb passed GitHub CI 45580575658 and CodeQL 45580575737. A clean extraction of that exact commit passed npm run check with all 35 tests, synchronized generated state, 27 valid Markdown local links and a nine-file 15,336-byte archive (SHA-256 de215aaa5df00f7c1cf537e9262e4147a71db981a729d318dc2942e32d204835). The new source update still requires its own check/CI.
+
+**Still open:** public-build availability of native device integrity; internal challenge exchange, cookies/device UUID and retry/cooldown persistence; authenticated account and independent guest lifecycles; remaining event/history payloads and authorized live testing; complete attachment lifecycle; exhaustive Android non-Work feature inventory.

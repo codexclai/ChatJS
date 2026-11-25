@@ -194,3 +194,10 @@ A small internal attachment-policy validator now ships in the module archive wit
 The event decoder's core dispatch and the listener-facing processor have been traced beyond the route/worker layer. It advances eventOffset on every non-DONE event before payload decoding, stores valid resume-token events, returns a nonterminal conversation-bound continuation for accepted stream_handoff events, and distinguishes [DONE] and message_stream_complete terminal markers. Message updates separately track assistant text suffixes by message ID, reasoning, conversation-state transitions, model-written DIL payloads, and entity-reference snapshots.
 
 The separate response processor batches Markdown parsing/rendering at 16 ms, forwards distinct content/state/DIL/entity/reasoning callbacks, flushes pending content before completion or failure, delays final completion when a final update has been emitted, and clears timers on stop. Cancellation does not fabricate a completion callback. See docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md. These are static source findings, not a working ChatJS conversation feature.
+
+
+## Additional Android integrity-provider findings
+
+The direct sender's requirements-integrity provider has a strict fail-closed rule: it returns the requirements token header only when none of the returned turnstile/proofofwork/so descriptors is marked required. When additional device integrity is required, the default provider throws. The client selects a separate native provider only with Valdi runtime version 11 or later and a resolved native service.
+
+The native adapter accepts legitimate session/account/backend/conversation context, forwards a one-shot success or failure, and supports cancellation. It validates returned header arrays and refuses malformed names, unsafe values or mismatched lengths. It accepts only an exact one-key app_attest_challenge body patch with a non-empty value. The internal native service and its availability in the supplied public Android package are not yet proven. See docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md; no integrity bypass or fabricated challenge response is implemented.

@@ -364,3 +364,16 @@ Decoded the upload reservation POST, multipart Estuary finalize/content paths, e
 - The response processor accumulates text, batches Markdown parsing/rendering on a 16 ms timer, reports distinct state/DIL/entity/reasoning callbacks, flushes final text before completion/error, defers completion when text/DIL has been emitted, and clears timers on stop. Cancellation stops without inventing completion.
 
 **Limits:** core event/processor control flow is reconstructed but not a live server protocol test, complete generated nested-event schema, or complete history sync. No ChatJS runtime event/processor implementation was added in this slice.
+
+
+## 2026-11-25 — Android requirements-integrity and native provider adapter
+
+**Question:** How do the Android client and its native device-integrity bridge route required chat-requirements challenges, and what may the bridge return to the direct request?
+
+**Method:** Read the retained ChatGPTDirectResponseClient QuickJS method disassembly. No compiled Android method was executed.
+
+**Result:** chat-requirements response normalization requires a non-empty token and sets requiresDeviceIntegrity when any item in turnstile, proofofwork or so has required === true. The default ChatGPTRequirementsIntegrityProvider returns OpenAI-Sentinel-Chat-Requirements-Token only when no such challenge is required; otherwise it throws rather than bypassing the requirement. The alternate ChatGPTDeviceIntegrityProvider is selected only for Valdi >= 11 when the native service accessor returns a service.
+
+The native adapter passes accessToken, accountId, baseUrl and conversation/parent context to service.prepare; it forwards one-shot success/failure callbacks and calls service.cancel on cancellation. The returned header-name/value arrays are length/type/name/value validated before use. The body patch JSON is restricted to exactly one app_attest_challenge property and that value must be a non-empty trimmed string; the patch is applied only after validation. The adapter result merges with the normal Authorization, ChatGPT-Account-Id and Content-Type request headers.
+
+**Limits:** the internal native service implementation and public-build package availability remain unresolved. DEX evidence indicates an internal-package guard that does not match the supplied public APK package ID. Never synthesize the token, challenge, headers or body patch. No ChatJS runtime behavior is implemented in this trace.

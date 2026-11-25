@@ -921,3 +921,45 @@ This processor delay is a UI/render lifecycle detail, distinct from transport re
 ### Remaining boundary
 
 The static trace now maps the core decoder's event offsets, resume-token/handoff, terminal markers, assistant/tool/reasoning selection, content suffix, DIL/entity-reference deduplication, and the complete response-processor terminal behavior. It still does not establish every possible generated payload subtype, server behavior under interruption, history synchronization after completion, or an authorized live session. ChatJS has not implemented this event decoder or response processor as production conversation behavior.
+
+
+## 2026-11-25 — Android requirements-integrity and native device-provider routing
+
+This section records the provider-selection and adapter behavior from method-level disassembly of ChatGPTDirectResponseClient in the supplied Android XAPK 1.2026.321. It distinguishes the Valdi adapter contract from the native device-integrity implementation found in DEX.
+
+### Requirements normalization and default provider
+
+The direct client first decodes the chat-requirements response. A non-empty trimmed token is mandatory. The turnstile, proofofwork, and so arrays are inspected for any descriptor where required === true; the normalized result contains the token and a requiresDeviceIntegrity boolean.
+
+ChatGPTRequirementsIntegrityProvider.prepare(session, requestContext) uses that normalized response. When no challenge requires device integrity, it returns a header pair:
+
+- OpenAI-Sentinel-Chat-Requirements-Token
+- The decoded requirements token
+
+When any of those challenge arrays contains a required challenge, this default provider throws a specific first-party integrity-required error. It does not return an empty value, synthesize a challenge token, or silently skip the requirement.
+
+The provider obtains the response through the generated conversation API client. Its request supports cancellation; the API result is awaited, and failures are mapped to a conversation-integrity error.
+
+### Alternate native provider selection
+
+createChatGPTDirectResponseClient checks the Valdi runtime version and the native device-integrity service accessor. It injects ChatGPTDeviceIntegrityProvider only when the runtime is at least version 11 and the service accessor returns an available service. Otherwise the client uses the default requirements provider.
+
+The native adapter's prepare request contains the legitimate session context:
+
+- access token
+- active account ID
+- backend base URL
+- conversation ID when the requested conversation differs from the session conversation
+- parent message ID
+
+The adapter forwards success/failure through one-shot callbacks. A failed operation is surfaced as a first-party device-integrity error; failure to start the native operation is separately surfaced. Its cancellation path calls the native service's cancel method and avoids duplicate terminal callback delivery. These are the Valdi-facing adapter semantics; they do not reveal the complete implementation inside the imported native service.
+
+### Native provider output validation and request application
+
+The adapter result has paired headerNames and headerValues arrays. The client requires both to be arrays of equal length and validates the headers before merging them into the authenticated direct request. Header names must pass the header-token syntax check; non-openai-sentinel- names are limited to the source-defined built-in allow-list; reserved names are rejected; values must be strings without CR, LF, or NUL. Invalid output throws a first-party integrity-provider error.
+
+The optional JSON body patch is parsed separately and must be an object with exactly one property: app_attest_challenge. That property's value must be a non-empty trimmed string. Malformed JSON, extra/missing properties, wrong value types or an empty challenge value throw an integrity-provider error. The validated value is then applied to the conversation request body. The provider's header pair is merged with the normal session Authorization, ChatGPT-Account-Id and Content-Type headers.
+
+### Evidence boundary and remaining gaps
+
+The provider selection, default fail-closed behavior, native adapter inputs/callbacks/cancellation, and output validation are method-level decoded. This does not reconstruct the internal native challenge exchange, prove that the packaged public APK exposes the internal native service, or establish live service acceptance. The previously traced DEX package-ID guard remains important: inspected native code checks com.openai.chatgpt.internal, whereas the supplied public package is com.openai.chatgpt. Public-build provider availability therefore remains unresolved. Do not bypass the service, simulate its result, or emit a fabricated token. No ChatJS integrity provider or authenticated request implementation is claimed.
