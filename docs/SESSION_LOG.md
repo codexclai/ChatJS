@@ -1152,3 +1152,8 @@ Updated Android protocol findings, TODO/open questions, AI memory, continuation 
 **Validation:** npm run check passed on a disposable snapshot of the exact main commit 1a7b0ab77d94e3bb7aa86eebd12d46ac4c387656. All 35 tests passed; generated state and links passed; dist/ChatJS.tar.gz was built and inspected with nine module files (14,935 bytes; SHA-256 a7ea49529be2001718712af47fc454d0e34df57fababc1d91e6b8a1687b86854). The parent commit's CI run 45575887848 and CodeQL run 45575887722 were green before this change; verification for the new commit remains pending.
 
 **Still open:** native public-build device-integrity behavior; Turnstile/proof-of-work/so challenge consumers; authenticated account/guest session lifecycles; remaining stream event/processor variants and authorized live transport testing; signed URL expiry/retry/cancellation; upload download/indexing; and comprehensive Android non-Work feature coverage. The source trace does not imply entitlement, live endpoint success, or working ChatJS product support.
+
+
+## Validation update — 2026-11-25
+
+Commit `49f27e3b946489d0c37854a62d384e8876bf08c2` passed GitHub CI run `45579506954` and CodeQL run `45579507125`. A clean extraction of that exact commit also passed `npm run check`: all 35 tests passed, generated project state was synchronized, all 27 Markdown link targets existed, and `dist/ChatJS.tar.gz` was inspected (9 module files, 14,932 bytes, SHA-256 `1accbb3ea4def56e19220c78e4664b7d11f41b7058b8c8c3021dd9ba00e9f992`). The attachment data URL validator now verifies the expected Base64 encoded length from the declared file size before calling `Buffer.from`, preventing an oversized encoded value from triggering a disproportionate allocation.

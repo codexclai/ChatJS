@@ -3,7 +3,7 @@
   "repository": "codexclai/ChatJS",
   "moduleName": "ChatJS",
   "phase": "Active priority: complete the full ChatGPT Android non-Work client experience before Android Work, Windows/Desktop, or Codex CLI; permanent three-family product target unchanged",
-  "status": "ChatJS remains one general-purpose Node.js module targeting the actual client-side capabilities of ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI. Owner direction dated 2026-11-25 sets the active execution phase to the complete Android non-Work client experience. Android Work, Windows/Desktop, and Codex CLI remain in the permanent product goal and are parked until Android non-Work is comprehensively reconstructed, implemented, and tested. All source-backed Android feature areas remain eligible; feature-domain labels do not restrict coverage. The runtime remains foundation-only: no authenticated/guest ChatGPT connection, conversation transport, product streaming, or real upload workflow is implemented. An internal, side-effect-free Android attachment-policy helper is now implemented and tested. Parent commit 1a7b0ab77d94e3bb7aa86eebd12d46ac4c387656 passed CI 45575887848 and CodeQL 45575887722; local npm run check for the current work passed all 35 tests, with new-commit CI pending.",
+  "status": "ChatJS remains one general-purpose Node.js module targeting the actual client-side capabilities of ChatGPT Android/mobile, ChatGPT Windows/desktop, and Codex CLI. Owner direction dated 2026-11-25 sets the active execution phase to the complete Android non-Work client experience. Android Work, Windows/Desktop, and Codex CLI remain in the permanent product goal and are parked until Android non-Work is comprehensively reconstructed, implemented, and tested. All source-backed Android feature areas remain eligible; feature-domain labels do not restrict coverage. The runtime remains foundation-only: no authenticated/guest ChatGPT connection, conversation transport, product streaming, or real upload workflow is implemented. An internal, side-effect-free Android attachment-policy helper is now implemented and tested. Parent commit 1a7b0ab77d94e3bb7aa86eebd12d46ac4c387656 passed CI 45575887848 and CodeQL 45575887722; local npm run check for the current work passed all 35 tests, and the implementation commit 49f27e3b946489d0c37854a62d384e8876bf08c2 passed GitHub CI 45579506954 and CodeQL 45579507125.",
   "defaultBranch": "main",
   "lastReviewed": "2026-11-25",
   "runtimePolicy": "Use the supported Node.js LTS in CI.",
@@ -127,7 +127,8 @@
     "Decoded Android ChatGPTFileUploadService reservation, Estuary multipart finalize/content paths, signed storage PUT, process-upload request, trusted destination suffixes, Azure/AWS header difference and upload error mapping.",
     "Decoded the separate Android oai_file_picker policy: 10 selections, 20 MiB individual file, 25 MiB aggregate, supported document/image types, 32,768-pixel image dimension bound, plus 512-character name and 128-character MIME limits.",
     "Implemented internal src/chatgpt/file-upload-policy.cjs with deterministic selection/type/size, padded Base64 length, HTTPS destination allow-list and upload-plan/header validation; added 12 tests and packaged it without exposing a public API or performing network requests.",
-    "Ran npm run check in a disposable snapshot of the current main commit: 35 tests passed, docs state and local links passed, and the nine-file ChatJS.tar.gz was built and inspected (14,935 bytes; SHA-256 a7ea49529be2001718712af47fc454d0e34df57fababc1d91e6b8a1687b86854)."
+    "Ran npm run check in a disposable snapshot of the current main commit: 35 tests passed, docs state and local links passed, and the nine-file ChatJS.tar.gz was built and inspected (14,935 bytes; SHA-256 a7ea49529be2001718712af47fc454d0e34df57fababc1d91e6b8a1687b86854).",
+    "Hardened Base64 attachment data URL validation to compare encoded length with the declared byte size before allocating decoded bytes; added an oversized-payload regression assertion. Final clean-checkout npm run check passed all 35 tests, generated docs/link checks and nine-file archive inspection; GitHub CI and CodeQL both passed."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -178,7 +179,7 @@
     "Codex WebSocket incremental continuation is stateful and only valid under strict request-field and ordered-history equality checks. A naive previous_response_id or last-message-only implementation could lose or corrupt conversation context; full request fallback is mandatory unless continuation is proven.",
     "Codex prewarm is an upstream startup optimization that performs network work before user generation. ChatJS must not copy hidden startup prewarm; expose it only as explicit opt-in or as part of an already requested operation."
   ],
-  "lastVerifiedCommit": "1a7b0ab77d94e3bb7aa86eebd12d46ac4c387656",
-  "lastVerifiedCI": "45575887848",
-  "lastVerifiedCodeQL": "45575887722"
+  "lastVerifiedCommit": "49f27e3b946489d0c37854a62d384e8876bf08c2",
+  "lastVerifiedCI": "45579506954",
+  "lastVerifiedCodeQL": "45579507125"
 }
