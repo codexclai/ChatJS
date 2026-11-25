@@ -239,3 +239,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Implement bounded 1 MiB frame fragmentation/read-ahead, server message-size handling, event-channel backpressure, response idle timeout, and protocol-acknowledged interruption.
 - [ ] Implement source-verified WebSocket retries, HTTP 426/specific-error fallback and one-way per-session HTTP mode; respect Retry-After, cancellation and bounded policy. Do not enable the upstream feature-gated unbounded retry branch by default.
 - [ ] Add contract and E2E tests for handshake headers, warmup, continuation vs full requests, auth/session changes, large input frames, event backpressure, interrupt acknowledgements, fallback and subsequent same-session HTTP requests.
+
+
+## Android complete module census and method-level authentication update — 2026-11-25
+
+- [x] Decompress and census every one of the 111 Valdi modules in the supplied Android 1.2026.321 XAPK; record per-module hashes/sizes and route-string candidates in `docs/ANDROID_CLIENT_MODULE_INVENTORY.md`.
+- [x] Rebuild a temporary pinned Valdi QuickJS deserializer and decode seven authentication-session JavaScript entries without evaluating Android functions.
+- [x] Add private `isSafeOriginRelativePath` and `isSafeAuthenticatedRequestPath` helpers with exact single-backslash, control-character, space and fragment behavior; ten focused tests pass.
+- [ ] Complete nested account-check schema variants and trace controller account ordering/session-access decisions.
+- [ ] Finish auth controller state/concurrency/cancellation, native credential bridge, secure credential storage and renewal/SSO/DPoP lifecycle before implementing any login/network flow.
+- [ ] Use the full module census to reconstruct all remaining Android non-Work feature workflows from method-level callsites; preserve package/string/traced/implemented evidence levels.

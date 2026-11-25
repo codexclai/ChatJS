@@ -26,10 +26,30 @@ function isTrustedOAIAPIOrigin(value) {
   return typeof value === 'string' && TRUSTED_API_ORIGIN_PATTERN.test(value);
 }
 
+// Mirrors OAIAuthenticationValidation.isSafeOriginRelativePath. The Android
+// SessionAuthenticatedAccountService adds separate space and fragment checks.
+function isSafeOriginRelativePath(value) {
+  return typeof value === 'string' &&
+    value.startsWith('/') &&
+    !value.startsWith('//') &&
+    !value.includes('\\') &&
+    !value.includes('://') &&
+    !HTTP_HEADER_CONTROL_PATTERN.test(value);
+}
+
+// Mirrors the additional SessionAuthenticatedAccountService request-path gate.
+function isSafeAuthenticatedRequestPath(value) {
+  return isSafeOriginRelativePath(value) &&
+    !value.includes(' ') &&
+    !value.includes('#');
+}
+
 module.exports = Object.freeze({
   isValidOAIBearerToken,
   isValidOAIAccountIdentifier,
   isValidHTTPHeaderName,
   isValidHTTPHeaderValue,
-  isTrustedOAIAPIOrigin
+  isTrustedOAIAPIOrigin,
+  isSafeOriginRelativePath,
+  isSafeAuthenticatedRequestPath
 });

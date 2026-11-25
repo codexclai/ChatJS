@@ -20,7 +20,7 @@
 | TypeScript declarations | Partial | Foundation API plus generic SSE parser |
 | Generic Server-Sent Events framing | Implemented | Async byte-iterable parser, UTF-8/chunk boundaries, event fields, limits, abort and iterator cleanup; does not connect to ChatGPT or decode a product-specific event schema |
 | Android generated model-catalog and chat-requirements schema helpers | Implemented (internal helper only) | Exact GET/POST descriptors, generated nested response validation, undefined-vs-null behavior, extra-field pass-through and fail-closed default requirements-header decision; no network, auth or device attestation |
-| Android first-party authentication input validators | Implemented (internal helper only) | Source-observed bearer/account-ID alphabets, HTTP header validation and trusted HTTPS origin pattern; no credential lifecycle, secure storage, request transport or account selection |
+| Android first-party authentication input/path validators | Implemented (internal helper only) | Method-decoded bearer/account-ID/header/origin regex flags and origin-relative path/service path gates; no credentials, secure storage, request transport or account selection |
 | No telemetry in current foundation | Verified for inspected source | Re-review with every network-capable change |
 
 ## Actual ChatGPT client integration
@@ -29,7 +29,7 @@
 | --- | --- | --- |
 | Client request/response construction | Research (partial internal helpers) | Android model-catalog and chat-requirements route descriptors/typed response decoders have tested internal helpers; conversation send body, authenticated transport, session lifecycle and live server behavior remain unimplemented |
 | Connection and transport | Research (first-pass module evidence) | Bearer transport, WebSocket integration, SSE clients, and stream processors observed; exact runtime state machine remains open |
-| Authenticated account session | Research (validation subset implemented) | Private validators port bearer token/account ID/header/origin checks; Android authentication controller, native credential service, secure persistence, refresh/revocation and account switching remain research-only |
+| Authenticated account session | Research (validation subset implemented) | Private validators now port bearer/account-ID/header/origin/path checks; account-check GET route and partial response shape are reconstructed. Controller/native credential lifecycle, secure persistence, refresh/SSO/DPoP, account switching and authenticated HTTP remain unimplemented |
 | Accountless / anonymous guest session | Research | Android method-level DEX traces the Unauthenticated/AnonymousSession/LoggedInSession state enum, nine-field session metadata, SessionManager startup/logout/refresh paths, guest storage/retirement cleanup, a global backend-anon base URL/path family and an anonymous-session-labelled local profile descriptor. Exact guest create/refresh network schema and composer send routes remain open. Lof70 is Statsig/experimentation, not auth/session; the unauthenticated refresh path inspected is local state transition. A separate AuthSession DPoP/token refresh path is credential-backed and not proven guest creation; observed /backend-anon/f/conversation constants belong to LocationCookieInitializer during location-cookie setup. "Continue as Guest" is a Shop UI string, not ChatGPT |
 | Windows desktop accountless/guest Work | Unknown | Current inspection did not establish a ChatGPT guest-session path in the Windows Work client |
 | Sentinel and device integrity | Research (current Android source scan) | Separate requirements/device-integrity providers and Android native Play Integrity exchange observed; challenge schemas and cross-host provider behavior remain unresolved |
@@ -102,3 +102,7 @@ The pinned Codex source now maps WebSocket v2 more specifically: provider capabi
 ## Current execution priority — Android non-Work first (2026-11-25)
 
 This is temporary sequencing, not a change to product scope. Complete the full ChatGPT Android client other than Android Work first. Android Work, Windows/Desktop and Codex CLI remain part of the long-term target but are parked until Android non-Work has been fully traced, implemented and tested. See CONTINUATION.md, TODO.md, and project-state.json.
+
+## Android source coverage update — 2026-11-25
+
+The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Nineteen module groups contain route-like string candidates, catalogued in [ANDROID_CLIENT_MODULE_INVENTORY.md](ANDROID_CLIENT_MODULE_INVENTORY.md). These are package/string discovery evidence, not proven route callsites, entitlement or available workflows. `chatgpt_ads` is a package marker only and is excluded; telemetry strings are excluded from ChatJS. Android authentication path predicates are now method-verified private helpers; authenticated account-check GET route and partial response schema are reconstructed. Authentication lifecycle, secure credential storage, refresh/SSO/DPoP, selection and authenticated HTTP remain research-only.

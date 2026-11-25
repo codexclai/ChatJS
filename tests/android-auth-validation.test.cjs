@@ -54,7 +54,9 @@ test('trusted API origins accept only HTTPS origins under the observed productio
     'https://chatgpt.com',
     'https://android.chat.openai.com',
     'https://chatgpt-staging.com',
-    'https://api.openai-staging.com'
+    'https://api.openai-staging.com',
+    'HTTPS://OPENAI.COM',
+    'https://API.OPENAI.COM'
   ]) {
     assert.equal(validation.isTrustedOAIAPIOrigin(origin), true, origin);
   }
@@ -74,5 +76,50 @@ test('trusted API origin validation rejects other schemes, ports, paths, and loo
     null
   ]) {
     assert.equal(validation.isTrustedOAIAPIOrigin(origin), false, String(origin));
+  }
+});
+
+test('origin-relative path validation matches the Android primitive checks', () => {
+  for (const path of [
+    '/',
+    '/backend-api/conversation',
+    '/backend-api/accounts/check/v4-2023-04-27',
+    '/path?query=value',
+    '/path with space',
+    '/path#fragment'
+  ]) {
+    assert.equal(validation.isSafeOriginRelativePath(path), true, path);
+  }
+});
+
+test('origin-relative path validation rejects absolute, double-slash, backslash, scheme, and control-character paths', () => {
+  for (const path of [
+    '',
+    'backend-api/conversation',
+    'https://chatgpt.com/backend-api/conversation',
+    '//chatgpt.com/backend-api/conversation',
+    '/\\evil.example/path',
+    '/path://evil.example',
+    '/path\u0000value',
+    '/path\u001fvalue',
+    '/path\u007fvalue',
+    null,
+    1
+  ]) {
+    assert.equal(validation.isSafeOriginRelativePath(path), false, String(path));
+  }
+});
+
+
+test('authenticated account request path applies the service-level space and fragment restrictions', () => {
+  for (const path of [
+    '/',
+    '/backend-api/accounts/check/v4-2023-04-27',
+    '/path?query=value'
+  ]) {
+    assert.equal(validation.isSafeAuthenticatedRequestPath(path), true, path);
+  }
+  for (const path of ['/path with space', '/path#fragment', 'relative/path', '//host/path']) {
+    assert.equal(validation.isSafeAuthenticatedRequestPath(path), false, path);
   }
 });

@@ -416,3 +416,32 @@ Added private `src/chatgpt/android-auth-validation.cjs` with the five pure predi
 The focused authentication-validator test file passed all seven tests locally. GitHub CI run `45606423090` passed the full repository check: 51/51 tests, generated-state synchronization, all 27 Markdown local links, the 11-file archive build, and installed CommonJS/ESM smoke tests. CodeQL run `45606423246` passed on commit `acdf32c7413644be86cb1759ab9e1e041488c71b`. The downloaded workflow artifact ZIP (18,741 bytes) matched GitHub's SHA-256 `62895b9d2ce9fa76bc264d36fb626f3a5e254ea24b9a722d597ee0245a35e9e9`; its inner `ChatJS.tar.gz` (18,591 bytes) passed gzip/tar inspection and has SHA-256 `29e8d05e0986719832c629c5583ba4f460121ad0d38ebf106d8cf2d718649389`. The extracted authentication helper smoke test passed.
 
 Android Work, Windows/Desktop and Codex CLI remain parked only for execution sequencing; the full three-family product goal remains unchanged.
+
+## Latest handoff — Android module census and auth method-level trace — 2026-11-25
+
+### Package inventory
+
+The supplied Android XAPK (SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`) is package `com.openai.chatgpt`, version `1.2026.321` (version code `2632129`). All 111 `assets/*.valdimodule` files were decompressed: 9,355,429 compressed bytes and 77,451,888 decompressed bytes. `docs/ANDROID_CLIENT_MODULE_INVENTORY.md` records module names, compressed/decompressed sizes, decompressed SHA-256 and 19 module groups with route-like string candidates. Candidate strings are discovery only; some are concatenated fragments, internal import paths, fixtures or telemetry. The old extracted APK's separate 121-module count belongs to a different snapshot and must not be conflated.
+
+### Reproducible method-level auth reconstruction
+
+A temporary read-only reader was rebuilt from pinned public Valdi commit `f5bc2dcfcb880109c908e0675968cb532231ca71` / QuickJS `2021-03-27`. The Zstandard payload uses an outer Valdi archive packet with named entries; each JavaScript entry has its own precompiled marker. Parsing the archive and calling QuickJS `JS_ReadObject(..., JS_READ_OBJ_BYTECODE)` with a post-constant-pool dump hook successfully decoded seven authentication-session entries: generated `ChatGPTAuthenticationApiClient`, `SessionAuthenticatedAccountService`, `OAIAuthenticationValidation`, `OAIAuthenticationController`, `OAINativeCredential`, `OAICredentialStore` and `OAIRequestCredential`. The temporary harness deserializes and frees bytecode objects only. It does not evaluate functions, execute Android code, contact the service or use account credentials. The Android native binary's exact QuickJS commit/build flags are not established, and temporary tooling/assets remain outside Git/production.
+
+### Confirmed findings and code
+
+- Bearer token, account-ID, header-name and trusted HTTPS-origin regexes are case-insensitive; header control-character matching is not.
+- Origin-relative paths require `/`, reject `//`, any backslash, `://` and ASCII controls. The account-service wrapper also rejects literal space and `#`.
+- Account-check descriptor: GET `/backend-api/accounts/check/v4-2023-04-27`, no query/body fields. The response requires `accounts`, with optional `account_ordering`; records and account metadata are partially reconstructed. Nested union/schema detail remains open.
+- `OAIAuthenticationController` operation names and states are method-decoded, as are distinct revoked, SSO-required and expiry-renewal classifications. Native credential and encrypted-store workflows are not fully reconstructed.
+- The private auth-validation module has seven pure predicates and ten deterministic tests. No credentials, persistence, HTTP, login, account selection, refresh, DPoP or device-integrity behavior has been implemented.
+
+### Next Android non-Work steps
+
+1. Complete nested account-check union/nullable decoders and trace selection/access decisions.
+2. Reconstruct controller concurrency/generation/foreground/cancellation and native credential callback semantics.
+3. Decode secure-store encoding/ownership/atomicity and token renewal/SSO/DPoP rules; never use plaintext fallback.
+4. Continue independent guest route reconstruction; do not conflate AuthSession with guest SessionManager.
+5. Use the module census to investigate the remaining Android non-Work surfaces, including Explore, Search, Learning, Library, Memory/Personalization, Finance, Health, Maps, Wallet/connectors, Shopping, Family, multiplayer, voice and other real client features. Preserve package/string/traced/implemented evidence levels.
+6. Continue history recovery and file expiry/retry/cancel/download/indexing; do not implement service calls until transport/session/challenge rules are verified.
+
+Android Work, Windows/Desktop and Codex CLI remain parked for execution sequencing only; the full three-family target is unchanged.

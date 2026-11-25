@@ -246,3 +246,11 @@ This is a different implementation from the existing bounded generic SSE parser 
 ## Current implementation priority
 
 Complete the full non-Work ChatGPT Android client experience first. The Android Work cloud surface, Windows/Desktop client, and Codex CLI remain in the long-term ChatJS target but are parked until Android non-Work is fully reconstructed, implemented and tested. This is a sequencing decision only.
+
+## Android XAPK module census and auth method update — 2026-11-25
+
+The latest supplied XAPK (ChatGPT Android 1.2026.321) was independently reverified and all **111** Valdi module assets were decompressed. The per-module names, sizes, decompressed SHA-256 values and route-like string candidates are recorded in [ANDROID_CLIENT_MODULE_INVENTORY.md](ANDROID_CLIENT_MODULE_INVENTORY.md). This snapshot has 111 modules; the separate older extracted APK snapshot recorded 121. Do not merge counts across source artifacts. The census is package discovery evidence only, not proof that features are loaded, entitled, reachable or implemented.
+
+Method-level disassembly of `oai_authentication_session.valdimodule` verified the authentication regex flags and exact `isSafeOriginRelativePath` plus the service-level space/fragment restrictions. ChatJS now has private side-effect-free implementations of these path predicates in addition to bearer, account-ID, header and trusted-origin predicates. The generated account-check operation is GET `/backend-api/accounts/check/v4-2023-04-27`, with no query/body fields in its descriptor. The top response requires `accounts` and optionally decodes `account_ordering`; records and account metadata are partly reconstructed. Nested union/nullable types and account-selection decisions remain open.
+
+Seven authentication-session entries were deserialized and bytecode-dumped with a temporary QuickJS reader from pinned public Valdi source. No Android function was evaluated. Controller operation names/states, native credential bridge and revoked/SSO/renewal classifications are source findings only. Secure Android storage, sign-in/restore, account selection, DPoP refresh, authenticated HTTP and public-build device integrity remain unimplemented.

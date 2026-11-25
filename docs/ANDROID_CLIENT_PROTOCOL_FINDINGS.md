@@ -1112,3 +1112,60 @@ The helper performs no storage, authentication, account lookup, request construc
 6. Trace `OAIRequestCredential` status/recovery branches, renewal authorization, SSO-required handling, revocation persistence and account-switch safety.
 7. Implement a portable host secure-storage adapter only after the source lifecycle is reconstructed; absence of a secure adapter must remain observable and must not fall back to plaintext persistence.
 8. Keep the accountless guest SessionManager lifecycle separate; this module's credential-backed AuthSession is not evidence of guest create/refresh.
+## 2026-11-25 — Android authentication validation and account-check method reconstruction
+
+### Source provenance and safe inspection
+
+The supplied `ChatGPT-Android.xapk` was rechecked (SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`). The base APK contains `assets/oai_authentication_session.valdimodule`; its decompressed 70,816-byte Valdi archive packet has SHA-256 `5211ced4520704e13e14ebb1f2faf51a91de091877f596a5a0516bd8bebd8917`.
+
+A temporary reader was rebuilt from public `Snapchat/Valdi` commit `f5bc2dcfcb880109c908e0675968cb532231ca71` (QuickJS `2021-03-27`). The outer Zstandard payload was parsed using the Valdi archive packet/entry framing; each JavaScript entry's own precompiled marker was stripped before `JS_ReadObject(..., JS_READ_OBJ_BYTECODE)`. A bytecode-dump hook ran after constant-pool reconstruction. The harness only deserializes bytecode and frees objects: it does not evaluate functions, execute Android code, make network requests, or access credentials. The Android native library's exact QuickJS source revision/build flags are not verified. The temporary tool and extracted app payloads remain outside the ChatJS repository and production archive.
+
+Seven authentication-session JavaScript entries were method-decoded: generated `ChatGPTAuthenticationApiClient`, `SessionAuthenticatedAccountService`, `OAIAuthenticationValidation`, `OAIAuthenticationController`, `OAINativeCredential`, `OAICredentialStore`, and `OAIRequestCredential`. This is static method-body evidence, not live behavior or a ChatJS implementation.
+
+### Validation predicates and authenticated path boundary
+
+Compiled regular-expression flags were recovered from the constant pool and checked against pinned QuickJS:
+- `isValidOAIBearerToken`: `^[a-z\d._~+/=-]+$` with ignore-case (`/i`).
+- `isValidOAIAccountIdentifier`: `^[a-z\d._-]+$` with `/i`.
+- `isValidHTTPHeaderName`: `^[!#$%&'*+.^_`|~a-z0-9-]+$` with `/i`.
+- `isValidHTTPHeaderValue`: rejects `[\u0000-\u001f\u007f]`; compiled regex has no ignore-case flag.
+- `isTrustedOAIAPIOrigin`: `^https://(?:[a-z\d-]+\.)*(?:openai\.com|chatgpt\.com|openai-staging\.com|chatgpt-staging\.com)$` with `/i`.
+
+`isSafeOriginRelativePath` requires a leading `/`, rejects a leading `//`, any backslash, any `://` substring and ASCII control characters. It does not itself reject spaces or `#`. `SessionAuthenticatedAccountService` calls this predicate and then separately rejects literal space and `#`; the complete service boundary rejects both. Its bearer helper validates before constructing `Bearer `. Its method normalizer accepts only GET, POST, PUT, DELETE and PATCH.
+
+The private ChatJS helper now ports both path layers separately as `isSafeOriginRelativePath` and `isSafeAuthenticatedRequestPath`. A Node-side type guard makes non-string input return false. Ten focused tests cover source-derived allow/reject cases, including a single backslash, spaces, fragments, controls, case-insensitive patterns and trusted-origin boundaries. Neither predicate is wired to transport.
+
+### Generated account-check operation
+
+The generated operation is **GET** `/backend-api/accounts/check/v4-2023-04-27`. Its request descriptor contains only `method: GET` and `path`; it adds no query or body fields. The transport operation is named `checkAccounts`.
+
+The generated response decoder establishes:
+- `AccountCheckResponse.accounts` is a required array of `AccountCheckRecord`; `account_ordering` is optional and decoded as an array. Additional response properties are preserved.
+- `AccountCheckRecord.account` and `can_access_with_session` are optional decoded properties; extra record properties are preserved.
+- `AccountCheckAccount` has optional decoded `account_id`, `account_user_id`, `is_deactivated`, `name`, `plan_type`, `structure`, and `profile_picture_url`; extra account properties are preserved.
+
+Remaining union/nullable alternatives, full `structure` schema, `account_ordering` element type and every nested decoder constraint are not fully documented. Route/method are established, but account availability/selection policy and controller use of `can_access_with_session` remain open.
+
+### Authentication controller, native credentials and recovery
+
+`OAIAuthenticationController` method names confirm capability discovery/subscription, restore/native restore, sign-in/interactive sign-in, access-token authentication, account selection, sign-out, operation admission, interactive credential request/cancellation, session establishment, credential validation, session construction, request/revalidation, secure save, expired-session invalidation/cleanup, operation failure, app-state admission, generation checks, foreground waiting and guarded state updates. Visible states are `SignedOut`, `Restoring`, `SigningIn`, `SignedIn`, `InvalidToken`, `Network`, `InvalidResponse`, `Storage`, `Cancelled`, and `StorageTemporarilyUnavailable`. Transition order, operation-generation races, and cancellation/foreground ordering still need branch-by-branch reconstruction.
+
+`OAINativeCredential` bridges to Android's first-party native credential service for sign-in, restore, access-token retrieval, clear and cancellation callbacks. The bridge carries an access token, native session ID and typed failure information; an arbitrary token string is not a complete Android session. No native sign-in/restore method was invoked.
+
+`OAIRequestCredential` maps `token_revoked` and `token_invalidated` to revoked. For HTTP 401 details, observed `code`/`type` cases distinguish revoked, `require_sso_login` (SSO required), `token_expired` (renewal), and no known recovery. Do not collapse these into generic retry. Renewal permission, persistence/invalidation and retry order remain open.
+
+`OAICredentialStore` exposes memory, unavailable and encrypted variants. Earlier static identifiers point to Android native secure storage, API 23+, foreground-only access and fail-closed behavior when unavailable. Encryption serialization, key ownership, atomicity, migration and full error lifecycle are not method-reconstructed. Never substitute plaintext Node persistence. `OAIBearerAPIService` separately validates bearer/account IDs and constructs `Authorization: Bearer ...` and `ChatGPT-Account-Id`; its authenticated image path adds signed-content origin, MIME and bounded-body restrictions.
+
+### ChatJS implementation and limits
+
+Private `src/chatgpt/android-auth-validation.cjs` now includes seven pure predicates: bearer token, account identifier, header name/value, trusted HTTPS origin, origin-relative path and full authenticated account-service path. `tests/android-auth-validation.test.cjs` has ten deterministic tests. These helpers are not public exports. They do not acquire/persist/refresh credentials, call native auth, select accounts, make authenticated requests, solve integrity challenges or contact ChatGPT.
+
+### Remaining authentication work
+
+1. Complete nested `AccountCheckAccount`, `AccountCheckRecord` and `AccountCheckResponse` union/nullable decoders; trace account ordering and session-access flags.
+2. Reconstruct controller concurrency, generation invalidation, foreground/background transitions, cancellation, sign-out and expiry cleanup.
+3. Reconstruct native sign-in/restore bridge request/result/error schemas and native session-ID ownership; do not assume a Node token-string method is equivalent.
+4. Decode encrypted credential record format, native key lifecycle, atomic save/clear, unavailable-state behavior and migration. Define a portable secure-storage adapter only after the contract is understood; otherwise fail closed.
+5. Trace status/error precedence, renewal authorization, SSO reauthentication, invalidation and retry.
+6. Trace DPoP/token refresh/account switching separately from accountless guest `SessionManager` operations.
+7. Do not implement authenticated network operations until credential ownership, request contract, public-build integrity requirements, cancellation and legitimate authorization are established and tested.
