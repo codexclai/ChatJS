@@ -389,3 +389,26 @@ The helper file passes `node --check`; all nine focused tests pass. The initial 
 5. Continue authorized end-to-end tests only with legitimate user sessions and supported public-build security behavior.
 
 Android Work, Windows/Desktop and Codex CLI remain parked for sequencing only; the permanent three-family product target is unchanged.
+
+
+## Latest handoff — Android authentication validation and credential architecture — 2026-11-25
+
+### Source work
+
+The supplied Android XAPK was rechecked (outer SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`). The base APK's `assets/oai_authentication_session.valdimodule` was extracted and decompressed; the 70,816-byte payload has SHA-256 `5211ced4520704e13e14ebb1f2faf51a91de091877f596a5a0516bd8bebd8917`. Static symbol/string inspection identifies the generated account-check client, SessionAuthenticatedAccountService, OAIAuthenticationController, OAINativeCredential, OAICredentialStore, OAIRequestCredential, OAIBearerAPIService and OAIAuthenticationValidation.
+
+The module's validation constants include bearer and account-ID character patterns, HTTP header-name syntax, ASCII control-character rejection for header values and an HTTPS origin pattern for openai.com, chatgpt.com and their staging domains. The controller/state strings evidence restore, interactive sign-in, access-token authentication, account choice, sign-out, foreground admission, operation generations, cancellation, revalidation, secure save/clear and expiry cleanup. The secure store is Android-native, foreground-gated and unavailable below Android API 23 in the observed source strings; it fails closed if secure native storage is unavailable. These are static compiled-module findings, not decoded method bodies or live sign-in behavior.
+
+### Implementation
+
+Added private `src/chatgpt/android-auth-validation.cjs` with the five pure predicates and `tests/android-auth-validation.test.cjs` with seven deterministic test cases. It is added to syntax checks and the distribution archive. It does not store credentials, call native Android authentication, select accounts, build requests, authenticate a user, or use the network. It also does not port `isSafeOriginRelativePath`; exact path semantics remain unverified.
+
+### Next Android non-Work priorities
+
+1. Disassemble the validation predicates (including flags) and origin-relative path check before any use in a network transport.
+2. Reconstruct the account-check method and full response schemas.
+3. Decode OAIAuthenticationController and native credential callbacks, including foreground/operation-generation/cancel semantics.
+4. Decode encrypted secure credential storage and token rejection/renewal flow. Define a portable ChatJS secure-storage adapter only after the exact lifecycle is understood; no plaintext fallback.
+5. Continue tracing DPoP/account switching and the independent accountless guest HTTP protocol. Do not conflate authenticated AuthSession with anonymous SessionManager state.
+
+Android Work, Windows/Desktop and Codex CLI remain parked only for execution sequencing; the full three-family product goal remains unchanged.

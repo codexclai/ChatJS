@@ -193,3 +193,16 @@ The generated request descriptors and catalog/requirements response decoders now
 - [ ] Reconstruct 1 MiB frame splitting, read-ahead, bounded event-channel backpressure and response idle timeout/maximum-message enforcement without copying implementation limits without performance tests.
 - [ ] Reconstruct response.interrupt send/ack/error semantics and its interaction with AbortSignal, draining and partial output retention.
 - [ ] Enumerate the exact fallback/retry policy, including HTTP 426, retryable wrapped WebSocket error codes, Retry-After, max retry counts, session-level HTTP lockout and the restricted UnboundedConnectionRetries feature branch.
+
+
+## Android authentication validation predicates and session lifecycle — 2026-11-25
+
+- [x] Identify the compiled Android authentication controller, native credential bridge, credential-store variants, request-credential recovery component, bearer API service, account-check client and validation functions in `oai_authentication_session.valdimodule`.
+- [x] Port the observed bearer-token, account-identifier, HTTP header-name/value and trusted API-origin predicates as private pure ChatJS helpers, with deterministic valid/invalid cases.
+- [ ] Disassemble the complete validation method bodies and regex flags. In particular, establish exact case-folding/Unicode behavior and the full `isSafeOriginRelativePath` contract before allowing it to guard network requests.
+- [ ] Decode generated account-check request method/query/body and the entire AccountCheckResponse/AccountCheckRecord schema, including requiredness and nested account ordering/access logic.
+- [ ] Reconstruct OAIAuthenticationController's operation-generation, state transitions, foreground/background gating, cancellation ordering, restore, revalidation, account selection and sign-out flows.
+- [ ] Reconstruct native sign-in/restore/callback protocol and native session ID lifecycle; do not assume an arbitrary access-token string is sufficient to establish a valid ChatGPT session.
+- [ ] Decode OAICredentialStore encrypted serialization, native ownership, encryption lifecycle, unavailable states, atomicity, account switching and clear semantics. A Node.js host must use a genuine secure-storage adapter or fail closed; never fall back to plaintext credential persistence.
+- [ ] Decode OAIRequestCredential's token_revoked/token_invalidated/require_sso_login/token_expired branches, refresh/renew authorization and credential invalidation semantics.
+- [ ] Trace DPoP and token lifecycle to the exact AuthSession credential repository callsites, and keep those authenticated flows separate from the accountless guest SessionManager lifecycle.

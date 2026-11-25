@@ -1229,3 +1229,22 @@ The native DEX user-agent is ChatGPT/1.2026.209 (build 2620909), unlike the encl
 - The initial CI run failed because `tests/archive.test.cjs` still expected the previous nine-file archive. Updated the exact expected manifest to include the new helper, then reran the workflow successfully: CI `45600962485` passed `npm run check` with 44/44 tests, docs checks, archive build and installed CommonJS/ESM smoke tests; CodeQL `45600962380` passed on `6eff5056dc95db2c2780097d026aa1e7c2b82305`.
 - Downloaded and inspected the CI artifact: `ChatJS.tar.gz` contains exactly ten intended files, is 17,944 bytes, passes gzip/tar integrity, and has SHA-256 `0f99e0639f97d8926caedee5bba182ffb6a446576bc929d1fdc854072fe8b05c`. Extracted-helper smoke checks passed.
 - No authenticated HTTP request, model fetch, conversation send, guest flow, upload, device-integrity exchange or account credential handling was implemented or executed. The supplied public Android package's internal-only integrity gate is unchanged.
+
+
+## 2026-11-25 — Android authentication validation and credential architecture
+
+### Source inspection
+- Re-extracted `assets/oai_authentication_session.valdimodule` from the owner-supplied XAPK after verifying the outer archive SHA-256. The decompressed payload is 70,816 bytes with SHA-256 `5211ced4520704e13e14ebb1f2faf51a91de091877f596a5a0516bd8bebd8917`.
+- Recorded compiled module identifiers and schema/error/regex strings for ChatGPTAuthenticationApiClient, SessionAuthenticatedAccountService, OAIAuthenticationController, OAINativeCredential, OAICredentialStore, OAIRequestCredential, OAIBearerAPIService and OAIAuthenticationValidation.
+- Identified first-party account-check path `/backend-api/accounts/check/v4-2023-04-27`, bearer/account headers, token-rejection code families, account metadata fields, validation patterns, and the state/secure-store/foreground lifecycle strings. This was a static string/symbol pass only; no Android method, login, token, request or account was executed or used.
+
+### Implementation
+- Added internal `src/chatgpt/android-auth-validation.cjs` for bearer-token, account-identifier, HTTP header-name/value and trusted HTTPS origin predicates.
+- Added `tests/android-auth-validation.test.cjs` with seven focused deterministic tests; all seven pass locally.
+- Added the module to package syntax checks and archive inclusion, and updated user-facing docs, capability matrix, findings, TODO, open questions, continuity, AI memory and session log.
+
+### Evidence boundary and remaining work
+- Authentication/controller/native secure-store/renewal/account-switching behavior is researched but not implemented. No plaintext credential fallback or fake login was added.
+- The safe origin-relative path validation and exact regex flags remain to be disassembled. The new helper is not used by an HTTP client and is not a public API.
+- Account-check complete schema/method selection, native credential callback contract, encrypted secure-store lifecycle, DPoP/token refresh and the separate accountless guest create/refresh/composer routes remain open.
+- Full package checks and CI/CodeQL for this change remain pending.

@@ -56,6 +56,12 @@ Core APIs must be reusable without a phone/desktop device or hardware. If the ca
 
 The module is included in the distributable archive and has focused tests. This does not implement HTTP, authenticated sessions, attestation, conversation send/receive, or a model catalog fetch; the overall runtime remains foundation-only.
 
+## Android authentication validation helper — 2026-11-25
+
+Static inspection of the supplied XAPK's decompressed `assets/oai_authentication_session.valdimodule` identified the private source predicates `isValidOAIBearerToken`, `isValidOAIAccountIdentifier`, `isValidHTTPHeaderName`, `isValidHTTPHeaderValue`, and `isTrustedOAIAPIOrigin`, including their observed ASCII alphabets/control-character rule and production/staging HTTPS domain pattern. ChatJS now has a side-effect-free internal implementation of those validation predicates with focused tests.
+
+The same module also contains a much larger authentication controller, native credential service, encrypted credential store, account-check client and request-credential recovery flow. Those are source findings only. Secure Android native storage/foreground admission, interactive sign-in, restore/revalidation, credential renewal/revocation, account selection/switching and authenticated HTTP remain unimplemented. The origin-relative path validator is intentionally not ported until its complete behavior is reconstructed.
+
 ## Not implemented yet
 
 The current ChatJS repository is foundation-only. Actual ChatGPT service connection, authentication/session handling, request transport, conversation features, files, voice, images, Work tasks, and Codex integrations are not implemented. No end-to-end compatibility claims are made.

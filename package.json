@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "lint": "node --check src/index.cjs && node --check src/index.mjs && node --check src/sse.cjs && node --check src/chatgpt/file-upload-policy.cjs && node --check src/chatgpt/android-conversation-api-schema.cjs && node --check scripts/generate-project-state.cjs && node --check scripts/check-doc-links.cjs && node --check scripts/build-module-archive.cjs",
+    "lint": "node --check src/index.cjs && node --check src/index.mjs && node --check src/sse.cjs && node --check src/chatgpt/file-upload-policy.cjs && node --check src/chatgpt/android-conversation-api-schema.cjs && node --check src/chatgpt/android-auth-validation.cjs && node --check scripts/generate-project-state.cjs && node --check scripts/check-doc-links.cjs && node --check scripts/build-module-archive.cjs",
     "test": "node --test",
     "docs:sync": "node scripts/generate-project-state.cjs",
     "docs:check": "node scripts/generate-project-state.cjs --check && node scripts/check-doc-links.cjs",

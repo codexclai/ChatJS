@@ -1061,3 +1061,54 @@ The source-traced generated API contract now has a private Node.js implementatio
 - `resolveDefaultRequirementsIntegrityHeader` requires a non-empty requirements token and returns the source-named header only when no challenge descriptor is marked `required === true`. Any required challenge throws `CHATGPT_ANDROID_API_DEVICE_INTEGRITY_REQUIRED`; no challenge result is fabricated or bypassed.
 
 The helper is internal and side-effect-free. Nine deterministic tests cover the request descriptors, schema nesting, optional/null behavior, extension-field pass-through and fail-closed challenge routing. It makes no network requests and is not authentication, a public native integrity provider, a challenge solver, or an implemented conversation workflow. The supplied public XAPK's `com.openai.chatgpt.internal` package preflight remains respected. Authorized end-to-end service tests and public-build device-integrity support remain open.
+
+
+## 2026-11-25 — Android authentication validation predicates and credential architecture
+
+### Source provenance and inspection depth
+
+The supplied `ChatGPT-Android.xapk` was rechecked in this session (SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`). The base APK's `assets/oai_authentication_session.valdimodule` was extracted and Zstandard-decompressed. The decompressed Valdi payload is 70,816 bytes, SHA-256 `5211ced4520704e13e14ebb1f2faf51a91de091877f596a5a0516bd8bebd8917`. This pass examined embedded module names, method identifiers, schema identifiers, endpoint constants, regular-expression patterns, and error/state strings. It is a static compiled-module string/symbol inspection, not method-body disassembly and not execution of Android app code.
+
+### Authentication/session component map visible in the module
+
+The module identifies these separate client components:
+
+- `ChatGPTAuthenticationApiClient`: generated account-check operation at `/backend-api/accounts/check/v4-2023-04-27`. The embedded schema identifiers include `account_id`, `account_user_id`, `is_deactivated`, `plan_type`, `profile_picture_url`, `account.can_access_with_session`, and account-ordering fields. Exact HTTP method/body/query branch, requiredness and complete nested decoder behavior are not yet disassembled.
+- `SessionAuthenticatedAccountService`: checks bearer credential validity and encoded origin-relative request paths; its errors include invalid bearer and unsafe path rejection.
+- `OAIAuthenticationController`: a stateful controller. Identified operations include capability discovery, subscription, restore, interactive sign-in, access-token authentication, account selection, sign-out, request/credential operation admission, foreground waiting, cancellation, session establishment, credential validation, session revalidation, secure save/clear, expired-credential cleanup, and guarded state updates.
+- `OAINativeCredential`: bridge to a native first-party authentication/credential client with sign-in, restore, access-token, clear and cancellation callbacks. The visible result model includes access token, native session ID and failure kind.
+- `OAICredentialStore`: memory, unavailable and encrypted credential-store implementations. The secure implementation references native secure storage, Android API level 23 or newer, foreground-only access, encrypted persistent storage, and fail-closed errors when secure storage is unavailable. A browser-specific path remains in memory when native secure storage is unavailable; it is not evidence of durable browser credential storage.
+- `OAIRequestCredential`: handles first-party rejected-credential error identifiers `token_revoked`, `token_invalidated`, `require_sso_login`, and `token_expired`, with Revoked/RequiresSSO/Renew recovery classifications visible in the compiled strings. Exact branch ordering, renewal and invalidation rules require method disassembly.
+- `OAIBearerAPIService`: validates bearer token and account identifier before authenticated requests, sends `Authorization: Bearer ...` and `ChatGPT-Account-Id`, and includes an authenticated-image path with a signed-content-origin check, image MIME validation and bounded response checks.
+- `OAIAuthenticationValidation`: exports `isValidOAIBearerToken`, `isValidOAIAccountIdentifier`, `isValidHTTPHeaderName`, `isValidHTTPHeaderValue`, `isTrustedOAIAPIOrigin`, and `isSafeOriginRelativePath`.
+
+Visible authentication-controller states include SignedOut, Restoring, SigningIn, SignedIn, InvalidToken and typed Network, InvalidResponse, Storage, Cancelled and StorageTemporarilyUnavailable failures. Credential-store strings include a versioned record containing accessToken, nativeSessionId, baseUrl, expiresAt and account metadata. These identifiers establish the presence of those structures, not their complete serialization order or state-transition semantics.
+
+### Concrete validation patterns observed
+
+The compiled validation module contains these pattern strings and constraints:
+
+- Bearer token: `^[a-z\\d._~+/=-]+$`
+- Account identifier: `^[a-z\\d._-]+$`
+- HTTP header name: `^[!#$%&'*+.^_`|~a-z0-9-]+$`
+- HTTP header value: rejects any `[\\u0000-\\u001f\\u007f]` control character.
+- Trusted API origin: `^https:\\/\\/(?:[a-z\\d-]+\\.)*(?:openai\\.com|chatgpt\\.com|openai-staging\\.com|chatgpt-staging\\.com)$`
+
+The generated client and bearer service also contain the route `/backend-api/accounts/check/v4-2023-04-27` and the headers `Authorization` and `ChatGPT-Account-Id`. The ChatJS helper currently applies case-insensitive ASCII matching to the lowercase character classes; this pass did not independently recover the compiled regular-expression flags, so exact flag parity remains a bytecode-disassembly item. The separate safe-origin-relative-path function is deliberately not ported from its name alone; its exact rules remain open.
+
+### ChatJS implementation
+
+Added private `src/chatgpt/android-auth-validation.cjs` and `tests/android-auth-validation.test.cjs`. The pure functions are `isValidOAIBearerToken`, `isValidOAIAccountIdentifier`, `isValidHTTPHeaderName`, `isValidHTTPHeaderValue`, and `isTrustedOAIAPIOrigin`. Seven deterministic tests cover valid token/account/header alphabets, ASCII control-character rejection, trusted production/staging HTTPS origins, and rejection of other schemes, ports, paths and lookalike domains.
+
+The helper performs no storage, authentication, account lookup, request construction or network operation, and it is not a public ChatJS export. No real credential or account data was used in tests. Android's actual native credential service and secure storage are not reproduced by this slice.
+
+### Remaining authentication questions
+
+1. Disassemble the exact validation functions, including regex flags, Unicode behavior and the complete `isSafeOriginRelativePath` rules before using it for a transport.
+2. Trace `OAIAuthenticationController` operation-generation/cancellation/foreground lifecycle and all state transitions in method bodies.
+3. Reconstruct the native sign-in/restore bridge protocol, credential callback/error schemas, account selection and native session ID lifecycle.
+4. Trace the encrypted `OAICredentialStore` serialization, secure-store ownership, atomicity, unavailable-state behavior, expiry and clear semantics. Do not port Android's keystore assumptions to a Node host.
+5. Decode the complete generated account-check request/response schema and method selection; verify account ordering and `can_access_with_session` branch usage.
+6. Trace `OAIRequestCredential` status/recovery branches, renewal authorization, SSO-required handling, revocation persistence and account-switch safety.
+7. Implement a portable host secure-storage adapter only after the source lifecycle is reconstructed; absence of a secure adapter must remain observable and must not fall back to plaintext persistence.
+8. Keep the accountless guest SessionManager lifecycle separate; this module's credential-backed AuthSession is not evidence of guest create/refresh.
