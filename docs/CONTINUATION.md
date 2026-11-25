@@ -637,3 +637,16 @@ Added private `src/chatgpt/android-p256-jwk.cjs` and `tests/android-p256-jwk.tes
 ### Open boundary
 
 The lookup-key nonce proof is traced, but its full consumers and relationship to the main DPoP JWT/request challenge remain unresolved. Native provider injection, exact proof claims, challenge/nonce state, OAuth refresh schema, retry ceilings and secure non-exportable host signer are still prerequisites. No key was generated/accessed and no credential/network operation was used. The prior commit `42fa2d1` passed CI (119 tests, archive build and installed-module smoke test) and CodeQL; this new JWK helper awaits its own CI run.
+
+
+## Latest handoff — Android DPoP compact-JWS serializer — 2026-11-25
+
+### Source trace
+
+`Ln1d1.b` passes the Android DPoP key pair, literal POST method, request URL, clock-derived long plus DPoP offset, and access token to `Lyls0.s`. The jti comes from 16 SecureRandom bytes and is converted into internal `Lfbd1`. Header fields/order are `typ=dpop+jwt`, `alg=ES256`, `jwk`; payload fields/order are `htm`, `htu`, `iat` (long), `jti`, `ath`. `ath` is SHA-256 of UTF-8 token bytes in unpadded Base64URL. `htu` lowercases scheme/host, removes default ports, retains non-default port/path spelling, defaults path to slash and excludes query/fragment. The ECDSA callback supplies 64-byte `r || s`. The clock unit/rounding is still unknown.
+
+### Implementation and limits
+
+Added private `src/chatgpt/android-dpop-jws.cjs` and seven tests. It builds the ordered signing input and appends only an externally supplied 64-byte ES256 signature. Tests cover canonicalization, wire schema/order, ath, integer preservation, compact assembly, and verification of an ephemeral P-256 test signature. Added syntax check, archive allowlist/contract, and root docs. It is not a public API export.
+
+No production key/signing, AndroidKeyStore access, secure credential storage, timestamp/jti generation, nonce challenge, token refresh, authentication or HTTP request was implemented. Production use requires a real host-owned secure non-exportable signer and the remaining first-party session/challenge state machine. Other client tracks remain parked only for sequencing.

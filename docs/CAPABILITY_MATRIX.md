@@ -135,3 +135,11 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 | Android DER ECDSA to ES256 `r || s` serialization | Implemented (private helper only) | Seven tests; pure DER-to-64-byte formatting, no signing or keystore. |
 | Android P-256 public JWK coordinate serialization | Implemented (private helper only) | Six tests; exact `kty`/`crv`/`x`/`y` source schema and Base64URL coordinate encoding. It does not generate/load keys, sign or implement DPoP. |
 
+
+
+## Android DPoP compact-JWS serialization — 2026-11-25
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Android DPoP header/payload and compact-JWS serialization | Implemented (private serializer only) | Source-traced header `typ`/`alg`/`jwk` and payload `htm`/`htu`/`iat`/`jti`/`ath`; canonical URL and token hash; 64-byte signature assembly. Seven tests include real P-256 signature verification. No key generation, host signer, session/nonce/refresh workflow or HTTP transport. |
+

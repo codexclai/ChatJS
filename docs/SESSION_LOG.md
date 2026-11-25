@@ -1357,3 +1357,12 @@ GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989c
 **Implementation:** added private `src/chatgpt/android-p256-jwk.cjs` and six tests, including comparing the formatter's output with Node crypto's JWK export from a generated P-256 public key. Updated syntax check, archive allowlist, archive contract test and root documentation. No key generation, signing, keystore access, authentication or network operation was implemented.
 
 **Verification:** focused local tests passed 6/6. The previous commit `42fa2d1` passed GitHub CI run `45670418905` (119 tests, archive build, installed-module smoke test) and CodeQL run `45670418977`. CI/CodeQL for the new JWK formatter commit remain pending.
+
+
+## 2026-11-25 — Android DPoP compact-JWS request proof trace and serializer
+
+**Source:** traced `Ln1d1.b` into `Lyls0.s`, including the Android DPoP keypair, POST method, URL, clock-derived long plus DPoP offset, access token and 16-byte SecureRandom jti source. Generated serializers define header `typ=dpop+jwt`, `alg=ES256`, `jwk`, payload `htm`, `htu`, long `iat`, `jti`, `ath`. The token hash is SHA-256 over UTF-8 access-token bytes in unpadded Base64URL. URL canonicalization lowercases scheme/host, removes default ports, keeps non-default port/path spelling, defaults empty path to slash and excludes query/fragment. The compact JWS uses a 64-byte ES256 signature callback. Exact iat unit/rounding remains open.
+
+**Implementation:** added private `src/chatgpt/android-dpop-jws.cjs` and seven tests; it serializes the ordered signing input and assembles a three-segment compact JWS from a supplied 64-byte signature. Tests include an ephemeral P-256 signing/verification round trip only. Added package syntax check, archive inclusion/contract and root documentation. No key generation, signing provider, keystore, credentials, refresh/challenge flow, authentication or network behavior was added.
+
+**Local verification:** `node --check src/chatgpt/android-dpop-jws.cjs` passed; focused tests passed 7/7. Full CI/CodeQL for the new commit are pending.

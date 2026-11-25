@@ -326,3 +326,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Implement the private P-256 public JWK coordinate formatter with six deterministic tests, including comparison against Node's real P-256 JWK output; include syntax and archive checks.
 - [ ] Trace complete lookup-key proof return consumers and establish its exact relationship to the main DPoP proof/challenge path.
 - [ ] Keep the full DPoP flow blocked pending full claims/nonce/refresh/retry contracts, native provider ownership, a legitimate host secure signer and authorized end-to-end verification.
+
+
+## Android DPoP compact-JWS proof builder trace — 2026-11-25
+
+- [x] Trace `Ln1d1.b` into `Lyls0.s`, including DPoP key, fixed POST, target URL, clock-derived long plus offset, access token and SecureRandom jti source.
+- [x] Decode header `typ=dpop+jwt`, `alg=ES256`, `jwk`; payload `htm`, `htu`, long `iat`, `jti`, `ath`, their field order and serialization.
+- [x] Verify SHA-256/UTF-8/Base64URL token binding and source URL canonicalization.
+- [x] Implement private signing-input/compact-JWS serialization with seven tests and package archive coverage.
+- [ ] Resolve `iat` clock unit/rounding and stored clock-offset lifecycle.
+- [ ] Trace main-request DPoP nonce/challenge state, OAuth refresh request/response and bounded retries; keep lookup-key nonce proof separate.
+- [ ] Implement authenticated DPoP only after native provider and secure non-exportable host signer/session ownership are established and authorized E2E tests pass.

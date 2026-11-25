@@ -1594,3 +1594,23 @@ The existing `Lyt2.b(String)` caller uses this public-key model with a URL-safe 
 Added private `src/chatgpt/android-p256-jwk.cjs` with `encodeAndroidP256PublicKeyJwk`. It normalizes signed `BigInteger` coordinate byte arrays to exactly 32 bytes, removes the positive sign byte when present, and emits the exact four-field public JWK model with unpadded Base64URL X/Y. Six deterministic tests include comparison against the JWK exported by a real Node P-256 key, short and sign-padded coordinate cases, invalid coordinate lengths/types, and Base64URL alphabet/padding. The helper is private and does not generate or load keys, sign, access a keystore, assert hardware protection, build a DPoP JWT, authenticate or send requests.
 
 The full first-party proof protocol, exact relationship between lookup-key nonce and the main DPoP challenge flow, OAuth refresh payload, retry bounds, native provider and portable secure non-exportable host signer remain unresolved. No key was generated or accessed during source research; no credentials or network requests were used.
+
+
+## Android DPoP compact-JWS source trace and private serializer — 2026-11-25
+
+DEX caller `Ln1d1.b` obtains the DPoP key pair, request URL, access-token string, and a clock-derived long with the DPoP clock-offset value applied; it calls `Lyls0.s(KeyPair, "POST", URL, long, accessToken, ...)`. The `jti` originates from 16 bytes filled by `SecureRandom.nextBytes` and converted to the internal `Lfbd1` identifier representation.
+
+Generated Android serializers establish the exact compact-JWS schema/order:
+
+- Header `Lsfx0`: `typ=dpop+jwt`, `alg=ES256`, then `jwk` (EC/P-256 public key).
+- Payload `Lvfx0`: `htm`, `htu`, numeric long `iat`, `jti`, `ath`.
+- `htm` is fixed to `POST` in this method.
+- `ath` is SHA-256 over access-token UTF-8 bytes, encoded as unpadded Base64URL.
+- `htu` lowercases scheme/host, removes default HTTPS 443 / HTTP 80 ports, retains non-default ports, defaults empty path to `/`, and excludes query/fragment. The source uses `URL.getPath()`, preserving path spelling.
+- Header and payload JSON are encoded as UTF-8, Base64URL encoded without padding, joined by a dot, passed to an ES256 callback, and assembled as three compact-JWS segments. The callback signature is fixed-width 64-byte `r || s`.
+
+The clock input is an instant-derived long plus stored DPoP offset. Its exact unit and rounding remain unresolved; ChatJS treats `iat` as an already-computed integer and does not choose the clock or unit.
+
+Added private `src/chatgpt/android-dpop-jws.cjs`: `canonicalizeAndroidDpopUrl`, `buildAndroidDpopSigningInput`, and `assembleAndroidDpopJws`. Seven tests verify URL normalization, exact field names/order, `ath`, integer preservation, compact assembly, and a real ephemeral P-256 signature check. The module is included in syntax checking and the distribution archive/contract test, but is not exported publicly.
+
+This is serialization only. Callers must supply a real public JWK, authorized timestamp, jti, access token, and 64-byte signature from an explicit host-owned secure non-exportable signer. No key generation/storage, AndroidKeyStore access, secure signer/provider, credential refresh, nonce/challenge state, authentication, or HTTP request is implemented. No DPoP proof was sent to a service and no credentials were used in tests.
