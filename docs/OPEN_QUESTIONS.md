@@ -228,3 +228,10 @@ The generated request descriptors and catalog/requirements response decoders now
 - Where are the Android native key/provider closures injected, and what host-owned capabilities and lifecycle constraints govern their calls?
 
 The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r || s`; it does not answer these questions or implement the proof flow.
+
+
+## Android P-256 JWK and lookup-key call-flow update — 2026-11-25
+
+**Resolved:** generated serializer `Ldk50` confirms exact public-key model JSON fields `kty`, `crv`, `x` and `y`; constructor fixes EC/P-256. `Ljj51.p(ECPublicKey)` derives affine X/Y, normalizes 32 bytes and uses URL-safe Base64 without padding. `Lyt2.b(String)` consumes that model in a 32-byte lookup-key nonce signature path.
+
+**Still open:** trace all consumers of this lookup-key proof and determine whether it is reused by or separate from the main DPoP JWT request/challenge flow. Exact native provider injection and host secure-key ownership also remain unknown. The new ChatJS JWK formatter only serializes coordinate bytes.

@@ -225,3 +225,10 @@ The supplied Android `config.arm64_v8a.apk` also contains an 8,817,776-byte, str
 ## 2026-11-25 — Android ES256 DER signature normalization
 
 DEX method `Ljj51.m(byte[], KeyPair)` uses JCA `SHA256withECDSA`, reads the DER sequence's `r` and `s` integers as unsigned big integers, pads both to 32 bytes and concatenates a 64-byte `r || s` value. The concrete `Lyt2.b(String)` caller uses this for a URL-safe 32-byte lookup-key nonce and includes a public-key JWK; this caller alone does not establish the main DPoP JWT proof path. ChatJS now has a private pure DER-to-P1363 formatter with seven tests, including a Node crypto verification test. It does not perform signing, keystore access, JWK construction, nonce handling, DPoP or authentication.
+
+
+## 2026-11-25 — Android P-256 AndroidKeyStore and public JWK trace
+
+The dedicated EC key methods in DEX `Lchy` create `secp256r1` AndroidKeyStore keypairs with SHA-256 digest, load a `PrivateKeyEntry` into a KeyPair, and delete aliases. Cross-DEX callers connect `Lcn8` DPoP alias metadata and `Lqhk0`/`Lzt2` lookup-key creation/loading. This is distinct from the generic Valdi Keychain AES-GCM secret under alias `Valdi`.
+
+The source JWK converter reads EC affine X/Y, normalizes each to 32 bytes and uses URL-safe Base64 without padding. Generated serializer `Ldk50` establishes exact JSON names and constants: `kty: EC`, `crv: P-256`, `x` and `y`. ChatJS has a private coordinate-only formatter tested against Node P-256 JWK export. This does not implement key ownership, signing, a DPoP JWT, authentication or request transport.

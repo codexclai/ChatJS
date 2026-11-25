@@ -1348,4 +1348,12 @@ GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989c
 **Local validation:** focused test command passed 7/7. No full repository checkout is available in this environment, so `npm run check`, built archive inspection and CI for the new commit are pending remote GitHub Actions verification. Prior main baseline at `4ded6` had successful CI and CodeQL; this is not evidence for the new change.
 
 
-**CI correction:** GitHub CI run 45670251320 executed 119 tests: 118 passed and the archive allowlist assertion failed because the new private ES256 source path was added to the archive builder but not to the independent expected-file list in `tests/archive.test.cjs`. The seven ES256 tests and all other tests passed. The test's expected archive contents are corrected in the follow-up commit; CI for that correction is pending.
+**CI correction:** GitHub CI run 45670251320 executed 119 tests: 118 passed and the archive allowlist assertion failed because the new private ES256 source path was added to the archive builder but not to the independent expected-file list in `tests/archive.test.cjs`. The seven ES256 tests and all other tests passed. The expected-file list was corrected in follow-up commit `42fa2d14fc70efa99b5b18fa8353fca5ba453356`. CI run `45670418905` passed all 119 tests, archive build, installed-module smoke test and artifact upload; CodeQL run `45670418977` also passed.
+
+## 2026-11-25 — Android P-256 public-key JWK serialization and key lifecycle trace
+
+**Source reconstruction:** traced `Lchy.d/f/e` as AndroidKeyStore EC key generation/load/delete using secp256r1 and SHA-256; cross-DEX callers connect the DPoP `openai.login.dpop.` alias family to `Lcn8` and the `Lqhk0`/`Lzt2` lookup-key flow. Separately traced `Ljj51.p(ECPublicKey)` and generated serializer `Ldk50`: affine coordinates are normalized to 32 bytes and URL-safe Base64 encoded without padding; serialized JWK fields are exactly `kty`, `crv`, `x` and `y`, with EC/P-256 constants. This lookup-key caller's relationship to the main DPoP request proof remains unproven.
+
+**Implementation:** added private `src/chatgpt/android-p256-jwk.cjs` and six tests, including comparing the formatter's output with Node crypto's JWK export from a generated P-256 public key. Updated syntax check, archive allowlist, archive contract test and root documentation. No key generation, signing, keystore access, authentication or network operation was implemented.
+
+**Verification:** focused local tests passed 6/6. The previous commit `42fa2d1` passed GitHub CI run `45670418905` (119 tests, archive build, installed-module smoke test) and CodeQL run `45670418977`. CI/CodeQL for the new JWK formatter commit remain pending.

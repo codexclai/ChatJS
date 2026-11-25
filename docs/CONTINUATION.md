@@ -620,3 +620,20 @@ Added private `src/chatgpt/android-es256-signature.cjs` and `tests/android-es256
 No signing, key generation, key import/export, keystore access, JWK creation, nonce protocol, DPoP JWT, authentication, transport or network behavior was added. Continue tracing the lookup-key proof schema and its relation (if any) to the main DPoP path. Native provider injection, complete DPoP claims/nonce lifecycle, OAuth refresh payload/retry bounds, secure host signer semantics and authorized E2E tests remain open. Android Work, Windows/Desktop and Codex CLI remain parked only for sequencing; long-term product scope is unchanged.
 
 Local validation in this session: `node --test tests/android-es256-signature.test.cjs` — 7 passed, 0 failed. The full repository checkout is unavailable in this execution environment, so repository-wide `npm run check` and archive inspection are delegated to the main-branch CI run after this commit; no result is claimed in advance.
+
+
+## Latest handoff — Android P-256 key lifecycle and public JWK serialization — 2026-11-25
+
+### Source trace
+
+The Android DEX `Lchy` EC key helper uses `KeyPairGenerator("EC", "AndroidKeyStore")`, `secp256r1` and the `SHA-256` digest. `Lchy.f(alias)` loads a stored `PrivateKeyEntry` and returns its certificate public key plus stored private key as a `KeyPair`; `Lchy.e(alias)` deletes an existing alias. DPoP manager `Lcn8` uses the `openai.login.dpop.` alias family and `key_pair_alias` / `pending_credential_deletion` metadata. `Lqhk0.a()` constructs the prefixed lookup-key alias and calls the `Lzt2` helper, which attempts a key load and generates only when absent. This is separate from the generic Valdi Keychain AES-GCM secret under alias `Valdi`.
+
+DEX `Ljj51.p(ECPublicKey)` extracts affine X/Y, normalizes each coordinate to 32 bytes, and encodes with URL-safe Base64 without padding. The generated `Lfk50` / `Ldk50` model has exact serialized fields `kty` and `crv` (fixed to EC/P-256), plus `x` and `y`. `Lyt2.b(String)` uses this model together with a decoded 32-byte lookup-key nonce and a signature from `Ljj51.m`.
+
+### Implementation
+
+Added private `src/chatgpt/android-p256-jwk.cjs` and `tests/android-p256-jwk.test.cjs`. The helper only normalizes public affine-coordinate bytes and constructs the exact four-field JWK object. Six tests cover a real Node P-256 public key/JWK comparison, short coordinates, BigInteger sign-byte trimming, invalid lengths/types, and unpadded URL-safe Base64. It is not exported publicly and does not generate/load keys, sign, access a keystore, assert hardware security or create a DPoP request.
+
+### Open boundary
+
+The lookup-key nonce proof is traced, but its full consumers and relationship to the main DPoP JWT/request challenge remain unresolved. Native provider injection, exact proof claims, challenge/nonce state, OAuth refresh schema, retry ceilings and secure non-exportable host signer are still prerequisites. No key was generated/accessed and no credential/network operation was used. The prior commit `42fa2d1` passed CI (119 tests, archive build and installed-module smoke test) and CodeQL; this new JWK helper awaits its own CI run.

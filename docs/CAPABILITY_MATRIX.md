@@ -126,3 +126,12 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 | --- | --- | --- |
 | Android DER ECDSA to ES256 `r || s` serialization | Implemented (private helper only) | `normalizeAndroidEs256Signature` converts DER P-256 ECDSA signature bytes to 64-byte fixed-width form; seven deterministic tests include verification against a real Node P-256 signature. It does not sign, manage keys, access a keystore, create a JWK/DPoP proof, authenticate or send requests. |
 
+
+
+## Android P-256 key serialization helpers — 2026-11-25
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Android DER ECDSA to ES256 `r || s` serialization | Implemented (private helper only) | Seven tests; pure DER-to-64-byte formatting, no signing or keystore. |
+| Android P-256 public JWK coordinate serialization | Implemented (private helper only) | Six tests; exact `kty`/`crv`/`x`/`y` source schema and Base64URL coordinate encoding. It does not generate/load keys, sign or implement DPoP. |
+

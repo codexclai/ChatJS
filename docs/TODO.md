@@ -314,5 +314,15 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace `Ljj51.m(byte[], KeyPair)`: JCA `SHA256withECDSA`, DER SEQUENCE/INTEGER parsing, unsigned `r` and `s`, 32-byte scalar normalization and 64-byte concatenation.
 - [x] Trace the specific `Lyt2.b(String)` lookup-key nonce caller: URL-safe Base64 nonce decoding, exact 32-byte check, public JWK retrieval and signature encoding. Do not overgeneralize this caller into the main DPoP request path.
 - [x] Implement private DER-to-64-byte ES256 signature-format helper with seven deterministic tests, including a real P-256 signature round trip; include in lint and the package archive.
-- [ ] Continue mapping the exact lookup-key proof schema and establish whether/how it relates to the main DPoP JWT signer and nonce challenge path.
+- [x] Decode the exact public-key model serializer: `kty`, `crv`, `x`, `y`; trace affine coordinate normalization and unpadded Base64URL encoding.
+- [ ] Establish whether/how this lookup-key nonce proof relates to the main DPoP JWT signer and nonce challenge path.
 - [ ] Keep full DPoP/auth work blocked until provider injection, proof claims, nonce lifecycle, OAuth refresh schemas/retry bounds, secure non-exportable host signing, and authorized end-to-end behavior are established.
+
+## Android P-256 keypair and public JWK serialization — 2026-11-25
+
+- [x] Trace AndroidKeyStore EC helper methods: `Lchy.d` creates a secp256r1 keypair with SHA-256 digest; `Lchy.f` reconstructs a keypair from a PrivateKeyEntry; `Lchy.e` deletes an alias.
+- [x] Connect DPoP manager `Lcn8` alias metadata and the `Lqhk0` / `Lzt2` lookup-key load-or-generate and deletion path; keep this distinct from the Valdi AES-GCM Keychain key under `Valdi`.
+- [x] Decode exact public-key model fields and constants (`kty: EC`, `crv: P-256`, `x`, `y`) and the coordinate-to-Base64URL conversion.
+- [x] Implement the private P-256 public JWK coordinate formatter with six deterministic tests, including comparison against Node's real P-256 JWK output; include syntax and archive checks.
+- [ ] Trace complete lookup-key proof return consumers and establish its exact relationship to the main DPoP proof/challenge path.
+- [ ] Keep the full DPoP flow blocked pending full claims/nonce/refresh/retry contracts, native provider ownership, a legitimate host secure signer and authorized end-to-end verification.

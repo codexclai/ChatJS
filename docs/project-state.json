@@ -161,7 +161,8 @@
     "Confirmed the request retry is bounded to one replay using the same request and replacement token, with further token renewal disabled; undefined recovery result preserves the original 401.",
     "Swept all ten supplied Android base APK DEX files for OAIAuthenticationService/OAIRenewableAuthentication implementations and OAIPlatformServices constructors/callsites; only generated Kotlin closure adapters were found, and the actual provider closure path remains a bounded unknown.",
     "Mapped Android DPoP key/signing/refresh source evidence in DEX: alias prefix and pending-deletion metadata, AndroidKeyStore EC/secp256r1, SHA256withECDSA, ES256/dpop+jwt, DPoP-vs-Bearer headers, nonce/challenge handling, OAuth token endpoint and invalid-proof timestamp-correction path. No DPoP runtime implementation was added.",
-    "Reconstructed Android Ljj51.m DER ECDSA to fixed-width 64-byte ES256 signature serialization and its specific Lyt2 lookup-key nonce caller; implemented a private pure formatter with seven tests, including Node P-256 signature verification."
+    "Reconstructed Android Ljj51.m DER ECDSA to fixed-width 64-byte ES256 signature serialization and its specific Lyt2 lookup-key nonce caller; implemented a private pure formatter with seven tests, including Node P-256 signature verification.",
+    "Traced AndroidKeyStore P-256 key generation/load/deletion, the DPoP alias call paths, and the exact EC public JWK serializer; implemented private coordinate-to-JWK formatting with six tests against a real Node P-256 key."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -177,9 +178,11 @@
     "Working authenticated/accountless ChatGPT connection, conversation send/receive and Windows Work Local / Android Work Cloud workflows.",
     "The internal attachment-policy helper does not create reservations, upload file bytes, authenticate, finalize/process files, download/index files or make any HTTP request; the complete Android upload workflow is not implemented.",
     "A usable native Play Integrity provider for the supplied public Android XAPK: the factory/service is bundled, but its worker rejects the public package com.openai.chatgpt and requires com.openai.chatgpt.internal before networking.",
-    "The private ES256 signature formatter does not create signatures, manage keys, access keystores, construct JWKs or DPoP proofs, authenticate, or make requests; complete Android DPoP and authentication remain unimplemented."
+    "The private ES256 signature formatter does not create signatures, manage keys, access keystores, construct JWKs or DPoP proofs, authenticate, or make requests; complete Android DPoP and authentication remain unimplemented.",
+    "The private P-256 JWK formatter serializes supplied public coordinates only; it does not generate/load keys, access AndroidKeyStore, sign, prove hardware-backed key ownership, or create a DPoP request."
   ],
   "nextActions": [
+    "Trace the complete lookup-key proof consumers and establish whether the Lyt2 nonce-signature flow feeds the main DPoP JWT/challenge path or remains separate.",
     "Trace the complete Android lookup-key proof/JWK return schema and establish whether it is separate from or reused by the main DPoP JWT challenge flow; keep the paths distinct until proven.",
     "Trace the actual native/CompilerIntrinsics authentication-provider injection point and Kotlin closure owners; distinguish injected service implementation from generated interface adapters.",
     "Complete DPoP proof claim/header/payload reconstruction, nonce/WWW-Authenticate lifecycle, auth refresh request/response schema, invalid_dpop_proof and dpop_iat_out_of_range retry bounds, and AndroidKeyStore key-generation/alias cleanup semantics.",
@@ -236,9 +239,10 @@
     "The native auth provider is not directly located by the DEX census: only generated interface adapters were found. This is a bounded negative result; CompilerIntrinsics, native runtime, reflection or another injected closure owner may provide the actual service.",
     "Android DPoP relies on AndroidKeyStore EC key material and live nonce/session state. A Node.js implementation cannot copy/export these keys or safely substitute an arbitrary PEM key/bearer token; a host secure-signer capability and complete proof/nonce/refresh protocol are prerequisites.",
     "The DEX refresh path includes invalid_dpop_proof timestamp correction and dpop_iat_out_of_range handling; exact attempt bounds and complete response conditions remain unverified. Do not convert these into generic or unbounded retries.",
-    "The traced Lyt2 lookup-key nonce caller uses the generic Ljj51 ES256 formatter, but this does not prove that this caller is the main DPoP JWT builder. The new ChatJS helper only formats DER bytes and is not a signer or authentication implementation."
+    "The traced Lyt2 lookup-key nonce caller uses the generic Ljj51 ES256 formatter, but this does not prove that this caller is the main DPoP JWT builder. The new ChatJS helper only formats DER bytes and is not a signer or authentication implementation.",
+    "The DEX public JWK serializer is traced in a concrete lookup-key nonce path. Do not assume that this path fully represents the main DPoP request proof or generalize the private coordinate formatter into a signer."
   ],
-  "lastVerifiedCommit": "8914fe5ff8b8f4fc8c973a564d2cc09e706d184b",
-  "lastVerifiedCI": "45634100721",
-  "lastVerifiedCodeQL": "45634100513"
+  "lastVerifiedCommit": "42fa2d14fc70efa99b5b18fa8353fca5ba453356",
+  "lastVerifiedCI": "45670418905",
+  "lastVerifiedCodeQL": "45670418977"
 }

@@ -171,6 +171,7 @@
 151. Swept all ten supplied Android base APK DEX files for OAIAuthenticationService/OAIRenewableAuthentication implementations and OAIPlatformServices constructors/callsites; only generated Kotlin closure adapters were found, and the actual provider closure path remains a bounded unknown.
 152. Mapped Android DPoP key/signing/refresh source evidence in DEX: alias prefix and pending-deletion metadata, AndroidKeyStore EC/secp256r1, SHA256withECDSA, ES256/dpop+jwt, DPoP-vs-Bearer headers, nonce/challenge handling, OAuth token endpoint and invalid-proof timestamp-correction path. No DPoP runtime implementation was added.
 153. Reconstructed Android Ljj51.m DER ECDSA to fixed-width 64-byte ES256 signature serialization and its specific Lyt2 lookup-key nonce caller; implemented a private pure formatter with seven tests, including Node P-256 signature verification.
+154. Traced AndroidKeyStore P-256 key generation/load/deletion, the DPoP alias call paths, and the exact EC public JWK serializer; implemented private coordinate-to-JWK formatting with six tests against a real Node P-256 key.
 
 ## Not implemented
 
@@ -188,17 +189,19 @@
 - The internal attachment-policy helper does not create reservations, upload file bytes, authenticate, finalize/process files, download/index files or make any HTTP request; the complete Android upload workflow is not implemented.
 - A usable native Play Integrity provider for the supplied public Android XAPK: the factory/service is bundled, but its worker rejects the public package com.openai.chatgpt and requires com.openai.chatgpt.internal before networking.
 - The private ES256 signature formatter does not create signatures, manage keys, access keystores, construct JWKs or DPoP proofs, authenticate, or make requests; complete Android DPoP and authentication remain unimplemented.
+- The private P-256 JWK formatter serializes supplied public coordinates only; it does not generate/load keys, access AndroidKeyStore, sign, prove hardware-backed key ownership, or create a DPoP request.
 
 ## Next actions
 
-1. Trace the complete Android lookup-key proof/JWK return schema and establish whether it is separate from or reused by the main DPoP JWT challenge flow; keep the paths distinct until proven.
-2. Trace the actual native/CompilerIntrinsics authentication-provider injection point and Kotlin closure owners; distinguish injected service implementation from generated interface adapters.
-3. Complete DPoP proof claim/header/payload reconstruction, nonce/WWW-Authenticate lifecycle, auth refresh request/response schema, invalid_dpop_proof and dpop_iat_out_of_range retry bounds, and AndroidKeyStore key-generation/alias cleanup semantics.
-4. Define the portable Node.js host secure non-exportable signing capability and native credential/session ownership contract; require explicit host support and fail closed when unavailable. Never export/copy AndroidKeyStore private keys or fabricate a proof.
-5. Reconstruct the actual HTTP client transport injected into OAIBearerAPIService, including cancellation, redirect and first-party integrity behavior; do not guess the network client.
-6. Complete underlying PersistentStore encryption/key lifecycle/durability, controller generation/foreground/cancellation races and selectAccount UI caller tracing.
-7. Continue Android non-Work guest create/refresh/composer and all remaining feature workflows; preserve distinct guest SessionManager vs authenticated AuthSession semantics.
-8. Add authorized end-to-end tests only when genuine ChatGPT session credentials, secure host keys, first-party integrity and transport are available.
+1. Trace the complete lookup-key proof consumers and establish whether the Lyt2 nonce-signature flow feeds the main DPoP JWT/challenge path or remains separate.
+2. Trace the complete Android lookup-key proof/JWK return schema and establish whether it is separate from or reused by the main DPoP JWT challenge flow; keep the paths distinct until proven.
+3. Trace the actual native/CompilerIntrinsics authentication-provider injection point and Kotlin closure owners; distinguish injected service implementation from generated interface adapters.
+4. Complete DPoP proof claim/header/payload reconstruction, nonce/WWW-Authenticate lifecycle, auth refresh request/response schema, invalid_dpop_proof and dpop_iat_out_of_range retry bounds, and AndroidKeyStore key-generation/alias cleanup semantics.
+5. Define the portable Node.js host secure non-exportable signing capability and native credential/session ownership contract; require explicit host support and fail closed when unavailable. Never export/copy AndroidKeyStore private keys or fabricate a proof.
+6. Reconstruct the actual HTTP client transport injected into OAIBearerAPIService, including cancellation, redirect and first-party integrity behavior; do not guess the network client.
+7. Complete underlying PersistentStore encryption/key lifecycle/durability, controller generation/foreground/cancellation races and selectAccount UI caller tracing.
+8. Continue Android non-Work guest create/refresh/composer and all remaining feature workflows; preserve distinct guest SessionManager vs authenticated AuthSession semantics.
+9. Add authorized end-to-end tests only when genuine ChatGPT session credentials, secure host keys, first-party integrity and transport are available.
 
 ## Reference artifact
 

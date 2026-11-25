@@ -1566,3 +1566,31 @@ A specific caller, `Lyt2.b(String)`, decodes a URL-safe Base64 nonce and require
 Added private `src/chatgpt/android-es256-signature.cjs` with `normalizeAndroidEs256Signature`. It validates the DER sequence and two INTEGER members, strips leading sign padding, left-pads each scalar to 32 bytes, and returns exactly 64 bytes. Seven deterministic tests cover real P-256 `SHA256withECDSA` signatures verified by Node's P-256 verifier, padding, sign-byte handling, malformed tags/lengths, truncation, overflow, trailing bytes, and invalid input types. The module is included in syntax checks and the distribution archive, but is not exported from the public API.
 
 This helper only converts bytes. It does not generate/import/export keys, sign messages, access AndroidKeyStore or a host keystore, prove hardware-backed key ownership, create a JWK, create a DPoP JWT, process a nonce challenge, authenticate, or perform network requests. Android's native key ownership, full DPoP claims/nonce lifecycle, provider injection, OAuth refresh schema and bounded retry policy remain unresolved. The existing DPoP implementation work therefore remains blocked pending full evidence and legitimate secure host capabilities.
+
+
+
+
+## Android P-256 key lifecycle and public JWK serialization — 2026-11-25
+
+### AndroidKeyStore EC key lifecycle
+
+DEX class `Lchy` contains a dedicated EC keypair path distinct from its generic AES-GCM encryption methods:
+
+- `Lchy.d(alias)` obtains `KeyPairGenerator("EC", "AndroidKeyStore")`, configures `ECGenParameterSpec("secp256r1")` and the `SHA-256` digest, then generates the keypair in AndroidKeyStore.
+- `Lchy.f(alias)` loads AndroidKeyStore, reads a `PrivateKeyEntry`, and reconstructs a `KeyPair` from its certificate public key and stored private key; absence returns null.
+- `Lchy.e(alias)` loads AndroidKeyStore, checks `containsAlias` and deletes the entry.
+- Cross-DEX callsites connect the DPoP manager `Lcn8` to the stored alias path. Its `openai.login.dpop.` prefix and `key_pair_alias` / `pending_credential_deletion` metadata are separate from the generic Valdi Keychain secret key under alias `Valdi`. Do not conflate them.
+
+The related `Lzt2` lookup-key helper first attempts `Lchy.f(alias)` and, when absent, generates with `Lchy.d(alias)`; its delete path calls `Lchy.e(alias)`. `Lqhk0.a()` constructs an alias using the `openai.login.dpop.` prefix and enters that helper. This is method-level call-flow evidence; it does not reveal a portable host signer contract or prove that every DPoP request uses this exact lookup-key path.
+
+### Public P-256 JWK schema
+
+DEX method `Ljj51.p(ECPublicKey)` reads affine X/Y from `ECPublicKey.getW()`, converts each positive `BigInteger` to bytes, normalizes each coordinate to 32 bytes with `Ljj51.n`, then encodes with the URL-safe Base64 encoder without padding (`Ljj51.e`). The resulting `Lfk50` model serializer `Ldk50` fixes the wire fields and constants to `kty: "EC"`, `crv: "P-256"`, `x` and `y`. Its two-string constructor supplies the first two constants and stores the encoded coordinates.
+
+The existing `Lyt2.b(String)` caller uses this public-key model with a URL-safe nonce decoded to exactly 32 bytes, signs that nonce through `Ljj51.m`, and returns the JWK plus Base64URL signature. This is the traced lookup-key nonce proof caller; it is not evidence by itself that the same object is the main DPoP JWT proof builder.
+
+### ChatJS implementation and limits
+
+Added private `src/chatgpt/android-p256-jwk.cjs` with `encodeAndroidP256PublicKeyJwk`. It normalizes signed `BigInteger` coordinate byte arrays to exactly 32 bytes, removes the positive sign byte when present, and emits the exact four-field public JWK model with unpadded Base64URL X/Y. Six deterministic tests include comparison against the JWK exported by a real Node P-256 key, short and sign-padded coordinate cases, invalid coordinate lengths/types, and Base64URL alphabet/padding. The helper is private and does not generate or load keys, sign, access a keystore, assert hardware protection, build a DPoP JWT, authenticate or send requests.
+
+The full first-party proof protocol, exact relationship between lookup-key nonce and the main DPoP challenge flow, OAuth refresh payload, retry bounds, native provider and portable secure non-exportable host signer remain unresolved. No key was generated or accessed during source research; no credentials or network requests were used.

@@ -358,3 +358,8 @@ These findings do not add DPoP support to ChatJS. AndroidKeyStore ownership/non-
 ### Android ES256 signature-format helper — 2026-11-25
 
 DEX method `Ljj51.m(byte[], KeyPair)` serializes JCA `SHA256withECDSA` output from DER into fixed-width 64-byte `r || s` after unsigned integer normalization. A concrete `Lyt2.b(String)` caller uses it for a URL-safe 32-byte lookup-key nonce and public-key JWK; this is not proof that the same caller is the main DPoP JWT builder. ChatJS contains a private pure DER-to-ES256-format helper with seven tests (including Node crypto verification). It does not sign, generate/use/export keys, access a keystore, create a JWK/DPoP token, authenticate or make requests. Full DPoP/provider/host-signer work remains unimplemented.
+
+
+### Android P-256 key lifecycle/JWK formatter — 2026-11-25
+
+DEX `Lchy.d/f/e` provide AndroidKeyStore EC secp256r1 key generation/load/delete with SHA-256 digest. Cross-DEX callsites connect `Lcn8` and `Lqhk0`/`Lzt2` to the `openai.login.dpop.` alias family. The generic Valdi Keychain AES-GCM key under alias `Valdi` is a separate subsystem. DEX `Ljj51.p` plus `Ldk50` establish exact public EC JWK fields `kty`/`crv`/`x`/`y` and 32-byte affine coordinate/Base64URL encoding. ChatJS now has a private P-256 JWK coordinate formatter with six tests; it does not generate/load keys, sign, access a keystore, or implement DPoP. The exact relationship of this lookup-key proof to the main DPoP request flow remains unknown.

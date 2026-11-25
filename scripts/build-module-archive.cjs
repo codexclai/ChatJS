@@ -24,6 +24,7 @@ const includedFiles = [
   'src/chatgpt/android-request-credential-recovery.cjs',
   'src/chatgpt/android-authenticated-request-policy.cjs',
   'src/chatgpt/android-es256-signature.cjs',
+  'src/chatgpt/android-p256-jwk.cjs',
   'types/index.d.ts'
 ];
 
