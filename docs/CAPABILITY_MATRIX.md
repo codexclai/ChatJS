@@ -89,3 +89,7 @@ Android conversation dispatch evidence (2026-11-25): Compose `Lxjk1.f` captures 
 ## 2026-11-25 — Codex additional capability evidence
 
 Codex CLI source research now includes additional permission, network, discovery and agent-collaboration components: execution-scoped outbound network approval; request/approval of extra filesystem permissions; lazy BM25 search over deferred tools with per-step Code Mode policy filtering; and configuration-gated MultiAgentV2 spawn/message/followup/wait/list/interrupt tools. These are all **Research**, not Node.js support. The source contains upstream analytics around some of these paths; those are excluded from ChatJS.
+
+## 2026-11-25 — Codex control and extension surface evidence
+
+Pinned Codex CLI research also identifies plan/context/clock controls; deferred execution-environment readiness; blocking and asynchronous user-question/message flows; separate MCP resource list/template/read operations; current-thread dynamic tool callbacks; and catalog-validated, explicitly consented plugin/connector installation. These remain Research/Planned; the capability inventory and Codex source findings define their evidence boundaries. Host user-interaction surfaces are optional and must not be simulated.

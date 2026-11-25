@@ -981,3 +981,28 @@ Pinned Codex source: `codex-rs/core/src/tools/network_approval.rs`, `tools/handl
 - Static inspection only; no network proxy, approval UI, permission grant, agent thread, tool-search index, or MCP server was executed.
 - No production ChatJS JS/TS, API, tests or dependencies changed. No ChatJS network policy, permission system, tool search or multi-agent runtime is implemented.
 - Dynamic discovery and multi-agent availability are source/configuration gated; this research does not prove universal availability across all Codex releases/hosts.
+
+## 2026-11-25 — Codex core control tools, user interaction, MCP resources and extension install
+
+### Source inspected
+
+- `codex-rs/core/src/tools/handlers/plan.rs`, `current_time.rs`, `get_context_remaining.rs`, `wait_for_environment.rs`
+- `request_user_input.rs`, `request_user_input_async.rs`, `send_message_to_user_async.rs`
+- `mcp_resource/list_mcp_resources.rs`, `list_mcp_resource_templates.rs`, `read_mcp_resource.rs`
+- `dynamic.rs`, `list_available_plugins_to_install.rs`, `request_plugin_install.rs`
+
+### New findings
+
+- Traced `update_plan` as a typed plan event with a Plan-mode restriction; `clock.curr_time` uses the session's time provider; `get_context_remaining` reads context-window token status.
+- Mapped `wait_for_environment` to an already-starting selected environment, with explicit ready/failed/unknown-ID paths.
+- Mapped blocking root-thread `request_user_input`, async structured `request_user_input_async`, and `send_message_to_user_async`; these are separate UI delivery and reply contracts.
+- Mapped MCP resources/list, resources/templates/list and resources/read as separate server/environment-scoped operations that check current turn access.
+- Traced dynamic tools as definitions supplied by the current Codex thread, direct or deferred, with async request/response registration, lifecycle events and cancellation.
+- Traced plugin/connector listing and installation: candidates come from the current discoverable catalog, unknown IDs are rejected, install is requested through MCP elicitation and requires explicit Accept; verification then controls runtime refresh/connector selection merge. Decline/cancel remain distinct. TUI mode has a source restriction.
+- Upstream analytics around installs and tools are excluded from ChatJS.
+
+### Limits
+
+- No user interface, user answer, environment startup, MCP resource request, dynamic tool call or plugin/connector installation occurred.
+- No production ChatJS code, tests, dependencies or APIs changed. These remain Research/Planned.
+- ChatJS must not claim a user question or status update was displayed without an actual host interaction path, or claim installation/readiness without a real successful result.

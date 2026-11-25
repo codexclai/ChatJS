@@ -257,3 +257,50 @@ The collaboration tools use thread IDs, task/path names, agent status/activity, 
 These are more Codex CLI capabilities to consider under the one ChatJS package. They remain separate from Android cloud Work and Windows local Work. Implement only after feature gates, protocol payloads, approval policy, environment ownership, cancellation and event ordering are reconstructed. No ChatJS network-approval subsystem, permission-request workflow, dynamic tool-search registry, or multi-agent engine exists today.
 
 **Evidence boundary:** static source inspection of the pinned Codex ZIP. No network proxy was started, no host was contacted, no permission was granted, no agent was spawned, no MCP server was started, and no local command was executed. Telemetry present in the source was excluded from the findings and must remain excluded from ChatJS.
+
+## 2026-11-25 — Codex core control tools, user interaction, MCP resources and extension install
+
+The pinned Codex CLI source includes a set of first-party control tools around the coding-client loop. These are distinct from ordinary Responses SSE events and are surfaced through the Codex thread/turn event model.
+
+### Planning, context, clock and execution-environment readiness
+
+- **`update_plan`** validates a typed checklist and emits a `PlanUpdate` session event. It is not accepted while the current interaction mode is Plan, where the plan itself is the active user-facing contract.
+- **`clock.curr_time`** is a namespaced tool that reads UTC time from the session's injected `time_provider`; the tool can be called in parallel. The source does not issue an external time-service request in this handler.
+- **`get_context_remaining`** reads the current thread/turn context-window token status and reports remaining tokens (or an unknown state).
+- **`wait_for_environment`** waits for an execution environment already marked `starting`; it does not pick an arbitrary ID or create an environment. It returns ready only after the selected environment reaches ready, returns the actual startup failure, or rejects an ID that is neither ready nor starting. Its documentation notes that waiting may take several minutes and blocks other tool calls.
+
+### User questions and asynchronous status messages
+
+Two different user-interaction contracts exist:
+
+- **`request_user_input`** is the blocking question flow. It is root-thread-only, checks whether the current collaboration mode permits it, validates/normalizes typed questions, waits for the user's response, and returns the answer payload to the model. Under the GuardianApproval feature gate, accepted answers may be retained as verified question/answer context with acceptance ordering.
+- **`request_user_input_async`** emits an asynchronous structured question item with optional ordered suggested answers (the first is preselected; the UI can also accept free text). It does not wait for the answer in this tool call; the question item is delivered asynchronously and the user's response arrives later through a new input.
+- **`send_message_to_user_async`** delivers an asynchronous user-facing message during an ongoing turn. It returns immediately and does not finish the turn or wait for a reply; any reply arrives as a later user message.
+
+These require a genuine user-interaction channel in a consuming application. ChatJS must not pretend a question was shown or answered if the host has no user-input surface. Such host facilities should be optional and expose unavailable/unsupported states clearly.
+
+### MCP resources
+
+The source exposes separate `list_mcp_resources`, `list_mcp_resource_templates`, and `read_mcp_resource` handlers. They resolve an MCP server and optional execution-environment scope, check whether the current model/turn can access that server, dispatch through the configured MCP runtime, and emit resource-operation results. They are separate from MCP tool invocation: an MCP server may expose tools, resources, and resource templates as different operations. Environment-scoped servers must use their actual selected environment path rules.
+
+### Dynamic tools supplied by the current Codex thread
+
+`DynamicToolHandler` wraps a source-provided `DynamicToolFunctionSpec`, supports namespaced or unnamespaced tools, can expose tools directly or defer them to search, and marks them as dynamic/third-party tool calls. Invocation sends a call through the active session's dynamic-tool request/response registration, emits started/completed tool-item events, awaits the real response, and propagates cancellation. This is not an alternate inference provider or a local fake tool; it is an explicit tool invocation whose implementation/result must come from the thread's real registered source.
+
+### Plugin/connector discovery and install consent
+
+The pinned source has `list_available_plugins_to_install` and `request_plugin_install` handlers:
+
+- The list is sourced from the current turn's discoverable-tool catalog and describes plugin/connector candidates, including IDs, type, skills availability, MCP server names and connector IDs. It sorts deterministically and bounds description length.
+- An install request must refer to an item in the current discoverable catalog (or the current recommendation context); a caller cannot submit an arbitrary unknown ID.
+- The handler builds an MCP elicitation request through the `codex_apps` server and waits for an explicit Accept/Decline/Cancel result. It verifies that the install actually completed before refreshing the MCP runtime or merging connector selection.
+- The source has special client-mode availability restrictions (the plugin install flow is not available in the observed `codex-tui` path). The install action is not complete merely because a user clicked Accept; completion is checked after the request.
+- The upstream code emits install-request analytics and session telemetry. Those event/tracking systems are excluded from ChatJS.
+
+This is a Codex client integration/consent surface, not AI-model selection. Any ChatJS implementation must preserve current-catalog ID validation, explicit user consent, completion verification and runtime refresh semantics. It must also respect ChatJS's own explicit scope exclusions and never imply that every discoverable plugin/connector is automatically supported or safe to install.
+
+### Implementation consequence
+
+The native ChatJS Codex API needs a coherent turn/control-event model, a real async user-input interface when the host supplies one, a truthful clock/context service, deferred environment readiness, a local MCP tool/resource catalog, dynamic tool callbacks, and explicit install/consent interfaces where the actual Codex client exposes them. These can share generic event, cancellation and lifecycle primitives, but the Codex-specific contracts must remain source faithful.
+
+**Evidence boundary:** static inspection of the pinned Codex ZIP. No user question was presented, no answer retained, no execution environment started, no MCP resource read, no dynamic tool called, no plugin/connector installation requested, no connector selected and no network request made. No corresponding ChatJS behavior is implemented.

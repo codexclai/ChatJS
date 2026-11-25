@@ -156,3 +156,16 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Map MultiAgentV2 feature/config gates, maximum agent counts, default roles and models, child-thread creation/resume/retirement, persistence, concurrency and event ordering.
 - [ ] Reconstruct the full collaboration lifecycle: spawn fork modes, queue-only messages, trigger-turn followups, mailbox/steering wait outcomes, list filtering/statuses and target resolution/interrupt semantics.
 - [ ] Distinguish collaboration features from command/process execution and MCP tools. Exclude all analytics and telemetry attached to these paths.
+
+## Codex control tools, user interaction and extensions — 2026-11-25
+
+- [ ] Reconstruct complete plan-state and `update_plan` event contracts, including Plan-mode rejection and CLI JSONL projection.
+- [ ] Trace context-window accounting and `get_context_remaining` behavior across compaction/model changes; distinguish authoritative runtime status from estimates.
+- [ ] Determine exact `clock.curr_time` timezone/format and the host time-provider semantics used by each Codex path.
+- [ ] Reconstruct execution-environment startup selection and `wait_for_environment` state transitions/timeouts/cancellation. Do not launch an environment simply because a model guessed an ID.
+- [ ] Reconstruct synchronous `request_user_input` question/answer schema, blocking behavior, mode restrictions and verified-answer retention; identify what ChatJS must expose as a host interaction adapter.
+- [ ] Reconstruct asynchronous user question/message events and how later user replies re-enter the thread; preserve ordering and cancellation without pretending the host showed the content.
+- [ ] Reconstruct MCP resource list/templates/read schemas, server catalog/authorization rules, environment scoping, URI handling, errors and resource result limits.
+- [ ] Trace dynamic-tool source registration/refresh, current-thread lifecycle, namespace/schema validation, deferred/direct exposure, response callback and cancellation. It must not be treated as another model provider or a fake local tool.
+- [ ] Map catalog-sourced plugin/connector discovery and install flow, exact elicitation request, consent outcomes, verification, MCP refresh, connector merge and client availability gates. Decide which candidates are in scope while preserving the project's category exclusions and no-unsolicited-network policy.
+- [ ] Confirm all upstream analytics/tracking attached to tool or install paths are excluded.

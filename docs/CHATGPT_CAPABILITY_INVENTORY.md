@@ -201,3 +201,17 @@ The pinned Codex source documents additional client subsystems that are in the C
 - **MultiAgentV2 collaboration:** `spawn_agent`, `send_message` (queue only), `followup_task` (trigger turn), `wait_agent` (mailbox/steering/timeout), `list_agents`, and `interrupt_agent`; thread IDs, child status and activity events are part of the model. Runtime support is configuration/feature-gated.
 
 These findings show that Codex parity extends beyond Responses transport and shell execution. They do not establish any working ChatJS feature; the corresponding APIs and native Node.js state machines remain Research/Planned. All source analytics/telemetry is excluded.
+
+## 2026-11-25 — Codex control tools and interaction surface
+
+Additional pinned Codex CLI control contracts:
+
+- **Plan/context:** `update_plan` emits typed plan events and is rejected in Plan mode; `get_context_remaining` reports context-window budget.
+- **Clock:** namespaced `clock.curr_time` uses an injected UTC time provider (not an external time API in this handler).
+- **Execution readiness:** `wait_for_environment` awaits a selected environment already marked starting and returns explicit failure/unknown-ID states.
+- **User interaction:** blocking root-thread `request_user_input`, non-blocking structured `request_user_input_async`, and non-blocking `send_message_to_user_async`. These need a genuine host interaction path; no display/answer may be fabricated.
+- **MCP resources:** list resources, list resource templates, and read resources are distinct from MCP tool calls and are scoped to selected server/environment and current model access.
+- **Dynamic tools:** registered tools supplied by the current Codex thread can be direct/deferred, namespaced, and invoked through a real asynchronous request/response callback with start/completion events and cancellation.
+- **Plugin/connector catalog:** current discoverable entries can be listed; install requests are checked against that catalog and delivered via explicit MCP elicitation consent, then installation completion is verified before MCP refresh/connector selection update. This is not alternate AI-provider selection. Respect product exclusions and do not assume all entries are in scope.
+
+All findings are static source evidence. ChatJS has no plan/clock/context/user-input/environment/MCP-resource/dynamic-tool/plugin-install implementation yet.

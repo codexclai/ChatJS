@@ -124,6 +124,7 @@
 104. Mapped the pinned Codex CLI ChatGPT Responses request/session/transport, ChatGPT OAuth refresh/account handling, selected SSE event/error mapping and the separate CLI JSONL thread/turn/item event contract; documented that the native ChatJS implementation must not depend on the external CLI/app-server.
 105. Mapped Codex CLI local tool source architecture: interactive/one-shot commands, resumable terminal stdin polling, path-URI and local/remote executor handling, TTY gate, cancellation/output controls, typed approval/deny states, session approval cache, apply_patch interception and MCP dispatch; recorded native Node.js implementation gaps.
 106. Mapped Codex execution-scoped outbound network approval, scoped filesystem permission requests, lazy local BM25 deferred-tool search with policy filtering, and configuration-gated MultiAgentV2 spawn/message/followup/wait/list/interrupt contracts.
+107. Mapped Codex core turn-control tools (plan/context/time/environment readiness), blocking/asynchronous user-interaction flows, separate MCP resource operations, current-thread dynamic tool callbacks and catalog-validated plugin/connector installation via explicit user elicitation consent and completion verification.
 
 ## Not implemented
 
@@ -141,17 +142,18 @@
 
 ## Next actions
 
-1. Reconstruct full Codex Responses request builder/item variants/model gates, thread/session ID lifecycle and HTTP/WebSocket transport selection/recovery.
+1. Trace full Codex Responses request builder/item variants/model gates, thread/session ID lifecycle and HTTP/WebSocket transport selection/recovery.
 2. Reconstruct ChatGPT OAuth credential persistence, refresh provenance, single-flight locking and account-switch safety for a secure ChatJS-owned auth/session manager.
 3. Decode the complete Codex Responses SSE event/error schema, including tool handoffs/results, reasoning, usage, incomplete/interrupted, content-filter and metadata paths.
-4. Trace Codex tool approval/decline/result continuation and local coding-engine semantics: workspaces, file operations, patches, commands, process cleanup, Git, collaboration and MCP; implement only verified features.
+4. Trace Codex tool approval/decline/result continuation and local coding-engine semantics: workspaces, file operations, patches, commands, process cleanup, Git, collaboration and MCP.
 5. Trace Codex filesystem/workspace operations, sandbox/network approval edge cases, permission profile schemas/revocation, remote executor capabilities and command process cleanup.
 6. Reconstruct MultiAgentV2 feature/config gates, limits, child-thread persistence, message delivery semantics, wait outcomes, target resolution, cancellation and event ordering.
-7. Build or obtain a Valdi-fork-compatible bytecode inspector and decode Android DirectResponseClient.prepare/send, generated model/Sentinel decoders, SSE resume and upload behavior.
-8. Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.
-9. Trace the exact Windows Work Local UI/runtime/network flow separately from Android Work Cloud; do not depend on the packaged Codex app-server subprocess.
-10. Implement the ChatGPT mobile, desktop and Codex CLI capabilities natively under one API only after exact protocols, policy and security semantics are reconstructed and E2E tests can run.
-11. Implement PRODUCT_STANDARD.md section 14 gates: validated customization, capability readiness, async/concurrent/backpressure, real-time streams, lifecycle/soak/recovery, performance budgets and tested Node.js/OS compatibility.
+7. Reconstruct Codex plan/context/clock/environment control schemas and event projection, host user interaction lifecycle, MCP resource URI/result limits, dynamic tool registry refresh and plugin install consent/verification.
+8. Build or obtain a Valdi-fork-compatible bytecode inspector and decode Android DirectResponseClient.prepare/send, generated model/Sentinel decoders, SSE resume and upload behavior.
+9. Continue the separate Android guest create/refresh and guest composer prepare/send call-graph search; do not attribute LocationCookieInitializer constants to chat sending.
+10. Trace the exact Windows Work Local UI/runtime/network flow separately from Android Work Cloud; do not depend on the packaged Codex app-server subprocess.
+11. Implement the ChatGPT mobile, desktop and Codex CLI capabilities natively under one API only after exact protocols, policy and security semantics are reconstructed and E2E tests can run.
+12. Implement PRODUCT_STANDARD.md section 14 gates: validated customization, capability readiness, async/concurrent/backpressure, real-time streams, lifecycle/soak/recovery, performance budgets and tested Node.js/OS compatibility.
 
 ## Reference artifact
 

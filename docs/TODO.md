@@ -173,3 +173,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Reconstruct MultiAgentV2 feature gates, child-thread lifecycle, agent count limits, fork modes and thread state before implementing.
 - [ ] Implement native agent collaboration actions (spawn, queue-only message, trigger-turn followup, activity wait, status list and interrupt) with real thread IDs, bounded concurrency, cancellation and correctly ordered activity events.
 - [ ] Exclude source analytics/telemetry and test that policy decisions, tool search and agent operations work without hidden network activity.
+
+## P1 — Codex turn-control, user interaction and extension APIs
+
+- [ ] Implement the Codex plan/context control events, Plan-mode rules, and measured context-budget reporting.
+- [ ] Implement the namespaced clock tool using a real injected time source and documented UTC semantics; do not add an external time API.
+- [ ] Implement deferred environment readiness only for real host environments already starting; report ready/failed/unknown/cancelled states and never invent environment IDs.
+- [ ] Define optional host user-interaction APIs for blocking questions, asynchronous structured questions and asynchronous status messages. Preserve real acceptance/order/replies and represent an absent UI honestly.
+- [ ] Implement separate MCP resources/list, templates/list and resource/read contracts with environment-aware URI/path rules, access checks, cancellation and size limits.
+- [ ] Implement current-thread dynamic tool registration/invocation as explicit callback-based operations with schema validation, lifecycle events and cancellation; keep separate from AI-service transport.
+- [ ] Reconstruct catalog-sourced plugin/connector discovery/install, explicit elicitation consent, install verification and MCP refresh; only support approved in-scope entries and preserve all product exclusions.
+- [ ] Add unit and authorized integration tests for every control/extension lifecycle, host adapter missing states, cancellation, reordered responses, install decline/cancel and no-telemetry/no-unsolicited-network invariants.
