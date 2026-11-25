@@ -1091,3 +1091,12 @@ No production JS/TS, dependencies, public APIs, or tests changed in this documen
 ## 2026-11-25 — Task-list wording normalization
 
 A final review found the TODO's positive scope sentence still enumerated feature domains. Replaced it with the source-driven coverage rule and clarified the current Android non-Work phase in the current-position paragraph. This removes category lists from live working guidance while retaining the same complete feature coverage requirement.
+
+
+## 2026-11-25 — Verification of Android-first scope correction
+
+The documentation/scope correction at commit `326e31ea27ed659e63291ae691b79e8c1eba4c85` passed CI run `45569022968` and CodeQL run `45569022949`. The final TODO normalization at `bf33b71acd0e0b0680e5781582fe0a38ed1d9db3` passed CI run `45569111404` and CodeQL run `45569111347`; both are successful. CI's `Run checks, tests, and build archive` and `Extract and smoke-test ChatJS as an installed module` steps passed on the current Node.js LTS.
+
+Downloaded the latest CI artifact and inspected it independently: artifact ZIP 12,011 bytes (SHA-256 `9094face7dfad57daba89728471f396761e0f506a4e54292d55b99c95a86d3b0`); contained `ChatJS.tar.gz` 11,866 bytes (SHA-256 `5694b717d5371ae4cdb0f8e174dacf9f6e5b460cfca07db530307848bbdf3c9b`). The gzip tar passed parsing and contains the expected package metadata, README/manual, license, CommonJS/ESM entry points, SSE implementation, and TypeScript declarations. The only branch remains `main`, at the final TODO-normalization commit at time of check.
+
+A local clone and local `npm run check` were unavailable because this container could not resolve `github.com`; the CI workflow ran the repository check/build and installed-module smoke-test steps successfully. No runtime product capability was added in this documentation-only correction. The next implementation work remains the Android non-Work request-contract reconstruction described in TODO and ANDROID_CLIENT_PROTOCOL_FINDINGS.
