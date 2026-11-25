@@ -1023,3 +1023,25 @@ Pinned Codex source: `codex-rs/core/src/tools/network_approval.rs`, `tools/handl
 - The GitHub connector returned an empty content body for the very large `quickjs.c`; Firecrawl returned exact targeted source excerpts, not a complete local source/build tree. Therefore no temporary utility was compiled or executed.
 - The Android native library's embedded QuickJS/Valdi strings do not prove exact source revision/build options or expose a ready-made disassembler.
 - No method body, request serializer branch, or decoder control flow has been recovered. No app launch, account access, credential extraction, HTTP request, injection or telemetry occurred. No production ChatJS code, tests, API or dependency changed.
+
+## 2026-11-25 — Codex Responses WebSocket v2 and context continuation trace
+
+### Source inspected
+
+Owner-supplied pinned Codex source: codex-rs/core/src/client.rs, responses_retry.rs, session/startup_prewarm.rs, codex-rs/codex-api/src/common.rs, and endpoint/responses_websocket.rs; source tests in codex-rs/core/tests/suite/client_websockets.rs.
+
+### Findings
+
+- Confirmed WebSocket eligibility requires provider supports_websockets and a model-client session not disabled by fallback.
+- Recovered V2 beta header responses_websockets=2026-02-06 and source handshake session/thread/request correlation IDs, compatibility/routing headers and optional attestation.
+- Mapped turn-scoped connection reuse and turn-state affinity, plus the response.create typed wire request.
+- Reconstructed incremental continuation prerequisites: previous request, previous completed response ID, identical selected non-input properties and exact ordered current input extension after accounting for server output items. Mismatches cause a full request.
+- Mapped generate:false prewarm and first-inference reuse, 1 MiB frames/read-ahead, bounded 1,600-event channel, response-specific interrupt acknowledgement, stream-close-before-completion errors, and server message-size checks.
+- Mapped immediate HTTP fallback for HTTP 426, selected retryable error codes with Retry-After, one-way session disable after fallback, and restricted feature-gated unbounded retry branch (five-second initial delay, sixty-second cap, non-internal sampling only, provider exclusions).
+- Read the source V2 WebSocket test, which asserts two request frames on one connection and a subsequent request containing previous_response_id plus only the new user input delta. Rust tests were inspected but not executed here.
+
+### Limits
+
+- Static source inspection only; no WebSocket handshake or live request was sent.
+- No ChatJS WebSocket, Codex Responses client, context continuation or fallback state machine is implemented. No production JS/TS, test, dependency or API changed.
+- No prewarm/keepalive behavior is approved by this research; ChatJS must retain explicit-operation-only network behavior.

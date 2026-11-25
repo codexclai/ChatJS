@@ -191,3 +191,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Build a temporary analysis-only fork with a deserialized-function dump hook in `JS_ReadFunctionTag` after its constant pool has been read. Use `DUMP_READ_OBJECT` only as a supplemental serialization trace; the regular `DUMP_BYTECODE` hook is not sufficient for precompiled modules.
 - [ ] Validate the disassembler against a known compiled function fixture and a copy of one module entry; preserve bounds checking and never execute module functions.
 - [ ] Disassemble DirectResponseClient.prepare/send, exact route selection/serialization, generated ModelCatalog/ChatRequirements decoders, SSE event/resume and upload reservation/process functions. Record bytecode, constants, function metadata, branches, callees and remaining uncertainties.
+
+## P1 — Codex Responses WebSocket v2 and incremental context
+
+- [ ] Implement a provider-capability- and session-state-gated Responses WebSocket v2 handshake, including source-required beta/session/thread/request headers and first-party integrity requirements.
+- [ ] Implement turn-scoped connection reuse and lifecycle, auth-owner/revision checks, and correct handling of server turn-state/routing affinity.
+- [ ] Implement the typed response.create WebSocket wire model, including optional previous_response_id, generate, and all HTTP-equivalent model/tool/reasoning/request fields.
+- [ ] Implement conservative incremental input continuation using exact request-property and ordered-item equality checks; fall back to full input whenever continuation cannot be proven safe.
+- [ ] Implement optional explicit WebSocket prewarm with generate:false, reuse and correct first-generation continuation; never perform hidden network activity.
+- [ ] Implement bounded 1 MiB frame fragmentation/read-ahead, server message-size handling, event-channel backpressure, response idle timeout, and protocol-acknowledged interruption.
+- [ ] Implement source-verified WebSocket retries, HTTP 426/specific-error fallback and one-way per-session HTTP mode; respect Retry-After, cancellation and bounded policy. Do not enable the upstream feature-gated unbounded retry branch by default.
+- [ ] Add contract and E2E tests for handshake headers, warmup, continuation vs full requests, auth/session changes, large input frames, event backpressure, interrupt acknowledgements, fallback and subsequent same-session HTTP requests.

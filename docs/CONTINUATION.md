@@ -212,3 +212,9 @@ Next: complete control-tool schema/event lifecycle, MCP resource URI/result limi
 A viable temporary disassembly path is now identified in the pinned Valdi QuickJS source: patch a separate analysis copy of `JS_ReadFunctionTag` to call `js_dump_function_bytecode` after the deserialized function's constant pool is loaded. The normal `DUMP_BYTECODE` hook is compilation-side; `DUMP_READ_OBJECT` logs serialized bytes and structures, not readable opcodes. Android's arm64 split has stripped `libopenai_xplat_export.so` (8.8 MB) with QuickJS/Valdi runtime class strings, but no usable exported dump hook.
 
 No disassembler has been built; full QuickJS sources and matching build options are unavailable in the current analysis workspace. Next acquire/verify the exact Valdi QuickJS source tree, build a temporary tool, validate it against a known fixture, and then inspect only the exact ChatGPT service methods. Do not run the app or execute module functions.
+
+## Latest handoff — Codex Responses WebSocket v2 source trace (2026-11-25)
+
+The pinned Codex source map now includes WebSocket v2 handshake, provider/session gating, turn-scoped reuse/routing, strict incremental continuation (previous_response_id), optional generate:false warmup, bounded message framing/read-ahead/event queue, interrupt acknowledgements, and session-scoped HTTPS fallback. See the latest dated section of CODEX_SOURCE_FINDINGS.md.
+
+Next: implement none of this until exact header gates/handshake responses, session/auth ownership, every incremental comparator field, warmup state, interrupt semantics and retry/fallback behavior are reconstructed into contract tests. Prewarm must be explicit/opt-in; no implicit network on package startup. The HTTP/SSE and WebSocket decoders need ESM/CommonJS/TypeScript parity and authorized E2E coverage.

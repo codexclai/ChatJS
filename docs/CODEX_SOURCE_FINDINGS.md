@@ -304,3 +304,57 @@ This is a Codex client integration/consent surface, not AI-model selection. Any 
 The native ChatJS Codex API needs a coherent turn/control-event model, a real async user-input interface when the host supplies one, a truthful clock/context service, deferred environment readiness, a local MCP tool/resource catalog, dynamic tool callbacks, and explicit install/consent interfaces where the actual Codex client exposes them. These can share generic event, cancellation and lifecycle primitives, but the Codex-specific contracts must remain source faithful.
 
 **Evidence boundary:** static inspection of the pinned Codex ZIP. No user question was presented, no answer retained, no execution environment started, no MCP resource read, no dynamic tool called, no plugin/connector installation requested, no connector selected and no network request made. No corresponding ChatJS behavior is implemented.
+
+## 2026-11-25 — Codex Responses WebSocket v2, incremental continuation and fallback
+
+A deeper trace of the pinned Codex snapshot reveals the actual WebSocket v2 turn/session behavior. Relevant sources include codex-rs/core/src/client.rs, responses_retry.rs, session/startup_prewarm.rs, codex-rs/codex-api/src/common.rs, and endpoint/responses_websocket.rs.
+
+### Eligibility and handshake
+
+- responses_websocket_enabled() requires the configured model provider to advertise supports_websockets and the current ModelClientSession not to have entered its session-scoped disable_websockets state. WebSocket capability is not inferred from Node.js support alone.
+- The Codex v2 path is beta-header selected. The exact value in the pinned snapshot is OpenAI-Beta: responses_websockets=2026-02-06.
+- The handshake includes standard Responses headers, originator, x-client-request-id set from thread ID, session-id and thread-id, source-defined compatibility headers, optional routing hint, optional X-OAI-ATTESTATION, and the beta header. Timing metrics are added only when that source option is enabled.
+- ModelClientSession owns turn-scoped WebSocket state. It can reuse one socket over multiple requests in that turn and store server turn-state/routing affinity for the remainder of that turn. Turn state is not meant to leak into another turn. The source also re-resolves credentials/auth ownership for requests where runtime auth requires revalidation.
+
+### Wire request and context continuation
+
+The WebSocket payload is a tagged ResponsesWsRequest::ResponseCreate, serialized as {"type":"response.create", ...}. ResponseCreateWsRequest is similar to the HTTP Responses body, with additional WebSocket context fields including previous_response_id and optional generate. The observed field order is explicit in codex-rs/codex-api/src/common.rs:
+
+model, stream, service_tier?, previous_response_id?, input, tools?, tool_choice, parallel_tool_calls, reasoning?, store, stream_options?, include, prompt_cache_key?, prompt_cache_options?, text?, generate?, client_metadata?, access_programs?, request_country.
+
+Incremental continuation is deliberately conservative:
+
+- A delta is allowed only after a previous request and a completed previous response with a non-empty response ID are available.
+- The current request must preserve the previous request's relevant non-input properties. The pinned comparison checks model, tools, tool choice, parallel-tool setting, reasoning, store, stream, include, service tier, prompt cache key/options, and text controls.
+- stream_options are delivery settings, so they do not invalidate the context referenced by previous_response_id. client_metadata, access_programs, and request_country are not part of that mismatch check because they are per-response or otherwise handled separately by the source.
+- Current input must be an exact extension/equality of the prior input plus server-returned output items. Item comparisons ignore internal metadata. Shortened or mismatched histories and changed request properties cause a full request, not a guessed delta.
+- A valid continuation sends the prior previous_response_id and only new input items. A server-generated warmup response is a special case: the next inference may reference that response ID and send only the delta, while retaining original context for replay bookkeeping.
+
+This is not a generic send-only-the-last-message optimization. It is a source-specific stateful continuation protocol. ChatJS must reproduce exact equality/identity conditions and fall back to a complete request whenever it cannot prove a safe incremental continuation.
+
+### Warmup and reuse
+
+The optional Codex startup prewarm selects a WebSocket connection before the first generation. It sends a response.create request with generate:false, no previous_response_id, and no prompt generation. The first actual inference can reuse the established socket and context. Prewarm is best-effort and the source retries/falls back through the same turn path if it fails.
+
+For ChatJS, warmup must be an explicit caller/consumer option or part of an already requested operation; it must not become hidden traffic on import, construction or background startup. The package may expose readiness/pending state locally without sending a request.
+
+### Frames, bounded flow and interrupt semantics
+
+- Text requests larger than 1 MiB are split into WebSocket message fragments with a 1 MiB fragment size.
+- The pump limits read-ahead during sends to 1 MiB and batches up to 32 receive frames/messages before yielding.
+- The Responses event channel is bounded (capacity 1,600 in the observed source). A maximum message size can be supplied by the handshake response. These are source implementation parameters, not public defaults to copy without end-to-end validation.
+- Server response.interrupt is a protocol request with response_id and mode discard_partial_items. The client checks the matching response.interrupt.accepted or response.interrupt.failed acknowledgement; an unexpected ID or rejected interrupt is an error. This is distinct from merely closing a WebSocket or aborting a local iterator.
+- Completion is not inferred from socket close: closure before response.completed is an error. Unexpected binary frames are rejected; malformed text events are handled without claiming completion. Wrapped error events preserve HTTP status and Retry-After when present.
+- Server events can update turn-state routing affinity, model/ETag, rate-limit snapshots and safety-buffering interpretation while the stream is active.
+
+### Fallback and retry policy
+
+- A WebSocket HTTP handshake returning 426 Upgrade Required switches the operation to HTTP immediately.
+- Source-mapped retryable WebSocket errors include websocket_connection_limit_reached and previous_response_not_found, with optional Retry-After preserved.
+- The retry handler can switch the current model-client session to HTTPS when an error explicitly requires HTTP fallback or the configured retry budget is exhausted. That is a one-way session state: subsequent requests in the same session no longer attempt WebSocket.
+- Ordinary retry uses the actual error retryability and server retry deadline. A special UnboundedConnectionRetries feature branch uses exponential connection delays beginning at five seconds and capped at sixty seconds, but only for non-internal sampling sessions and not the Bedrock provider. It is a feature-gated policy, not a universal or unlimited retry default.
+- The fallback path surfaces a real reconnect/fallback notification; it does not disguise an incomplete response as successful completion.
+
+### Evidence limits
+
+This is a pinned source snapshot observation, not a ChatJS transport. The source tests include V2 handshake/header, response.create, warmup, incremental continuation and fallback cases, but those Rust tests were not executed in this inspection. ChatJS currently has no Codex Responses WebSocket client, no HTTP fallback state machine, no turn-scoped WebSocket connection reuse, and no end-to-end WebSocket tests. All upstream telemetry and tracing remain excluded.

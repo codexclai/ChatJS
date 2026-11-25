@@ -178,3 +178,14 @@ The current DEX trace observes a 300-second default local cooldown for the TOO_M
 - [ ] Validate the temporary dumper on a known QuickJS bytecode fixture and a copied Valdi module entry; confirm it reads the `0x0100C634` wrapped payload after unwrapping and does not execute application functions.
 - [ ] Disassemble only allow-listed methods, starting with `ChatGPTDirectResponseClient.prepare/send`, then model/Sentinel decoders, event/resume and upload methods; record complete call graphs and schema evidence.
 - [ ] Check whether the Android module retains debug filenames, line tables and sources for selected functions. Missing debug source must not be mistaken for missing opcodes or incomplete control flow.
+
+## Codex Responses WebSocket v2 — 2026-11-25
+
+- [ ] Reconstruct exact provider/client feature gates and compatibility-header list for the pinned Codex V2 handshake; distinguish protocol-required headers from optional routing, metrics and host-integrity headers.
+- [ ] Trace connection-key equality, auth-owner/revision changes, socket reuse and teardown between turn-scoped ModelClientSession instances. Do not leak turn-state/routing affinity across turns.
+- [ ] Reconstruct complete Responses WebSocket V2 handshake response headers and their effect: max message size, reasoning inclusion, server model, models ETag and codex turn-state affinity.
+- [ ] Complete the incremental-continuation comparator and tests for every non-input property; understand server output-item baseline, internal metadata equality and fallback to a full request.
+- [ ] Reconstruct warmup activation, timeout/budget interactions, retry when it fails, untraced warmup response replay and consumer-facing pending/readiness state. Keep ChatJS prewarm explicit/opt-in and never network on import/construct.
+- [ ] Reconstruct 1 MiB frame splitting, read-ahead, bounded event-channel backpressure and response idle timeout/maximum-message enforcement without copying implementation limits without performance tests.
+- [ ] Reconstruct response.interrupt send/ack/error semantics and its interaction with AbortSignal, draining and partial output retention.
+- [ ] Enumerate the exact fallback/retry policy, including HTTP 426, retryable wrapped WebSocket error codes, Retry-After, max retry counts, session-level HTTP lockout and the restricted UnboundedConnectionRetries feature branch.

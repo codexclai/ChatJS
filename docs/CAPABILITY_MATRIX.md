@@ -93,3 +93,7 @@ Codex CLI source research now includes additional permission, network, discovery
 ## 2026-11-25 — Codex control and extension surface evidence
 
 Pinned Codex CLI research also identifies plan/context/clock controls; deferred execution-environment readiness; blocking and asynchronous user-question/message flows; separate MCP resource list/template/read operations; current-thread dynamic tool callbacks; and catalog-validated, explicitly consented plugin/connector installation. These remain Research/Planned; the capability inventory and Codex source findings define their evidence boundaries. Host user-interaction surfaces are optional and must not be simulated.
+
+## 2026-11-25 — Codex Responses WebSocket source detail
+
+The pinned Codex source now maps WebSocket v2 more specifically: provider capability/session-state gating, beta handshake headers and optional attestation, turn-scoped connection and routing affinity, strict incremental continuation using previous_response_id, optional generate:false prewarm, bounded frame/read-ahead/event buffering, protocol-acknowledged interrupts, and session-scoped permanent HTTPS fallback when required. These remain Research/Planned; no ChatJS WebSocket transport or Codex Responses client is implemented.

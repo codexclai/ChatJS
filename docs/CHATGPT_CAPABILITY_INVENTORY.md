@@ -215,3 +215,18 @@ Additional pinned Codex CLI control contracts:
 - **Plugin/connector catalog:** current discoverable entries can be listed; install requests are checked against that catalog and delivered via explicit MCP elicitation consent, then installation completion is verified before MCP refresh/connector selection update. This is not alternate AI-provider selection. Respect product exclusions and do not assume all entries are in scope.
 
 All findings are static source evidence. ChatJS has no plan/clock/context/user-input/environment/MCP-resource/dynamic-tool/plugin-install implementation yet.
+
+## 2026-11-25 — Codex Responses WebSocket and incremental context lifecycle
+
+The pinned Codex CLI source maps the WebSocket transport in greater detail:
+
+- **Capability gate:** WebSocket use requires provider supports_websockets and a model-client session that has not been disabled by fallback.
+- **Handshake:** OpenAI-Beta: responses_websockets=2026-02-06, Responses headers, session-id, thread-id, x-client-request-id, compatibility/routing headers and optional first-party attestation.
+- **State:** connection reused inside a turn-scoped ModelClientSession; sticky turn-state/routing data is turn-scoped; credentials may be re-resolved for runtime-authenticated requests.
+- **Wire:** response.create tagged JSON request, with optional previous_response_id and generate.
+- **Incremental:** only if prior request+response ID exist, non-input request properties match, and new input exactly extends previous input plus server output. Otherwise send full context.
+- **Warmup:** optional generate:false connection/context prewarm; following generation may send only a verified delta.
+- **Flow:** 1 MiB message fragments, 1 MiB read-ahead and bounded event queue (1,600 in observed source); completion and interrupt acknowledgement are protocol states.
+- **Fallback:** HTTP 426 triggers immediate HTTPS fallback; specific WebSocket errors and exhausted retry budgets can switch a model-client session permanently to HTTP. A feature-gated exponential retry path starts at five seconds and caps at sixty seconds for a limited set of external sampling sessions.
+
+This is a different implementation from the existing bounded generic SSE parser in ChatJS and remains unimplemented. No transport support should be claimed until ESM/CommonJS/TypeScript and real authorized end-to-end tests pass.
