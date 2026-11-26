@@ -657,3 +657,20 @@ No production key/signing, AndroidKeyStore access, secure credential storage, ti
 The previous handoff described the `iat` unit and rounding as unresolved. Direct bytecode shows otherwise. `Ln1d1.b` reads `Lblf0.a`, the Instant epoch-second long, reads stored `Lpvx.b`, and adds the two using 64-bit arithmetic before passing the value to `Lyls0.s`. `Lxb8.e` calculates and stores the offset as server epoch seconds minus local Instant epoch seconds, then logs that it is retrying the refresh request after correcting the DPoP proof timestamp. Therefore `iat` is server-aligned epoch seconds. It is not milliseconds, and the Instant nanosecond field is not used.
 
 The exact original server timestamp source and retry ceiling remain open. ChatJS's private `calculateAndroidDpopIssuedAt` helper applies already-supplied integer values only; it does not acquire clock state, parse server time, persist the offset or perform retries. Two focused tests cover the helper.
+
+## Latest handoff — Android OAuth refresh Date-header timestamp and correction retry — 2026-11-26
+
+### Source trace
+
+The earlier handoff's statement that the original server timestamp source was unresolved is superseded. In `Lxb8.g`, the response-exception path reads the HTTP response's `Date` header through `Lxb81.e`. It passes the value to `Lk9y.a`, whose initialized parser tries the configured date formats and returns a `Ll9a0`; the timestamp field `i` is divided by 1000 before being stored as a `Long` in the `Ljb8` refresh-result wrapper. The correction timestamp is therefore taken from the HTTP `Date` header and represented in epoch seconds.
+
+### Retry and offset behavior
+
+`Lxb8.e` passes the failed response and wrapper to `Lxb8.j`. The classifier gates on HTTP statuses 400/401/403 and examines structured error details; its bytecode also compares timestamp values with constants 30 and 300. Those comparisons are recorded as source observations, not interpreted as an offset TTL or global retry limit. When the classifier supplies a timestamp, `Lxb8.e` calculates server epoch seconds minus local `Instant.epochSecond`, stores the result in `Lpvx.b`, and makes one additional call to `Lxb8.g`. Thus this timestamp-correction path has one explicit reattempt. Other OAuth retry paths remain untraced.
+
+`Lpvx` contains an injected clock reference and a mutable long offset; the holder type is consumed in the AuthApiImpl refresh path and in DPoP proof construction. The inspected holder and call path expose no persistence, expiry or clearing operation. The actual dependency-injection scope, object lifetime and reset-on-session-change behavior remain open.
+
+### Implementation boundary and next work
+
+No runtime code was added. ChatJS still has no HTTP Date parser, clock-state manager, DPoP signer, native provider, refresh request or retry implementation. Continue with the exact `Lxb8.j` error/time predicate, remaining refresh/nonce retry paths, provider injection and the portable host secure signer. Android Work, Windows/Desktop and Codex CLI remain parked only for sequencing; the permanent product target is unchanged.
+
