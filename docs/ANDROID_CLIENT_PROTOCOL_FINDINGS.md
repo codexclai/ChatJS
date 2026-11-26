@@ -1694,3 +1694,26 @@ Therefore the generic Ktor parser does preserve parameterized challenge data, bu
 The exact `X-Nonce` string remains isolated to `Ljz40.b`, a RevenueCat Purchases header map containing `Accept-RC-Element-Encoding` and `application/x-rc-format`; it is not evidence for the ChatGPT DPoP flow. OIDC authorization nonce and the separate lookup-key nonce signature remain distinct mechanisms.
 
 No ChatJS runtime code was changed, no Android methods were executed and no credentials, tokens, keys or network requests were used.
+
+
+## Android registered DPoPProofProvider callback and separate DEVICE_KEY challenge proof — 2026-11-26
+
+### Main Ktor DPoP request-proof path
+
+Client construction registers `DPoPProofProvider` under `Ltvx.a`. Two recovered construction paths (`Lf91.invokeSuspend`, classes5 index 13156, and `Lxq8.invokeSuspend`, classes7 index 60056) construct `Lkl40`, wrap it with `Lsvx`, and register the callback. `Lsvx.a` delegates to the captured `Lkl40` function.
+
+`Lkl40.invokeSuspend` (classes6 index 21717, offset 4109164) constructs and invokes an `Lke` coroutine with the DPoP key holder `Lyt2`, request descriptor `Lpqc1`, and session/clock context `Lb6p0`. `Lke.invokeSuspend` (classes7 index 27595, offset 2157348) reads `Lyt2.b` as the `java.security.KeyPair`, reads `Instant.epochSecond`, adds the held `Lpvx.b` server-minus-local offset, constructs a URL from `Lpqc1.h`, and calls the main `Lyls0.s` compact-JWS builder with the key pair, URL, adjusted timestamp and token/proof inputs.
+
+This is the concrete main Ktor DPoPProofProvider path. It consumes the key pair directly and does not call `Lyt2.b(String)`. The `Lyls0.s` serializer previously decoded from DEX emits main JWS fields `htm`, `htu`, `iat`, `jti`, and `ath`; no `nonce` claim appears in that serializer.
+
+### Separate DEVICE_KEY lookup-key authentication challenge
+
+A direct callsite census across all ten DEX files finds only one caller of `Lyt2.b(String)`: `Lsk00.a` (classes7 method index 47413). This is a distinct challenge-signing workflow:
+
+- `Lqk00` is a generated response model whose serializer `Llk00` defines top-level JSON properties `type`, `purpose`, and `data`. `Lqk00.a()` returns `type`; the consumer requires the literal `DEVICE_KEY` or raises `Invalid lookup-key authentication challenge`.
+- The nested `data` model `Lpk00`, serialized by `Lnk00`, has JSON properties `challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, and `signature`. `Lsk00` validates this model and calls `Lyt2.b(String)` with the challenge string.
+- The helper checks that the Base64URL challenge decodes to 32 bytes, signs those challenge bytes with the same stored P-256 key pair, and returns public JWK plus unpadded Base64URL signature material. `Lsk00.a` packages this as a separate `Livk0` result; its caller is `Lrk00.invokeSuspend` in the broader `Lge70` app coroutine path.
+
+The two workflows share the `Lyt2` key holder/key pair but have different proof inputs and outputs: the registered Ktor `DPoPProofProvider` builds the ordinary compact DPoP JWT from request method/URL, issued-at time, jti and access-token hash; the separate `DEVICE_KEY` lookup-key signer signs a server-provided challenge string and returns a JWK/signature response. Do not treat the lookup-key challenge as the main DPoP nonce or add its challenge value to the DPoP JWT.
+
+This resolves the implementation path for the registered DPoPProofProvider and identifies the lookup-key challenge as a separate key-proof workflow. It does not prove that no other DPoP nonce mechanism exists in other provider/native/response paths. Search for any separate nonce-bearing response and provider integration before claiming the product does not use a server nonce. Static DEX inspection only; no Android code executed and no credentials, keys or network requests were used. No ChatJS runtime change was made.
