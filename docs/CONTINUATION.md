@@ -743,3 +743,28 @@ No ChatJS runtime change, Android execution, credential/key use or network activ
 `RequestDPoPMetadata` is an observability attribute bundle in `Lwvx`; its values include signing attempted/result/failure, first failure, retry outcome, keystore error, duration, queue wait, concurrency limit, DPoP header presence and auth scheme. It is merged into OpenTelemetry span attributes; ChatJS must not copy telemetry. The `OpenAI-Device-Key` literal is only in `Lil31.g` Sentry OkHttp header-copy allowlist, not a header emitter. Neither marker appears in the 111 decompressed Valdi modules.
 
 Next: identify any non-app-DEX producer or native host path for `DPoPClockRetryAttempted`, and trace upstream retry handling separately from `Lxb8.e` refresh correction. Do not implement a retry from the attribute name alone. No ChatJS runtime code, signer, telemetry or network behavior was added.
+
+
+## Latest handoff — Android Ktor `Lwp` request recovery and DPoP clock replay — 2026-11-26
+
+The prior note saying `DPoPClockRetryAttempted` had no writer in the ten app DEX files was incorrect. A corrected DEX disassembler fixed missing width-2 handling for opcodes `0x90–0xaf`; the earlier PC scan had therefore lost alignment later in methods. The corrected `Lwp.invokeSuspend` trace (classes2 method 58489) shows the actual writer and callback.
+
+### `dpop_iat_out_of_range` request recovery
+
+`Lwp` recognizes `ApiServiceError.c == dpop_iat_out_of_range` on the Ktor response exception for a DPoP-authorized request. It reads the HTTP response `Date` header, parses it with `Lk9y.a` and converts the millisecond timestamp to epoch seconds. The corrected arithmetic instruction at pc `0x03f6` is `responseDate - localInstant.epochSecond`; it writes that server-minus-local offset to `Lpvx.b`. This is the same sign used by `Lxb8.e` and added by the main DPoP request proof builder.
+
+`Lwp` puts `Lyp.b` (`DPoPClockRetryAttempted`) into the `Lfyc0.f` request attribute map using `Lq18.f` (`Map.put`), with value `Liec1.a` (`kotlin.Unit`). The guard is based on key presence (`Map.containsKey`), not a Boolean. `Lfyc0.e`/`Lfyc0.d` clone the request context and preserve its attributes. `Lwp` invokes `Ldk31.a` with the clone to continue the request retry flow. On a repeated out-of-range response, `Lwp` sees the marker and exits; `Lxp.b` also uses it to short-circuit the access-token provider-acquisition path. This confirms one guarded Date-correction replay in this Ktor branch.
+
+### Separate `token_expired` authenticated-request recovery
+
+`Lwp` also matches `ApiServiceError.c == token_expired`. It calls injected `Lcd01.d` with the current access-token string, then calls `Lcd01.e`. The default interface method `e` invokes `b(true)`. In the credential-backed `Lgk8` adapter, `d` delegates to `Ld7x.d`, which persists the rejected access token through the credentials repository, and `b(true)` delegates to `Ld7x.j` with the current credential record and renewal/force flag; that enters the renewal coroutine `Lu5x.f` → `Ld7x.l`. A separate no-credentials implementation `Lisp0` returns `NoCredentialsAvailable`. The exact wire schema, all renewal failure branches and the total retry ceiling for token-expired handling remain open.
+
+Do not conflate these Ktor branches with `Lxb8.e`'s OAuth refresh response-Date correction, which has a separate `Lxb8.j` classifier and one additional refresh call. Also do not confuse the per-invocation signer (`Lgmq0`/`Lfq.a` calls signing once) with the Ktor request-level clock replay.
+
+### Next actions
+
+1. Trace all `Lwp` status/response branches and the full `token_expired` renewal/replay ceiling, including what Ktor callback is invoked after successful renewal.
+2. Continue remaining `invalid_dpop_proof` and OAuth refresh branches separately from the two recovered paths.
+3. Keep native provider injection, host secure non-exportable signer, and authorized end-to-end testing blocked until real host capability and session contracts are established.
+
+No ChatJS runtime code/tests changed and no Android method, credential, key or network request was executed.
