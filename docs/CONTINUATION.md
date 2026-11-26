@@ -821,3 +821,15 @@ A fresh read-only DEX pass advanced the active Android authentication trace into
 - The post-renewal coroutine reconstructs a copied `Lfyc0` request context and proceeds through `Lxp.c` and `Ldk31.a` continuation handling. Exact final replay eligibility, error mapping and total replay ceiling remain unresolved.
 
 Full source/evidence boundary is in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. This is static analysis only: no ChatJS runtime code changed, no Android method was executed, and no credential, key or network request was used. Next: finish the post-renewal callback/replay state machine and non-success mapping; separately continue the native provider-injection and secure host-signer blockers. Android Work, Windows/Desktop and Codex CLI remain parked only for sequencing.
+
+## Latest handoff — Android token-expiry request opt-in and one-shot resend — 2026-11-26
+
+The Ktor token-expiry analysis now reaches the request-attribute producers and the final resend decision:
+
+- Lq6t.e is the typed RetryExpiredAccessToken attribute. Lwp skips its token-expiry handler when the attribute is absent. Lup also detects it and sets ManualUnauthorizedHandling; if a RequestAccessToken override exists, preflight runs Lxp.c.
+- The conversation direct-response builder Loe3.invoke attaches this attribute to /backend-api/f/conversation only when Lg7w.k == tpp, using Lsjw(Lrjb). Lsjw delegates to the request-owned callback and resolves true after it completes, which suppresses the interceptor's built-in resend.
+- The separate Le2e.invokeSuspend builder attaches it to messaging/rooms when an optional Function1 callback is supplied, through Li2e. This wrapper forwards the callback's Boolean directly: true preserves the original response; false permits the resend.
+- Lwp compares the renewed token to the rejected token. An unchanged token or typed Luub1 renewal failure returns the original response. An unrecognized result shape throws NoWhenBranchMatchedException. If the token changed and the callback returns false, it copies Lfyc0, writes RequestAccessToken, calls Lxp.c, then calls Ldk31.a once. This branch contains no retry loop.
+- The generic Ktor sender has a separate MaxRetriesPerRequestAttributeKey guard, default 20, enforced by Lrzc0 through SendCountExceedException. It is a general send-count limit, not 20 token-expiry retries.
+
+Full method details and caveats are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. Remaining: trace the actual owner and cancellation/error semantics of both request callbacks, any additional dynamically supplied producers, the remaining OAuth error/retry branches, and supported authorized E2E behavior. No runtime code changed and no Android methods, credentials, keys or network requests were executed.

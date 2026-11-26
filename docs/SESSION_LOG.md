@@ -1505,3 +1505,16 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - `npm run check` completed in GitHub Actions: generated project state synchronized; all 28 Markdown local targets exist; 134 tests passed, 0 failed; `dist/ChatJS.tar.gz` built with 18 module files; extracted installed-module smoke tests passed for both CommonJS and ESM.
 - Downloaded and inspected the CI artifact ZIP. It contains `ChatJS.tar.gz` (33,902 bytes); `gzip -t` passed and `tar -tzf` confirmed the archive contents. Artifact SHA-256: `37efcb0e527486bcd62e739d594c71e853c20ff25c2b2d3314af305dc108943e`.
 - Repository comparison from the prior main HEAD confirms only six documentation/state files changed; no runtime implementation, tests, dependencies or public API changed in this source-trace unit.
+
+
+## 2026-11-26 — Android token-expiry request producers and resend decision
+
+- Continued read-only inspection of the supplied Android 1.2026.321 XAPK, using the extracted DEX files and the corrected DEX instruction-width table. No Android application method was executed.
+- Resolved the request opt-in: Lq6t.e is RetryExpiredAccessToken; Lwp skips this handler unless present. Lup adds ManualUnauthorizedHandling when it is present and preflights any RequestAccessToken override through Lxp.c.
+- Located two producers: classes7 Loe3.invoke adds Lsjw(Lrjb) for /backend-api/f/conversation only when Lg7w.k equals tpp; classes5 Le2e.invokeSuspend adds Li2e(Function1) for messaging/rooms when the optional callback exists.
+- Traced callback semantics: Lsjw returns true after its underlying Lrjb.c() callback completes; Li2e forwards the callback's Boolean. In Lwp, true preserves the original response and suppresses the built-in resend; false permits it.
+- Traced the final decision: a renewed token equal to the original or a typed Luub1 renewal failure preserves the original response; an unexpected result state throws. A changed token plus callback false copies the request context, installs RequestAccessToken, prepares auth using Lxp.c, and invokes Ldk31.a once.
+- Traced the separate general Ktor sender cap: MaxRetriesPerRequestAttributeKey defaults to 20; Lrzc0 enforces this send-count ceiling. It is not the token-expiry retry count.
+- No runtime ChatJS code, tests, dependencies or public API changed; this unit is source reconstruction and documentation only. No account, bearer/refresh token, DPoP key, secure storage or network request was used.
+- Local full-repository npm run check remains unavailable because there is no working ChatJS checkout and the container cannot resolve GitHub; the immediately preceding main HEAD's CI and CodeQL passed. New documentation/state commits must be validated by their own CI before recording them as verified.
+- Remaining: upstream callback ownership/meaning and cancellation/error behavior, all other dynamic producers, complete OAuth non-success normalization, and authorized end-to-end validation. Android Work, Windows/Desktop and Codex CLI remain parked for the current phase.

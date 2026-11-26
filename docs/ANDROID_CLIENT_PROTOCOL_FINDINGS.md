@@ -1854,3 +1854,42 @@ The successful continuation path reconstructs a copied `Lfyc0` request context a
 ### Evidence boundary
 
 The source method and adapter delegation are method-level static evidence from the supplied Android 1.2026.321 package. No Android method was executed; no account, token, key, secure store or network request was used. No ChatJS runtime implementation was added. Keep this flow separate from `Lxb8.e` OAuth refresh Date correction (one explicit corrective refresh call) and the `Lwp` `dpop_iat_out_of_range` request-level clock correction (one marked request replay).
+
+## Android Ktor token-expiry request opt-in, callback decisions, and sender ceiling — 2026-11-26
+
+This section extends the preceding Lwp trace with the request-attribute producers and the callback decision. It also separates the interceptor's single replay call from Ktor's general send-count guard.
+
+### Request opt-in and unauthorized-handling preflight
+
+Lq6t.<clinit> (classes2.dex method 45100) creates Lq6t.e as a typed Lrg70 attribute named exactly RetryExpiredAccessToken. Lwp.invokeSuspend (classes2.dex method 58489) reads this value from the original Lfyc0.f attribute map before entering its token-expiry branch. If the attribute is absent, that branch is skipped.
+
+A separate request preflight, Lup.invokeSuspend (classes2.dex method 54440), checks for the same attribute. When present it places Lq6t.d (ManualUnauthorizedHandling) into the request attribute map. It also checks Lq6t.c (RequestAccessToken); when that override exists it calls Lxp.c to prepare the authenticated request with that supplied token.
+
+### Two observed attribute producers
+
+1. **Conversation direct-response builder.** Loe3.invoke (classes7.dex method 37389) builds the /backend-api/f/conversation request. When its Lg7w.k string field equals the literal tpp, it attaches RetryExpiredAccessToken with an Lsjw adapter around the supplied Lrjb object. Lsjw implements Lrg70; its c() calls Lrjb.c() and then resolves Boolean.TRUE after that callback completes. Lrjb.c() delegates to an attached Ljs8 callback; on its false-result path it logs “Browser approval is no longer available” and returns null. The wrapper's returned Boolean is still true after normal completion, so the Ktor interceptor's true-result branch preserves the original response rather than performing its built-in resend. Do not infer more business meaning for the callback from its obfuscated wrapper alone.
+
+2. **Messaging rooms request builder.** Le2e.invokeSuspend (classes5.dex method 10360) builds a request for the messaging/rooms path. When its optional Function1 callback is supplied, it attaches RetryExpiredAccessToken using Li2e. Li2e.c() forwards the callback result directly, so this producer can return the Boolean decision consumed by Lwp: true means the interceptor returns the original response; false allows the built-in resend path. The exact upstream callback owner/contract remains to be traced.
+
+These are the producers found in the inspected DEX callsites; do not assume they exhaust every native or dynamically injected request producer.
+
+### Exact Lwp token-expiry outcome
+
+After the header gate x-openai-ide-error-code == token_expired and forced Lcd01.e() renewal:
+
+- The successful Lavb1 result supplies the new Lrp access-token wrapper. The old and new token strings are compared; if unchanged, the original response is returned.
+- A typed non-success result in the Luub1 hierarchy also returns the original response. An unrecognized result shape reaches NoWhenBranchMatchedException; do not normalize every failure into a silent retry or a generic original-response result.
+- If a refreshed token differs, Lwp invokes the request's Lrg70.c() callback. A Boolean true returns the original response and suppresses the interceptor's resend. A Boolean false continues.
+- The resend path constructs a new Lfyc0, copies the original request context with Lfyc0.e, places the refreshed token under Lq6t.c (RequestAccessToken), calls Lxp.c to prepare the authenticated headers/proof using the override, and invokes Ldk31.a once. There is no resend loop in this Lwp branch.
+
+Thus the built-in token-expiry resend is conditional on request opt-in, successful renewal to a different token, and the request-specific callback returning false. This is not a general “retry every 401” policy.
+
+### Separate Ktor send-count ceiling
+
+The Ktor send pipeline has an independent request attribute, Lvyc0.d, named MaxRetriesPerRequestAttributeKey. Ltzc0.invokeSuspend (classes2.dex method 52887) reads an integer override and uses 20 when it is absent. It constructs Lrzc0; Lrzc0.a (method 48811) checks the current send counter against that configured ceiling and throws SendCountExceedException when the ceiling is reached.
+
+This is a general send-pipeline guard, not the token-expiry retry count. The token-expiry path itself invokes its downstream sender once; the 20-value guard must not be reported as 20 token-expiry retries.
+
+### Evidence boundary
+
+All findings above come from static inspection of the supplied Android 1.2026.321 DEX. The inspected methods were not executed. No credentials, tokens, keys, secure store or network requests were used. No ChatJS runtime implementation was added. Remaining work includes the upstream ownership/semantics and cancellation/error outcomes of the Lrg70 callbacks, other dynamic producers, the complete remaining OAuth non-success branches, and authorized end-to-end verification with genuine supported host credentials and integrity capabilities.

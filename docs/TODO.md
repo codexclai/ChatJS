@@ -361,3 +361,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace exact Android error parser/constructor mapping: nested JSON `type` is assigned to `ApiServiceError.b`, and nested JSON `code` is assigned to `ApiServiceError.c`; the `invalid_grant` branch is specifically a code comparison.
 - [ ] Complete the `token_expired` Ktor renewal/replay contract: resolve the `Lfyc0` → `Lxp.c` / `Ldk31.a` callback's success/failure mapping, total replay ceiling, cancellation and request-state restoration. The Ktor trigger is `x-openai-ide-error-code == token_expired` (not a direct `ApiServiceError.c` match); the refresh request/success DTO and HTTP-vs-transport split are decoded. Keep this distinct from the `dpop_iat_out_of_range` single clock replay and `Lxb8.e` OAuth refresh Date correction; continue other OAuth/`invalid_dpop_proof` branches separately.
 - [ ] Trace the dependency-injection scope, lifetime and reset behavior of the in-memory `Lpvx.b` offset holder; no persistence/TTL/clear path was found in the traced holder, but session-reset semantics remain unverified.
+
+
+## Android Ktor token-expiry request opt-in and resend — 2026-11-26
+
+- [x] Decode the RetryExpiredAccessToken typed request attribute and confirm that Lwp skips its token-expiry handling when the attribute is absent; trace Lup's related ManualUnauthorizedHandling marker and RequestAccessToken preflight.
+- [x] Trace the conversation direct-response producer: Loe3.invoke attaches Lsjw(Lrjb) to /backend-api/f/conversation only when Lg7w.k == tpp; establish that the adapter resolves true after its callback completes, suppressing the built-in resend.
+- [x] Trace the second producer: Le2e.invokeSuspend attaches Li2e(Function1) to messaging/rooms only when the optional callback exists; the wrapper forwards the callback's Boolean decision to the Ktor handler.
+- [x] Decode the token-expiry result/decision path: same-token and typed Luub1 outcomes preserve the original response; changed token plus callback false copies the request, sets RequestAccessToken, runs Lxp.c, and invokes Ldk31.a once; unexpected result shapes throw rather than silently retry.
+- [x] Separate the general Ktor sender cap from token-expiry replay: MaxRetriesPerRequestAttributeKey defaults to 20 and Lrzc0 enforces the send-count ceiling. The token-expiry interceptor itself has one downstream sender call, not a 20-retry loop.
+- [ ] Trace the application owner and full cancellation/error semantics for both callback producers, inspect any additional dynamically injected producers, and validate the authorized token-expiry path with a legitimate session and supported secure host.
+- [ ] Finish the complete Lxb8.g / Ljn8.a non-success OAuth response normalization and remaining invalid_dpop_proof/refresh retry branches. Keep these separate from Lxb8.e refresh Date correction and the one-shot dpop_iat_out_of_range request correction.
