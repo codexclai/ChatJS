@@ -302,7 +302,7 @@ Never create branches or worktrees. Keep all repository work on main.
 
 - [x] Sweep all ten supplied Android base APK DEX files for direct OAIAuthenticationService/OAIRenewableAuthentication implementors and OAIPlatformServices constructor/call sites; only generated Kotlin closure adapters were identified, while the actual provider closures remain a bounded unknown.
 - [x] Trace Android DPoP key repository metadata: openai.login.dpop. alias prefix, key_pair_alias / pending_credential_deletion metadata, save-failure handling and abandoned-key cleanup paths.
-- [x] Identify DPoP crypto/JWS/network evidence: AndroidKeyStore, EC/secp256r1, SHA256withECDSA, typ=dpop+jwt, alg=ES256, Authorization DPoP-vs-Bearer selection, separate DPoP proof header, WWW-Authenticate/X-Nonce challenge handling, auth.openai.com/oauth/token refresh and invalid_dpop_proof timestamp-correction branch.
+- [x] Identify DPoP crypto/JWS/network evidence: AndroidKeyStore, EC/secp256r1, SHA256withECDSA, typ=dpop+jwt, alg=ES256, Authorization DPoP-vs-Bearer selection, separate DPoP proof plugin/provider, `WWW-Authenticate` scheme parsing and `DPoP`/`Bearer` provider selection, auth.openai.com/oauth/token refresh and invalid-proof timestamp-correction branch. Corrected attribution: `X-Nonce` is a RevenueCat header, not proven ChatGPT DPoP behavior.
 - [x] Identify additional DPoP expiry/error and concurrency configuration evidence: dpop_iat_out_of_range, refresh_token_reused, token_expired and android_dpop_signing_concurrency. Source observation only; no telemetry is to be copied.
 - [ ] Reconstruct the native CompilerIntrinsics/provider closure injection path, exact DPoP proof claims and nonce lifecycle, complete OAuth refresh request/response mapping and all retry ceilings.
 - [ ] Define a portable Node.js host secure, non-exportable signing-key adapter from legitimate host capabilities; preserve Android DPoP/account/session semantics and fail closed when unavailable. Do not export/copy AndroidKeyStore private keys or substitute a bearer-only path.
@@ -335,7 +335,7 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Verify SHA-256/UTF-8/Base64URL token binding and source URL canonicalization.
 - [x] Implement private signing-input/compact-JWS serialization with seven tests and package archive coverage.
 - [x] Resolve `iat` as epoch seconds from `Instant.epochSecond` plus stored server-minus-local epoch-second offset; trace the correction calculation. Offset acquisition/persistence and total retry ceiling remain open.
-- [ ] Trace main-request DPoP nonce/challenge state, OAuth refresh request/response and bounded retries; keep lookup-key nonce proof separate.
+- [ ] Trace the parsed `WWW-Authenticate` challenge object into the DPoP provider and determine whether/how any server nonce is consumed and bound into a DPoP proof; do not use the unrelated RevenueCat `X-Nonce` header as evidence. Keep OIDC authorization nonce and lookup-key nonce proof separate.
 - [ ] Implement authenticated DPoP only after native provider and secure non-exportable host signer/session ownership are established and authorized E2E tests pass.
 
 
@@ -348,5 +348,5 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace the one explicit correction retry in `Lxb8.e`: after an eligible failure it updates `Lpvx.b` and calls `Lxb8.g` once more. This is one retry in this correction path, not the global OAuth retry policy.
 - [x] Decode `Lxb8.j` end-to-end: require `Lpyy0` refresh request, `Ly0p0` response exception and status 400/401/403; compare sent refresh `iat` with response `Date`; accept only `iat - Date > 30s` or `Date - iat > 300s`; accept HTTP 400 `ApiServiceError.c == invalid_grant` or `ApiServiceError.b/c` matching `refresh_token_reused`, `token_expired`, `invalid_dpop_proof`.
 - [x] Trace exact Android error parser/constructor mapping: nested JSON `type` is assigned to `ApiServiceError.b`, and nested JSON `code` is assigned to `ApiServiceError.c`; the `invalid_grant` branch is specifically a code comparison.
-- [ ] Trace other OAuth refresh retries and the main DPoP `WWW-Authenticate`/`X-Nonce` challenge lifecycle; the single Date-correction retry is not the global retry policy.
+- [ ] Trace other OAuth refresh retries and the main DPoP `WWW-Authenticate` provider/challenge lifecycle, including any server-nonce value and proof binding; the single Date-correction retry is not the global retry policy.
 - [ ] Trace the dependency-injection scope, lifetime and reset behavior of the in-memory `Lpvx.b` offset holder; no persistence/TTL/clear path was found in the traced holder, but session-reset semantics remain unverified.
