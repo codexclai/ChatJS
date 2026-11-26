@@ -1784,7 +1784,7 @@ The credential-backed access-token renewal path now reaches the concrete OAuth A
 
 Thus the source-backed refresh request contract is: OAuth token endpoint `https://auth.openai.com/oauth/token`; DPoP proof generated for `POST`; serialized body fields `clientId`, `refreshToken`, and default `grantType: refresh_token`; optional `ChatGPT-Account-ID`; and a separate `DPoP` proof header plus `oai-uit: True`. The client ID is supplied by the injected `Lyjq0` wrapper; the refresh-token value is the `String` carried through the `Ld7x.p` → `Ljn8.a` → `Lxb8.h` path. No hardcoded client identifier or credential value is copied into ChatJS.
 
-**Still open:** full response DTO/property mapping, exact HTTP response success/error transformations, complete `token_expired` replay ceiling and failure handling, other `invalid_dpop_proof`/refresh retry paths, native auth provider closure, secure host signer and `Lpvx` lifetime/reset. These are Android source findings, not ChatJS support. No Android code executed and no credentials, keys or network requests were used.
+**Resolved since this earlier note (2026-11-26):** successful `Llkq0` response DTO property/type mapping and conversion into credential-bound internal `Lvg8` via `Ly4b1.h`. **Still open:** full non-success HTTP response/error transformations, complete `token_expired` replay ceiling and failure handling, other `invalid_dpop_proof`/refresh retry paths, native auth provider closure, secure host signer and `Lpvx` lifetime/reset. These are Android source findings, not ChatJS support. No Android code executed and no credentials, keys or network requests were used.
 
 
 ## Android OAuth refresh success response DTO and credential-record conversion — 2026-11-26
