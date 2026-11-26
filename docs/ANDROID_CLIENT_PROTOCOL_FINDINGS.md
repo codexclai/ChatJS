@@ -1740,3 +1740,32 @@ A complete callsite/reference scan found no in-package code that writes `Lyp.b` 
 The exact literal `OpenAI-Device-Key` reference in `Lil31.g` (classes2 method 24998) belongs to Sentry's OkHttp request/response event recorder. The recorder copies an allowlist of headers plus `DPoP` and `OpenAI-Device-Key` into diagnostic events. It does not construct or emit the header. Neither `OpenAI-Device-Key` nor `RequestDPoPMetadata` appears in the 111 decompressed Android Valdi modules in the supplied XAPK. These observations are not evidence of a main ChatGPT protocol header or capability.
 
 **Current boundary:** the registered DPoP provider's one-attempt signing result handling and an internal Ktor re-entry guard are traced, but the guard's writer/upstream retry caller remains unknown. Other challenge or timestamp-recovery flows may exist outside these methods. ChatJS still has no signer, native provider, DPoP request or retry implementation. This was static DEX analysis only; no Android code executed and no credential, key or network operation was used.
+
+
+## Android Ktor authenticated-request recovery: token_expired and dpop_iat_out_of_range — 2026-11-26
+
+The Ktor response coroutine `Lwp.invokeSuspend` in `classes2.dex` (method index 58489) contains two distinct authenticated-request recovery branches. This corrects the prior `DPoPClockRetryAttempted` note: the ten-DEX scan had missed a static field reference because the temporary instruction decoder omitted the DEX 23x arithmetic opcode range `0x90–0xaf`. Re-disassembly with the corrected instruction-width table exposes the writer and retry callback.
+
+### `dpop_iat_out_of_range`: one Date-alignment replay
+
+- The handler unwraps the Ktor response exception and parses its `ApiServiceError`; the nested `code` field (`ApiServiceError.c`) must equal `dpop_iat_out_of_range`.
+- It verifies that the original request used DPoP authorization (the recovered header path reads `Authorization` and checks the `DPoP ` scheme) and passes the other request/plugin eligibility checks before correcting time.
+- It reads the failed response's HTTP `Date` header using `Lxb81.e`, parses it through `Lk9y.a`, and converts the parser timestamp from milliseconds to epoch seconds.
+- It reads the injected local `Instant.epochSecond` from the `Lpvx` clock context and computes `responseDateEpochSeconds - localInstantEpochSeconds`. The corrected instruction `0x9c` at `Lwp` pc `0x03f6` has destination v7, source v4 (parsed response Date), source v7 (local Instant), proving the subtraction order. It stores that server-minus-local offset in `Lpvx.b`; the main proof builder adds this offset to local epoch seconds.
+- It writes the `Lyp.b` attribute key (`DPoPClockRetryAttempted`) into the request's `Lfyc0.f` attribute map through `Lq18.f` (`Map.put`). The value is the `Liec1.a` singleton, whose `toString()` is `kotlin.Unit`. The provider/handler checks key presence with `Map.containsKey`, not a Boolean value.
+- It clones the `Lfyc0` request context through `Lfyc0.e`/`Lfyc0.d`; the clone copies the attribute map, preserving the marker. It then invokes the registered `Ldk31.a` retry callback with the copied context.
+- At the start of this recovery branch `Lwp` checks the same marker and exits rather than correcting/replaying again if it is already present. `Lxp.b` also checks it and short-circuits the `AccessTokenDPoPPlugin` provider-acquisition path when the marker exists. Together these establish one guarded Date-correction replay for this `dpop_iat_out_of_range` path, not an unbounded retry.
+
+This path is separate from OAuth refresh skew correction in `Lxb8.e`: that method uses `Lxb8.j`'s refresh-request/error classifier and directly invokes `Lxb8.g` one additional time. The Ktor handler instead recovers an ordinary authenticated request and invokes `Ldk31.a` after attaching the request marker.
+
+### `token_expired`: reject the old access token, then force renewal
+
+`Lwp` also has a separate `ApiServiceError.c == token_expired` branch. It calls the injected `Lcd01.d` method with the current access-token string (`Lrp.a`) and then calls `Lcd01.e`. The default `Lcd01.e` implementation invokes `Lcd01.b(true)`. In the credential-backed adapter `Lgk8`, `.d` delegates to `AuthRepository` implementation `Ld7x.d`, which persists the rejected access token through the credentials repository; `.b(true)` delegates to `Ld7x.j` with the active credential record and the force/renewal flag. `Ld7x.j` enters the credential-backed access-token renewal coroutine (`Lu5x.f` → `Ld7x.l`) and returns the refreshed access-token result when successful. A separate `Lisp0` implementation maps the provider methods to `NoCredentialsAvailable`, so do not assume every session has the credential-backed adapter.
+
+The `token_expired` branch resumes the Ktor response coroutine after the rejection/renewal operations. It is not the DPoP Date-skew branch and does not use `DPoPClockRetryAttempted`. The complete renewal request/response schema, all failure branches and the total replay ceiling for this token-expiry path remain under investigation; do not infer them from the single-call DPoP signing behavior or the one-replay clock guard.
+
+### Corrected retry-marker conclusion and decoder audit
+
+The earlier statement that no app-DEX writer or retry caller for `DPoPClockRetryAttempted` existed is superseded and incorrect. `Lwp` writes it via `Lq18.f` and hands the copied request context to `Ldk31.a`; `Lxp.b` reads it as an access-token-provider re-entry guard; `Lwp` itself reads it to prevent a second clock-correction replay. The temporary decoder bug was failure to assign width 2 to DEX opcodes `0x90–0xaf`; the corrected disassembler now includes that range. Future PC-level traces must use the corrected instruction-width decoder.
+
+No Android code was executed, no account credentials/keys were used and no network requests were made. No ChatJS runtime code or tests were changed; this is static DEX source reconstruction only.
