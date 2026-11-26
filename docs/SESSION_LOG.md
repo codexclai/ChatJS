@@ -1396,3 +1396,11 @@ The time gate accepts only when requestIat - responseDate > 30 seconds or respon
 **Evidence boundary:** the exact serialized JSON-property labels for ApiServiceError.b and .c are not yet established, so documentation retains the raw source field names. The source was inspected statically; no Android method executed and no credentials, tokens, keys or network requests were used. No ChatJS runtime code was added. ChatJS still does not parse the response Date, perform this classifier, refresh credentials, maintain offset lifecycle, sign DPoP or authenticate.
 
 **Validation:** no local repository checkout is available, so local npm run check and local archive build were not run. The immediately preceding main snapshot ef0b85f7f3d24e43af820b3076a0ba705b16377e passed CI run 45744818017; its CodeQL run 45744818004 was still in progress at the time of this entry. This state/docs/session-log update will be checked by new main-branch CI and CodeQL runs after publication.
+
+## 2026-11-26 — Android ApiServiceError JSON field names resolved
+
+**Source reconstruction:** traced the network response error parser Lwn00.a in classes.dex (method index 57581, code offset 2330896). It reads the nested JSON string keys `type` and `code`, decodes each value, and passes them in that order as the second and third String arguments to the ApiServiceError constructor. The constructor implementation in classes2.dex (method index 8830) stores the first, second and third String arguments in fields `a`, `b` and `c`. This establishes `ApiServiceError.b = JSON type` and `ApiServiceError.c = JSON code`. Accordingly, the HTTP-400 invalid_grant branch is specifically a code comparison; the other three strings in the DPoP refresh classifier may match either type or code.
+
+**Boundary:** this was static parser/constructor tracing only. No analytics/telemetry behavior was copied; no ChatJS runtime source changed; no Android method executed and no credentials, tokens, keys or network requests were used. The active queue now moves past the raw field-name question to the main DPoP nonce/challenge flow and remaining OAuth retry branches.
+
+**Validation:** no local repository checkout is available, so local npm run check and local archive build were not run. The current documentation-only snapshot will be verified through GitHub CI and CodeQL after publication.
