@@ -1493,6 +1493,15 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Traced the forced-renewal adapter boundary: `Lcd01.d` receives the rejected access token; default `Lcd01.e` calls `b(true)`; credential-backed `Lgk8` delegates to `Ld7x.d` and `Ld7x.j`/`Lu5x.f`/`Ld7x.l`; `Lisp0` returns `NoCredentialsAvailable`.
 - Observed the post-renewal continuation building a copied `Lfyc0` request context and entering `Lxp.c` / `Ldk31.a`; final replay eligibility, failure mapping and total replay ceiling remain open. No retry behavior was added to ChatJS.
 - Changed only source findings, continuity, TODO and state records. No runtime source, dependencies or public API changed.
-- Tests: no local `npm run check` was possible because the container has no GitHub network access and no checked-out repository; `git clone` failed with DNS resolution. The latest pre-change main CI run `45753212611` succeeded, but it does not validate this new documentation commit. This session's new commit must be validated by its own CI after push.
+- Tests: no local `npm run check` was possible because the container has no GitHub network access and no checked-out repository; `git clone` failed with DNS resolution. The latest pre-change main CI run `45753212611` succeeded, but it does not validate this new documentation commit. The follow-up commit corrected the generated-state formatting, and the resulting main commit was validated by CI and CodeQL (details below).
 - No account credentials, refresh tokens, DPoP keys, secure storage or network operations were used. Android Work, Windows/Desktop and Codex CLI remain parked for the current sequencing phase.
 - Next: complete the Ktor forced-renewal result/callback/replay state machine and full OAuth non-success mapping; keep the secure host signer, native provider injection and authorized E2E requirements as blockers.
+
+
+## 2026-11-26 — CI, archive and CodeQL verification follow-up
+
+- The first documentation commit's CI run (`45754811922`) failed only because the generated `docs/PROJECT_STATE.md` had a one-character formatting mismatch (an extra leading space before its generated-file notice). Corrected the generated file in the follow-up commit; no runtime files were involved.
+- Verified `743a773a3569c0425c90a8c8be4fb3973ce1c0ff`: CI `45754843677` passed; CodeQL `45754843671` passed.
+- `npm run check` completed in GitHub Actions: generated project state synchronized; all 28 Markdown local targets exist; 134 tests passed, 0 failed; `dist/ChatJS.tar.gz` built with 18 module files; extracted installed-module smoke tests passed for both CommonJS and ESM.
+- Downloaded and inspected the CI artifact ZIP. It contains `ChatJS.tar.gz` (33,902 bytes); `gzip -t` passed and `tar -tzf` confirmed the archive contents. Artifact SHA-256: `37efcb0e527486bcd62e739d594c71e853c20ff25c2b2d3314af305dc108943e`.
+- Repository comparison from the prior main HEAD confirms only six documentation/state files changed; no runtime implementation, tests, dependencies or public API changed in this source-trace unit.
