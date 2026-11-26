@@ -2079,3 +2079,14 @@ However, the exact assignment that writes a newly returned `Lozc1.lookupKeyAlias
 ### Evidence boundary
 
 Static analysis only against Android 1.2026.321; no Android method was executed and no credential, key, keystore or network operation occurred. No ChatJS runtime code was changed. This establishes the account-bound key reload path and the LoginAuth branch selection but does not define a portable Node.js signer or permit private-key export.
+## Android provider lookupKeyAlias is checked against the returned Lyt2 key alias — 2026-11-26
+
+A direct LoginAuth consumer now closes an important part of the lookup-provider path. `Llli0.invokeSuspend` (classes7.dex method 30754) holds both the selected `Lozc1` provider-connection object and the resolved `Lyt2` key wrapper in the same coroutine state. After resolving the key wrapper, it reads `Lozc1.i` (`lookupKeyAlias`) and `Lyt2.a` (the wrapper's alias string), compares them for equality, and gates the following authentication/challenge continuation on that comparison.
+
+This is a stronger check than observing two calls to the same keystore abstraction: in this LoginAuth operation, the `Lyt2` alias returned by the provider-key resolver is explicitly compared to the provider connection's declared lookup alias before proceeding. It confirms that the key wrapper used in this branch corresponds to that provider record's exact alias string at the point of the check.
+
+The provider resolution path feeding this coroutine remains `Lmhk0.a` → `Lohk0` → `Lqhk0.b`; `Lqhk0.b` reads `Lozc1.i`, tries `Lzt2.c(alias)`, and can create a new prefixed key with `Lqhk0.a` when the lookup provider has no loadable key. `Llli0` then validates that the resolved wrapper's `.a` equals the original `Lozc1.i` value before it continues.
+
+**Boundary:** this equality check is specifically between the provider record's `lookupKeyAlias` and the provider-branch `Lyt2` wrapper. It does not by itself establish that the same value is copied into an account's `Lel8.key_pair_alias` preference or credential record `Lvg8.n`. The separate account branch loads its persisted key through `Lsm8` → `Lcn8.D`. Do not merge these two identity relationships until the provider-result-to-account-preference write is traced.
+
+Also, `La0d1.k` and `La0d1.p` contain additional consumers of `Lozc1.i` as part of login-auth/provider-state processing; this corroborates that `lookupKeyAlias` is a first-class provider field, not a guessed field name. Full caller roles remain in the surrounding method-specific notes.

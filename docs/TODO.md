@@ -809,3 +809,8 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Record reauthentication guard: `Lmhk0.d` explicitly says reauthentication cannot register a lookup key.
 - [ ] Find the exact provider result / `Lozc1.lookupKeyAlias` → account `Lel8.key_pair_alias` persistence assignment. Until found, shared wrapper/store/namespace is established but exact alias string equality across the two flows is not.
 - [ ] Trace lookup-key challenge network endpoint, transport, caller result lifecycle and authentication registration/update flow.
+
+## Android LoginAuth provider alias equality guard — 2026-11-26
+
+- [x] Trace `Llli0.invokeSuspend` holding the selected `Lozc1` provider and returned `Lyt2`; confirm it compares `Lozc1.i` (`lookupKeyAlias`) with `Lyt2.a` before continuing. Provider lookup therefore validates exact alias equality within that provider branch.
+- [ ] Trace the exact provider branch result to account preference/credential persistence (`Lel8.key_pair_alias` → `Lvg8.n`), if that transfer exists. Do not infer it from provider-branch equality or common `Lzt2` use.

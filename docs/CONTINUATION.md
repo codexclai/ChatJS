@@ -899,3 +899,8 @@ The key alias path is now established through the account credential record and 
 - `Lmhk0.d` explicitly prevents reauthentication from registering a lookup key.
 
 The exact persistence assignment from `Lozc1.lookupKeyAlias` into account `Lel8.key_pair_alias` has not yet been found. Therefore shared manager/store/wrapper/namespace is confirmed, exact equality of the alias values across all login and credential records is not. Continue with the explicit provider-result → account preference write, and then the upstream lookup challenge endpoint and LoginAuth result lifecycle. No ChatJS runtime implementation.
+## Latest handoff — LoginAuth provider alias equality check — 2026-11-26
+
+`Llli0.invokeSuspend` (classes7 method 30754) retains both the provider `Lozc1` and resolved `Lyt2` in the same LoginAuth coroutine. It reads `Lozc1.i` (`lookupKeyAlias`) and `Lyt2.a` (resolved alias) and compares the strings before continuing. Thus the provider branch does not merely resolve an arbitrary key through the shared store: the returned key wrapper is checked against the provider connection's exact alias value.
+
+The remaining gap is still the transfer from that provider alias into the separate account `Lel8.key_pair_alias` preference / `Lvg8.n` credential record. The persisted-account branch separately calls `Lsm8` → `Lcn8.D`. Keep provider alias equality and account-record alias persistence as two distinct proof obligations.

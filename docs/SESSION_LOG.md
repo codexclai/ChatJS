@@ -1589,3 +1589,9 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Important limit: exact assignment from `Lozc1.lookupKeyAlias` into the account `Lel8.key_pair_alias` preference is not traced. Do not claim string identity/reuse until explicit write is found.
 - Updated canonical Android findings, AI memory, continuation, TODO, session log and synchronized project state. Documentation-only; no app code, credentials, private keys, or network calls.
 - Prior HEAD `879bff36ccccb68b2b119ac2455330beedd696f7` CI `45830252611` and CodeQL `45830252587` passed. The documentation commit created from this unit will require its own checks.
+
+## 2026-11-26 — Android LoginAuth provider alias equality and CI formatting correction
+
+- Traced classes7 `Llli0.invokeSuspend` to the direct comparison of selected provider record `Lozc1.i` (`lookupKeyAlias`) with returned key wrapper `Lyt2.a`; the provider branch gates the subsequent continuation on exact alias equality. This establishes provider alias ↔ returned Lyt2 identity within that branch, but not account preference persistence.
+- The immediately preceding docs commit `3a03a2f29938b883784d8f217849a540c73bb792` had CodeQL `45831986523` success, but CI `45831986580` failed in `docs:check` because I again authored an extra leading space before the generated `PROJECT_STATE.md` notice. Lint passed; tests/archive were not reached. This next commit regenerates the Markdown with the exact no-leading-space format.
+- Previous verified checkpoint remains `879bff36ccccb68b2b119ac2455330beedd696f7`, CI `45830252611`, CodeQL `45830252587`.
