@@ -393,3 +393,10 @@ The Android network-response parser `Lwn00.a` reads nested JSON keys `type` and 
 ## Android Ktor WWW-Authenticate parameter retention vs DPoP provider usage — 2026-11-26
 
 `Lzuc0.c(String)` in `classes8.dex` (index 58378) parses challenge strings to `Lyuc0` objects. Parameterized `Lwuc0` extends that base and stores scheme plus `List<Lwub0>` name/value pairs and position; token68 `Lxuc0` stores the token68 value separately. `Lph8` uses `Lyuc0.a()` to select DPoP/Bearer and pairs challenge with provider. `Lsh8.a` has a challenge argument in its signature, but continuation `Lqh8` captures only request/auth inputs and the provider coroutine calls `Lxp.b` with request context. The recovered provider does not read the challenge parameter list or a nonce. This is evidence about this provider path, not proof no nonce mechanism exists anywhere in Android. `X-Nonce` remains RevenueCat-only.
+
+
+## Android DPoPProofProvider vs DEVICE_KEY challenge signer — 2026-11-26
+
+The registered Ktor DPoP provider callback is `Lkl40` wrapped by `Lsvx` and registered under `Ltvx.a`. Its coroutine creates `Lke`, which takes `Lyt2`, `Lpqc1`, and `Lb6p0`; `Lke.invokeSuspend` reads the P-256 KeyPair from `Lyt2.b`, uses `Instant.epochSecond + Lpvx.b`, request URL `Lpqc1.h`, and calls `Lyls0.s` for the main compact DPoP JWT. This uses the JWS fields `htm`, `htu`, `iat`, `jti`, `ath`, with no nonce claim in the serializer.
+
+The only direct DEX callsite of `Lyt2.b(String)` is `Lsk00.a`, a separate `DEVICE_KEY` authentication challenge flow. `Lqk00` serializes `type`, `purpose`, `data`; the challenge type must be `DEVICE_KEY`. Nested `Lpk00` serializes `challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`. `Lsk00` passes that challenge string to `Lyt2.b`, which signs its decoded 32 bytes with the same key pair and returns JWK/signature data as a separate result. This is not the main DPoP JWT and must not be conflated with a DPoP server nonce. Other native/provider nonce paths remain to be investigated; no absence claim is made.
