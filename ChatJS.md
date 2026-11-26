@@ -345,3 +345,10 @@ Correction: earlier notes that the `DPoPClockRetryAttempted` attribute had no wr
 
 
 The same Ktor response coroutine has a separate `token_expired` branch: it calls `Lcd01.d(currentAccessToken)` to persist the rejected access token, then `Lcd01.e`, whose default implementation invokes `b(true)`; the credential-backed `Lgk8` adapter delegates to `AuthRepository` `Ld7x.j` and the `Lu5x.f`/`Ld7x.l` renewal path. This is source research only; complete wire schema and retry ceiling remain open.
+
+
+## Android OAuth refresh request contract — source findings — 2026-11-26
+
+The Android auth repository routes credential renewal through `Ld7x.p` → `Ljn8` → `AuthApiImpl` `Lxb8`. The API implementation uses `https://auth.openai.com/oauth/token`. `Lxb8.h` constructs `Lpyy0` with client ID from injected `Lyjq0.a` and the refresh-token String supplied by the repository coroutine. Generated serializer `Lnyy0` maps the body to JSON properties `clientId`, `refreshToken`, `grantType`; the grant type defaults to `refresh_token` and is encoded using default-aware serializer behavior.
+
+The Ktor request builder `Lub8` serializes this body and adds optional `ChatGPT-Account-ID`, a separate `DPoP` proof header, and `oai-uit: True`. The DPoP proof callback uses the stored P-256 key and adjusted clock; its null method override resolves to `POST`, and it receives a null access-token-hash input. These are static Android client findings only. ChatJS does not yet issue this request, refresh credentials, sign DPoP proofs or authenticate. The refresh response schema, failure mapping and full token-expired replay ceiling remain open.
