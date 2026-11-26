@@ -476,3 +476,10 @@ The source proves shared DPoP key-management boundary and credential-bound alias
 ## Android LoginAuth challenge transport route correction — 2026-11-26
 
 The initial Lqk00 challenge response comes from Lb6p0.a (classes7 method 3532), whose Lcu8 descriptor has two observed implementations: Lbu8 = GET api/accounts/authorize (Lnxc0.b = GET), and Lau8 = POST api/accounts/authorize/native (Lnxc0.c = POST, retains Lozc1 provider). The separate Lb6p0.f path is api/first_party_authorize/next; Lf91.invokeSuspend sets up a later POST to this route and deserializes Lvi8 (Lvl8 + Ljl8). Livk0 is a subtype of Ljl8, but the exact serializer edge proving the specific signed proof object is the later POST body remains unproven. The earlier progress attribution of first_party_authorize/next as initial challenge fetch was incorrect and is superseded. Static DEX inspection only.
+## Android LoginAuth signed DEVICE_KEY proof submission — 2026-11-26
+
+`Lcgu.invokeSuspend` (classes6 method 5130) casts successful `Lavb1.b` to `Livk0` at PC `0x00c5`–`0x00c7`, then passes that same value as `Ljl8` to `a.j` (classes7 method 7181) at PC `0x0112` with step `Lvl8.c`. `Lvl8.c` wire value is `lookup_key_authentication`. `a.j` constructs `Lk6p0`, whose coroutine calls `Lu0c.m` for `api/first_party_authorize/next`.
+
+`Lf91.invokeSuspend` (classes5 method 13156) constructs `Lvi8(step,payload)`, stores it in `Lfyc0.d` outgoing request body, installs `Lti8` content serializer, sets POST and sends. `Lti8` serializer descriptor and serialization method (classes7 49861/49865) define JSON envelope `{origin_page_type,data}`; `data` uses polymorphic `Ljl8` serializer. In this branch the exact data object is the signer-produced `Livk0`. Thus signed DEVICE_KEY proof submission is now proven for this LoginAuth path.
+
+Correction: `Lvi8` is the outgoing POST body, not response. The `Lu0c.m`/`Lk6p0` response uses `Lyl8`, which exposes `b():Lql8`, `c():Lvl8`, and `a():List`; full serialized response schema remains open. Static DEX/serializer evidence only.

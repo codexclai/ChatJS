@@ -1611,3 +1611,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - CI completed `npm run check`: generated project-state page synchronized; all 28 Markdown files passed local-link validation; all 134 tests passed with zero failures; module archive built with 18 package files; installed CommonJS and ESM smoke tests both passed.
 - Downloaded CI artifact ZIP ID `15131486758` (SHA-256 `d6432e2f14158a85cc6904f5bce18e292e970bdeb28a183ee1b53a8e21c7cff6`). Inspected its `ChatJS.tar.gz`: 33,902 bytes, SHA-256 `8449655fbecd318d38e1bd19eb5852ca639526146bbce1e854df0f7d235f3e8e`; gzip and tar integrity passed; archive contains 18 files (19 entries including root directory).
 - The source update is documentation/state only. No Android method was run; no credentials/private keys/keystore/network were used; no production runtime behavior or tests were changed. Exact `Livk0` → `Lf91` serialized request-body edge, provider alias → account credential persistence, full API request body/header/auth details and native secure signer/provider remain open.
+
+## 2026-11-26 — Android LoginAuth exact signed-proof POST body and Lvi8 response-direction correction
+
+- Used corrected DEX disassembly of `Lcgu.invokeSuspend` (classes6 method 5130), repository `a.j` (classes7 7181), `Lk6p0.invokeSuspend` (classes7 27089), `Lf91.invokeSuspend` (classes5 13156), `Lu0c.m` (classes8 49100), and serializer `Lti8` (classes7 49861/49865).
+- Proved register-level object handoff: `Lcgu` reads `Lavb1.b`, casts it to `Livk0` at 0x00c5–0x00c7, then passes that same register as the `Ljl8` payload argument to `a.j` at 0x0112 with `Lvl8.c`.
+- Confirmed `Lvl8.c` wire value `lookup_key_authentication`; `a.j` builds `Lk6p0`, whose coroutine calls `Lu0c.m` for `api/first_party_authorize/next` and invokes the `Lf91` request coroutine.
+- Confirmed exact outgoing request: `Lf91` constructs `Lvi8(Lvl8,Ljl8)`, writes it into `Lfyc0.d` request body, installs content-negotiation serializer, sets POST and sends. `Lti8` descriptor and serializer prove fields `origin_page_type` and `data`; the payload's polymorphic `Ljl8` value in this path is the same `Livk0` signer result.
+- Corrected earlier claim: `Lvi8` is request body, not response. Success response is `Lyl8` with accessors `b():Lql8`, `c():Lvl8`, `a():List`, consumed by `Lk6p0`; complete serialized response model still open.
+- Updated Android protocol findings, AI memory, continuation, TODO, session log and state. Static analysis only; no Android code, credentials, keys, keystore or network request executed. No runtime/test code changed.
+- Baseline commit `95d24edee888f4ffc2c86cc84dd0b70b64e6b8bb` CI `45846135669` and CodeQL `45846135710` passed.

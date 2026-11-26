@@ -913,3 +913,14 @@ The endpoint attribution is now corrected and split into two source-backed reque
 - Livk0 is one concrete subclass of Ljl8 and is the lookup challenge signature object. However, the exact branch and serializer invocation proving that the particular Livk0 returned by Lsk00 is the body sent to this POST are not fully reconstructed yet. Do not state that submission is proven until that edge is traced.
 
 Correction: the earlier interim note that described api/first_party_authorize/next as the initial challenge-fetch endpoint is superseded. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md for method indices, variants and evidence boundaries.
+## Latest handoff — LoginAuth DEVICE_KEY proof is submitted in the first-party next POST — 2026-11-26
+
+The signed lookup proof submission edge is now proven and corrects the preceding handoff:
+
+- `Lcgu.invokeSuspend` (classes6 method 5130) reads the successful `Lavb1.b` value and casts it to `Livk0` at PC `0x00c5`–`0x00c7`. At PC `0x0112`, the same register/value is passed as `Ljl8` to repository `a.j` (classes7 method 7181), alongside step `Lvl8.c`.
+- `Lvl8.c` is exactly `lookup_key_authentication` on the wire (classes7 `Lvl8.<clinit>`, method 54754). `a.j` creates `Lk6p0`; its coroutine calls `Lu0c.m` with `api/first_party_authorize/next`.
+- `Lf91.invokeSuspend` (classes5 method 13156) constructs `Lvi8(step,payload)`, writes it to `Lfyc0.d` (outgoing request body), installs its content-negotiation serializer, sets POST, and sends.
+- `Lti8.<clinit>`/`.serialize` (classes7 methods 49861/49865) prove the exact JSON envelope keys: `origin_page_type` and `data`. The first is serialized from `Lvl8`; `data` uses the polymorphic `Ljl8` serializer. In this traced branch, that payload is the exact `Livk0` returned by the signer.
+- Important direction correction: `Lvi8` is the **request** DTO/body, not a response. `Lu0c.m` and `Lk6p0` consume a `Lyl8` response (`b():Lql8`, `c():Lvl8`, `a():List`). Full `Lyl8` JSON names and `Lql8` details remain open.
+
+Thus the lookup path is now source-traced from initial `Lqk00` challenge fetch → DEVICE_KEY selection → `Lsk00` signing → exact `Livk0` handoff → POST body `{origin_page_type: lookup_key_authentication, data: Livk0}` to `/api/first_party_authorize/next`. Static evidence only; no application, credentials, keys or network operation executed.

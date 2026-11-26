@@ -823,3 +823,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Trace the concrete Livk0 value from Lsk00 caller through the branch that builds the Lf91 step request and establish whether/how the object is serialized into the POST body.
 - [ ] Complete exact request body/header, Ktor auth-plugin and error/cancellation contracts for the initial account-authorize GET/native POST and later first-party next POST.
 - [ ] Trace the exact Lozc1.lookupKeyAlias provider result to account Lel8.key_pair_alias persistence, and complete native signer/provider ownership.
+
+## Android LoginAuth signed DEVICE_KEY proof submission and response-direction correction — 2026-11-26
+
+- [x] Trace the exact signer success value in `Lcgu.invokeSuspend`: read `Lavb1.b`, cast to `Livk0`, and pass that same register/value to onboarding repository `a.j` as `Ljl8` with the lookup-key-authentication step.
+- [x] Trace the repository/callback/network chain `a.j` → `Lk6p0` → `Lu0c.m` → `Lf91` for `api/first_party_authorize/next`.
+- [x] Decode outgoing `Lvi8` body serialization: `Lf91` stores it in `Lfyc0.d`, installs `Lti8`, sets POST; `Lti8` emits `origin_page_type` and polymorphic `data`. The traced step value is `lookup_key_authentication`; `data` is the exact `Livk0` from the signer.
+- [x] Correct DTO direction: `Lvi8` is request body; response is typed `Lyl8`, consumed through `b():Lql8`, `c():Lvl8`, `a():List`.
+- [ ] Decode full `Lyl8` response serializer/property names and `Lql8` item schema, including empty/success/failure result branches.
+- [ ] Complete request headers, auth-plugin/first-party integrity, transport cancellation and error normalization for account-authorize and next-step calls.
+- [ ] Trace provider lookup alias to account `Lel8.key_pair_alias` persistence and native auth-provider injection.

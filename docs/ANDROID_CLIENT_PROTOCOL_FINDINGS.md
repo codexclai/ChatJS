@@ -2122,3 +2122,47 @@ The signer helper remains source-mapped independently: Lsk00.a(Lqk00, Lyt2) acce
 ### Evidence boundary
 
 This is static inspection of the supplied Android 1.2026.321 DEX only. No Android method was run; no account, access token, refresh token, private key, keystore or network request was used. No ChatJS runtime implementation was added. The initial challenge route/method variants and the separate follow-up POST route are now mapped; exact proof-submission payload, provider-to-account alias persistence and the native secure-provider boundary remain open.
+## Android LoginAuth signed lookup-key proof submission into the first-party next request — 2026-11-26
+
+### Exact signed-object handoff from signer to next-step repository
+
+The previous section left the exact `Livk0` → follow-up request-body edge open. A register-level trace through `Lcgu.invokeSuspend` now resolves it:
+
+- `Lsk00.a(Lqk00, Lyt2)` produces the signed lookup proof as a successful `Lavb1` result whose value is the concrete `Livk0` DTO.
+- `Lcgu.invokeSuspend` (classes6.dex method index 5130) reads `Lavb1.b` and immediately casts that exact value to `Livk0` (PC `0x00c5`–`0x00c7`).
+- In the same coroutine, after obtaining the onboarding next-step repository, it invokes `com.openai.feature.onboarding.impl.next.repository.a.j` (classes7.dex method index 7181) with the current `Lvl8` page/step and the same register holding that `Livk0`, passed through the declared base type `Ljl8` (callsite PC `0x0112`). This is the concrete proof object, not a newly created placeholder or merely another object of the same type.
+- Repository method `a.j` constructs `Lk6p0` with the step, request context and `Ljl8` payload. `Lk6p0.invokeSuspend` (classes7 method index 27089) constructs the step callback/request state and calls `Lu0c.m` with the literal route `api/first_party_authorize/next`.
+- The enum value used by this path is `Lvl8.c`; `Lvl8.<clinit>` (classes7 method 54754) sets its wire value to `lookup_key_authentication` and display name to `LookupKeyAuthentication`.
+
+Together these instructions prove the same signed `Livk0` instance flows from the signer success result into the next-step repository's `Ljl8` payload for the lookup-key authentication step.
+
+### Outgoing POST body and JSON schema
+
+The request-construction coroutine `Lf91.invokeSuspend` (classes5.dex method index 13156) is invoked by the step callback. It reads the stored `/api/first_party_authorize/next` path and Ktor client, creates a fresh `Lfyc0` request builder, sets method `Lnxc0.c` (`POST`), and creates `Lvi8(Lvl8, Ljl8)` using the step and payload held in its coroutine state.
+
+At PC `0x0294` the `Lvi8` instance is stored in `Lfyc0.d`, the request builder's body field. The coroutine obtains the serializer for `Lvi8` through the configured content-negotiation serializers and installs it with `Lf8z0.z`; the request is then sent with the POST method through `Lg0d0.c`.
+
+Generated serializer `Lti8` confirms the exact two JSON envelope property names. `Lti8.<clinit>` (classes7 method 49861) registers `origin_page_type` and `data`; `Lti8.serialize` (method 49865) writes `Lvi8.a` using the `Lvl8` enum serializer and writes `Lvi8.b` using the polymorphic `Ljl8` serializer. For this branch, the payload supplied to `Lvi8.b` is the exact `Livk0` from `Lcgu`.
+
+Therefore the confirmed lookup-key-authentication request body is structurally `{ "origin_page_type": "lookup_key_authentication", "data": <polymorphic Livk0 proof> }`, sent as a POST to `api/first_party_authorize/next`. The `Livk0` proof contains the public EC/P-256 JWK, original typed `DEVICE_KEY` challenge and generated `deviceSignature` as previously documented.
+
+### Corrected direction of `Lvi8` and response model
+
+Correction to the prior handoff: `Lvi8` is **the outgoing request body**, not the response DTO. `Lf91` writes it to the request builder body before sending.
+
+The response is handled in `Lu0c.m` (classes8 method 49100) and then by `Lk6p0.invokeSuspend`. The successful API-result body is cast to `Lyl8`; `Lk6p0` consumes its accessors `Lyl8.b():Lql8`, `Lyl8.c():Lvl8` and `Lyl8.a():List`. `Lyl8` is therefore the typed response abstraction. The complete serialized JSON member names and full `Lql8` item schema are not yet decoded, so this finding does not claim a complete response wire schema.
+
+### End-to-end lookup challenge path now established
+
+1. Initial account-authorization request: `Lb6p0.a` returns typed `Lqk00` from GET `api/accounts/authorize` or POST `api/accounts/authorize/native` depending on the `Lcu8` variant.
+2. Challenge selection: `Lqk00.a()` accepts the usable `DEVICE_KEY` challenge.
+3. Signing: `Lsk00.a` calls `Lyt2.b(challenge)` and returns `Livk0` containing the JWK, echoed challenge and 64-byte ES256 signature.
+4. Step selection: `Lcgu` carries that exact successful `Livk0` into repository `a.j` as the `Ljl8` payload with `Lvl8.lookup_key_authentication`.
+5. Submission: `Lk6p0` calls `Lu0c.m` for `api/first_party_authorize/next`; `Lf91` serializes the `Lvi8` body envelope `{origin_page_type,data}` with `data` equal to the signed `Livk0`, and sends POST.
+6. Response: `Lu0c.m`/`Lk6p0` handle typed `Lyl8` response state; its complete JSON schema and all error/cancellation mappings remain open.
+
+This closes the previously unresolved signed-proof-submission edge for the traced LoginAuth DEVICE_KEY path in the supplied Android 1.2026.321 build.
+
+### Evidence boundary
+
+All details come from static inspection of the supplied DEX files and generated serializer code. No Android method was run; no account, token, private key, keystore or network request was used. No ChatJS runtime code or tests were changed. The lookup challenge fetch → signing → exact `Livk0` request payload → first-party POST path is now source-mapped, but the full response schema, request headers/auth/integrity configuration, native provider injection and provider-alias-to-account preference write remain open.
