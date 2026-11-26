@@ -692,3 +692,20 @@ The earlier note left the exact `Lxb8.j` 30/300-second and error branches unreso
 ### Remaining boundary
 
 The `ApiServiceError` wire mapping is now resolved: parser `Lwn00.a` reads nested JSON `type` and `code`, passes them as the second and third String constructor arguments, and the constructor assigns them to fields `.b` and `.c` respectively (`b=type`, `c=code`). Other OAuth retry branches, DPoP `WWW-Authenticate`/`X-Nonce` lifecycle, `Lpvx` dependency lifetime/reset, native auth provider injection and a portable secure non-exportable host signer remain open. The Android package has been inspected statically only. No ChatJS runtime implementation was added; no auth, token, key or network operation was used.
+
+
+## Latest handoff — Android Ktor DPoP provider negotiation and X-Nonce attribution correction — 2026-11-26
+
+### Verified flow
+
+`Lsh8.<clinit>` (classes2.dex method 49795) registers Ktor `io.ktor.client.plugins.auth.Auth` and an `Lxp` `AccessTokenDPoPPlugin` provider. `Lph8.invokeSuspend` (method 43384, code offset 2355612) reads the response `WWW-Authenticate` header using `Lxb81.d`, parses the challenges, obtains each scheme and selects the provider matching literal `DPoP` or `Bearer`. An absent/empty header fails this token add/refresh path. Separately, `Lrvx.<init>` registers `DPoPProofPlugin`; `Ltvx` exposes a `DPoPProofProvider`; `Lqvx.invokeSuspend` dispatches through the DPoP provider when the feature/configuration gate allows it. `Lvp.invokeSuspend` selects `Authorization: DPoP` vs `Bearer` from token signing capability and obtains the outgoing DPoP proof via `Lfq.a`.
+
+This proves scheme negotiation and the outgoing proof plugin as distinct layers. The parsed challenge is paired with the selected provider, but the recovered methods do not show a DPoP nonce parameter being extracted, stored or added to the main JWS payload. The main `Lyls0.s` JWS payload decoded earlier has `htm`, `htu`, `iat`, `jti`, `ath` only.
+
+### Attribution correction
+
+The previous note attributing literal `X-Nonce` to the ChatGPT DPoP challenge is incorrect. The sole exact `X-Nonce` string reference found is `Ljz40.b` (classes.dex method 27830, code offset 4029292), a separate RevenueCat request-header builder whose same map includes `Accept-RC-Element-Encoding` and `application/x-rc-format` plus `X-Platform`, `X-Client-*`, and RevenueCat-specific headers. Do not carry this into the ChatGPT protocol model. Other `nonce` strings in the package include OIDC authorization nonce and the distinct DPoP lookup-key nonce. The actual DPoP server-nonce transport/consumption remains open; do not infer that the product never uses one.
+
+### Next work and limits
+
+Continue tracing the parsed `WWW-Authenticate` challenge object into the DPoP provider, all callsites of `DPoPProofProvider`, and any response-header/body access used in proof creation. Keep the Date-header clock-correction retry separate from ordinary unauthorized challenge/retry flows. Native provider injection, portable secure signer, other OAuth retry branches and authorized end-to-end tests remain unimplemented. Static source inspection only; no production runtime change or network/auth operation.
