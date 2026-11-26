@@ -295,3 +295,8 @@ The method `Lxb8.j(Likq0, Lu0p0, Ljb8)` requires the `Lpyy0` refresh request mod
 ## Android DPoP challenge evidence correction — 2026-11-26
 
 The Ktor auth handler reads `WWW-Authenticate`, parses the challenge scheme and chooses the matching `DPoP` or `Bearer` provider; `Lxp` is registered with Ktor Auth. `Lrvx` separately registers `DPoPProofPlugin`, `Ltvx` exposes `DPoPProofProvider`, and the access-token provider calls the outgoing proof builder. The earlier attribution of `X-Nonce` to this flow is superseded: the exact header literal occurs in `Ljz40.b`, a RevenueCat networking header map, not the ChatGPT auth path. The already-traced main JWS serializer includes `htm`/`htu`/`iat`/`jti`/`ath` and no nonce claim. How any server DPoP nonce is conveyed through the opaque parsed challenge/provider path remains unresolved; do not equate it with the OIDC or lookup-key nonce.
+
+
+## Android Ktor parameterized challenge parsing — 2026-11-26
+
+`Lzuc0.c(String)` in `classes8.dex` returns the generic Ktor `Lyuc0` challenge hierarchy. Parameterized `Lwuc0` retains the scheme, `List<Lwub0>` name/value pairs and parser position; token68 `Lxuc0` carries its opaque token68 value. `Lph8` uses the challenge scheme to choose DPoP or Bearer and builds provider/challenge pairs. `Lsh8.a` accepts a challenge object in its descriptor, but its coroutine continuation `Lqh8` does not capture that object and calls `Lxp.b` using request/auth context. No parameter-list read or nonce proof binding appears in that recovered path. Server-nonce behavior in other provider/native flows remains open. The sole `X-Nonce` header literal is RevenueCat-only, not ChatGPT DPoP evidence.
