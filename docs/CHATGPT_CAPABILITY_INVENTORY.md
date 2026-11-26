@@ -325,3 +325,8 @@ The `DPoPClockRetryAttempted` Ktor request attribute is declared in `Lyp`, but i
 The marker write is confirmed by corrected DEX decoding (`Lq18.f` -> `Map.put`). Earlier notes that no writer existed were invalid because the previous disassembler skipped width-2 arithmetic opcodes `0x90–0xaf` and lost later instruction boundaries.
 
 The `token_expired` branch separately calls the injected `Lcd01.d(currentToken)` then `Lcd01.e()`. The default `e` calls `b(true)`; credential-backed adapter `Lgk8` delegates this to `Ld7x.j` and its `Lu5x.f` → `Ld7x.l` renewal path, while `Lisp0` is a no-credentials implementation. Complete renewal wire mapping and token-expired replay limit remain unverified.
+
+
+Correction to the earlier retry-marker note: the Ktor response coroutine `Lwp` writes `DPoPClockRetryAttempted` in its `dpop_iat_out_of_range` path. It computes response `Date - local Instant`, updates `Lpvx.b`, writes the `Lyp.b` key with `kotlin.Unit`, copies request attributes into a cloned request context and invokes `Ldk31.a`. `Lwp` and `Lxp.b` check marker presence, bounding the clock-correction replay and preventing access-token provider reacquisition. The prior no-writer scan was invalid due to missing DEX arithmetic-opcode widths in the temporary decoder.
+
+The same response handler's `token_expired` branch calls `Lcd01.d` to persist the rejected access token and then `Lcd01.e` (default calls `b(true)`); credential-backed `Lgk8` routes that to `Ld7x.j` → `Lu5x.f`/`Ld7x.l` renewal. Full request/response schema and retry ceiling remain open.
