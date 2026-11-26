@@ -326,3 +326,10 @@ The Android refresh timestamp/error classifier requires the OAuth refresh reques
 The main Ktor DPoP proof callback is now traced to a registered `DPoPProofProvider`: `Lkl40` is wrapped by `Lsvx` under `Ltvx.a`, invokes `Lke`, and `Lke` reads the P-256 KeyPair from `Lyt2`, applies `Lpvx.b` to the local epoch-second clock, and calls `Lyls0.s` with the request URL/token inputs. Its main DPoP JWT contains `htm`, `htu`, `iat`, `jti`, `ath`, with no nonce claim in the traced serializer.
 
 The `Lyt2.b(String)` helper is a separate workflow: its only direct caller in the ten DEX files is `Lsk00.a`, which handles a `DEVICE_KEY` challenge described by `Lqk00` (`type`, `purpose`, `data`) and nested `Lpk00` (`challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`). It signs the challenge string with the same P-256 key pair and returns public JWK/signature material separately. This is not the main DPoP JWT or evidence that its request proof carries the challenge as a nonce. Other nonce paths remain under investigation; no overall absence claim is made.
+
+
+## Android DPoP signer outcomes and retry boundary — source findings — 2026-11-26
+
+The Android proof provider invokes the DPoP signer once per `Lgmq0` result-coroutine invocation. `Lfq.a` consumes a success or signer failure: success forms the `DPoP` authorization value; failure maps the underlying platform signing exception and returns a credentials-acquisition failure. The recovered path does not contain a repeated signer call or retry loop.
+
+Android declares a request attribute named `DPoPClockRetryAttempted`; the only app-package reference found is a read/short-circuit guard in `Lxp.b`. No writer or setting callsite was found in the ten supplied DEX files, so its upstream producer and retry policy remain unknown. This is separate from the fully traced one-time OAuth refresh Date-header correction. `RequestDPoPMetadata` and `OpenAI-Device-Key` observations are diagnostics/Sentry header filtering, not protocol behavior, and are not reproduced by ChatJS.
