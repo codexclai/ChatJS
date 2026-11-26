@@ -224,7 +224,7 @@ The generated request descriptors and catalog/requirements response decoders now
 ## Android lookup-key signature path — 2026-11-25
 
 - The concrete `Lyt2.b(String)` caller decodes a URL-safe nonce and signs it with `Ljj51.m` while retrieving a public-key JWK. What is the complete return schema and all upstream/downstream consumers of this lookup-key proof?
-- Is the lookup-key nonce proof reused by, or entirely separate from, the main DPoP JWT request-signing flow? The Ktor parser retains parameterized `WWW-Authenticate` challenge values, but the recovered scheme-selection/DPoP callback does not consume the `Lwuc0` parameter list. The registered Ktor `DPoPProofProvider` is now traced through `Lkl40`/`Lke` to the main `Lyls0.s` JWS builder, which uses the stored P-256 KeyPair and server-clock offset and has no nonce claim. `Lyt2.b(String)` is instead only called by `Lsk00` for the separate `DEVICE_KEY` challenge (`Lqk00`/`Lpk00`) and returns a JWK/signature response. No server nonce is shown in these two paths; `X-Nonce` belongs to RevenueCat. Trace other native/provider/response paths before making an absence claim.
+- Is the lookup-key nonce proof reused by, or entirely separate from, the main DPoP JWT request-signing flow? The Ktor parser retains parameterized `WWW-Authenticate` challenge values, but the recovered scheme-selection/DPoP callback does not consume the `Lwuc0` parameter list. The registered Ktor `DPoPProofProvider` is now traced through `Lkl40`/`Lke` to the main `Lyls0.s` JWS builder, which uses the stored P-256 KeyPair and server-clock offset and has no nonce claim. `Lyt2.b(String)` is instead only called by `Lsk00` for the separate `DEVICE_KEY` challenge (`Lqk00`/`Lpk00`) and returns a JWK/signature response. No server nonce is shown in these two paths; `X-Nonce` belongs to RevenueCat. Trace other native/provider/response paths before making an absence claim. The registered signer result path `Lgmq0` calls `Ln1d1.b` once per invocation; `Lfq.a` maps success to the DPoP Authorization value and maps failure to a credentials-acquisition failure, with no internal signer loop. `Lyp.b` is named `DPoPClockRetryAttempted`; the only app-DEX read is a guard in `Lxp.b`, and no setter/writer or retry caller was found. The key's producer/upstream semantics remain unknown.
 - Where are the Android native key/provider closures injected, and what host-owned capabilities and lifecycle constraints govern their calls?
 
 The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r || s`; it does not answer these questions or implement the proof flow.
@@ -236,6 +236,12 @@ The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r ||
 
 **Still open:** trace all consumers of this lookup-key proof and determine whether it is reused by or separate from the main DPoP JWT request/challenge flow. Exact native provider injection and host secure-key ownership also remain unknown. The new ChatJS JWK formatter only serializes coordinate bytes.
 
+
+## Android DPoPClockRetryAttempted producer and signer retry semantics — 2026-11-26
+
+**Resolved:** each recovered Ktor DPoP provider call executes one `Ln1d1.b` signing operation; `Lgmq0` packages success/failure, and `Lfq.a` returns a DPoP Authorization value on success or raises a credentials-acquisition failure after platform exception mapping. It does not loop/retry the signer within one invocation. The `DPoPClockRetryAttempted` attribute is declared in `Lyp` and read by `Lxp.b` to short-circuit provider acquisition when present.
+
+**Still open:** no writer/setter of `Lyp.b` and no higher-level retry caller were found in the ten supplied app DEX files. Identify any external/native caller that supplies this attribute and its exact retry contract. The attribute name alone is not proof of a DPoP clock-retry implementation. Keep it separate from the proven `Lxb8.e` one-time OAuth refresh Date correction.
 
 ## Android DPoP iat clock source — 2026-11-25
 
