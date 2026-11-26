@@ -2046,3 +2046,36 @@ The `DEVICE_KEY` lookup challenge type in `Lqk00` belongs to the LoginAuth/Looku
 ### Evidence boundary
 
 All methods and serializers above were inspected statically in the supplied Android 1.2026.321 APK; no Android function was executed and no credentials, key material or network request was used. No ChatJS runtime implementation was added. The concrete challenge/response DTO and signature operation are now resolved; the exact alias continuity into later credential-bound OAuth DPoP, challenge endpoint/transport owner, and the native secure provider remain open.
+## Android DPoP key alias persistence and LoginAuth coordinator handoff — 2026-11-26
+
+### Stored credential alias to request signing key
+
+The account-bound credential path is now traced across its preference record, typed model, token record and key repository:
+
+- `Ldn8.f` (classes.dex method 11692) reads the stored `key_pair_alias` property from the account credential preference record `Lel8` and creates the DPoP config model `Lz481`.
+- `Lz481.r` is the String field carrying that alias. `Lz481.d()` (method 63488) converts the config model to the internal access-token credential record `Lvg8`, preserving the alias in `Lvg8.n`.
+- `Lcn8.D(alias)` (method 9022) is the request-side key resolver. It calls `Lzt2.c(alias)` to load the stored `Lyt2` wrapper/KeyPair. Missing alias and missing AndroidKeyStore entry are typed `SigningKeyUnavailable` failures (`No stored signing key alias` / `Stored signing key is missing`); the OAuth signing request path does not silently generate a replacement key.
+- OAuth refresh consumes that record through `Ltb8` (classes7 method 49258) for the private KeyPair and `Lxb8.k` (classes.dex method 59399) for the alias used in proof/request metadata. The stored alias is therefore part of the credential-bound refresh-signing state.
+
+`Lcn8.k(Lz481)` (method 9038) additionally requires auth scheme `DPoP` and that the stored alias starts with `openai.login.dpop.`. `Lcn8.h(Set)` (method 9035) deletes only unused aliases with that prefix through `Lzt2.a(alias)`. `Ldn8.j` (method 11696) clears the `key_pair_alias` preference entry when clearing the associated credential preferences. These establish explicit scheme/prefix validation and cleanup; they are not proof of automatic key rotation.
+
+### LoginAuth coordinator chooses between a credential alias and a lookup-provider alias
+
+`Lmhk0` is the LoginAuth coordinator. Its constructor holds both `Lqhk0` (LoginAuthSigningKeyManager) and `Lcn8` (account DPoP/credential manager). `Lmhk0.a(Lihk0)` (classes3 method 32959) selects between two asynchronous key-source branches, both producing the same `Lyt2` value type:
+
+1. When the existing-account credential key is present, it creates `Lsm8(Lcn8, ...)`. `Lsm8.invokeSuspend` (classes3 method 44715) reads the account's stored `key_pair_alias`, `pending_credential_deletion`, `auth_session_logging_id` and `user_id` via `Lel8`/`Ldn8.k`, then calls `Lcn8.D(alias)` to reload the persisted KeyPair. Missing credential data/alias returns the `NoCredentialsAvailable` path.
+2. When the lookup-provider path is present, it creates `Lohk0(Lqhk0, ...)`. `Lohk0.invokeSuspend` (classes3 method 36731) calls `Lqhk0.b(alias, continuation)`. `Lqhk0.b` reads provider connection model `Lozc1.i` (`lookupKeyAlias`), attempts `Lzt2.c(alias)` to load an existing `Lyt2`, and can fall back to `Lqhk0.a()` to create a new alias and key through `Lzt2.b(alias)`.
+
+`Lozc1`'s generated serializer `Lmzc1` (classes.dex method 34793) declares nine fields; `.i` is the `lookupKeyAlias` string. `Lqhk0.a()` creates aliases using `openai.login.dpop.` plus a generated identifier; its key operations and the credential manager both use the injected `Lzt2` store and the `Lyt2` alias/KeyPair wrapper.
+
+`Lmhk0.d` (method 32962) contains the explicit message `Reauthentication cannot register a lookup key`, so reauthentication should not be treated as the new-lookup provider branch.
+
+### What this proves—and does not prove
+
+The credential path is now proven as `Lel8.key_pair_alias` → `Lz481.r` → `Lvg8.n` → `Lcn8.D(alias)` → `Lzt2.c(alias)` → `Lyt2`/KeyPair. The LoginAuth coordinator's two alternative providers are likewise source-mapped: persisted account credentials through `Lsm8`/`Lcn8.D`, or provider `Lozc1.lookupKeyAlias` through `Lohk0`/`Lqhk0.b`. Both use the same key-store interface, wrapper type and `openai.login.dpop.` alias namespace.
+
+However, the exact assignment that writes a newly returned `Lozc1.lookupKeyAlias` string into the account `Lel8.key_pair_alias` preference has not been proved. The source demonstrates a shared key-management boundary and compatible alias namespace—not that every provider lookup alias is byte-for-byte the same alias later persisted on every account or reused across all requests. Keep this equality claim open until the explicit persistence/copy callsite is found.
+
+### Evidence boundary
+
+Static analysis only against Android 1.2026.321; no Android method was executed and no credential, key, keystore or network operation occurred. No ChatJS runtime code was changed. This establishes the account-bound key reload path and the LoginAuth branch selection but does not define a portable Node.js signer or permit private-key export.

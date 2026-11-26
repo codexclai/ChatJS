@@ -1580,3 +1580,12 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Compared OAuth refresh DPoP: classes7 `Ltb8.invokeSuspend` passes the Lyt2 KeyPair/URL/iat to `Lyls0.s`, while `Lxb8.k` reads Lyt2 alias. The signed `Livk0` lookup proof is a distinct JSON artifact, not the OAuth DPoP JWT; same key-wrapper/KeyPair abstraction, exact alias/instance continuity into all later OAuth refresh requests remains open.
 - Explicitly separated LoginAuth `DEVICE_KEY` from Codex remote-control device key enrollment/handshake strings. No Android code executed, no credentials/keys/network requests. No runtime or test files changed.
 - Last verified source-doc commit before this unit: `d05eb15affff34fbc6c964814c9033a88f517057`, CI `45828960463` and CodeQL `45828960441` both passed. New commit needs its own checks.
+
+## 2026-11-26 — Android DPoP key alias persistence and LoginAuth coordinator
+
+- Traced account credential storage: `Ldn8.f` reads `Lel8.key_pair_alias` into `Lz481.r`; `Lz481.d()` converts it to the `Lvg8.n` access-token-record alias; `Lcn8.D(alias)` calls `Lzt2.c(alias)` to reload `Lyt2`/KeyPair.
+- Confirmed request-time resolver fails closed when alias or AndroidKeyStore record is absent (`SigningKeyUnavailable`), rather than generating a replacement. `Lcn8.k` checks DPoP scheme/prefix; `Lcn8.h` deletes unused aliases with the DPoP prefix; `Ldn8.j` clears stored alias during credential cleanup.
+- Traced LoginAuth coordinator `Lmhk0.a`: stored account branch `Lsm8` calls `Lcn8.D`; lookup-provider branch `Lohk0` calls `Lqhk0.b`, which reads `Lozc1.i` (`lookupKeyAlias`), tries `Lzt2.c` then can create via `Lqhk0.a` / `Lzt2.b`. Both return the same `Lyt2` wrapper via shared key store/alias namespace. `Lmhk0.d` prevents reauthentication from registering a lookup key.
+- Important limit: exact assignment from `Lozc1.lookupKeyAlias` into the account `Lel8.key_pair_alias` preference is not traced. Do not claim string identity/reuse until explicit write is found.
+- Updated canonical Android findings, AI memory, continuation, TODO, session log and synchronized project state. Documentation-only; no app code, credentials, private keys, or network calls.
+- Prior HEAD `879bff36ccccb68b2b119ac2455330beedd696f7` CI `45830252611` and CodeQL `45830252587` passed. The documentation commit created from this unit will require its own checks.

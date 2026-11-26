@@ -888,3 +888,14 @@ The lookup-key signing path is now method-traced through its challenge and proof
 - Keep LoginAuth `DEVICE_KEY` challenge separate from Codex remote-control device-key challenge/proof and similarly named analytics labels.
 
 Full method/source details are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Next: resolve alias persistence/handoff into the credential-bound `Lvg8` and ordinary OAuth DPoP refresh path; then continue native signing-provider injection, main DPoP signer protocol and any separate challenge endpoint/transport. No ChatJS runtime behavior has been claimed.
+## Latest handoff — Android DPoP alias persistence and LoginAuth key-source coordinator — 2026-11-26
+
+The key alias path is now established through the account credential record and the LoginAuth coordinator:
+
+- `Ldn8.f` reads account preference `key_pair_alias` into `Lz481.r`; `Lz481.d()` transfers it into credential token record `Lvg8.n`.
+- `Lcn8.D(alias)` reloads `Lyt2`/KeyPair with `Lzt2.c(alias)`. Missing alias or missing AndroidKeyStore entry returns `SigningKeyUnavailable`; it does not silently generate a new key in the OAuth signing path.
+- `Lcn8.k` checks DPoP scheme and `openai.login.dpop.` prefix; `Lcn8.h` cleans unused aliases under that prefix, and `Ldn8.j` clears the preference alias during credential cleanup.
+- `Lmhk0.a` chooses between stored-account key `Lsm8` → `Lcn8.D(alias)`, and lookup-provider key `Lohk0` → `Lqhk0.b(alias)`. The latter reads `Lozc1.i` (`lookupKeyAlias`), tries `Lzt2.c`, and can generate using `Lqhk0.a()` / `Lzt2.b`. Both return the same `Lyt2` wrapper and use the same key-store interface and alias namespace.
+- `Lmhk0.d` explicitly prevents reauthentication from registering a lookup key.
+
+The exact persistence assignment from `Lozc1.lookupKeyAlias` into account `Lel8.key_pair_alias` has not yet been found. Therefore shared manager/store/wrapper/namespace is confirmed, exact equality of the alias values across all login and credential records is not. Continue with the explicit provider-result → account preference write, and then the upstream lookup challenge endpoint and LoginAuth result lifecycle. No ChatJS runtime implementation.

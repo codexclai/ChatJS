@@ -799,3 +799,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Trace whether the exact generated `openai.login.dpop.*` alias and KeyPair are persisted/reloaded through the credential-bound `Lvg8` record and reused by each later OAuth DPoP refresh; same wrapper contract is established, exact instance/alias continuity is not.
 - [ ] Identify the upstream challenge endpoint/transport owner and full `Lge70`/`Lrk00` caller conditions/results; maintain the distinction from OAuth refresh and Codex remote-control device-key proof.
 - [ ] Trace the native/CompilerIntrinsics authentication provider and secure signing-key lifecycle; keep non-exportable storage and fail-closed host capability requirements.
+
+## Android DPoP alias persistence and LoginAuth key-source handoff — 2026-11-26
+
+- [x] Trace account preference key_pair_alias through `Ldn8.f` → `Lz481.r` → `Lz481.d()` → `Lvg8.n`.
+- [x] Trace OAuth signing key resolver `Lcn8.D(alias)` to `Lzt2.c(alias)` and its fail-closed missing-alias/missing-KeyStore-entry behavior.
+- [x] Trace DPoP scheme/prefix validation and unused-key cleanup (`Lcn8.k`, `Lcn8.h`, `Ldn8.j`).
+- [x] Trace LoginAuth coordinator branch selection: existing credential `Lsm8` → `Lcn8.D`, or provider lookup `Lohk0` → `Lqhk0.b` reading `Lozc1.i` (`lookupKeyAlias`); both return `Lyt2` through shared `Lzt2` store/alias namespace.
+- [x] Record reauthentication guard: `Lmhk0.d` explicitly says reauthentication cannot register a lookup key.
+- [ ] Find the exact provider result / `Lozc1.lookupKeyAlias` → account `Lel8.key_pair_alias` persistence assignment. Until found, shared wrapper/store/namespace is established but exact alias string equality across the two flows is not.
+- [ ] Trace lookup-key challenge network endpoint, transport, caller result lifecycle and authentication registration/update flow.
