@@ -708,4 +708,12 @@ The previous note attributing literal `X-Nonce` to the ChatGPT DPoP challenge is
 
 ### Next work and limits
 
-Continue tracing the parsed `WWW-Authenticate` challenge object into the DPoP provider, all callsites of `DPoPProofProvider`, and any response-header/body access used in proof creation. Keep the Date-header clock-correction retry separate from ordinary unauthorized challenge/retry flows. Native provider injection, portable secure signer, other OAuth retry branches and authorized end-to-end tests remain unimplemented. Static source inspection only; no production runtime change or network/auth operation.
+The generic Ktor parser and provider handoff are now method-decoded: parameterized challenges are `Lwuc0` (scheme plus `List<Lwub0>` name/value pairs), token68 is `Lxuc0`, both derive from `Lyuc0`. `Lph8` chooses the provider using only the scheme. Its DPoP branch `Lsh8.a` accepts `Lyuc0` in the method signature, but the coroutine continuation does not capture the challenge and invokes `Lxp.b` using request/auth context only; no read of the parameter list or server nonce was found in this callback. Continue with other `DPoPProofProvider` callsites and native/provider-specific challenge paths; do not assume the product has no nonce mechanism. Keep Date-header timestamp correction separate from normal unauthorized retries. Native provider injection, portable secure signer, other OAuth retry branches and authorized end-to-end tests remain unimplemented. Static source inspection only; no production runtime change or network/auth operation.
+
+### Ktor parameterized challenge parser — additional trace — 2026-11-26
+
+`Lzuc0.c(String)` in `classes8.dex` (method 58378, code offset 3520468) returns an `ArrayList` of base `Lyuc0` challenge values. Parameterized challenges are `Lwuc0`, which stores a `List<Lwub0>` of name/value pairs plus parser position. Token68 challenges use `Lxuc0`. The base challenge type stores its scheme in `.a`.
+
+`Lph8.invokeSuspend` uses only `Lyuc0.a()` to select `DPoP` or `Bearer`, pairing the challenge object with the provider. Although `Lsh8.a` has a `Lyuc0` parameter, its continuation class `Lqh8` does not capture that challenge; it calls `Lxp.b` using request/auth context. No read of the parameter list or a nonce parameter is present in the recovered DPoP provider callback. This proves parser support, not nonce consumption. It also does not prove that no other server-nonce path exists elsewhere.
+
+The literal `X-Nonce` reference is confirmed as RevenueCat-only (`Ljz40.b`); earlier historical wording attributing it to ChatGPT DPoP is superseded. No ChatJS runtime change was made.
