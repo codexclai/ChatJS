@@ -1604,3 +1604,10 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Identified Livk0 as a subclass of Ljl8. The exact branch and serializer invocation connecting the Lsk00 signed result to the body of the later POST remains open; no claim of completed proof submission is made.
 - Updated Android protocol findings, AI memory, continuation, TODO, session log and synchronized state. No runtime source/test files changed; no Android methods, credentials, keys or network requests were executed.
 - Previous verified checkpoint: 675b5bbe0f5e33515a525e7d282a0793f154ca40, CI 45833343306, CodeQL 45833343299. New docs commit requires its own checks.
+
+## 2026-11-26 — LoginAuth challenge transport CI, CodeQL and archive verification
+
+- Verified commit `811ed51be0e1e43ab5984d95903e52a3549da6f9`: CI run `45845764653` passed and CodeQL run `45845764661` passed.
+- CI completed `npm run check`: generated project-state page synchronized; all 28 Markdown files passed local-link validation; all 134 tests passed with zero failures; module archive built with 18 package files; installed CommonJS and ESM smoke tests both passed.
+- Downloaded CI artifact ZIP ID `15131486758` (SHA-256 `d6432e2f14158a85cc6904f5bce18e292e970bdeb28a183ee1b53a8e21c7cff6`). Inspected its `ChatJS.tar.gz`: 33,902 bytes, SHA-256 `8449655fbecd318d38e1bd19eb5852ca639526146bbce1e854df0f7d235f3e8e`; gzip and tar integrity passed; archive contains 18 files (19 entries including root directory).
+- The source update is documentation/state only. No Android method was run; no credentials/private keys/keystore/network were used; no production runtime behavior or tests were changed. Exact `Livk0` → `Lf91` serialized request-body edge, provider alias → account credential persistence, full API request body/header/auth details and native secure signer/provider remain open.
