@@ -691,4 +691,4 @@ The earlier note left the exact `Lxb8.j` 30/300-second and error branches unreso
 
 ### Remaining boundary
 
-The exact JSON-property mapping for `ApiServiceError.b` and `.c`, other OAuth retry branches, DPoP `WWW-Authenticate`/`X-Nonce` lifecycle, `Lpvx` dependency lifetime/reset, native auth provider injection and a portable secure non-exportable host signer remain open. The Android package has been inspected statically only. No ChatJS runtime implementation was added; no auth, token, key or network operation was used.
+The `ApiServiceError` wire mapping is now resolved: parser `Lwn00.a` reads nested JSON `type` and `code`, passes them as the second and third String constructor arguments, and the constructor assigns them to fields `.b` and `.c` respectively (`b=type`, `c=code`). Other OAuth retry branches, DPoP `WWW-Authenticate`/`X-Nonce` lifecycle, `Lpvx` dependency lifetime/reset, native auth provider injection and a portable secure non-exportable host signer remain open. The Android package has been inspected statically only. No ChatJS runtime implementation was added; no auth, token, key or network operation was used.
