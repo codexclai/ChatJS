@@ -1938,3 +1938,41 @@ No additional direct static producer reference was found in the ten DEX files. T
 ### Evidence boundary and next work
 
 The exact UI callback chain, continuation-vs-event type mismatch, and direct DEX field-reference census are static source observations from Android 1.2026.321. No Android method was executed, no credentials/keys/network were used, and no ChatJS runtime code was added. Next: identify the intended callback contract/conditions for the ImagesCreationComposer request, inspect the alternate `Lnz6` continuation path and callback owners, and continue OAuth `Lxb8.g`/`Ljn8.a` non-success error normalization separately.
+## Android OAuth refresh error parsing and irrecoverable-state persistence — 2026-11-26
+
+### API error parsing boundary (Lwn00.a)
+
+The Ktor ResponseException parser Lwn00.a (classes.dex method 57581) has these observed source-level branches:
+
+- It inspects the response Content-Type; a text/html response takes a non-JSON path and does not become a fabricated structured OAuth error.
+- For JSON content, it deserializes a JsonObject and first examines the standard nested error object. The structured-object parser reads message, type, code, reason, and can_retry; the generated API error stores the parsed strings/metadata alongside the original JSON object and the HTTP-status category.
+- It has separate envelope handling for detail objects and arrays of object errors. These are not treated as equivalent to the simple OAuth form.
+- A separate OAuth-style fallback reads a string error and error_description form, including the corresponding nested fallback values. The response HTTP status is passed through Ld0c1.q(status) to the first-party API-error status category mapping.
+- JSON/schema/content-type parsing failure is not silently converted into a successful refresh. The parser may return no structured error or propagate a decoding/serialization exception depending on the failure branch; Lxb8.g then keeps the HTTP-response vs generic transport/serialization result distinction.
+
+The ApiServiceError constructor stores: base exception/cause; string field a; string b (parsed error type); string c (parsed error code); nullable integer d (first-party HTTP/error category); boolean e (can_retry when supplied); JSON object f (original structured payload when available); and string g (reason when supplied). This is the model used by the refresh skew classifier and credential recovery paths. Do not map the numeric category into a new public ChatJS error code until the full source semantics are established.
+
+### Repository result handling (Ljn8.a)
+
+The refresh repository helper Ljn8.a (classes.dex method 27210) handles the successful Lz0p0 response by extracting the generated Llkq0 DTO, then converting it to the internal credential-bound Lvg8 through Ly4b1.h.
+
+For the failure path it does not invent an alternate success or replace the original cause with a generic message: typed Luub1 failures are unwrapped to their throwable and represented as a generic API-result failure (Lw0p0/Lu0p0). Lxb8.g already distinguishes response-backed Ly0p0 failures (HTTP status, parsed body and optional Date) from generic transport/serialization failures (no response Date). The additional Ljn8.a activity that constructs refresh-attempt IDs, request/CF-Ray dimensions, exception maps and protobuf analytics is instrumentation and is not part of the ChatJS client protocol.
+
+### Irrecoverable refresh classifier (Lsoj1.h)
+
+Lsoj1.h(Lu0p0) (classes3.dex method 44853) returns true only for the following inspected cases:
+
+1. The failure throwable is InvalidRefreshTokenException, and its result is an HTTP response exception with status 401 or 403.
+2. The failure throwable is AuthError.CachedIrrecoverableError, its response status is HTTP 400, and the attached ApiServiceError.c (the parsed JSON code) equals invalid_grant.
+
+An arbitrary 401/403 or arbitrary HTTP 400 does not qualify merely by status. For the second case, the invalid_grant test is on the parsed API error code, not the error type.
+
+### Persisted failure state and suppression of repeated refresh
+
+When the refresh repository Ld7x.p receives an HTTP response failure, it invokes Lsoj1.h. If the result is irrecoverable and the failure is Ly0p0, the source copies the existing Lvg8 record, storing the response status in its integer h field and the response error string in its i field, with the current injected time in the associated record update. It then passes the updated record through Lcn8.i and its guarded Ljm8 callback for credential-state comparison and persistence. A typed storage failure is handled as a failed persistence outcome and logged by the source; it is not reported as a successful cache update.
+
+The forced-renewal path Ld7x.s checks the stored Lvg8.h irrecoverable-state field before it proceeds with another renewal request. When the record carries that cached state, the source returns an InvalidRefreshTokenException result rather than repeatedly hitting the OAuth endpoint. This is separate from Ld7x.v()/the in-flight credential-operation cancellation guard and from the one-shot HTTP Date correction retry.
+
+### Evidence boundary
+
+These are static bytecode findings from the supplied Android 1.2026.321 APK. No Android method ran, no account credential/token/key was used, and no network request was made. No ChatJS runtime or test code was changed. A portable ChatJS implementation remains blocked on the actual native auth provider, legitimate secure non-exportable DPoP signing, encrypted credential persistence, and authorized end-to-end testing.

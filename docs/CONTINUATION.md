@@ -854,3 +854,15 @@ The optional `messaging/rooms` retry callback now has a concrete UI origin and a
 - A scan of all ten DEX files found only two direct producers for `Lq6t.e` (`RetryExpiredAccessToken`): `Le2e` in classes5.dex and `Loe3` in classes7.dex. `Lq6t` definition, preflight and interceptor handling are in classes2.dex. This is a direct static reference census, not proof against host/native/dynamic injection or other builds.
 
 Do not call the ImagesCreationComposer callback a working token-expiry decision or port it as one. The static mismatch is recorded; the runtime conditions/crash behavior are not tested. Continue with its intended callback contract/alternate `Lnz6` path and the separate OAuth non-success decoder. No ChatJS runtime, credentials or network work occurred.
+
+## Latest handoff — Android OAuth failure parsing and cached irrecoverable refresh state — 2026-11-26
+
+The refresh error path is now traced past the request wrapper into API-error parsing and credential repository state:
+
+- Lwn00.a handles JSON structured error objects, detail envelopes/arrays, and a separate OAuth string error/error_description form. It inspects Content-Type and does not synthesize a structured error from HTML. The API error record stores error type/code, nullable status category, can_retry, original JSON and reason.
+- Ljn8.a maps successful Llkq0 responses into credential-bound Lvg8; on typed failure it preserves the underlying throwable as a generic Lu0p0 result. Its request/CF-Ray/attempt/analytics dimensions are instrumentation and are excluded.
+- Lsoj1.h recognizes only (a) InvalidRefreshTokenException with HTTP 401/403, or (b) CachedIrrecoverableError with HTTP 400 and structured ApiServiceError.code == invalid_grant. Status alone is insufficient for the second case.
+- On an irrecoverable response, Ld7x.p updates the persisted token record's integer Lvg8.h status field and string Lvg8.i error field through the guarded Lcn8.i/Ljm8 persistence path.
+- A subsequent forced renewal checks the stored irrecoverable marker and returns InvalidRefreshTokenException rather than repeatedly calling the OAuth endpoint. This cache is independent of the Date-skew reattempt and the in-flight cancellation flag.
+
+Full source caveats are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. Remaining: complete parser malformed-body/cancellation edge semantics, remaining OAuth/invalid-proof retries, callback branch resolution, native provider injection, encrypted-store internals and secure host signer. No runtime behavior has been implemented or authorized E2E-tested.

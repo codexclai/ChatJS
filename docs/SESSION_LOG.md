@@ -1541,3 +1541,14 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Scanned all ten DEX files for field references to Lq6t.e (RetryExpiredAccessToken). Direct producer references were limited to classes5 Le2e and classes7 Loe3; classes2 contains key definition, preflight and interceptor. This does not rule out native/dynamic injection or another client build.
 - Updated Android source findings, AI memory, continuation, TODO and session log. No runtime changes, tests or dependencies. No credentials, key or network use.
 - Next: resolve intended ImagesCreationComposer callback/alternate Lnz6 contracts and continue exact OAuth non-success normalization.
+
+
+## 2026-11-26 — Android OAuth error conversion and irrecoverable refresh cache
+
+- Extended the Android 1.2026.321 static trace through Lwn00.a, Ljn8.a, Lsoj1.h, Ld7x.p, Ld7x.s, Lcn8.i/Ljm8 and Lvg8.a. No Android function executed.
+- Mapped Lwn00.a response parsing for structured JSON error objects, detail envelopes/arrays, OAuth error/error_description form, Content-Type checks and HTTP status category; ApiServiceError stores type, code, can_retry, original structured JSON and reason.
+- Confirmed Ljn8.a preserves the original typed failure cause as a generic Lu0p0 result instead of manufacturing a success; request IDs, CF-Ray, refresh-attempt identifiers and protobuf dimensions are diagnostics only.
+- Reconstructed Lsoj1.h irrecoverable predicate: InvalidRefreshTokenException paired with HTTP 401/403; or CachedIrrecoverableError paired with HTTP 400 whose ApiServiceError.code is invalid_grant.
+- Traced Ld7x.p caching into the credential record: Lvg8.h receives HTTP status and Lvg8.i receives the Ly0p0 response error string, followed by guarded Lcn8.i / Ljm8 persistence. Ld7x.s checks this stored cache before a later forced renewal and returns InvalidRefreshTokenException rather than repeatedly contacting OAuth.
+- Updated findings, AI memory, continuation and TODO. Runtime/tests/dependencies/public API unchanged. No credentials, DPoP keys, secure storage or network used.
+- Latest pre-this-unit CI failure at head ba7a7d2 was caused by one extra leading space in generated docs/PROJECT_STATE.md and stopped at docs:check; its CodeQL passed. Last full CI+CodeQL green checkpoint remains 6b2532e445443a23527f2c25d05d270afab989de (CI 45807482790, CodeQL 45807482759). This new documentation commit must have its own check.

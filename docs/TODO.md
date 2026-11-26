@@ -766,3 +766,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Scan all ten supplied Android DEX files for direct references to Lq6t.e; only Le2e and Loe3 are direct producers in the inspected build (native/dynamic/other-build paths are not excluded).
 - [ ] Resolve the actual conditions/alternate UI callbacks that make the ImagesCreationComposer Le2e retry hook safe or unreachable; inspect the alternate Lnz6 path and cancellation/exception behavior without executing the Android app or fabricating a Boolean contract.
 - [ ] Resume OAuth Lxb8.g / Ljn8.a non-success HTTP response and transport error normalization; keep the refresh Date-correction and token_expired request paths distinct.
+
+
+## Android OAuth response error conversion and irrecoverable failure cache — 2026-11-26
+
+- [x] Trace Lwn00.a response error parsing: structured error object, detail object/array envelopes, OAuth error/error_description fallback, Content-Type gate, HTTP status-category mapping, and ApiServiceError field mapping.
+- [x] Trace Ljn8.a non-success result handling: preserve typed Luub1 throwable as a Lu0p0 failure; keep refresh attempt identifiers, request/CF-Ray dimensions and protobuf diagnostics out of ChatJS.
+- [x] Decode Lsoj1.h irrecoverable classification exactly: InvalidRefreshTokenException + HTTP 401/403; or CachedIrrecoverableError + HTTP 400 + ApiServiceError.code invalid_grant. Do not qualify arbitrary statuses.
+- [x] Trace Ld7x.p caching: update Lvg8.h with HTTP status and Lvg8.i with response error string, through guarded Lcn8.i / Ljm8 persistence.
+- [x] Trace forced-renewal suppression: Ld7x.s checks the cached Lvg8 irrecoverable marker and returns InvalidRefreshTokenException rather than repeatedly requesting the OAuth token endpoint.
+- [ ] Complete the malformed-body/content-type parser edge matrix and exact OAuth refresh failure mapping under cancellation/serialization, plus remaining invalid_dpop_proof and renewal retry paths. Keep DPoP request Date correction, OAuth refresh Date correction, and token_expired request resend as separate state machines.
