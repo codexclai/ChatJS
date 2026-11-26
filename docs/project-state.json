@@ -274,7 +274,7 @@
     "The DPoP serializer and clock helper use caller-supplied inputs only. Epoch-second iat plus server-minus-local offset is source-traced; offset acquisition/persistence, secure native provider and host signer remain unresolved. Node URL behavior for exotic IDNA/authority cases has not been shown equivalent to java.net.URL.",
     "Android's DPoP timestamp-correction path calculates server epoch seconds minus local Instant epoch seconds and retries after correcting proof time, but the exact server timestamp source and overall retry ceiling remain open; do not add unbounded retries."
   ],
-  "lastVerifiedCommit": "95d24edee888f4ffc2c86cc84dd0b70b64e6b8bb",
-  "lastVerifiedCI": "45846135669",
-  "lastVerifiedCodeQL": "45846135710"
+  "lastVerifiedCommit": "a9179a52e7d5179634f59c9a0fc39858af5a7284",
+  "lastVerifiedCI": "45848978326",
+  "lastVerifiedCodeQL": "45848978593"
 }

@@ -1621,3 +1621,10 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Corrected earlier claim: `Lvi8` is request body, not response. Success response is `Lyl8` with accessors `b():Lql8`, `c():Lvl8`, `a():List`, consumed by `Lk6p0`; complete serialized response model still open.
 - Updated Android protocol findings, AI memory, continuation, TODO, session log and state. Static analysis only; no Android code, credentials, keys, keystore or network request executed. No runtime/test code changed.
 - Baseline commit `95d24edee888f4ffc2c86cc84dd0b70b64e6b8bb` CI `45846135669` and CodeQL `45846135710` passed.
+
+## 2026-11-26 — LoginAuth signed-proof submission trace CI and archive verification
+
+- Verified commit `a9179a52e7d5179634f59c9a0fc39858af5a7284`: CI run `45848978326` passed and CodeQL run `45848978593` passed.
+- CI completed `npm run check`: project-state generated Markdown synchronized; 28 Markdown files passed local-link validation; 134 tests passed with zero failures; archive built with 18 module files; installed CommonJS and ESM smoke tests passed.
+- Downloaded CI artifact ZIP ID `15132885830`; SHA-256 `ba528415551f982b617b4e6f46c645b1c66bd3cc6c1b3d5c49ea44a9010fd272`. Extracted `ChatJS.tar.gz` is 33,902 bytes with SHA-256 `8449655fbecd318d38e1bd19eb5852ca639526146bbce1e854df0f7d235f3e8e`; gzip integrity passed and tar contains 18 package files (19 entries including root directory).
+- This unit changes documentation/state only. The static Android LoginAuth proof fetch/sign/submit flow is now traced, but no Android method, authentication, key access or network request was run; ChatJS runtime authentication, secure signing and authorized E2E remain unimplemented.
