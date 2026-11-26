@@ -776,3 +776,15 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace Ld7x.p caching: update Lvg8.h with HTTP status and Lvg8.i with response error string, through guarded Lcn8.i / Ljm8 persistence.
 - [x] Trace forced-renewal suppression: Ld7x.s checks the cached Lvg8 irrecoverable marker and returns InvalidRefreshTokenException rather than repeatedly requesting the OAuth token endpoint.
 - [ ] Complete the malformed-body/content-type parser edge matrix and exact OAuth refresh failure mapping under cancellation/serialization, plus remaining invalid_dpop_proof and renewal retry paths. Keep DPoP request Date correction, OAuth refresh Date correction, and token_expired request resend as separate state machines.
+
+## Android OAuth invalid-proof retry and malformed response cancellation boundary — 2026-11-26
+
+- [x] Confirm the exact `Lxb8.h` HTTP status set `{400,401,403}` and `Lxb8.i` API error set `{refresh_token_reused, token_expired, invalid_dpop_proof}` from `Lxb8.<clinit>`.
+- [x] Close `Lxb8.j` predicate: response exception, eligible status, present response Date, sent-refresh-iat outside the asymmetric 30-second / 300-second bounds, and accepted API error (`invalid_grant` on HTTP 400 or type/code in the three-error set).
+- [x] Confirm `Lxb8.e` is the only direct caller and performs one additional `Lxb8.g` call after updating `Lpvx.b`; no loop or second literal `invalid_dpop_proof` site exists in the ten supplied DEX files.
+- [x] Separate classes5 `Ln5o.invokeSuspend` auth/session error recognition from the OAuth Date-retry and Ktor header-driven token-expiry request recovery.
+- [x] Trace `Lwn00.a` HTML and typed parser failures to no structured API error; trace generic exception handling through `Le6o0.w/x` so a cancelled Job propagates cancellation rather than being silently returned as a normal parser miss.
+- [ ] Trace the complete lookup-key proof consumers and establish whether the `Lyt2` nonce-signature flow feeds the main DPoP JWT/challenge path or remains separate.
+- [ ] Trace the complete Android lookup-key proof/JWK return schema and establish whether it is separate from or reused by the main DPoP JWT challenge flow.
+- [ ] Resolve the alternate `Lnz6` / ImagesCreationComposer callback conditions for the `messaging/rooms` `RetryExpiredAccessToken` producer; do not implement its currently mismatched callback contract.
+- [ ] Trace the actual native/CompilerIntrinsics authentication-provider injection point and Kotlin closure owners; distinguish provider implementation from generated interface adapters.

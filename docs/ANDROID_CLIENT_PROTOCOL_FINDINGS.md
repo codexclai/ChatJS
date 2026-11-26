@@ -1976,3 +1976,38 @@ The forced-renewal path Ld7x.s checks the stored Lvg8.h irrecoverable-state fiel
 ### Evidence boundary
 
 These are static bytecode findings from the supplied Android 1.2026.321 APK. No Android method ran, no account credential/token/key was used, and no network request was made. No ChatJS runtime or test code was changed. A portable ChatJS implementation remains blocked on the actual native auth provider, legitimate secure non-exportable DPoP signing, encrypted credential persistence, and authorized end-to-end testing.
+## Android OAuth DPoP invalid-proof retry boundary and response-parser cancellation — 2026-11-26
+
+### Exact OAuth retry classifier sets
+
+Reinspection with the corrected DEX width table confirms `Lxb8.<clinit>` (classes.dex method 59387) initializes two independent immutable sets:
+
+- `Lxb8.h` is exactly the HTTP status set `{400, 401, 403}`.
+- `Lxb8.i` is exactly the API error string set `{refresh_token_reused, token_expired, invalid_dpop_proof}`.
+
+`Lxb8.j` (method 59398) returns a server timestamp only when all of its gates are satisfied: the result contains a response exception (`Ly0p0` inside the typed failure), the HTTP status is in `Lxb8.h`, `Ljb8` contains a response `Date`, the difference between the sent refresh `iat` and server Date is outside the asymmetric allowed window (more than 30 seconds in the request-ahead direction or more than 300 seconds in the server-ahead direction), and the response carries a recognized API error. An HTTP 400 with parsed `ApiServiceError.code == invalid_grant` is an independent error-code match within those preceding response/date/skew gates. Otherwise, both `ApiServiceError.code` and `.type` are checked against `Lxb8.i`.
+
+If any gate fails, `Lxb8.j` returns null. This means `invalid_dpop_proof` alone does not cause a retry: the response must carry a parseable Date and satisfy the clock-skew bounds. A 400/401/403 status alone does not qualify either.
+
+`Lxb8.e` is the only direct caller of `Lxb8.j` in the supplied DEX. When a timestamp is returned, it computes `serverDate - localInstant.epochSecond`, stores the offset in `Lpvx.b`, then calls `Lxb8.g` once more. The coroutine resumes/returns that second result; this code contains no loop. The source-level log string describes the retry as correcting the DPoP proof timestamp. The send-count/retry behavior for other network requests is a separate Ktor layer and is not an OAuth refresh retry count.
+
+A ten-DEX scan for the literal `invalid_dpop_proof` found only the `Lxb8.<clinit>` initializer reference above; no second direct string-triggered invalid-proof refresh/replay branch was found in this supplied Android build. This is scoped to the supplied 1.2026.321 package, not all future client builds or native/dynamic behavior.
+
+### Additional auth-error callback is not a second DPoP retry
+
+`Ln5o.invokeSuspend` (classes5.dex method 31651) contains a separate set of credential/auth error branches for `refresh_token_invalidated`, `invalid_refresh_token`, `token_expired`, `refresh_token_expired`, `refresh_token_reused`, and `invalid_grant` (the last is status-gated to HTTP 400). The coroutine is constructed by `Ld7x.B` and also by `Lbnz0.g0`; it is not a caller of `Lxb8.e` or `Lxb8.j` and contains no `invalid_dpop_proof` literal. Keep this auth/session callback path separate from the OAuth refresh Date retry and the Ktor `x-openai-ide-error-code == token_expired` request recovery. Its presence is not evidence of another network resend.
+
+### `Lwn00.a` malformed-body and cancellation behavior
+
+The response parser `Lwn00.a` (classes.dex method 57581) was re-read with its exception table rather than inferring all failures from its JSON code:
+
+- A response whose `Content-Type` contains `text/html` exits without creating a structured `ApiServiceError`.
+- The parser's typed `NoTransformationFoundException`, `IllegalArgumentException`, and `ContentConvertException` handlers return the no-structured-error result. These are not converted into a successful refresh or a synthetic API error.
+- Its generic `Exception` handler checks the coroutine Job through `Le6o0.w`; that helper obtains the Job and calls `Le6o0.x`, which throws the Job's `CancellationException` when it is no longer active. If the coroutine is still active, the parser emits the guarded `Unexpected exception parsing ApiServiceError` diagnostic and returns no structured error. Thus cancellation of the parser's coroutine is not silently transformed into an ordinary null API error.
+- The parser's JSON handling includes structured nested `error` properties (`message`, `type`, `code`, `reason`, `can_retry`), `detail` envelopes/array entries, and OAuth `error` / `error_description` fallback. A non-object where a JsonObject is required can throw; it is handled by the surrounding typed/generic parser failure path rather than treated as a valid OAuth error.
+
+The HTTP response wrapper remains distinct from generic transport/serialization failure: only a real response exception provides status/body/Date to `Lxb8.j`; a transport exception without a response cannot enter the Date-skew refresh correction.
+
+### Evidence boundary
+
+These are static bytecode observations from the supplied Android 1.2026.321 package. No Android method was executed, no account credentials/tokens/keys were used, and no network request was made. No ChatJS runtime code or tests were added. This closes the inspected build's OAuth `invalid_dpop_proof` retry classifier and parser-cancellation branch; it does not implement OAuth refresh or DPoP signing in ChatJS.

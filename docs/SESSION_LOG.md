@@ -1560,3 +1560,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Verified CodeQL run `45812061604` succeeded on the same commit.
 - Downloaded CI artifact ZIP ID `15113771557`, verified ZIP digest SHA-256 `5e85b45ae1dad365866aa98e23a55feb5eb8fdf68a74622d6675b931f6759bbf`; extracted `ChatJS.tar.gz` (33,902 bytes, SHA-256 `8449655fbecd318d38e1bd19eb5852ca639526146bbce1e854df0f7d235f3e8e`); gzip/tar integrity passed and tar listed exactly 18 package files plus the root directory.
 - The OAuth source-trace work changed only documentation/state. No production runtime implementation or tests were added in this unit. Native auth injection, secure non-exportable signer, encrypted credential-store parity and authorized ChatGPT E2E remain blockers.
+
+## 2026-11-26 — Android OAuth invalid-proof retry and parser cancellation closure
+
+- Corrected the fresh DEX decoder's instruction width for `instance-of` (22c) and payload sizing, then rechecked `Lxb8.<clinit>`, `Lxb8.j`, `Lxb8.e`, and `Lwn00.a` rather than relying on the earlier rough pass.
+- Confirmed exact retry sets from `Lxb8.<clinit>`: HTTP `{400,401,403}` and API errors `{refresh_token_reused, token_expired, invalid_dpop_proof}`. `Lxb8.j` also requires a response Date and sent-iat/server-Date skew outside the asymmetric 30s/300s bounds; HTTP 400 `invalid_grant` is accepted as a distinct error branch after those gates.
+- Confirmed `Lxb8.e` is the sole direct caller of `Lxb8.j`, updates `Lpvx.b` by `serverDate - localInstant`, and calls `Lxb8.g` once. A ten-DEX literal scan found no second `invalid_dpop_proof` site. This resolves the supplied build's specific invalid-proof refresh correction path without claiming general retries.
+- Identified classes5 `Ln5o.invokeSuspend` as a separate auth/session callback that recognizes refresh-related error codes; it is not a caller of `Lxb8.e/j` and contains no `invalid_dpop_proof` literal.
+- Parsed `Lwn00.a`'s DEX exception table: HTML and expected no-transformation/illegal-argument/content-conversion parser failures return no structured `ApiServiceError`; generic exception handling calls `Le6o0.w/x` to check the coroutine Job and rethrow cancellation if inactive, else logs the parser diagnostic and returns no structured error.
+- Documentation-only changes planned for findings, AI_MEMORY, continuation, TODO and session log. No runtime or tests changed; no Android code execution, credentials, keys or network requests.
+- Last green repository checkpoint before this update: `6e761a67df33c6d71a04af5e3f9a4234514cd0d3`, CI `45812447837`, CodeQL `45812447541`. New docs commit requires its own checks.

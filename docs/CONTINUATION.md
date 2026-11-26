@@ -866,3 +866,13 @@ The refresh error path is now traced past the request wrapper into API-error par
 - A subsequent forced renewal checks the stored irrecoverable marker and returns InvalidRefreshTokenException rather than repeatedly calling the OAuth endpoint. This cache is independent of the Date-skew reattempt and the in-flight cancellation flag.
 
 Full source caveats are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. Remaining: complete parser malformed-body/cancellation edge semantics, remaining OAuth/invalid-proof retries, callback branch resolution, native provider injection, encrypted-store internals and secure host signer. No runtime behavior has been implemented or authorized E2E-tested.
+## Latest handoff — Android invalid_dpop_proof retry boundary and parser cancellation — 2026-11-26
+
+The remaining OAuth retry and malformed-response questions for the supplied Android 1.2026.321 build are now source-resolved:
+
+- `Lxb8.<clinit>` defines HTTP statuses exactly `{400,401,403}` and error strings exactly `{refresh_token_reused, token_expired, invalid_dpop_proof}`. `Lxb8.j` only returns a server Date when a real response exception, eligible status, response Date, out-of-window sent-iat skew (30s / 300s asymmetric bounds), and matching error predicate are all present. HTTP 400 `invalid_grant` is a separate accepted error-code case after those gates.
+- `Lxb8.e` is the only direct caller of `Lxb8.j`; on a qualifying Date it writes `serverDate - localInstant` to `Lpvx.b` and invokes `Lxb8.g` once more. There is no loop or independent direct `invalid_dpop_proof` retry branch. A ten-DEX literal scan found `invalid_dpop_proof` only in the `Lxb8` set initializer.
+- Separate classes5 `Ln5o.invokeSuspend` recognizes refresh/session error strings including `token_expired`, `refresh_token_expired`, `refresh_token_reused` and `invalid_grant`, but it is not a caller of `Lxb8.e/j` and contains no `invalid_dpop_proof` string. Do not merge it with the OAuth Date correction or Ktor header-triggered request resend.
+- `Lwn00.a` skips HTML responses; typed no-transformation/content-conversion/illegal-argument parser failures return no structured `ApiServiceError`. Its generic exception branch checks the coroutine Job with `Le6o0.w/x`, rethrowing cancellation when the Job is inactive; otherwise it logs the parser diagnostic and returns no structured error.
+
+Full exception-table and method details are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Remaining Android work shifts to the outstanding lookup-key/nonce proof consumer relationship, alternate ImagesCreationComposer retry callback conditions, native provider injection, encrypted credential store, and secure host signer. No runtime authentication or network feature has been implemented.
