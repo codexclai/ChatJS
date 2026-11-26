@@ -335,3 +335,8 @@ The same response handler's `token_expired` branch calls `Lcd01.d` to persist th
 ## Android OAuth refresh request DTO and endpoint — 2026-11-26
 
 The credential refresh flow reaches `AuthApiImpl` `Lxb8`. `Lxb8.g` uses `https://auth.openai.com/oauth/token`. `Lxb8.h` builds `Lpyy0` with client ID from `Lyjq0.a` and the refresh-token String carried by `Ld7x.p`/`Ljn8.a`. Generated serializer `Lnyy0` maps its fields to `clientId`, `refreshToken`, `grantType`; the grant type defaults to `refresh_token` and is default-aware when encoded. Ktor request builder `Lub8` serializes that body and adds optional `ChatGPT-Account-ID`, a separate `DPoP` proof header and `oai-uit: True`. `Ltb8` generates a DPoP proof for the token endpoint; its null method override resolves to `POST` in `Lyls0.s` and its access-token-hash argument is null. This is static source mapping only, not ChatJS support. The refresh response schema, full error handling and replay limits remain open.
+
+
+## Android OAuth refresh success response DTO — 2026-11-26
+
+`Llkq0`/`Ljkq0` success DTO exact JSON shape and declared types: `accessToken` String, `idToken` String, `refreshToken` String, `expiresIn` Integer, `earliestRefreshAt` Long, `tokenType` String, `scope` String. The generated serializer descriptor and deserialize/serialize methods confirm seven properties in that order. `Ljn8.a` extracts `Llkq0` from the API result success wrapper and calls `Ly4b1.h` with the DTO, clock and credential context. `Ly4b1.h` validates previous-record identity, merges selected prior-value fallbacks and timing/scope data, and builds an internal `Lvg8` access-token record returned in `Lavb1` success. Non-success response normalization and the complete token-expired replay ceiling remain open.
