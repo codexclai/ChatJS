@@ -833,3 +833,13 @@ The Ktor token-expiry analysis now reaches the request-attribute producers and t
 - The generic Ktor sender has a separate MaxRetriesPerRequestAttributeKey guard, default 20, enforced by Lrzc0 through SendCountExceedException. It is a general send-count limit, not 20 token-expiry retries.
 
 Full method details and caveats are in ANDROID_CLIENT_PROTOCOL_FINDINGS.md. Remaining: trace the actual owner and cancellation/error semantics of both request callbacks, any additional dynamically supplied producers, the remaining OAuth error/retry branches, and supported authorized E2E behavior. No runtime code changed and no Android methods, credentials, keys or network requests were executed.
+## Latest handoff — Android BrowserAuthApproval callback and conversation resend suppression — 2026-11-26
+
+The conversation-side callback has a concrete source identity:
+
+- `Lrjb` is the tagged `BrowserAuthApproval(<redacted>)` variant (constructor tag 0, confirmed by `toString()` branch). `Ljlb.B` creates it with an `Ljs8` discriminator-1 coroutine closure.
+- That closure invokes `Ljlb.s(gvb, true)`, validates the selected/current `gvb` item through `Ljlb.k(gvb, selectedId)`, and continues through the associated expiry/session-coordination branch.
+- `Lrjb.c()` returns Unit on approval success; on an explicit false callback result it logs `Browser approval is no longer available` and returns null.
+- `Lsjw.c()` awaits `Lrjb.c()` and then returns `Boolean.TRUE` without forwarding the inner null/Unit/Boolean result. On normal completion, this makes the Ktor `Lwp` request callback return true, suppressing the conversation request's built-in resend. An exception propagates rather than being converted into a retry decision.
+
+This narrows the `tpp` conversation callback to browser-auth approval handling. The separate `messaging/rooms` callback owner and any dynamically injected producers remain open. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; this is static DEX evidence only, not a ChatJS implementation.

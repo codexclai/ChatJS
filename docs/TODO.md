@@ -372,3 +372,9 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Separate the general Ktor sender cap from token-expiry replay: MaxRetriesPerRequestAttributeKey defaults to 20 and Lrzc0 enforces the send-count ceiling. The token-expiry interceptor itself has one downstream sender call, not a 20-retry loop.
 - [ ] Trace the application owner and full cancellation/error semantics for both callback producers, inspect any additional dynamically injected producers, and validate the authorized token-expiry path with a legitimate session and supported secure host.
 - [ ] Finish the complete Lxb8.g / Ljn8.a non-success OAuth response normalization and remaining invalid_dpop_proof/refresh retry branches. Keep these separate from Lxb8.e refresh Date correction and the one-shot dpop_iat_out_of_range request correction.
+
+## Android BrowserAuthApproval callback follow-up — 2026-11-26
+
+- [x] Identify the /backend-api/f/conversation callback payload as the tagged `BrowserAuthApproval(<redacted>)` `Lrjb` variant; trace `Ljlb.B` to its `Ljs8` discriminator-1 closure and the `Ljlb.s` / `Ljlb.k` approval/session checks.
+- [x] Resolve conversation adapter return semantics: `Lrjb.c` logs and returns null when the inner approval callback is false; `Lsjw.c` awaits the method but returns `Boolean.TRUE` after normal completion without forwarding the inner result. Therefore normal completion suppresses the built-in Ktor resend; thrown errors propagate.
+- [ ] Trace the upstream `Li2e(Function1)` callback owner and exact Boolean/cancellation/error contract for `messaging/rooms`; check for additional native or injected `RetryExpiredAccessToken` producers.

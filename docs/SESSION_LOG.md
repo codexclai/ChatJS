@@ -1518,3 +1518,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - No runtime ChatJS code, tests, dependencies or public API changed; this unit is source reconstruction and documentation only. No account, bearer/refresh token, DPoP key, secure storage or network request was used.
 - Local full-repository npm run check remains unavailable because there is no working ChatJS checkout and the container cannot resolve GitHub; the immediately preceding main HEAD's CI and CodeQL passed. New documentation/state commits must be validated by their own CI before recording them as verified.
 - Remaining: upstream callback ownership/meaning and cancellation/error behavior, all other dynamic producers, complete OAuth non-success normalization, and authorized end-to-end validation. Android Work, Windows/Desktop and Codex CLI remain parked for the current phase.
+
+## 2026-11-26 — Android BrowserAuthApproval callback ownership refinement
+
+- Continued the callback trace from `Loe3`/`Lsjw` into `Lrjb`, `Ljs8` and the `Ljlb` coordinator. `Lrjb` constructor tag 0 is the redacted `BrowserAuthApproval` variant according to its own `toString()` discriminator branch.
+- `Ljlb.B` builds the tagged callback with an `Ljs8` discriminator-1 closure; that branch enters `Ljlb.s(gvb, true)`, validates current/selected approval context with `Ljlb.k`, and proceeds through expiry/session coordination.
+- `Lrjb.c` returns Unit after callback success, and logs/returns null after an explicit false result. `Lsjw.c` awaits this but returns true after normal completion without forwarding the inner value. Consequently the conversation Ktor callback suppresses its one-shot resend on normal completion; thrown callback errors propagate.
+- Updated the Android protocol findings, continuation, TODO and session log. Runtime and public API unchanged; no credentials, Android method execution or network request.
+- Remaining callback work is the distinct `messaging/rooms` `Li2e(Function1)` owner and any additional native/injected producers.

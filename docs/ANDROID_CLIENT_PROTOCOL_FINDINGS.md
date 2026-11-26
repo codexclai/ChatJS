@@ -1893,3 +1893,14 @@ This is a general send-pipeline guard, not the token-expiry retry count. The tok
 ### Evidence boundary
 
 All findings above come from static inspection of the supplied Android 1.2026.321 DEX. The inspected methods were not executed. No credentials, tokens, keys, secure store or network requests were used. No ChatJS runtime implementation was added. Remaining work includes the upstream ownership/semantics and cancellation/error outcomes of the Lrg70 callbacks, other dynamic producers, the complete remaining OAuth non-success branches, and authorized end-to-end verification with genuine supported host credentials and integrity capabilities.
+## Android BrowserAuthApproval callback ownership and resend suppression — 2026-11-26
+
+The request callback for the conversation producer can now be identified more precisely than the previous Lrg70 abstraction:
+
+- `Lrjb` is a tagged callback wrapper. Its constructor `Lrjb.<init>(String,String,String,String,Ljs8)` sets the variant byte to `0`; `Lrjb.toString()` maps that tag to the redacted label `BrowserAuthApproval(<redacted>)`. This confirms the callback variant without exposing its payload values.
+- `Ljlb.B` (classes2.dex method 30387) constructs this `Lrjb` variant and captures an `Ljs8` coroutine closure with discriminator `1`.
+- The `Ljs8` discriminator-1 branch invokes `Ljlb.s(gvb, true)`, checks the `gvb`/selected item through `Ljlb.k(gvb, selectedId)`, and then continues through the associated expiry/session coordination when those conditions pass. This is browser-auth approval/session work, not a generic token refresh callback.
+- `Lrjb.c()` awaits the `Ljs8` result. If it is false, the wrapper logs `Browser approval is no longer available` and returns null; a true result returns Unit.
+- The `Lsjw.c()` adapter awaits `Lrjb.c()` but does not forward its Unit/null/Boolean result. After normal completion it returns `Boolean.TRUE`. Therefore `Lwp` treats the conversation callback as true and preserves the original response rather than using its built-in resend. If the inner callback throws, the adapter does not reach its true return; the exception propagates through that callback path.
+
+This resolves the source identity and key return behavior of the `tpp` conversation callback. It does not establish the owner semantics of the `messaging/rooms` `Li2e(Function1)` callback, nor whether there are additional runtime/native producers. No Android code was executed; no ChatJS runtime implementation, credential use or network operation was added.
