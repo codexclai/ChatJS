@@ -1533,3 +1533,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - CodeQL run `45806631447` passed on the same commit.
 - Rebuilt `docs/PROJECT_STATE.md` directly from `docs/project-state.json` using the exact formatting emitted by `scripts/generate-project-state.cjs`; this change removes the stray leading space and keeps the generated state as a derived file.
 - The new commit's CI and CodeQL will be checked before this session is reported complete. The last fully passing code/doc checkpoint remains `f7dcc7abc91f83ceb6f54a6b4c52b54075ee7a13` (CI `45805734722`, CodeQL `45805734769`).
+
+## 2026-11-26 — Android messaging/rooms callback owner and incompatibility
+
+- Traced the Le2e variant-1 callback through Lbdl1.f, Compose-labelled ImagesCreationComposer, Lxne0, Lbdl1.j and the Lqdl1.j caller. The observed root callback is Ljup discriminator 24 capturing Lqo60, casting its input to Lgjj0, creating Lh2n0 and dispatching to the captured app event handler.
+- Compared callback signatures: Ktor Lrg70.c takes Le1u (the supplied continuation interface) and Lwp casts the result to Boolean. Li2e passes that continuation object directly to Function1 without adaptation. The observed Ljup branch casts the argument to final class Lgjj0 (which implements no interfaces), and the returned application event result is not Boolean-converted. This is an incompatibility in the observed static construction. We did not execute it or claim a runtime crash.
+- Scanned all ten DEX files for field references to Lq6t.e (RetryExpiredAccessToken). Direct producer references were limited to classes5 Le2e and classes7 Loe3; classes2 contains key definition, preflight and interceptor. This does not rule out native/dynamic injection or another client build.
+- Updated Android source findings, AI memory, continuation, TODO and session log. No runtime changes, tests or dependencies. No credentials, key or network use.
+- Next: resolve intended ImagesCreationComposer callback/alternate Lnz6 contracts and continue exact OAuth non-success normalization.

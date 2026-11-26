@@ -843,3 +843,14 @@ The conversation-side callback has a concrete source identity:
 - `Lsjw.c()` awaits `Lrjb.c()` and then returns `Boolean.TRUE` without forwarding the inner null/Unit/Boolean result. On normal completion, this makes the Ktor `Lwp` request callback return true, suppressing the conversation request's built-in resend. An exception propagates rather than being converted into a retry decision.
 
 This narrows the `tpp` conversation callback to browser-auth approval handling. The separate `messaging/rooms` callback owner and any dynamically injected producers remain open. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; this is static DEX evidence only, not a ChatJS implementation.
+
+## Latest handoff — Android messaging/rooms expiry callback owner and type mismatch — 2026-11-26
+
+The optional `messaging/rooms` retry callback now has a concrete UI origin and a significant unresolved incompatibility:
+
+- The Le2e variant-1 callback is passed through `Lbdl1.f`, which carries the Compose label `ImagesCreationComposer`. The traced path is `Lqdl1.j` → `Lbdl1.j` → `Lxne0` → `Lbdl1.f` → `Le2e`.
+- In the observed root call path, `Lqdl1.j` constructs `Ljup(captured Lqo60, discriminator 24)`. That lambda casts its argument to `Lgjj0`, constructs `Lh2n0`, and dispatches to the captured Lqo60 application event handler. It is a UI event handler, not a proven Boolean retry policy.
+- Ktor `Lrg70.c(Le1u)` expects a Boolean result. The `Li2e.c(Le1u)` adapter forwards the continuation object directly to the stored Function1, with no Boolean conversion or cancellation adaptation. But the observed `Ljup` branch casts its input to `Lgjj0`; the supplied DEX defines `Le1u` as the coroutine continuation interface, while `Lgjj0` is a final class with no interfaces. The observed callback construction therefore cannot satisfy the expected continuation argument or demonstrate the required Boolean result.
+- A scan of all ten DEX files found only two direct producers for `Lq6t.e` (`RetryExpiredAccessToken`): `Le2e` in classes5.dex and `Loe3` in classes7.dex. `Lq6t` definition, preflight and interceptor handling are in classes2.dex. This is a direct static reference census, not proof against host/native/dynamic injection or other builds.
+
+Do not call the ImagesCreationComposer callback a working token-expiry decision or port it as one. The static mismatch is recorded; the runtime conditions/crash behavior are not tested. Continue with its intended callback contract/alternate `Lnz6` path and the separate OAuth non-success decoder. No ChatJS runtime, credentials or network work occurred.

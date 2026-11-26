@@ -1904,3 +1904,37 @@ The request callback for the conversation producer can now be identified more pr
 - The `Lsjw.c()` adapter awaits `Lrjb.c()` but does not forward its Unit/null/Boolean result. After normal completion it returns `Boolean.TRUE`. Therefore `Lwp` treats the conversation callback as true and preserves the original response rather than using its built-in resend. If the inner callback throws, the adapter does not reach its true return; the exception propagates through that callback path.
 
 This resolves the source identity and key return behavior of the `tpp` conversation callback. It does not establish the owner semantics of the `messaging/rooms` `Li2e(Function1)` callback, nor whether there are additional runtime/native producers. No Android code was executed; no ChatJS runtime implementation, credential use or network operation was added.
+
+## Android messaging/rooms retry callback owner and Boolean-contract mismatch — 2026-11-26
+
+### UI owner path
+
+The optional `Le2e` variant-1 constructor callback (the callback wrapped by `Li2e` for `RetryExpiredAccessToken`) is supplied by `Lbdl1.f` (classes4 method 5253). The Sentry Compose source label in this method is `ImagesCreationComposer`. The relevant path is:
+
+`Lqdl1.j` → `Lbdl1.j` → `Lxne0` → `Lbdl1.f` → `Le2e`
+
+In the observed `Lqdl1.j` call path (classes4 method 43774), it constructs `Ljup(captured Lqo60, discriminator 24)` and supplies that Function1 as the third Function1 argument to `Lbdl1.j`. The corresponding `Lxne0` branch carries that function into the fifth callback parameter of `Lbdl1.f`, which is then passed as the second constructor argument/callback field of `Le2e`. The same `Lqdl1.j` function is called by UI lambda owners in classes.dex `Lbgr.invoke` and classes7.dex `Lj96.invoke`; `Lbdl1.j` also has a Compose continuation callsite through `Lnz6`.
+
+The discriminator-24 implementation of `Ljup.invoke` (classes6 method 20301) casts its incoming object to `Lgjj0`, constructs `Lh2n0`, and calls its captured `Lqo60.invoke`. The captured `Lqo60` is an application event handler: it accepts `Lb6n0` event objects and dispatches supported message/entity-sidebar event forms to its own callback/state path. The trace identifies the UI event-handler origin; it does not identify this object as an authorization approval decision or Boolean policy callback.
+
+### Why the retry callback contract does not line up
+
+The compiled contracts are concrete:
+
+- Ktor's `Lrg70.c(Le1u)` takes a coroutine continuation and returns an Object which `Lwp.invokeSuspend` casts to `java.lang.Boolean` and reads with `booleanValue()`.
+- `Li2e.c(Le1u)` simply invokes its captured `Function1` with that `Le1u` continuation and returns the Function1 result unchanged. It performs no Boolean conversion, exception mapping, or cancellation adaptation.
+- The observed discriminator-24 `Ljup.invoke(Object)` casts that argument to `Lgjj0`. In the supplied DEX, `Le1u` is an interface with `getContext()` and `resumeWith(Object)`; `Lgjj0` is a final class extending Object and implements no interfaces. The `Ljup` branch therefore does not accept the continuation passed by `Li2e`. It also returns the captured `Lqo60.invoke` result, without an observed Boolean conversion.
+
+This is a source-level incompatibility in the observed ImagesCreationComposer callback construction. If the Ktor expiry path invokes this exact `Li2e` wrapper, the input cast is not compatible with the supplied callback implementation; and there is no proven Boolean result for the subsequent interceptor decision. Do not describe this as a working approval/retry callback or copy it into ChatJS. A live crash or the conditions that prevent reaching this path have not been observed; no Android code was executed.
+
+### Direct producer scan
+
+A read-only scan of all ten supplied app DEX files for direct references to the typed field `Lq6t.e` (`RetryExpiredAccessToken`) found only:
+- definitions/handling in `Lq6t.<clinit>`, `Lup.invokeSuspend` and `Lwp.invokeSuspend` in classes2.dex;
+- producers in `Le2e.invokeSuspend` in classes5.dex and `Loe3.invoke` in classes7.dex.
+
+No additional direct static producer reference was found in the ten DEX files. This does not rule out host/native/dynamic attribute insertion or behavior in other client builds.
+
+### Evidence boundary and next work
+
+The exact UI callback chain, continuation-vs-event type mismatch, and direct DEX field-reference census are static source observations from Android 1.2026.321. No Android method was executed, no credentials/keys/network were used, and no ChatJS runtime code was added. Next: identify the intended callback contract/conditions for the ImagesCreationComposer request, inspect the alternate `Lnz6` continuation path and callback owners, and continue OAuth `Lxb8.g`/`Ljn8.a` non-success error normalization separately.
