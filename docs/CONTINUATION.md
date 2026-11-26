@@ -594,7 +594,7 @@ Android's DEX contains a substantial DPoP/key/refresh subsystem, independent of 
 - Signing-key repository uses alias prefix openai.login.dpop. and persists alias/pending cleanup metadata as key_pair_alias / pending_credential_deletion; alias save failure is an explicit SaveCredentialsFailed path.
 - Native key path references AndroidKeyStore, EC/secp256r1 and SHA256withECDSA; there are cleanup/failure paths for partially generated or abandoned login signing keys.
 - DPoP JOSE serialization uses typ=dpop+jwt and alg=ES256; public-key/JWK and lookup-key nonce code is present.
-- The auth network plugin chooses Authorization: DPoP or Bearer depending on whether the AccessToken includes a DPoP signer and adds a separate DPoP proof header. Challenge code reads WWW-Authenticate and X-Nonce.
+- The auth network plugin chooses Authorization: DPoP or Bearer depending on whether the AccessToken includes a DPoP signer and adds a separate DPoP proof header. Ktor challenge code parses `WWW-Authenticate`; the earlier `X-Nonce` attribution was a RevenueCat header and is superseded.
 - Auth refresh posts to https://auth.openai.com/oauth/token, has separate refresh_token_reused/token_expired/invalid_dpop_proof classifications and includes a corrected-proof-timestamp retry branch; another network branch recognizes dpop_iat_out_of_range. The exact complete proof claims, refresh wire payload and attempt ceilings remain open.
 - android_dpop_signing_concurrency and internal signing timing/queue/result dimensions were seen; these do not authorize ChatJS telemetry or background reporting.
 
@@ -691,7 +691,7 @@ The earlier note left the exact `Lxb8.j` 30/300-second and error branches unreso
 
 ### Remaining boundary
 
-The `ApiServiceError` wire mapping is now resolved: parser `Lwn00.a` reads nested JSON `type` and `code`, passes them as the second and third String constructor arguments, and the constructor assigns them to fields `.b` and `.c` respectively (`b=type`, `c=code`). Other OAuth retry branches, DPoP `WWW-Authenticate`/`X-Nonce` lifecycle, `Lpvx` dependency lifetime/reset, native auth provider injection and a portable secure non-exportable host signer remain open. The Android package has been inspected statically only. No ChatJS runtime implementation was added; no auth, token, key or network operation was used.
+The `ApiServiceError` wire mapping is now resolved: parser `Lwn00.a` reads nested JSON `type` and `code`, passes them as the second and third String constructor arguments, and the constructor assigns them to fields `.b` and `.c` respectively (`b=type`, `c=code`). Other OAuth retry branches, any DPoP server-nonce use outside the recovered scheme-only Ktor challenge callback, `Lpvx` dependency lifetime/reset, native auth provider injection and a portable secure non-exportable host signer remain open. `X-Nonce` is RevenueCat-only. The Android package has been inspected statically only. No ChatJS runtime implementation was added; no auth, token, key or network operation was used.
 
 
 ## Latest handoff — Android Ktor DPoP provider negotiation and X-Nonce attribution correction — 2026-11-26
