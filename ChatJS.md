@@ -314,3 +314,8 @@ ChatJS still does not implement native authentication, DPoP, secure key storage,
 ## Android DPoP HTTP Date timestamp correction findings — 2026-11-26
 
 The Android OAuth refresh coroutine reads the response's HTTP `Date` header, parses it using the client's date-format parser and converts its millisecond timestamp to epoch seconds. The timestamp-correction branch updates the injected in-memory `Lpvx.b` value with server-minus-local epoch seconds, then issues one explicit additional refresh request. The full error/time filter, other refresh retry paths and offset holder lifetime/reset are still under investigation. These are Android package findings, not ChatJS support: ChatJS has no DPoP signer, native credential provider, authenticated transport, Date-header clock updater or token-refresh workflow.
+
+
+## Android DPoP refresh correction classifier — source findings only — 2026-11-26
+
+The Android refresh timestamp/error classifier requires the OAuth refresh request model, a response-exception status of 400/401/403, and the sent refresh `iat` to differ from response `Date` by more than the asymmetric source thresholds: request `iat` more than 30 seconds ahead, or response `Date` more than 300 seconds ahead. It then accepts HTTP 400 `ApiServiceError.c == invalid_grant`, or a match in raw internal fields `ApiServiceError.b`/`.c` for `refresh_token_reused`, `token_expired`, or `invalid_dpop_proof`. The eligible path updates the clock offset and retries once. The exact JSON labels for the raw `.b`/`.c` fields, other refresh retry branches and DPoP nonce/challenge lifecycle remain open. This is Android source analysis, not ChatJS capability: ChatJS still has no DPoP signer, native provider, refresh transport or authentication implementation.
