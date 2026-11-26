@@ -307,3 +307,12 @@ The Ktor auth handler reads `WWW-Authenticate`, parses the challenge scheme and 
 The registered Ktor DPoP proof provider has been traced end-to-end: builder paths create `Lkl40`, wrap it with `Lsvx`, and register under the `Ltvx.a` provider key. `Lkl40.invokeSuspend` creates `Lke` with `Lyt2`, `Lpqc1` and `Lb6p0`; `Lke` reads the `Lyt2.b` P-256 KeyPair, adds `Lpvx.b` to local Instant epoch seconds, gets the URL from `Lpqc1.h` and calls `Lyls0.s` for the main DPoP JWT. The main JWS serializer has `htm`, `htu`, `iat`, `jti`, `ath` and no nonce claim.
 
 `Lyt2.b(String)` is not that request signer. Its only direct caller across all ten DEX files is `Lsk00.a`, which validates a separate `DEVICE_KEY` challenge. `Lqk00` carries top-level `type`, `purpose`, `data`; nested data `Lpk00` carries `challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`. The challenge string is signed with the same P-256 key pair and returned with public JWK as a separate response object. The exact endpoint/transport of the complete DEVICE_KEY challenge workflow remains separate from the main Ktor DPoP proof; do not use it as evidence for a DPoP JWT nonce.
+
+
+## Android DPoP signer result and instrumentation boundary — 2026-11-26
+
+`Lgmq0.invokeSuspend` calls `Ln1d1.b` once and wraps success/error as `Lavb1`/`Lbvb1` inside `Lovx`. `Lfq.a` consumes this result under the configured concurrency gate: success yields the DPoP Authorization value; failure is mapped from the platform signing exception and returned as credentials-acquisition failure. No second signing call or retry loop appears in these methods.
+
+The `DPoPClockRetryAttempted` Ktor request attribute is declared in `Lyp`, but its only app-DEX reference is a read in `Lxp.b` that short-circuits provider acquisition when the attribute is already present. No writer/setter was found in the ten DEX files. Its upstream producer and retry purpose remain unknown; it is not proof of an automatic DPoP retry and is distinct from `Lxb8.e`'s verified one-time OAuth refresh `Date` correction.
+
+`RequestDPoPMetadata` is an observability bundle merged into OpenTelemetry span attributes. The exact `OpenAI-Device-Key` reference is a Sentry OkHttp event recorder allowlist, not a header emitter. Neither marker appears in the 111 decompressed Valdi modules. ChatJS does not copy telemetry or Sentry header-capture behavior.
