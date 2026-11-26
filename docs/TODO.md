@@ -344,5 +344,7 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace `Ln1d1.b`: read `Instant.epochSecond`, add stored `Lpvx.b` offset using 64-bit arithmetic, and pass the result as DPoP `iat`.
 - [x] Trace `Lxb8.e`: calculate corrected offset as server epoch seconds minus local Instant epoch seconds and store it in `Lpvx.b` before the timestamp-correction refresh retry.
 - [x] Add `calculateAndroidDpopIssuedAt` as a private integer-only offset helper with Number/BigInt preservation and tests for positive, negative, mixed-width and invalid inputs.
-- [ ] Identify the exact server timestamp source field and remaining bounded retry ceiling; do not infer either from the log message alone.
-- [ ] Trace offset persistence, expiry and reset across credential/session changes.
+- [x] Trace the refresh response's HTTP `Date` header through `Lxb81.e` and `Lk9y.a`; the parsed `Ll9a0.i` timestamp is divided by 1000 and supplied as epoch seconds.
+- [x] Trace the one explicit correction retry in `Lxb8.e`: after an eligible failure it updates `Lpvx.b` and calls `Lxb8.g` once more. This is one retry in this correction path, not the global OAuth retry policy.
+- [ ] Fully decode the `Lxb8.j` status/error/time predicate, including the 30/300-second comparison branches, and trace any separate invalid-proof/refresh retry paths; do not infer a TTL from these constants.
+- [ ] Trace the dependency-injection scope, lifetime and reset behavior of the in-memory `Lpvx.b` offset holder; no persistence/TTL/clear path was found in the traced holder, but session-reset semantics remain unverified.
