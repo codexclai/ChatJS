@@ -352,3 +352,10 @@ The same Ktor response coroutine has a separate `token_expired` branch: it calls
 The Android auth repository routes credential renewal through `Ld7x.p` → `Ljn8` → `AuthApiImpl` `Lxb8`. The API implementation uses `https://auth.openai.com/oauth/token`. `Lxb8.h` constructs `Lpyy0` with client ID from injected `Lyjq0.a` and the refresh-token String supplied by the repository coroutine. Generated serializer `Lnyy0` maps the body to JSON properties `clientId`, `refreshToken`, `grantType`; the grant type defaults to `refresh_token` and is encoded using default-aware serializer behavior.
 
 The Ktor request builder `Lub8` serializes this body and adds optional `ChatGPT-Account-ID`, a separate `DPoP` proof header, and `oai-uit: True`. The DPoP proof callback uses the stored P-256 key and adjusted clock; its null method override resolves to `POST`, and it receives a null access-token-hash input. These are static Android client findings only. ChatJS does not yet issue this request, refresh credentials, sign DPoP proofs or authenticate. The refresh response schema, failure mapping and full token-expired replay ceiling remain open.
+
+
+## Android OAuth refresh success response — source findings — 2026-11-26
+
+The Android success DTO `Llkq0` has seven serialized properties: `accessToken` (String), `idToken` (String), `refreshToken` (String), `expiresIn` (Integer), `earliestRefreshAt` (Long), `tokenType` (String), and `scope` (String). Its generated serializer `Ljkq0` confirms exact names and declared types.
+
+`Ljn8.a` unwraps the generic API result and passes successful `Llkq0` data to `Ly4b1.h` with the clock, credential binding and previous token record. `Ly4b1.h` validates credential-record identity, merges response token/timing/scope data with selected fallback values, and returns a rebuilt internal `Lvg8` access-token record wrapped in `Lavb1`. The repository does not expose the raw JSON DTO as its token value. Non-success response mapping and the full `token_expired` replay ceiling remain open. ChatJS still has no OAuth HTTP, token renewal or DPoP implementation.
