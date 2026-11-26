@@ -346,5 +346,7 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Add `calculateAndroidDpopIssuedAt` as a private integer-only offset helper with Number/BigInt preservation and tests for positive, negative, mixed-width and invalid inputs.
 - [x] Trace the refresh response's HTTP `Date` header through `Lxb81.e` and `Lk9y.a`; the parsed `Ll9a0.i` timestamp is divided by 1000 and supplied as epoch seconds.
 - [x] Trace the one explicit correction retry in `Lxb8.e`: after an eligible failure it updates `Lpvx.b` and calls `Lxb8.g` once more. This is one retry in this correction path, not the global OAuth retry policy.
-- [ ] Fully decode the `Lxb8.j` status/error/time predicate, including the 30/300-second comparison branches, and trace any separate invalid-proof/refresh retry paths; do not infer a TTL from these constants.
+- [x] Decode `Lxb8.j` end-to-end: require `Lpyy0` refresh request, `Ly0p0` response exception and status 400/401/403; compare sent refresh `iat` with response `Date`; accept only `iat - Date > 30s` or `Date - iat > 300s`; accept HTTP 400 `ApiServiceError.c == invalid_grant` or `ApiServiceError.b/c` matching `refresh_token_reused`, `token_expired`, `invalid_dpop_proof`.
+- [ ] Trace exact JSON property names/serializer mapping for `ApiServiceError.b` and `.c`; until resolved, retain the raw model field names and do not relabel them.
+- [ ] Trace other OAuth refresh retries and the main DPoP `WWW-Authenticate`/`X-Nonce` challenge lifecycle; the single Date-correction retry is not the global retry policy.
 - [ ] Trace the dependency-injection scope, lifetime and reset behavior of the in-memory `Lpvx.b` offset holder; no persistence/TTL/clear path was found in the traced holder, but session-reset semantics remain unverified.
