@@ -717,3 +717,18 @@ The generic Ktor parser and provider handoff are now method-decoded: parameteriz
 `Lph8.invokeSuspend` uses only `Lyuc0.a()` to select `DPoP` or `Bearer`, pairing the challenge object with the provider. Although `Lsh8.a` has a `Lyuc0` parameter, its continuation class `Lqh8` does not capture that challenge; it calls `Lxp.b` using request/auth context. No read of the parameter list or a nonce parameter is present in the recovered DPoP provider callback. This proves parser support, not nonce consumption. It also does not prove that no other server-nonce path exists elsewhere.
 
 The literal `X-Nonce` reference is confirmed as RevenueCat-only (`Ljz40.b`); earlier historical wording attributing it to ChatGPT DPoP is superseded. No ChatJS runtime change was made.
+
+
+## Latest handoff — Registered Android DPoPProofProvider and independent DEVICE_KEY challenge signer — 2026-11-26
+
+### Main Ktor proof-provider callback
+
+The concrete Ktor provider registration is now connected to its implementation. Client construction paths `Lf91.invokeSuspend` (classes5 index 13156) and `Lxq8.invokeSuspend` (classes7 index 60056) construct `Lkl40`, wrap it with `Lsvx`, and register it under the `Ltvx.a` `DPoPProofProvider` key. `Lsvx.a` invokes the captured `Lkl40` callback. `Lkl40.invokeSuspend` (classes6 index 21717) constructs an `Lke` coroutine with the `Lyt2` key holder, `Lpqc1` request descriptor and `Lb6p0` session/clock context. `Lke.invokeSuspend` (classes7 index 27595) reads the `Lyt2.b` KeyPair, calculates current `Instant.epochSecond + Lpvx.b`, constructs the request URL from `Lpqc1.h`, and calls the main `Lyls0.s` compact-JWS builder. This is the ordinary Ktor DPoP request-proof path. Its JWS has `htm`, `htu`, `iat`, `jti`, and `ath`, with no nonce claim; this recovered provider does not call `Lyt2.b(String)`.
+
+### Separate lookup-key challenge signer
+
+A direct callsite sweep across the ten DEX files finds only one caller of `Lyt2.b(String)`: classes7 `Lsk00.a` (index 47413). It requires `Lqk00.type == DEVICE_KEY`; otherwise it raises `Invalid lookup-key authentication challenge`. `Lqk00` serializes top-level JSON `type`, `purpose`, and `data`; nested `Lpk00` data serializes `challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, and `signature`. `Lsk00` passes the nested challenge string to `Lyt2.b(String)`, which Base64URL-decodes a 32-byte challenge, signs it with the same P-256 KeyPair and returns public JWK plus signature material. The result is a separate `Livk0` object; it is not assembled through the main `Lyls0.s` DPoP JWT serializer. Its caller `Lrk00.invokeSuspend` is in the `Lge70` app coroutine flow.
+
+These two paths share the stored key holder but are distinct protocols: request DPoP JWT vs the `DEVICE_KEY` challenge-signature response. Do not insert the lookup-key challenge into the DPoP JWT or treat it as the generic Ktor server nonce. Other nonce-bearing DPoP/native flows remain possible and still need callsite coverage; no blanket absence claim is made.
+
+No ChatJS runtime change, Android execution, credential/key use or network activity occurred.
