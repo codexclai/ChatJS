@@ -1816,3 +1816,17 @@ The successful OAuth token response is deserialized into generated model `Llkq0`
 ### Boundary
 
 The Android OAuth refresh request endpoint/body and the seven-property success response DTO plus `Llkq0` → `Lvg8` conversion are now source-mapped. Remaining work is the full non-success response/error conversion, token-expiry renewal replay ceiling, remaining `invalid_dpop_proof`/OAuth retry branches, native provider injection and a legitimate host-owned secure non-exportable signer. No Android method was executed, no credentials/keys/network requests were used, and no ChatJS runtime/auth code was added.
+
+
+## Android OAuth refresh API-result wrapper and HTTP-response failure boundary — 2026-11-26
+
+Further inspection of `Lxb8.g` (classes.dex method index 59395) shows that the coroutine does not return the raw Ktor result directly. It wraps the API outcome in `Ljb8`, retaining the underlying `La1p0` result, the already-sent refresh `iat`, and an optional parsed response-Date epoch-second value. `Lxb8.e` consumes this wrapper and passes it to `Lxb8.j` for the source-specific skew/error predicate.
+
+- On success, `La1p0` subtype `Lz0p0` carries the response body; `Ljn8.a` extracts its `.a` value as `Llkq0` and calls `Ly4b1.h` to produce the internal `Lvg8` record (documented above).
+- On a Ktor response failure, the result is represented by `Lu0p0` carrying the `Ly0p0` response-exception wrapper. `Lxb8.g` reads its HTTP status and examines the underlying throwable/cause for `ApiServiceError`; it also reads the response header `Date`, parses it with `Lk9y.a`, divides the millisecond timestamp by 1000, and includes epoch seconds in the `Ljb8` wrapper. This is the only failure shape in which the Date-based clock-skew classifier has a response timestamp to evaluate.
+- A non-response transport/serialization exception follows a separate generic failure path (`Lw0p0`/`Lu0p0`) and is wrapped without a usable HTTP response Date. It therefore cannot satisfy the `Lxb8.j` Date-skew condition merely by being a refresh failure.
+- The method also extracts request/edge diagnostic identifiers such as request ID and `cf_ray_id` from the response, and constructs refresh-attempt event metadata. These are diagnostics/observability, not protocol fields to copy into ChatJS.
+
+This narrows the failure boundary but does not fully normalize every non-success case: the exact mapping for all HTTP statuses, all nested `ApiServiceError` values, parsing failures, cancellation, retry exhaustion and response DTO exceptions remains under investigation. Preserve the distinction between `Lxb8.g`'s HTTP-response wrapper and generic transport failure; do not make a missing `Date` eligible for the skew retry.
+
+No Android code was run, no account credential/key was used and no network request was made. This is source analysis only; ChatJS still has no refresh HTTP client or token-renewal implementation.
