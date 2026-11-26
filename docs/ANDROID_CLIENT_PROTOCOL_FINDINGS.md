@@ -1655,3 +1655,25 @@ The earlier note left the exact `Lxb8.j` 30/300-second and error branches unreso
 5. When the method returns the parsed server timestamp, the caller `Lxb8.e` computes `responseDate - localInstant.epochSecond`, stores the offset in `Lpvx.b`, and invokes `Lxb8.g` once more. That is the one confirmed corrective reattempt for this timestamp-error path.
 
 The JSON field mapping is now source-resolved. In `Lwn00.a`, the parser reads the nested JSON properties `type` and `code` and passes those values as the second and third String arguments to the `ApiServiceError` constructor. The constructor stores those arguments in fields `b` and `c`, respectively: `ApiServiceError.b = type` and `ApiServiceError.c = code`. The exact `invalid_grant` check is therefore against the parsed error code; the other three accepted values can match either the error type or code. Other OAuth refresh retry branches, DPoP `WWW-Authenticate`/`X-Nonce` lifecycle, `Lpvx` provider lifetime/reset, native auth provider and a portable secure non-exportable signer remain open. This was static bytecode inspection only; no Android code ran, and no credentials, keys or network requests were used. ChatJS still does not implement this classifier, clock state, refresh or DPoP signing.
+
+
+## Android DPoP authentication-provider and challenge negotiation — 2026-11-26
+
+### Source-backed Ktor auth flow
+
+The Android DEX contains a Ktor authentication integration distinct from the OAuth refresh timestamp-correction coroutine:
+
+- `Lsh8.<clinit>` (classes2.dex, method index 49795) creates `io.ktor.client.plugins.auth.Auth` and registers the `Lxp` `AccessTokenDPoPPlugin` as an authentication provider.
+- `Lph8.invokeSuspend` (classes2.dex, method index 43384, code offset 2355612) handles a response without a usable authentication context, reads `WWW-Authenticate` from the response through `Lxb81.d`, passes its value to the challenge parser, obtains each parsed challenge's scheme, and compares it with the literal schemes `DPoP` and `Bearer`. It builds provider/challenge pairs and selects the matching provider. If the header is absent/empty, it produces the source message that token acquisition/refresh cannot proceed without `WWW-Authenticate`.
+- `Lrvx.<init>` registers a separate Ktor plugin named `DPoPProofPlugin`. `Ltvx` exposes a dependency-injected `DPoPProofProvider`. `Lqvx.invokeSuspend` checks the DPoP feature/configuration gate and invokes the provider path; `Lsvx.a` is an adapter to the injected callback.
+- `Lvp.invokeSuspend` is the access-token provider's request path. It chooses the `Authorization` scheme as `DPoP ` or `Bearer ` based on the token's signing capability and delegates proof creation to `Lfq.a`. `Lfq.a` invokes the source DPoP request-proof builder and attaches the resulting proof through the outgoing request metadata/header path.
+
+This establishes that Android's challenge handler negotiates the authentication scheme and that DPoP proof generation is a separate outgoing-request plugin/provider path. The `WWW-Authenticate` challenge object is paired with the selected provider; the current method trace does not show a DPoP nonce parameter being read from it, persisted, or inserted into the main proof.
+
+### Correction: `X-Nonce` was a RevenueCat header, not established ChatGPT DPoP behavior
+
+The only exact `X-Nonce` string reference found in the inspected DEX is in `Ljz40.b` (classes.dex, method index 27830, code offset 4029292). That method constructs a separate SDK request header map containing `X-Platform`, `X-Platform-Flavor`, `X-Platform-Version`, `X-Client-*`, `X-Observer-Mode-Enabled`, `X-Nonce`, and `X-Post-Params-Hash`, and its same header map contains RevenueCat-specific headers such as `Accept-RC-Element-Encoding` and `application/x-rc-format`. This is the RevenueCat Purchases networking path, not the ChatGPT authentication provider. Prior notes that attributed this literal `X-Nonce` to Android's DPoP challenge flow are corrected and superseded.
+
+The main DPoP compact-JWS serializer previously traced in `Lyls0.s` has the observed payload fields `htm`, `htu`, `iat`, `jti`, and `ath`; no `nonce` claim appears in that serializer. Other `nonce` strings belong to distinct flows, including the OIDC authorization request and the lookup-key nonce proof. The exact DPoP server-nonce wire mechanism, whether carried through another challenge parameter/object or another request path, and how it is bound to a proof remain unverified. Do not implement or document a DPoP nonce header/value until its actual source caller is recovered.
+
+No ChatJS runtime change was made. No Android method was executed, and no credential, key, or network request was used.
