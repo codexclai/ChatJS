@@ -340,3 +340,8 @@ The credential refresh flow reaches `AuthApiImpl` `Lxb8`. `Lxb8.g` uses `https:/
 ## Android OAuth refresh success response DTO — 2026-11-26
 
 `Llkq0`/`Ljkq0` success DTO exact JSON shape and declared types: `accessToken` String, `idToken` String, `refreshToken` String, `expiresIn` Integer, `earliestRefreshAt` Long, `tokenType` String, `scope` String. The generated serializer descriptor and deserialize/serialize methods confirm seven properties in that order. `Ljn8.a` extracts `Llkq0` from the API result success wrapper and calls `Ly4b1.h` with the DTO, clock and credential context. `Ly4b1.h` validates previous-record identity, merges selected prior-value fallbacks and timing/scope data, and builds an internal `Lvg8` access-token record returned in `Lavb1` success. Non-success response normalization and the complete token-expired replay ceiling remain open.
+
+
+## Android OAuth refresh result wrapper and failure boundary — 2026-11-26
+
+`Lxb8.g` returns `Ljb8` with the `La1p0` result, sent refresh `iat`, and optional response Date (epoch seconds). `Lz0p0` success contains `Llkq0`, converted by `Ljn8.a`/`Ly4b1.h` into `Lvg8`. An HTTP error response is `Lu0p0` with `Ly0p0`; status, throwable API error and HTTP `Date` are inspected and the timestamp is parsed into the wrapper. Generic transport/serialization errors follow `Lw0p0`/`Lu0p0` without a usable Date and do not qualify for the `Lxb8.j` skew correction. Full non-success status/error/cancellation mapping and all retry ceilings remain open; diagnostic request/CF-Ray identifiers are not reproduced.
