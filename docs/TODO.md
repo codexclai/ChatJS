@@ -335,7 +335,8 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Verify SHA-256/UTF-8/Base64URL token binding and source URL canonicalization.
 - [x] Implement private signing-input/compact-JWS serialization with seven tests and package archive coverage.
 - [x] Resolve `iat` as epoch seconds from `Instant.epochSecond` plus stored server-minus-local epoch-second offset; trace the correction calculation. Offset acquisition/persistence and total retry ceiling remain open.
-- [ ] Trace the parsed `WWW-Authenticate` challenge object into the DPoP provider and determine whether/how any server nonce is consumed and bound into a DPoP proof; do not use the unrelated RevenueCat `X-Nonce` header as evidence. Keep OIDC authorization nonce and lookup-key nonce proof separate.
+- [x] Decode the generic Ktor `WWW-Authenticate` parser: parameterized `Lwuc0` retains scheme plus `List<Lwub0>` name/value pairs; token68 uses `Lxuc0`; both derive from `Lyuc0`. Trace `Lph8` scheme-based DPoP/Bearer provider selection and the DPoP `Lsh8.a` callback: continuation `Lqh8` does not capture the challenge parameter list, and `Lxp.b` is invoked with request/auth context. No challenge-parameter/nonce consumption is demonstrated by this provider path.
+- [ ] Trace any other DPoP server-nonce response/header, native callback or `DPoPProofProvider` path not visible in this `WWW-Authenticate` selection flow; keep OIDC authorization nonce, lookup-key nonce proof and the unrelated RevenueCat `X-Nonce` distinct.
 - [ ] Implement authenticated DPoP only after native provider and secure non-exportable host signer/session ownership are established and authorized E2E tests pass.
 
 
@@ -348,5 +349,5 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace the one explicit correction retry in `Lxb8.e`: after an eligible failure it updates `Lpvx.b` and calls `Lxb8.g` once more. This is one retry in this correction path, not the global OAuth retry policy.
 - [x] Decode `Lxb8.j` end-to-end: require `Lpyy0` refresh request, `Ly0p0` response exception and status 400/401/403; compare sent refresh `iat` with response `Date`; accept only `iat - Date > 30s` or `Date - iat > 300s`; accept HTTP 400 `ApiServiceError.c == invalid_grant` or `ApiServiceError.b/c` matching `refresh_token_reused`, `token_expired`, `invalid_dpop_proof`.
 - [x] Trace exact Android error parser/constructor mapping: nested JSON `type` is assigned to `ApiServiceError.b`, and nested JSON `code` is assigned to `ApiServiceError.c`; the `invalid_grant` branch is specifically a code comparison.
-- [ ] Trace other OAuth refresh retries and the main DPoP `WWW-Authenticate` provider/challenge lifecycle, including any server-nonce value and proof binding; the single Date-correction retry is not the global retry policy.
+- [ ] Trace other OAuth refresh retries and any server-nonce delivery/consumption through DPoP provider calls outside the scheme-only Ktor challenge selection; the single Date-correction retry is not the global retry policy.
 - [ ] Trace the dependency-injection scope, lifetime and reset behavior of the in-memory `Lpvx.b` offset holder; no persistence/TTL/clear path was found in the traced holder, but session-reset semantics remain unverified.
