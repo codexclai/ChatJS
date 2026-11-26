@@ -788,3 +788,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Trace the complete Android lookup-key proof/JWK return schema and establish whether it is separate from or reused by the main DPoP JWT challenge flow.
 - [ ] Resolve the alternate `Lnz6` / ImagesCreationComposer callback conditions for the `messaging/rooms` `RetryExpiredAccessToken` producer; do not implement its currently mismatched callback contract.
 - [ ] Trace the actual native/CompilerIntrinsics authentication-provider injection point and Kotlin closure owners; distinguish provider implementation from generated interface adapters.
+
+## Android lookup-key challenge proof and DPoP relationship — 2026-11-26
+
+- [x] Decode the `Lqk00` challenge envelope (`type`, `purpose`, `data`) and nested `Lpk00` challenge fields (`challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`); confirm `Lqk00.a()` only accepts `DEVICE_KEY` with usable data.
+- [x] Decode the `Livk0` proof response (`publicKey`, `challenge`, `deviceSignature`) and EC P-256 JWK schema (`kty`, `crv`, `x`, `y`).
+- [x] Trace exact nonce signing: Base64URL decode, exactly 32 bytes, SHA256withECDSA on the KeyPair private key, DER-to-fixed-64-byte ES256 conversion, base64url encoding.
+- [x] Trace observed signing-helper callers (`Lge70.invokeSuspend`, `Lrk00.invokeSuspend`) and LoginAuthSigningKeyManager key alias prefix `openai.login.dpop.`.
+- [x] Establish that `Livk0.deviceSignature` is a separate lookup challenge artifact, not the ordinary OAuth DPoP JWT; OAuth refresh `Ltb8` separately builds DPoP via `Lyls0.s` from Lyt2 KeyPair/URL/iat; `Lxb8.k` uses the alias.
+- [ ] Trace whether the exact generated `openai.login.dpop.*` alias and KeyPair are persisted/reloaded through the credential-bound `Lvg8` record and reused by each later OAuth DPoP refresh; same wrapper contract is established, exact instance/alias continuity is not.
+- [ ] Identify the upstream challenge endpoint/transport owner and full `Lge70`/`Lrk00` caller conditions/results; maintain the distinction from OAuth refresh and Codex remote-control device-key proof.
+- [ ] Trace the native/CompilerIntrinsics authentication provider and secure signing-key lifecycle; keep non-exportable storage and fail-closed host capability requirements.

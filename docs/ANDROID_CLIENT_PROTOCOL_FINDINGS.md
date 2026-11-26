@@ -2011,3 +2011,38 @@ The HTTP response wrapper remains distinct from generic transport/serialization 
 ### Evidence boundary
 
 These are static bytecode observations from the supplied Android 1.2026.321 package. No Android method was executed, no account credentials/tokens/keys were used, and no network request was made. No ChatJS runtime code or tests were added. This closes the inspected build's OAuth `invalid_dpop_proof` retry classifier and parser-cancellation branch; it does not implement OAuth refresh or DPoP signing in ChatJS.
+## Android lookup-key DEVICE_KEY challenge proof and relationship to OAuth DPoP — 2026-11-26
+
+### Challenge and response wire models
+
+The lookup-auth challenge model `Lqk00` uses a generated Kotlin serialization descriptor with exactly three JSON properties: `type`, `purpose`, and `data`. Its `data` value is `Lpk00`, whose descriptor has exactly six fields: `challengeId` (String), `challenge` (String), `purpose` (String), `issuedAt` (Long), `expiresAt` (Long), and `signature` (String). `Lqk00.a()` is a challenge extractor that only accepts `type == "DEVICE_KEY"`; it checks required challenge-data strings/timing before returning the challenge value. Other challenge types or incomplete data do not produce a lookup proof challenge.
+
+The challenge-signing helper is `Lsk00.a(Lqk00, Lyt2)` in classes7.dex method 47413. It first calls `Lqk00.a()`; if no usable DEVICE_KEY challenge is available it returns the typed `Invalid lookup-key authentication challenge` failure. Otherwise it calls the sole observed consumer of `Lyt2.b(String)` with the extracted challenge. It then constructs `Livk0` with the derived public JWK, original `Lpk00` challenge object, and signature string.
+
+`Livk0` has exactly three serialized JSON properties: `publicKey`, `challenge`, and `deviceSignature` (serializer `Lgvk0`, classes7 method 18107). `publicKey` is `Lfk50`, whose serializer `Ldk50` (classes4 method 12045) has exactly `kty`, `crv`, `x`, and `y`; its constructor defaults are `kty = "EC"`, `crv = "P-256"`. Both coordinates are base64url-encoded unsigned big-endian coordinate bytes. The `deviceSignature` value is the base64url-encoded 64-byte JOSE-style ECDSA signature returned with the JWK.
+
+### Nonce validation and cryptographic operation
+
+`Lyt2.b(String)` is implemented in classes3.dex method 56849. It Base64URL-decodes the supplied challenge string and requires the resulting byte array to be exactly 32 bytes; otherwise it raises `Invalid lookup-key nonce`. It obtains the `ECPublicKey` from the `KeyPair`, serializes its JWK via `Ljj51.p`, signs the decoded challenge bytes via `Ljj51.m`, base64url-encodes the signature, and returns `Ljvk0(publicJwk, signature)`.
+
+`Ljj51.m` (classes3 method 27090) uses JCA `Signature.getInstance("SHA256withECDSA")`, initializes with the key pair's private key, updates with the exact decoded nonce bytes, and signs. It parses the DER ECDSA sequence and converts its `r` and `s` integers to fixed-width 32-byte components, concatenating them into the 64-byte ES256/JWS-style signature representation. `Ljj51.p` reads affine X/Y from the EC public key and encodes their 32-byte forms. This establishes an ES256/P-256 proof over the challenge nonce; the challenge's own `signature` field remains part of the echoed `challenge` object and is not the newly generated `deviceSignature`.
+
+### Call graph and login-key namespace
+
+`Lge70.invokeSuspend` (classes6 method 13034) and `Lrk00.invokeSuspend` (classes7 method 44880) are the observed coroutine callsites that invoke `Lsk00.a`. The `LoginAuthSigningKeyManager` is `Lqhk0`; `Lqhk0.a()` (classes3 method 40788) builds a key alias beginning with the literal `openai.login.dpop.` plus a generated identifier and obtains a `Lyt2` from `Lzt2.b(alias)`. `Lqhk0.b(alias)` attempts to load an existing wrapper through `Lzt2.c(alias)` and falls back to generating/obtaining a key through `Lqhk0.a()` when needed. The helper uses the same `Lyt2` value object shape containing alias String and `KeyPair`.
+
+### Relationship to ordinary OAuth DPoP JWT
+
+The challenge proof is **not itself** the ordinary OAuth DPoP JWT and the `Livk0` JSON object is not serialized into that JWT. The lookup flow signs raw 32-byte challenge nonce data and places the JWK, challenge object and `deviceSignature` into its own response model.
+
+The OAuth token endpoint path is distinct: `Ltb8.invokeSuspend` (classes7 method 49258) reads the `KeyPair` from the `Lyt2` wrapper and passes it to `Lyls0.s` together with `https://auth.openai.com/oauth/token`, the request `iat` and request parameters to create the DPoP proof used by the refresh request. `Lxb8.k` (classes.dex method 59399) separately reads `Lyt2.a` (the alias/identifier) for the refresh DPoP header/request construction. Thus the two signatures use the same Lyt2 wrapper/key-pair abstraction and compatible ES256 material, but are separate signed artifacts and separate call paths.
+
+**Important unresolved key-identity boundary:** the login manager uses the `openai.login.dpop.` namespace, and the refresh path consumes the same `Lyt2` alias/KeyPair abstraction through the credential repository. The static call graph inspected so far does not prove that every challenge's exact `Lyt2` instance or alias is the one later loaded for every OAuth refresh request. Do not declare the keys identical or unrelated until the alias persistence and credential-record handoff is traced end-to-end.
+
+### Keep other DEVICE_KEY uses separate
+
+The `DEVICE_KEY` lookup challenge type in `Lqk00` belongs to the LoginAuth/LookupKeyAuthentication flow. It is not the Codex remote-control `device_key_challenge`/`device_key_proof` enrollment protocol in classes5/classes8, nor the `DEVICE_KEY` page and connection-type labels in classes9 by name alone. Do not merge these based on identical words.
+
+### Evidence boundary
+
+All methods and serializers above were inspected statically in the supplied Android 1.2026.321 APK; no Android function was executed and no credentials, key material or network request was used. No ChatJS runtime implementation was added. The concrete challenge/response DTO and signature operation are now resolved; the exact alias continuity into later credential-bound OAuth DPoP, challenge endpoint/transport owner, and the native secure provider remain open.

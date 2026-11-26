@@ -876,3 +876,15 @@ The remaining OAuth retry and malformed-response questions for the supplied Andr
 - `Lwn00.a` skips HTML responses; typed no-transformation/content-conversion/illegal-argument parser failures return no structured `ApiServiceError`. Its generic exception branch checks the coroutine Job with `Le6o0.w/x`, rethrowing cancellation when the Job is inactive; otherwise it logs the parser diagnostic and returns no structured error.
 
 Full exception-table and method details are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Remaining Android work shifts to the outstanding lookup-key/nonce proof consumer relationship, alternate ImagesCreationComposer retry callback conditions, native provider injection, encrypted credential store, and secure host signer. No runtime authentication or network feature has been implemented.
+## Latest handoff — Android lookup-key DEVICE_KEY proof schema and OAuth DPoP distinction — 2026-11-26
+
+The lookup-key signing path is now method-traced through its challenge and proof DTOs:
+
+- `Lqk00` serializes `{type, purpose, data}`. Its challenge `data` (`Lpk00`) has `challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`. `Lqk00.a()` accepts only `type == DEVICE_KEY` with required usable data.
+- `Lsk00.a` invokes `Lyt2.b(challenge)`, then constructs `Livk0` serialized as `{publicKey, challenge, deviceSignature}`. `publicKey` is an EC/P-256 JWK with `{kty,crv,x,y}`.
+- `Lyt2.b` base64url-decodes the challenge and requires 32 bytes. `Ljj51.m` signs those bytes with JCA SHA256withECDSA using the KeyPair private key, parses DER and emits raw fixed-width 64-byte ES256 form; `Ljj51.p` derives the public JWK.
+- Callers observed: classes6 `Lge70.invokeSuspend` and classes7 `Lrk00.invokeSuspend`. `Lqhk0` is LoginAuthSigningKeyManager; it generates/loads a Lyt2 under alias prefix `openai.login.dpop.`.
+- This `Livk0.deviceSignature` challenge response is not the OAuth DPoP JWT. The OAuth refresh path `Ltb8` invokes `Lyls0.s` with the Lyt2 KeyPair/URL/iat; `Lxb8.k` reads the Lyt2 alias. Same wrapper/keypair abstraction, separate signed artifacts. Exact same persisted key alias/instance crossing the challenge and all future OAuth refresh operations remains unproven.
+- Keep LoginAuth `DEVICE_KEY` challenge separate from Codex remote-control device-key challenge/proof and similarly named analytics labels.
+
+Full method/source details are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Next: resolve alias persistence/handoff into the credential-bound `Lvg8` and ordinary OAuth DPoP refresh path; then continue native signing-provider injection, main DPoP signer protocol and any separate challenge endpoint/transport. No ChatJS runtime behavior has been claimed.

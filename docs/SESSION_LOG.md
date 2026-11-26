@@ -1570,3 +1570,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Parsed `Lwn00.a`'s DEX exception table: HTML and expected no-transformation/illegal-argument/content-conversion parser failures return no structured `ApiServiceError`; generic exception handling calls `Le6o0.w/x` to check the coroutine Job and rethrow cancellation if inactive, else logs the parser diagnostic and returns no structured error.
 - Documentation-only changes planned for findings, AI_MEMORY, continuation, TODO and session log. No runtime or tests changed; no Android code execution, credentials, keys or network requests.
 - Last green repository checkpoint before this update: `6e761a67df33c6d71a04af5e3f9a4234514cd0d3`, CI `45812447837`, CodeQL `45812447541`. New docs commit requires its own checks.
+
+## 2026-11-26 — Android lookup-key DEVICE_KEY signing proof schema and DPoP comparison
+
+- Traced Lqk00 JSON envelope (`type`, `purpose`, `data`) and nested Lpk00 DTO (`challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`) via generated Kotlin serializers.
+- Traced Lsk00.a to `Livk0` response DTO `{publicKey, challenge, deviceSignature}`; `Lfk50` is an EC/P-256 public JWK `{kty,crv,x,y}`. `Lqk00.a()` gates on type DEVICE_KEY and usable challenge data.
+- Reconstructed exact challenge operation: `Lyt2.b(String)` Base64URL-decodes the challenge and requires exactly 32 bytes; `Ljj51.m` uses JCA SHA256withECDSA with the KeyPair private key and converts DER output into fixed-width 64-byte ES256 representation; `Ljj51.p` emits base64url P-256 x/y.
+- Found helper callsites in classes6 `Lge70.invokeSuspend` and classes7 `Lrk00.invokeSuspend`. `Lqhk0` is labelled `LoginAuthSigningKeyManager`, generates/loads `Lyt2` through alias prefix `openai.login.dpop.`.
+- Compared OAuth refresh DPoP: classes7 `Ltb8.invokeSuspend` passes the Lyt2 KeyPair/URL/iat to `Lyls0.s`, while `Lxb8.k` reads Lyt2 alias. The signed `Livk0` lookup proof is a distinct JSON artifact, not the OAuth DPoP JWT; same key-wrapper/KeyPair abstraction, exact alias/instance continuity into all later OAuth refresh requests remains open.
+- Explicitly separated LoginAuth `DEVICE_KEY` from Codex remote-control device key enrollment/handshake strings. No Android code executed, no credentials/keys/network requests. No runtime or test files changed.
+- Last verified source-doc commit before this unit: `d05eb15affff34fbc6c964814c9033a88f517057`, CI `45828960463` and CodeQL `45828960441` both passed. New commit needs its own checks.
