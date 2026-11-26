@@ -1552,3 +1552,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Traced Ld7x.p caching into the credential record: Lvg8.h receives HTTP status and Lvg8.i receives the Ly0p0 response error string, followed by guarded Lcn8.i / Ljm8 persistence. Ld7x.s checks this stored cache before a later forced renewal and returns InvalidRefreshTokenException rather than repeatedly contacting OAuth.
 - Updated findings, AI memory, continuation and TODO. Runtime/tests/dependencies/public API unchanged. No credentials, DPoP keys, secure storage or network used.
 - Latest pre-this-unit CI failure at head ba7a7d2 was caused by one extra leading space in generated docs/PROJECT_STATE.md and stopped at docs:check; its CodeQL passed. Last full CI+CodeQL green checkpoint remains 6b2532e445443a23527f2c25d05d270afab989de (CI 45807482790, CodeQL 45807482759). This new documentation commit must have its own check.
+
+## 2026-11-26 — OAuth findings documentation CI and archive verification
+
+- Commit `ea7d0878b405696e56e34aa1a6a59b91271e8896`'s CI stopped at `docs:check` because its generated project-state page retained one leading space before the `>` notice. No runtime test or archive step ran on that commit. The follow-up `190c1389f483eb0866b85f1296db36077fe6131c` regenerated the file using exact generator formatting.
+- Verified follow-up CI run `45812061601`: `npm run check` succeeded; generated state synchronized; 28 Markdown files had no missing local targets; all 134 tests passed; the 18-file module archive was built; installed CommonJS and ESM smoke tests passed.
+- Verified CodeQL run `45812061604` succeeded on the same commit.
+- Downloaded CI artifact ZIP ID `15113771557`, verified ZIP digest SHA-256 `5e85b45ae1dad365866aa98e23a55feb5eb8fdf68a74622d6675b931f6759bbf`; extracted `ChatJS.tar.gz` (33,902 bytes, SHA-256 `8449655fbecd318d38e1bd19eb5852ca639526146bbce1e854df0f7d235f3e8e`); gzip/tar integrity passed and tar listed exactly 18 package files plus the root directory.
+- The OAuth source-trace work changed only documentation/state. No production runtime implementation or tests were added in this unit. Native auth injection, secure non-exportable signer, encrypted credential-store parity and authorized ChatGPT E2E remain blockers.
