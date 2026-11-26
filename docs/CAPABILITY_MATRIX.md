@@ -117,7 +117,7 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 | Capability | Status | Evidence / boundary |
 | --- | --- | --- |
 | Android native authentication provider injection | Research (DEX interface/adapter census complete; provider not located) | All ten base APK DEX files checked; only generated Function adapters directly implement OAIAuthenticationService/OAIRenewableAuthentication; no direct full OAIPlatformServices constructor call identified. Native/CompilerIntrinsics/reflective provider path remains unknown |
-| Android DPoP signing and refresh | Research (DEX call graph traced; not implemented) | AndroidKeyStore EC/secp256r1 key aliases, SHA256withECDSA, dpop+jwt/ES256, DPoP-vs-Bearer header selection, WWW-Authenticate/X-Nonce, OAuth refresh and invalid-proof timestamp-correction branch observed. Exact claims, nonce lifecycle, complete refresh schema and retry ceilings remain open; no ChatJS signing or token refresh |
+| Android DPoP signing and refresh | Research (DEX call graph traced; not implemented) | AndroidKeyStore EC/secp256r1 key aliases, SHA256withECDSA, dpop+jwt/ES256, DPoP-vs-Bearer header selection, WWW-Authenticate/X-Nonce, OAuth refresh and invalid-proof timestamp correction traced. The correction timestamp comes from the HTTP `Date` header and this path makes one explicit additional refresh request. Exact claims, nonce lifecycle, full refresh schema, other retry paths, and holder expiry/reset remain open; no ChatJS signing or token refresh |
 
 
 ## Android P-256 ES256 signature-format helper — 2026-11-25
@@ -147,4 +147,4 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 
 ### Android DPoP timestamp alignment — 2026-11-25
 
-The JWS `iat` input is an Instant epoch-second value plus the stored server-minus-local epoch-second offset. The correction path updates the offset from server epoch seconds minus local Instant epoch seconds. The private ChatJS helper applies these supplied integer values only; time acquisition, server-time extraction, persistence and retries remain Research/Planned.
+The JWS `iat` input is an Instant epoch-second value plus the stored server-minus-local epoch-second offset. The correction path obtains server time from the OAuth refresh response's HTTP `Date` header, parses it and converts its timestamp to epoch seconds; `Lxb8.e` stores the offset and makes one explicit corrective refresh retry. The `Lpvx` holder is in-memory in the traced path; its DI lifetime/reset and other refresh retries remain unresolved. The private ChatJS helper still only applies supplied integer values and does not parse headers, persist state or retry.
