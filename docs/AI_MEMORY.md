@@ -429,7 +429,7 @@ Use only the corrected instruction-width decoder for PC-level DEX work; old PC r
 
 `Ld7x.p` delegates through `Ljn8` into `AuthApiImpl` `Lxb8`. `Lxb8.g` (classes.dex index 59395) contains exact endpoint `https://auth.openai.com/oauth/token`; `Lxb8.h` constructs `Lpyy0(Lyjq0.a, refreshTokenString)`. The `Lnyy0` serializer maps `Lpyy0.e/f/g` to JSON `clientId`, `refreshToken`, `grantType`; `.g` defaults to `refresh_token` and uses default-aware encoding. `Lub8.invokeSuspend` uses a Ktor `HttpClient`, attaches optional `ChatGPT-Account-ID`, a separate `DPoP` proof header, `oai-uit: True`, and serializes the `Likq0` body. `Ltb8.invokeSuspend` creates a DPoP proof for the literal token endpoint with `Lyt2` P-256 KeyPair and adjusted clock; it passes null method override, so `Lyls0.s` defaults to `POST`, and null access-token hash input. The refresh token is in the JSON body, not the DPoP access-token hash.
 
-The client ID comes from injected `Lyjq0.a`; the refresh token string is carried through `Ld7x.p` → `Ljn8.a` → `Lxb8.h`. Do not hardcode actual client ID or any credential. Full refresh response DTO, success/error conversion, token-expired replay ceiling and remaining invalid-proof branches remain untraced. No ChatJS OAuth runtime exists.
+The client ID comes from injected `Lyjq0.a`; the refresh token string is carried through `Ld7x.p` → `Ljn8.a` → `Lxb8.h`. Do not hardcode actual client ID or any credential. The success response DTO `Llkq0` and conversion through `Ly4b1.h` into internal `Lvg8` are now traced; non-success response/error conversion, token-expired replay ceiling and remaining invalid-proof branches remain untraced. No ChatJS OAuth runtime exists.
 
 
 ## Android OAuth refresh success response and repository conversion — 2026-11-26
