@@ -1785,3 +1785,34 @@ The credential-backed access-token renewal path now reaches the concrete OAuth A
 Thus the source-backed refresh request contract is: OAuth token endpoint `https://auth.openai.com/oauth/token`; DPoP proof generated for `POST`; serialized body fields `clientId`, `refreshToken`, and default `grantType: refresh_token`; optional `ChatGPT-Account-ID`; and a separate `DPoP` proof header plus `oai-uit: True`. The client ID is supplied by the injected `Lyjq0` wrapper; the refresh-token value is the `String` carried through the `Ld7x.p` → `Ljn8.a` → `Lxb8.h` path. No hardcoded client identifier or credential value is copied into ChatJS.
 
 **Still open:** full response DTO/property mapping, exact HTTP response success/error transformations, complete `token_expired` replay ceiling and failure handling, other `invalid_dpop_proof`/refresh retry paths, native auth provider closure, secure host signer and `Lpvx` lifetime/reset. These are Android source findings, not ChatJS support. No Android code executed and no credentials, keys or network requests were used.
+
+
+## Android OAuth refresh success response DTO and credential-record conversion — 2026-11-26
+
+### Generated success response model
+
+The successful OAuth token response is deserialized into generated model `Llkq0` by serializer `Ljkq0` in `classes3.dex`:
+
+| JSON property | Generated model field | Declared value type |
+| --- | --- | --- |
+| `accessToken` | `.a` | `String` |
+| `idToken` | `.b` | `String` |
+| `refreshToken` | `.c` | `String` |
+| `expiresIn` | `.d` | boxed `Integer` |
+| `earliestRefreshAt` | `.e` | boxed `Long` |
+| `tokenType` | `.f` | `String` |
+| `scope` | `.g` | `String` |
+
+`Ljkq0.<clinit>` (classes3 method index 27217) builds a seven-element `PluginGeneratedSerialDescriptor` and registers the property names in exactly that order. `Ljkq0.deserialize` (index 27219) invokes the corresponding String, Integer and Long decoders and constructs `Llkq0`; `Ljkq0.serialize` (index 27221) writes those same seven properties. The declared model types are confirmed; this trace does not assume nullable semantics beyond what the constructor/serializer itself establishes.
+
+### API wrapper and internal token-record conversion
+
+`Ljn8.a` (classes.dex method index 27210) receives the generic API result `La1p0`. On the success subtype `Lz0p0`, it reads `.a`, casts the value to `Llkq0`, and passes that DTO to `Ly4b1.h` (classes3 method index 55485) together with the injected clock, credential/key binding, refresh context and previous internal `Lvg8` access-token record. `Ly4b1.h` validates that the fallback record belongs to the same credential binding; otherwise it throws `IllegalArgumentException("Credential fallback belongs to another record")`. It converts the response into a new internal `Lvg8` record and returns it wrapped as `Lavb1` success. Thus callers do not receive the raw `Llkq0` DTO as their repository token value.
+
+`Ly4b1.h` uses the response `accessToken`, `idToken`, `refreshToken`, `expiresIn`, `earliestRefreshAt`, `tokenType` and `scope` fields when rebuilding the internal token record. The code also reads selected previous-record fields as fallback when response strings are empty or absent in the model's effective state, and reconciles the scope set and expiry/refresh timing against the injected clock. Preserve the key boundary: JSON `expiresIn` is an `Integer`, `earliestRefreshAt` is a `Long`; do not collapse those wire fields into a single guessed timestamp. The exact internal `Lvg8` record layout and JWT claim parsing remain documented separately in the credential-record findings.
+
+`Ljn8.a` also has non-success result branches for transport/HTTP failures and records refresh-attempt diagnostics before returning a typed failure. The diagnostics are app instrumentation and are not part of the refresh response DTO or behavior ChatJS should reproduce. This success-path trace does not complete the full `Lxb8.g` failure normalization or the outer `token_expired` Ktor request replay limit.
+
+### Boundary
+
+The Android OAuth refresh request endpoint/body and the seven-property success response DTO plus `Llkq0` → `Lvg8` conversion are now source-mapped. Remaining work is the full non-success response/error conversion, token-expiry renewal replay ceiling, remaining `invalid_dpop_proof`/OAuth retry branches, native provider injection and a legitimate host-owned secure non-exportable signer. No Android method was executed, no credentials/keys/network requests were used, and no ChatJS runtime/auth code was added.
