@@ -783,3 +783,17 @@ The concrete credential refresh transport is now traced beyond `Ld7x`/`Ljn8` to 
 This resolves the OAuth refresh endpoint, request-body property names, source mapping of client ID and refresh-token inputs, default grant type and DPoP/POST association. Do not hardcode an extracted client id or credential. The request serializer is source-mapped; ChatJS still has no OAuth HTTP call.
 
 Next: map the refresh success response DTO and the full `Lxb8.g` result/error mapping, then finish the separate `token_expired` Ktor recovery/replay ceiling and remaining refresh retry branches. Native provider injection, host-owned secure non-exportable signer, actual persistent credential semantics and authorized E2E remain blockers.
+
+
+## Latest handoff — Android OAuth refresh response DTO and Lvg8 record conversion — 2026-11-26
+
+The success response DTO and repository conversion are now traced:
+
+- `Llkq0` is the generated success response model. Its serializer `Ljkq0.<clinit>` in `classes3.dex` (method 27217) registers exactly seven JSON properties: `accessToken` String (`.a`), `idToken` String (`.b`), `refreshToken` String (`.c`), `expiresIn` boxed Integer (`.d`), `earliestRefreshAt` boxed Long (`.e`), `tokenType` String (`.f`), and `scope` String (`.g`). `Ljkq0.deserialize` (27219) and `serialize` (27221) use those exact names and declared types.
+- `Ljn8.a` (classes.dex method 27210) receives `La1p0`; when its subtype is success `Lz0p0`, it extracts `.a` as `Llkq0` and calls `Ly4b1.h` with the DTO, injected clock, credential binding/context and prior `Lvg8` record.
+- `Ly4b1.h` (classes3 method 55485) validates that the prior fallback `Lvg8` record belongs to the same credential binding; mismatch throws `IllegalArgumentException("Credential fallback belongs to another record")`. It merges response access/refresh/ID token, expiry, earliest-refresh, token type and scope values with selected prior-record fallback data, builds a new internal `Lvg8`, and returns it as `Lavb1` success. The repository result is the internal record, not the raw JSON DTO.
+- `Ljn8.a` has separate error/result conversion branches for non-success API outcomes. Its refresh-attempt analytics/diagnostics map is not product protocol and must not be copied to ChatJS.
+
+Request side already mapped: `https://auth.openai.com/oauth/token`, POST DPoP proof, JSON `clientId`/`refreshToken`/default `grantType=refresh_token`, optional `ChatGPT-Account-ID`, `oai-uit: True`.
+
+Still open: exact non-success API response/error normalization in `Lxb8.g`/`Ljn8.a`, full `token_expired` renewal/replay ceiling, remaining invalid-proof/refresh retry branches, native provider closure and host secure non-exportable signer. No ChatJS OAuth or DPoP runtime is implemented.
