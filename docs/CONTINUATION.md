@@ -782,7 +782,7 @@ The concrete credential refresh transport is now traced beyond `Ld7x`/`Ljn8` to 
 
 This resolves the OAuth refresh endpoint, request-body property names, source mapping of client ID and refresh-token inputs, default grant type and DPoP/POST association. Do not hardcode an extracted client id or credential. The request serializer is source-mapped; ChatJS still has no OAuth HTTP call.
 
-Next: map the refresh success response DTO and the full `Lxb8.g` result/error mapping, then finish the separate `token_expired` Ktor recovery/replay ceiling and remaining refresh retry branches. Native provider injection, host-owned secure non-exportable signer, actual persistent credential semantics and authorized E2E remain blockers.
+The successful `Llkq0` response DTO and `Ly4b1.h` conversion to internal `Lvg8` are now source-mapped. Next: decode non-success `Lxb8.g`/`Ljn8.a` error conversion, then finish the separate `token_expired` Ktor recovery/replay ceiling and remaining refresh retry branches. Native provider injection, host-owned secure non-exportable signer, actual persistent credential semantics and authorized E2E remain blockers.
 
 
 ## Latest handoff — Android OAuth refresh response DTO and Lvg8 record conversion — 2026-11-26
