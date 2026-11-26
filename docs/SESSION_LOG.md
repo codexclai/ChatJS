@@ -1595,3 +1595,12 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Traced classes7 `Llli0.invokeSuspend` to the direct comparison of selected provider record `Lozc1.i` (`lookupKeyAlias`) with returned key wrapper `Lyt2.a`; the provider branch gates the subsequent continuation on exact alias equality. This establishes provider alias ↔ returned Lyt2 identity within that branch, but not account preference persistence.
 - The immediately preceding docs commit `3a03a2f29938b883784d8f217849a540c73bb792` had CodeQL `45831986523` success, but CI `45831986580` failed in `docs:check` because I again authored an extra leading space before the generated `PROJECT_STATE.md` notice. Lint passed; tests/archive were not reached. This next commit regenerates the Markdown with the exact no-leading-space format.
 - Previous verified checkpoint remains `879bff36ccccb68b2b119ac2455330beedd696f7`, CI `45830252611`, CodeQL `45830252587`.
+
+## 2026-11-26 — Android LoginAuth challenge-fetch and first-party step route correction
+
+- Used the supplied Android 1.2026.321 base APK and the retained corrected DEX decoder to trace Lb6p0.a, concrete Lcu8 implementations, the method enum, and the later Lf91 request path.
+- Confirmed Lb6p0.a (classes7 method 3532) deserializes the successful response as Lqk00, returning it through Lzt8. The request descriptor variants are Lbu8 GET api/accounts/authorize and Lau8 POST api/accounts/authorize/native; Lnxc0.<clinit> maps b to GET and c to POST. Lau8 retains the corresponding Lozc1 provider.
+- Corrected the interim route statement: api/first_party_authorize/next is a distinct path stored by Lb6p0 and read later by Lf91.invokeSuspend, which sets its method to POST and decodes a typed Lvi8 response (Lvl8 + Ljl8). It is not established as the initial Lqk00 challenge-fetch endpoint.
+- Identified Livk0 as a subclass of Ljl8. The exact branch and serializer invocation connecting the Lsk00 signed result to the body of the later POST remains open; no claim of completed proof submission is made.
+- Updated Android protocol findings, AI memory, continuation, TODO, session log and synchronized state. No runtime source/test files changed; no Android methods, credentials, keys or network requests were executed.
+- Previous verified checkpoint: 675b5bbe0f5e33515a525e7d282a0793f154ca40, CI 45833343306, CodeQL 45833343299. New docs commit requires its own checks.

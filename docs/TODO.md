@@ -814,3 +814,12 @@ Never create branches or worktrees. Keep all repository work on main.
 
 - [x] Trace `Llli0.invokeSuspend` holding the selected `Lozc1` provider and returned `Lyt2`; confirm it compares `Lozc1.i` (`lookupKeyAlias`) with `Lyt2.a` before continuing. Provider lookup therefore validates exact alias equality within that provider branch.
 - [ ] Trace the exact provider branch result to account preference/credential persistence (`Lel8.key_pair_alias` → `Lvg8.n`), if that transfer exists. Do not infer it from provider-branch equality or common `Lzt2` use.
+
+## Android LoginAuth challenge HTTP routes and step-result contract — 2026-11-26
+
+- [x] Correct the initial challenge-fetch route: Lb6p0.a parses Lqk00 from the successful response, using Lbu8 GET api/accounts/authorize or Lau8 POST api/accounts/authorize/native; Lnxc0 enum confirms GET/POST mapping.
+- [x] Distinguish the separate api/first_party_authorize/next path: Lb6p0 stores it; Lf91.invokeSuspend later sets up a POST and decodes Lvi8 (step enum Lvl8 plus typed Ljl8 data).
+- [x] Identify Livk0 as a concrete Ljl8 subtype, while explicitly keeping the exact signed-proof-to-follow-up-POST serializer edge unresolved.
+- [ ] Trace the concrete Livk0 value from Lsk00 caller through the branch that builds the Lf91 step request and establish whether/how the object is serialized into the POST body.
+- [ ] Complete exact request body/header, Ktor auth-plugin and error/cancellation contracts for the initial account-authorize GET/native POST and later first-party next POST.
+- [ ] Trace the exact Lozc1.lookupKeyAlias provider result to account Lel8.key_pair_alias persistence, and complete native signer/provider ownership.

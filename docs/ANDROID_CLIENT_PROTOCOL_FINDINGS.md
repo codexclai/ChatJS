@@ -2090,3 +2090,35 @@ The provider resolution path feeding this coroutine remains `Lmhk0.a` → `Lohk0
 **Boundary:** this equality check is specifically between the provider record's `lookupKeyAlias` and the provider-branch `Lyt2` wrapper. It does not by itself establish that the same value is copied into an account's `Lel8.key_pair_alias` preference or credential record `Lvg8.n`. The separate account branch loads its persisted key through `Lsm8` → `Lcn8.D`. Do not merge these two identity relationships until the provider-result-to-account-preference write is traced.
 
 Also, `La0d1.k` and `La0d1.p` contain additional consumers of `Lozc1.i` as part of login-auth/provider-state processing; this corroborates that `lookupKeyAlias` is a first-class provider field, not a guessed field name. Full caller roles remain in the surrounding method-specific notes.
+## Android LoginAuth lookup challenge transport and first-party step route — 2026-11-26
+
+### Correction to the interim route attribution
+
+The earlier progress note singled out api/first_party_authorize/next as the challenge-fetch route. That attribution was premature. The supplied DEX distinguishes the initial account-authorization request, which returns the typed lookup challenge, from a later first-party authorization-step request. Do not call these one endpoint.
+
+### Initial request that returns the lookup challenge
+
+Lb6p0.a(String, Lcu8, Ljpj0, Lyt2, boolean, Continuation) (classes7.dex method 3532) performs the request and deserializes its successful response with Lmk00.serializer() into Lqk00. It then places the typed challenge into the returned Lzt8 result. The method builds the outgoing request using the supplied Lcu8 route/method descriptor, the login HTTP client and the injected endpoint/network configuration.
+
+The two concrete Lcu8 implementations found in the supplied ten DEX files are:
+
+- Lbu8 (classes7 methods 5164–5168): path api/accounts/authorize; getMethod() returns Lnxc0.b, which the Lnxc0.<clinit> enum maps to GET.
+- Lau8 (classes7 methods 2757–2761): path api/accounts/authorize/native; getMethod() returns Lnxc0.c, which the same enum maps to POST. This variant also retains the associated Lozc1 provider connection.
+
+The Lb6p0.a response parser is explicitly the Lqk00 challenge serializer path. This ties the returned LoginAuth challenge envelope to the account-authorization GET or native account-authorization POST variant—not to the separately constructed first_party_authorize/next path.
+
+The request builder uses the Ktor client wrapper Ll2a and typed API-result handling. This trace establishes method/path selection and the challenge response DTO; it does not yet fully enumerate every request-body field, headers, auth-plugin behavior, transport cancellation branch or all response-error conversions.
+
+### Later first-party authorization step request
+
+The Lb6p0 constructor (classes7 method 3531) separately builds a URL/path object from the Lar31 base and literal api/first_party_authorize/next, retaining it in Lb6p0.f. The later Lf91.invokeSuspend (classes5 method 13156) reads that field, creates a new Ktor request context, sets its method to Lnxc0.c (POST), and applies the stored path through Lpi51.i.
+
+That coroutine's request orchestration carries a Lvl8 login-step enum and a Ljl8 typed payload value. Its response is decoded into Lvi8, whose fields are Lvl8 (step) and Ljl8 (step-specific data/result). The Livk0 signed lookup-key proof DTO is one concrete subclass of Ljl8, but the inspected callsite alone does not prove that every first_party_authorize/next POST contains a Livk0 object, nor fully expose the serializer's exact body/envelope. Keep this as a later first-party step endpoint whose request state admits typed Ljl8 data; do not claim its payload is definitively the lookup proof until the exact branch/serializer invocation is mapped.
+
+### Connection with the signer
+
+The signer helper remains source-mapped independently: Lsk00.a(Lqk00, Lyt2) accepts a usable DEVICE_KEY challenge and returns Livk0 (JWK, original challenge, signature); Lyt2.b validates and signs the exact decoded 32-byte challenge. The challenge-fetch response and its signed representation therefore exist as distinct typed models. The wider caller flow reaches this signer from classes6 Lge70.invokeSuspend and classes7 Lrk00.invokeSuspend. An end-to-end statement that a particular signed Livk0 instance is then serialized and sent in the later POST still requires the exact branch-to-request-body edge.
+
+### Evidence boundary
+
+This is static inspection of the supplied Android 1.2026.321 DEX only. No Android method was run; no account, access token, refresh token, private key, keystore or network request was used. No ChatJS runtime implementation was added. The initial challenge route/method variants and the separate follow-up POST route are now mapped; exact proof-submission payload, provider-to-account alias persistence and the native secure-provider boundary remain open.

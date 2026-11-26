@@ -904,3 +904,12 @@ The exact persistence assignment from `Lozc1.lookupKeyAlias` into account `Lel8.
 `Llli0.invokeSuspend` (classes7 method 30754) retains both the provider `Lozc1` and resolved `Lyt2` in the same LoginAuth coroutine. It reads `Lozc1.i` (`lookupKeyAlias`) and `Lyt2.a` (resolved alias) and compares the strings before continuing. Thus the provider branch does not merely resolve an arbitrary key through the shared store: the returned key wrapper is checked against the provider connection's exact alias value.
 
 The remaining gap is still the transfer from that provider alias into the separate account `Lel8.key_pair_alias` preference / `Lvg8.n` credential record. The persisted-account branch separately calls `Lsm8` → `Lcn8.D`. Keep provider alias equality and account-record alias persistence as two distinct proof obligations.
+## Latest handoff — LoginAuth challenge fetch routes and later first-party POST — 2026-11-26
+
+The endpoint attribution is now corrected and split into two source-backed requests:
+
+- Initial lookup challenge request: Lb6p0.a (classes7 method 3532) deserializes a successful response as Lqk00 and returns it in Lzt8. Its Lcu8 route/method descriptor has two observed implementations: Lbu8 = GET api/accounts/authorize; Lau8 = POST api/accounts/authorize/native. The latter carries its Lozc1 provider connection. Lnxc0.<clinit> confirms b=GET, c=POST.
+- Later first-party step request: Lb6p0 separately builds api/first_party_authorize/next into field f; Lf91.invokeSuspend reads it, builds a Ktor request with method POST, and deserializes the result into Lvi8 (Lvl8 step + Ljl8 typed data).
+- Livk0 is one concrete subclass of Ljl8 and is the lookup challenge signature object. However, the exact branch and serializer invocation proving that the particular Livk0 returned by Lsk00 is the body sent to this POST are not fully reconstructed yet. Do not state that submission is proven until that edge is traced.
+
+Correction: the earlier interim note that described api/first_party_authorize/next as the initial challenge-fetch endpoint is superseded. See ANDROID_CLIENT_PROTOCOL_FINDINGS.md for method indices, variants and evidence boundaries.
