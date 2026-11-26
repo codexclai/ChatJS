@@ -280,3 +280,8 @@ The Android `OAIBearerAPIService` caller is now method-decoded: it validates the
 
  
 The Android native-provider DEX census and DPoP subsystem were further investigated. Only generated closure adapters directly implement the native auth-service interface classes; the actual host/native closure path is still unresolved. The Android DEX also contains AndroidKeyStore-backed EC/secp256r1 DPoP keys, SHA256withECDSA signing, ES256/dpop+jwt serialization, DPoP-vs-Bearer header selection, nonce challenge handling and an OAuth refresh path with invalid-proof timestamp correction. These are source findings, not ChatJS support. Native keys are not exportable through this interface; DPoP runtime support remains blocked pending exact claims/nonce/refresh contracts and a legitimate host secure-signer abstraction.
+
+
+## Android DPoP refresh timestamp source — 2026-11-26
+
+The OAuth refresh coroutine `Lxb8.g` reads the HTTP response `Date` header, parses it through `Lk9y.a` and converts the parser's timestamp field from milliseconds to epoch seconds. `Lxb8.e` uses the `Lxb8.j` error filter, updates the in-memory `Lpvx.b` server-minus-local offset and makes one explicit follow-up refresh call. The exact filter branch semantics for its 30/300 constants, other refresh retry paths and `Lpvx` lifetime/reset remain open. This remains Android source analysis only: ChatJS does not yet parse the header, refresh tokens or generate DPoP proofs.
