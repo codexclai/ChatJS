@@ -809,3 +809,15 @@ Still open: exact non-success API response/error normalization in `Lxb8.g`/`Ljn8
 - Request ID/CF-Ray and refresh-attempt event fields are diagnostics, not product request semantics to implement.
 
 Remaining: full status/error normalization across all API error variants and cancellation/serialization cases, token-expiry replay ceiling and remaining refresh/invalid-proof retries. Keep HTTP response failures with Date separate from generic transport failures.
+
+
+## Latest handoff — Android Ktor token-expiry recovery trigger and adapter trace — 2026-11-26
+
+A fresh read-only DEX pass advanced the active Android authentication trace into `Lwp.invokeSuspend` (classes2.dex method index 58489) and the credential adapters:
+
+- The Ktor `token_expired` request-recovery branch reads the response header `x-openai-ide-error-code` and compares it with `token_expired` after the response-exception/body parsing path. This corrects earlier handoff wording that attributed the Ktor branch directly to `ApiServiceError.c`. The structured API-error-code check for `dpop_iat_out_of_range` remains a separate branch.
+- On a match, the current access token is passed to `Lcd01.d`, followed by `Lcd01.e`. The default `e` method calls `b(true)` to force renewal.
+- Credential-backed `Lgk8.d` / `Lgk8.b` delegate to `Ld7x.d` rejected-token persistence and `Ld7x.j` renewal (`Lu5x.f` / `Ld7x.l`). The separate `Lisp0` adapter returns `NoCredentialsAvailable` rather than providing this credential-backed flow.
+- The post-renewal coroutine reconstructs a copied `Lfyc0` request context and proceeds through `Lxp.c` and `Ldk31.a` continuation handling. Exact final replay eligibility, error mapping and total replay ceiling remain unresolved.
+
+Full source/evidence boundary is in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. This is static analysis only: no ChatJS runtime code changed, no Android method was executed, and no credential, key or network request was used. Next: finish the post-renewal callback/replay state machine and non-success mapping; separately continue the native provider-injection and secure host-signer blockers. Android Work, Windows/Desktop and Codex CLI remain parked only for sequencing.

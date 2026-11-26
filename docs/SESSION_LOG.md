@@ -1483,3 +1483,16 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 **Remaining unknowns:** complete mapping for all non-success status/API-error variants, malformed/partial response behavior, cancellation and serialization errors, retry exhaustion, and the full outer `token_expired` Ktor renewal/replay ceiling. The request DTO, success DTO and response-vs-transport wrapper distinction are now traced.
 
 **Implementation and checks:** static source analysis/documentation only; no ChatJS runtime/test code changed; no Android code executed; no credentials, key material or network request used. Project-state JSON and generated Markdown were synchronized. No local checkout is available for local `npm run check` or archive build; the final GitHub CI/CodeQL run will verify the committed snapshot.
+
+
+## 2026-11-26 — Android Ktor token-expiry recovery gate and credential-adapter trace
+
+- Restored live `main` at `6fca1014960d51dbdbcbd6773e0212930e11d778`; confirmed the only branch is `main`, no open issues/PRs, and the latest CI run `45753212611` succeeded on that HEAD.
+- Re-extracted the supplied `ChatGPT-Android.xapk` base APK from the current mounted source package and performed a read-only DEX method inspection. No app code was executed.
+- Advanced `classes2.dex` `Lwp.invokeSuspend` (method index 58489): the Ktor `token_expired` branch reads `x-openai-ide-error-code` and matches `token_expired`. This supersedes earlier wording that attributed this Ktor branch directly to `ApiServiceError.c`. The `dpop_iat_out_of_range` structured-error branch remains separate.
+- Traced the forced-renewal adapter boundary: `Lcd01.d` receives the rejected access token; default `Lcd01.e` calls `b(true)`; credential-backed `Lgk8` delegates to `Ld7x.d` and `Ld7x.j`/`Lu5x.f`/`Ld7x.l`; `Lisp0` returns `NoCredentialsAvailable`.
+- Observed the post-renewal continuation building a copied `Lfyc0` request context and entering `Lxp.c` / `Ldk31.a`; final replay eligibility, failure mapping and total replay ceiling remain open. No retry behavior was added to ChatJS.
+- Changed only source findings, continuity, TODO and state records. No runtime source, dependencies or public API changed.
+- Tests: no local `npm run check` was possible because the container has no GitHub network access and no checked-out repository; `git clone` failed with DNS resolution. The latest pre-change main CI run `45753212611` succeeded, but it does not validate this new documentation commit. This session's new commit must be validated by its own CI after push.
+- No account credentials, refresh tokens, DPoP keys, secure storage or network operations were used. Android Work, Windows/Desktop and Codex CLI remain parked for the current sequencing phase.
+- Next: complete the Ktor forced-renewal result/callback/replay state machine and full OAuth non-success mapping; keep the secure host signer, native provider injection and authorized E2E requirements as blockers.

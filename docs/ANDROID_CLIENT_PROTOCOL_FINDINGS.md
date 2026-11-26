@@ -1830,3 +1830,27 @@ Further inspection of `Lxb8.g` (classes.dex method index 59395) shows that the c
 This narrows the failure boundary but does not fully normalize every non-success case: the exact mapping for all HTTP statuses, all nested `ApiServiceError` values, parsing failures, cancellation, retry exhaustion and response DTO exceptions remains under investigation. Preserve the distinction between `Lxb8.g`'s HTTP-response wrapper and generic transport failure; do not make a missing `Date` eligible for the skew retry.
 
 No Android code was run, no account credential/key was used and no network request was made. This is source analysis only; ChatJS still has no refresh HTTP client or token-renewal implementation.
+
+
+## Android Ktor token-expiry recovery gate and credential-adapter handoff — 2026-11-26
+
+### Corrected trigger predicate
+
+A fresh read-only disassembly of the supplied public XAPK's `classes2.dex` method `Lwp.invokeSuspend` (DEX method index 58489) narrows the authenticated-request recovery gate. In the response-exception handling path, after the response error body is passed through `Lwn00.a`, the coroutine reads the response header `x-openai-ide-error-code` and compares its value with the literal `token_expired`. This is distinct from the separately decoded `dpop_iat_out_of_range` branch, which checks the structured `ApiServiceError` code and uses the HTTP `Date` header for clock correction.
+
+**Correction:** earlier handoff wording that described the Ktor `token_expired` branch as a direct `ApiServiceError.c == token_expired` match is superseded. The recovered branch reads `x-openai-ide-error-code`. Do not merge this header gate with the refresh endpoint's `Lxb8.j` classifier, which independently examines structured API error fields and response Date.
+
+### Rejected-token and forced-renewal delegation
+
+Once the Ktor branch matches, it passes the current access-token string to `Lcd01.d` before invoking `Lcd01.e`:
+
+- `Lcd01.e` is a default interface method that calls `Lcd01.b(true)`. The `true` is the explicit forced-renewal argument; it is not a general retry count.
+- The credential-backed `Lgk8.d` adapter delegates to `Ld7x.d`, the AuthRepository rejected-token persistence path. `Lgk8.b` delegates to `Ld7x.j`, which enters the credential-backed renewal coroutine `Lu5x.f` and the `Ld7x.l` renewal path.
+- `Ld7x.j` normalizes the renewal result through its credential-backed result handling; the exact complete failure mapping and outer request replay ceiling are not established by this trace.
+- The separate `Lisp0` implementation returns `NoCredentialsAvailable` for the corresponding credential operations. Therefore the credential-backed renewal path must not be assumed for every session/provider configuration.
+
+The successful continuation path reconstructs a copied `Lfyc0` request context and proceeds through the `Lxp.c` provider path and `Ldk31.a` continuation callback. The precise success/failure mapping from that callback to the final HTTP replay, including the total replay ceiling and all cancellation/error outcomes, remains open. This trace does not justify implementing a generic automatic retry.
+
+### Evidence boundary
+
+The source method and adapter delegation are method-level static evidence from the supplied Android 1.2026.321 package. No Android method was executed; no account, token, key, secure store or network request was used. No ChatJS runtime implementation was added. Keep this flow separate from `Lxb8.e` OAuth refresh Date correction (one explicit corrective refresh call) and the `Lwp` `dpop_iat_out_of_range` request-level clock correction (one marked request replay).
