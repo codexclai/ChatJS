@@ -300,3 +300,10 @@ The Ktor auth handler reads `WWW-Authenticate`, parses the challenge scheme and 
 ## Android Ktor parameterized challenge parsing — 2026-11-26
 
 `Lzuc0.c(String)` in `classes8.dex` returns the generic Ktor `Lyuc0` challenge hierarchy. Parameterized `Lwuc0` retains the scheme, `List<Lwub0>` name/value pairs and parser position; token68 `Lxuc0` carries its opaque token68 value. `Lph8` uses the challenge scheme to choose DPoP or Bearer and builds provider/challenge pairs. `Lsh8.a` accepts a challenge object in its descriptor, but its coroutine continuation `Lqh8` does not capture that object and calls `Lxp.b` using request/auth context. No parameter-list read or nonce proof binding appears in that recovered path. Server-nonce behavior in other provider/native flows remains open. The sole `X-Nonce` header literal is RevenueCat-only, not ChatGPT DPoP evidence.
+
+
+## Android registered DPoPProofProvider and DEVICE_KEY challenge distinction — 2026-11-26
+
+The registered Ktor DPoP proof provider has been traced end-to-end: builder paths create `Lkl40`, wrap it with `Lsvx`, and register under the `Ltvx.a` provider key. `Lkl40.invokeSuspend` creates `Lke` with `Lyt2`, `Lpqc1` and `Lb6p0`; `Lke` reads the `Lyt2.b` P-256 KeyPair, adds `Lpvx.b` to local Instant epoch seconds, gets the URL from `Lpqc1.h` and calls `Lyls0.s` for the main DPoP JWT. The main JWS serializer has `htm`, `htu`, `iat`, `jti`, `ath` and no nonce claim.
+
+`Lyt2.b(String)` is not that request signer. Its only direct caller across all ten DEX files is `Lsk00.a`, which validates a separate `DEVICE_KEY` challenge. `Lqk00` carries top-level `type`, `purpose`, `data`; nested data `Lpk00` carries `challengeId`, `challenge`, `purpose`, `issuedAt`, `expiresAt`, `signature`. The challenge string is signed with the same P-256 key pair and returned with public JWK as a separate response object. The exact endpoint/transport of the complete DEVICE_KEY challenge workflow remains separate from the main Ktor DPoP proof; do not use it as evidence for a DPoP JWT nonce.
