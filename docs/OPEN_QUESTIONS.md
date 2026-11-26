@@ -210,7 +210,7 @@ The generated request descriptors and catalog/requirements response decoders now
 - [x] Trace OAIRequestCredential context into native clear/accessToken calls and OAIBearerAPIService caller: exact 401 eligibility, explicit renewal gate, same-request one-shot replay with further renewal disabled, and original-response fallback are method-decoded. The pure request/recovery policy helper is tested only.
 - [ ] Reconstruct actual native clear effects, renewable token payload/DPoP, provider implementations, SSO UI and authorized host adapter; no credential invalidation, renewal or HTTP transport is implemented.
 - [x] Trace the Android DEX DPoP key repository, AndroidKeyStore/EC signing path, ES256 dpop+jwt serialization constants, Ktor `WWW-Authenticate` challenge scheme parsing, DPoP-vs-Bearer authentication-provider selection, separate DPoP proof plugin/provider and OAuth refresh/error call graph. Corrected attribution: literal `X-Nonce` is only found in a RevenueCat request-header builder, not the ChatGPT DPoP path. Source findings are documented; no runtime support exists.
-- [ ] Complete the native provider closure/host injection path, exact DPoP proof claims and nonce lifecycle, full refresh request/response schema and bounded retry policy. Design a legitimate non-exportable host signer capability; no PEM/file-based fallback or Android key export.
+- [ ] Complete the native provider closure/host injection path, exact DPoP proof claims and nonce lifecycle, OAuth refresh response DTO/success-error mapping and remaining bounded retry policy. The request side is now decoded: `https://auth.openai.com/oauth/token`, POST, JSON `clientId`/`refreshToken`/default `grantType=refresh_token`, separate DPoP proof header. Design a legitimate non-exportable host signer; no PEM/file fallback or Android key export.
 
 ## Android authentication method reconstruction — 2026-11-25
 
@@ -243,7 +243,7 @@ The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r ||
 
 `Lwp`'s `token_expired` branch calls `Lcd01.d(currentAccessToken)`, then `Lcd01.e`; the default `e` invokes `b(true)`. The credential-backed `Lgk8` adapter delegates `d` to `Ld7x.d` to persist the rejected token and `b(true)` to `Ld7x.j`, entering `Lu5x.f` → `Ld7x.l` renewal. `Lisp0` is a no-credentials implementation.
 
-**Still open:** exact token-expired renewal request/response schema, failure mapping and total replay ceiling; other OAuth refresh and invalid-proof retry branches. No ChatJS runtime support is implemented.
+**Resolved on request side (2026-11-26):** `Lxb8.g` targets `https://auth.openai.com/oauth/token`; `Lxb8.h` constructs `Lpyy0` from `Lyjq0.a` plus the refresh-token String; `Lnyy0` maps `clientId`, `refreshToken`, `grantType` (default `refresh_token`); the Ktor request builder adds the DPoP proof header and `oai-uit: True`. **Still open:** refresh response DTO and success/error mapping, forced `b(true)` renewal semantics for all adapters, callback/replay after renewal and total token-expired retry ceiling; other OAuth and invalid-proof retry branches. No ChatJS runtime support is implemented.
 
 ## Android DPoPClockRetryAttempted producer and signer retry semantics — 2026-11-26
 
