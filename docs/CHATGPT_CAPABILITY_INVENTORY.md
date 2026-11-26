@@ -316,3 +316,12 @@ The registered Ktor DPoP proof provider has been traced end-to-end: builder path
 The `DPoPClockRetryAttempted` Ktor request attribute is declared in `Lyp`, but its only app-DEX reference is a read in `Lxp.b` that short-circuits provider acquisition when the attribute is already present. No writer/setter was found in the ten DEX files. Its upstream producer and retry purpose remain unknown; it is not proof of an automatic DPoP retry and is distinct from `Lxb8.e`'s verified one-time OAuth refresh `Date` correction.
 
 `RequestDPoPMetadata` is an observability bundle merged into OpenTelemetry span attributes. The exact `OpenAI-Device-Key` reference is a Sentry OkHttp event recorder allowlist, not a header emitter. Neither marker appears in the 111 decompressed Valdi modules. ChatJS does not copy telemetry or Sentry header-capture behavior.
+
+
+## Android Ktor request-level DPoP clock recovery — 2026-11-26
+
+`Lwp.invokeSuspend` (classes2 index 58489) handles a response `ApiServiceError.c == dpop_iat_out_of_range` on an eligible DPoP request. It parses the response `Date` header into epoch seconds, computes server-minus-local `Date - Instant.epochSecond`, writes `Lpvx.b`, puts `DPoPClockRetryAttempted` into the request's `Lfyc0.f` attributes with `kotlin.Unit`, clones the request context while preserving attributes, and invokes the Ktor callback `Ldk31.a`. The handler's presence check blocks a second clock replay; `Lxp.b` also suppresses access-token provider acquisition when the marker exists. This is one guarded request-level replay, distinct from OAuth refresh `Lxb8.e`'s one extra refresh attempt.
+
+The marker write is confirmed by corrected DEX decoding (`Lq18.f` -> `Map.put`). Earlier notes that no writer existed were invalid because the previous disassembler skipped width-2 arithmetic opcodes `0x90–0xaf` and lost later instruction boundaries.
+
+The `token_expired` branch separately calls the injected `Lcd01.d(currentToken)` then `Lcd01.e()`. The default `e` calls `b(true)`; credential-backed adapter `Lgk8` delegates this to `Ld7x.j` and its `Lu5x.f` → `Ld7x.l` renewal path, while `Lisp0` is a no-credentials implementation. Complete renewal wire mapping and token-expired replay limit remain unverified.
