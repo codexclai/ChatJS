@@ -1375,3 +1375,14 @@ GitHub CI for documentation handoff commit 02826247f74db8913c7985fe952767c2a989c
 **Implementation:** added `calculateAndroidDpopIssuedAt` to the private DPoP serializer. It performs integer-only offset addition, preserves BigInt where needed and rejects unsafe/fractional Number inputs. Two tests cover positive/negative offsets, BigInt/mixed inputs and invalid numbers. It does not obtain time, persist offset state, parse a server response or retry.
 
 **CI correction:** CI for `64e24bb` and `a247735` stopped at docs:check because `project-state.json` ended with literal backslash-n characters, so the generator could not parse JSON. The JSON source and generated Markdown are repaired together in this handoff. CodeQL for `64e24bb` passed; complete CI has not yet passed for the DPoP clock helper.
+
+
+## 2026-11-26 — Android OAuth refresh Date-header source and single correction retry
+
+**Source reconstruction:** continued method-level inspection of the supplied Android DEX. In `Lxb8.g`, the refresh response-exception path reads the HTTP `Date` header through `Lxb81.e`. `Lk9y.a` tries the initialized date-format list, returns a `Ll9a0` timestamp whose internal value is divided by 1000, and supplies epoch seconds in the `Ljb8` refresh result. `Lxb8.e` passes the failure and wrapper to `Lxb8.j`; when that filter returns a timestamp, it computes server-minus-local `Instant.epochSecond`, stores it in `Lpvx.b`, and calls `Lxb8.g` one more time. The filter inspects HTTP statuses 400/401/403 and structured error details and includes numeric 30/300 comparisons; their complete branch semantics are not generalized into a TTL or overall retry bound.
+
+**State boundary:** `Lpvx` is an in-memory holder with a clock reference and mutable offset; its type is consumed by refresh and DPoP proof paths. No persistence, expiry or clear path was found in the traced holder/call graph. Dependency scope and reset behavior remain open.
+
+**Implementation boundary:** documentation/source-analysis update only. No runtime source or tests changed, no Android method executed, and no credential, key, authentication or network operation used. ChatJS still does not parse HTTP Date, manage offset state, retry refreshes, sign DPoP or authenticate.
+
+**Validation:** the local execution environment has no working repository checkout, so local `npm run check` and local archive rebuild/inspection were not run. The parent `main` commit `c17c85340a11159ff2cd6a452c0ec455b995dcbf` had successful GitHub CI run `45676095584` and CodeQL run `45676096079`; the documentation commit's CI/CodeQL results must be checked after publication.
