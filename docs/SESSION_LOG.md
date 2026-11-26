@@ -1526,3 +1526,10 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - `Lrjb.c` returns Unit after callback success, and logs/returns null after an explicit false result. `Lsjw.c` awaits this but returns true after normal completion without forwarding the inner value. Consequently the conversation Ktor callback suppresses its one-shot resend on normal completion; thrown callback errors propagate.
 - Updated the Android protocol findings, continuation, TODO and session log. Runtime and public API unchanged; no credentials, Android method execution or network request.
 - Remaining callback work is the distinct `messaging/rooms` `Li2e(Function1)` owner and any additional native/injected producers.
+
+## 2026-11-26 — Generated-state CI formatting correction
+
+- The CI run `45806631192` for the documentation update failed at `docs:check` because `docs/PROJECT_STATE.md` contained an extra leading space before the generated-file notice. No lint, runtime test, archive or package smoke test was reached in that run.
+- CodeQL run `45806631447` passed on the same commit.
+- Rebuilt `docs/PROJECT_STATE.md` directly from `docs/project-state.json` using the exact formatting emitted by `scripts/generate-project-state.cjs`; this change removes the stray leading space and keeps the generated state as a derived file.
+- The new commit's CI and CodeQL will be checked before this session is reported complete. The last fully passing code/doc checkpoint remains `f7dcc7abc91f83ceb6f54a6b4c52b54075ee7a13` (CI `45805734722`, CodeQL `45805734769`).
