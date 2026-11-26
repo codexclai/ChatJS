@@ -768,3 +768,18 @@ Do not conflate these Ktor branches with `Lxb8.e`'s OAuth refresh response-Date 
 3. Keep native provider injection, host secure non-exportable signer, and authorized end-to-end testing blocked until real host capability and session contracts are established.
 
 No ChatJS runtime code/tests changed and no Android method, credential, key or network request was executed.
+
+
+## Latest handoff — Android OAuth refresh endpoint and request-body contract — 2026-11-26
+
+The concrete credential refresh transport is now traced beyond `Ld7x`/`Ljn8` to the `AuthApiImpl` `Lxb8` implementation:
+
+- `Lxb8.g` (classes.dex index 59395) contains `https://auth.openai.com/oauth/token` and creates the Ktor request coroutine through `Lwx2.M0` / `Lub8`.
+- `Lxb8.h` (index 59396) constructs `Lpyy0` as `(Lyjq0.a, refreshTokenString)`. `Lyjq0.a` is the client ID; the String carried through `Ld7x.p` → `Ljn8.a` is passed as the refresh token.
+- `Lnyy0` (classes3 indexes 35690–35693) serializes `Lpyy0.e/f/g` as JSON properties `clientId`, `refreshToken`, `grantType`. `grantType` defaults to `refresh_token` and is default-aware/possibly omitted when the encoder is not configured to encode defaults.
+- `Lub8.invokeSuspend` (classes5 index 47893) uses the injected Ktor `HttpClient`, builds request headers, optionally attaches `ChatGPT-Account-ID`, calls the request authorization/context helper, adds the separate `DPoP` proof header, sets `oai-uit: True`, and serializes the `Likq0` body (`Lpyy0`) through Ktor's serialization path.
+- `Ltb8.invokeSuspend` (classes7 index 49258) builds the proof for the literal endpoint using the stored P-256 key pair and clock offset. The method override passed to `Lyls0.s` is null; `Lyls0.s` defaults it to `POST`. The access-token input to the proof builder is null: the refresh token is sent in the body, not used as the access-token-hash input.
+
+This resolves the OAuth refresh endpoint, request-body property names, source mapping of client ID and refresh-token inputs, default grant type and DPoP/POST association. Do not hardcode an extracted client id or credential. The request serializer is source-mapped; ChatJS still has no OAuth HTTP call.
+
+Next: map the refresh success response DTO and the full `Lxb8.g` result/error mapping, then finish the separate `token_expired` Ktor recovery/replay ceiling and remaining refresh retry branches. Native provider injection, host-owned secure non-exportable signer, actual persistent credential semantics and authorized E2E remain blockers.
