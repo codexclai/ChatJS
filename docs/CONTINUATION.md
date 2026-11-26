@@ -797,3 +797,15 @@ The success response DTO and repository conversion are now traced:
 Request side already mapped: `https://auth.openai.com/oauth/token`, POST DPoP proof, JSON `clientId`/`refreshToken`/default `grantType=refresh_token`, optional `ChatGPT-Account-ID`, `oai-uit: True`.
 
 Still open: exact non-success API response/error normalization in `Lxb8.g`/`Ljn8.a`, full `token_expired` renewal/replay ceiling, remaining invalid-proof/refresh retry branches, native provider closure and host secure non-exportable signer. No ChatJS OAuth or DPoP runtime is implemented.
+
+
+## Latest handoff — Android OAuth refresh result wrapper and response-vs-transport failure split — 2026-11-26
+
+`Lxb8.g` (classes.dex index 59395) builds the Ktor request and returns a `Ljb8` wrapper retaining the underlying `La1p0` result, the outgoing refresh `iat`, and an optional server `Date` epoch-second value. `Lxb8.e` passes that wrapper to `Lxb8.j` for Date-skew correction eligibility.
+
+- API success is `La1p0`/`Lz0p0`; its body is `Llkq0` and `Ljn8.a` converts it through `Ly4b1.h` into internal `Lvg8`.
+- HTTP response failure is `Lu0p0` containing `Ly0p0`; `Lxb8.g` reads HTTP status, inspects `ApiServiceError` on the throwable/cause, reads the response `Date` header and parses it to epoch seconds in `Ljb8`.
+- Non-response transport/serialization failures follow generic `Lw0p0`/`Lu0p0` handling and do not contain a usable response Date. They are not eligible for `Lxb8.j`'s Date-skew correction merely because refresh failed.
+- Request ID/CF-Ray and refresh-attempt event fields are diagnostics, not product request semantics to implement.
+
+Remaining: full status/error normalization across all API error variants and cancellation/serialization cases, token-expiry replay ceiling and remaining refresh/invalid-proof retries. Keep HTTP response failures with Date separate from generic transport failures.
