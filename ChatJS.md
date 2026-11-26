@@ -333,3 +333,12 @@ The `Lyt2.b(String)` helper is a separate workflow: its only direct caller in th
 The Android proof provider invokes the DPoP signer once per `Lgmq0` result-coroutine invocation. `Lfq.a` consumes a success or signer failure: success forms the `DPoP` authorization value; failure maps the underlying platform signing exception and returns a credentials-acquisition failure. The recovered path does not contain a repeated signer call or retry loop.
 
 Android declares a request attribute named `DPoPClockRetryAttempted`; the only app-package reference found is a read/short-circuit guard in `Lxp.b`. No writer or setting callsite was found in the ten supplied DEX files, so its upstream producer and retry policy remain unknown. This is separate from the fully traced one-time OAuth refresh Date-header correction. `RequestDPoPMetadata` and `OpenAI-Device-Key` observations are diagnostics/Sentry header filtering, not protocol behavior, and are not reproduced by ChatJS.
+
+
+## Android Ktor `dpop_iat_out_of_range` and `token_expired` recovery — source findings — 2026-11-26
+
+The Ktor response handler `Lwp` has a separate request-level `dpop_iat_out_of_range` path. For an eligible DPoP request it reads the failed response's HTTP `Date` header, parses epoch seconds, updates `Lpvx.b` with `Date - local Instant.epochSecond`, writes `DPoPClockRetryAttempted` into the request attributes (value `kotlin.Unit`), clones the request context preserving attributes, then calls the Ktor retry callback. `Lwp` blocks another clock replay when the marker is present, and `Lxp.b` prevents access-token provider reacquisition on the marked request. This is one guarded request replay, separate from the OAuth refresh Date correction in `Lxb8.e`.
+
+The same response handler has a separate `token_expired` branch: it persists the rejected access token through `Lcd01.d`, then invokes `Lcd01.e`; the default interface method calls `b(true)`, which the credential-backed `Lgk8` adapter delegates to the `AuthRepository` renewal path `Ld7x.j` → `Lu5x.f`/`Ld7x.l`. The complete renewal wire schema and total replay ceiling are still under investigation.
+
+Correction: earlier notes that the `DPoPClockRetryAttempted` attribute had no writer were wrong. A temporary DEX decoder omitted arithmetic opcode widths and misaligned later method PCs; corrected disassembly exposes the `Lwp` writer and retry callback. This is static Android source research only. ChatJS still has no authenticated transport, native secure signer, token refresh or DPoP runtime.
