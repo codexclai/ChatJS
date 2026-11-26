@@ -732,3 +732,14 @@ A direct callsite sweep across the ten DEX files finds only one caller of `Lyt2.
 These two paths share the stored key holder but are distinct protocols: request DPoP JWT vs the `DEVICE_KEY` challenge-signature response. Do not insert the lookup-key challenge into the DPoP JWT or treat it as the generic Ktor server nonce. Other nonce-bearing DPoP/native flows remain possible and still need callsite coverage; no blanket absence claim is made.
 
 No ChatJS runtime change, Android execution, credential/key use or network activity occurred.
+
+
+## Latest handoff — Android DPoP signer failure result and retry guard — 2026-11-26
+
+`Lgmq0.invokeSuspend` (classes5 method 16392) calls `Ln1d1.b` once per invocation and wraps the result as `Lavb1` success or a `Lbvb1` failure state inside `Lovx`. It has no loop or second signer invocation. `Lfq.a` (classes2 method 18746) obtains the configured concurrency permit, invokes this coroutine, then on success constructs the `DPoP ` authorization value; on failure it unwraps the throwable, emits the source diagnostics event, maps `UserNotAuthenticatedException`, `SignatureException`, `InvalidKeyException`, `KeyPermanentlyInvalidatedException` and `DPoPSigningKeyUnavailableException` into the failure metadata, and returns a credentials-acquisition failure. The permit is released in the success/failure branches. This is the result/failure policy for one signer call, not evidence of an automatic proof retry.
+
+`Lyp.<clinit>` declares the Ktor request attribute `DPoPClockRetryAttempted`. The only reference to `Lyp.b` in the ten app DEX files is its read in `Lxp.b`: if the request attribute exists, provider acquisition short-circuits before entering `Lxp.c`. A full DEX field-reference scan found no in-package write/set callsite for this key. Its upstream producer/consumer outside the observed Ktor auth gate is unknown. The attribute name alone cannot be used to claim that this provider performs timestamp correction or any specific retry policy. Keep this marker distinct from the proven OAuth refresh `Date` correction in `Lxb8.e` (`Lxb8.j` classifier followed by one additional `Lxb8.g` call).
+
+`RequestDPoPMetadata` is an observability attribute bundle in `Lwvx`; its values include signing attempted/result/failure, first failure, retry outcome, keystore error, duration, queue wait, concurrency limit, DPoP header presence and auth scheme. It is merged into OpenTelemetry span attributes; ChatJS must not copy telemetry. The `OpenAI-Device-Key` literal is only in `Lil31.g` Sentry OkHttp header-copy allowlist, not a header emitter. Neither marker appears in the 111 decompressed Valdi modules.
+
+Next: identify any non-app-DEX producer or native host path for `DPoPClockRetryAttempted`, and trace upstream retry handling separately from `Lxb8.e` refresh correction. Do not implement a retry from the attribute name alone. No ChatJS runtime code, signer, telemetry or network behavior was added.
