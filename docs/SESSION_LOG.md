@@ -1667,3 +1667,10 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Extended the private helper with `decodeAndroidLoginAuthAboutYouPayload`, which validates only the source-proven payload members and does not synthesize the unknown default `fullName` value or parse the response union.
 - Added two tests. Local focused schema suite: 8 passed, 0 failed. The helper is already included in the allow-listed distribution archive, whose previous CI artifact was verified byte-for-byte.
 - The newly extended decoder and docs have not yet run through CI; the prior passing CI/CodeQL pair is on db20962c70403aa790daa67996f49bd2901309ec. Local full-repository `npm run check` remains unavailable because no repository checkout is mounted and external Git clone DNS is blocked.
+
+
+## 2026-11-27 — Stale-base-tree archive regression correction
+
+- Follow-up about_you commit 514ec963825445785ce7c484732526e73ebebb7d was assembled from the older 879da91 tree rather than the immediate db20962 parent tree. The commit diff therefore removed the decoder from the explicit archive builder and exact archive test manifests, despite keeping both the decoder and schema tests in source.
+- CI on the header-fix commit 18374e5 passed because the reverted archive test expected the older file set. Inspection of its artifact 15196008855 confirmed the decoder was absent from ChatJS.tar.gz; this supersedes any assumption that the about_you decoder was already packaged.
+- Restore the known-good builder and test manifests from db20962 onto the current main tree. Re-run CI and CodeQL, then inspect a fresh archive to verify the helper's current Git blob hash and about_you implementation bytes.
