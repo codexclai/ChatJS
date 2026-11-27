@@ -2453,3 +2453,26 @@ This is a private nested-payload decoder only. It does not parse the top-level L
 ### Evidence and limits
 
 Static DEX/generated Kotlin-serialization inspection of the supplied ChatGPT Android 1.2026.321 base APK: base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant class/method evidence: Liwt0, Lhwt0, Ldwt0, Lfwt0, and Lifp0.c / Lifp0.a(List). No Android method, account, login, credential, key, keystore, integrity service or network call was executed.
+
+
+## Android LoginAuth external_url payload — 2026-11-27
+
+### Response subtype and payload model
+
+The external_url discriminator maps to response subtype Lar70. Its fields are the step enum Lvl8, payload Lzq70, and root errors Lql8. The generated outer serializer Lvq70 declares the root JSON members type, payload, and errors. The type and payload members are required; root errors is optional/nullable and uses the shared Lql8 error serializer. The payload's own schema must not be conflated with the root errors object.
+
+### Generated payload serializer
+
+Payload DTO Lzq70 contains exactly one model field, a non-null String. Its generated serializer Lxq70 has a descriptor containing the exact JSON key url. The field is required (descriptor optional flag false) and childSerializers returns the non-null String serializer Ljb81, not a nullable wrapper. The generated serializer writes and reads the member as a string. No URL parsing, normalization, scheme allow-list, or non-empty-string predicate is part of this DTO serializer. A blank string is therefore a valid value at this model-validation layer; any later navigation policy is a separate caller/security concern.
+
+Li8p0.g(Lyl8), the already-traced step-state consumer, reads the external_url payload's url and stores it under the url state key separately from the step discriminator. This confirms the payload is the URL string consumed by that flow, but does not make ChatJS responsible for opening or trusting arbitrary external destinations.
+
+### Private decoder and tests
+
+Added private pure decodeAndroidLoginAuthExternalUrlPayload. It requires a payload object and a present, non-null string url; it returns a defensive shallow copy and preserves extension members. It deliberately does not parse the string as a URL, require non-empty content, decode root errors, or implement navigation. Two focused tests cover the one-field contract, extension preservation, required/null/type errors, and the absence of URL-format assumptions. The focused android-login-auth-response-schema suite now has 18 tests (16 prior + 2 added).
+
+### Evidence and limits
+
+Static inspection of the supplied ChatGPT Android 1.2026.321 base APK: base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant DTO/serializer classes are Lar70, Lzq70, Lxq70 and Lvq70; the serializer constant and code paths establish descriptor member url and required String child serializer. The classes' mapped method offsets are recorded in the local analysis notes; no Android method, login, account, key, keystore, Play Integrity service or network call was executed.
+
+This adds only a private nested-payload validator. The top-level Lyl8 response-union dispatcher, remaining step payloads, final Lmiy fallback acceptance, LoginAuth authentication, transport and integrity provider remain unimplemented.
