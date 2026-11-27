@@ -184,3 +184,8 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | Capability | Status | Evidence and limits |
 | --- | --- | --- |
 | Decode Android LoginAuth contact_verification payload Lhwt0 | Implemented (private pure helper) | Validates optional nullable Lql8 errors, the shared nine-value Lfer0 phoneVerificationMode, and List<Lmnk0> using the source-traced password/passwordless-OTP/passkey/unknown variants and passkey challenge. Three new tests; focused response-schema suite now has 16 tests. Does not parse the outer Lyl8 union or perform authentication/transport. |
+## Android LoginAuth external_url payload decoder — 2026-11-27
+
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
+| Decode Android LoginAuth external_url payload Lzq70 | Implemented (private pure helper) | Requires the generated required, non-null string url; preserves extension members. Two tests. No URL parsing/navigation/allow-list is inferred, and no outer Lyl8 union or transport is implemented. |
