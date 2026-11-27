@@ -8,6 +8,7 @@ const {
   decodeAndroidLoginAuthErrors,
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
+  decodeAndroidLoginAuthContactVerificationPayload,
   AndroidLoginAuthResponseSchemaError
 } = schema;
 
@@ -250,6 +251,74 @@ test('passkey login method permits omitted or null challenge but validates a pre
       loginMethods: [method]
     }), (error) => {
       assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.match(error.message, pattern);
+      return true;
+    });
+  }
+});
+
+
+test('contact_verification payload uses the shared Lfer0 phone mode and Lmnk0 login-method schema', () => {
+  const source = {
+    errors: { formErrors: ['A phone number is required'] },
+    phoneVerificationMode: 'post_onboarding_email_collection',
+    loginMethods: [
+      { type: 'password' },
+      { type: 'passwordless_otp' },
+      {
+        type: 'passkey',
+        challenge: {
+          passkeyRequestOptions: { challenge: 'phone-flow-challenge', rpId: 'chatgpt.com' },
+          mfaRequestId: 'phone-mfa-request'
+        }
+      },
+      { type: 'unknown' }
+    ],
+    extension: true
+  };
+  const decoded = decodeAndroidLoginAuthContactVerificationPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.errors, source.errors);
+  assert.notEqual(decoded.loginMethods, source.loginMethods);
+  assert.notEqual(decoded.loginMethods[2].challenge, source.loginMethods[2].challenge);
+  assert.deepEqual(decoded.extension, true);
+});
+
+test('contact_verification payload preserves optional nullable generated fields and shared verification modes', () => {
+  assert.equal(decodeAndroidLoginAuthContactVerificationPayload(undefined), undefined);
+  assert.equal(decodeAndroidLoginAuthContactVerificationPayload(null), null);
+  assert.deepEqual(decodeAndroidLoginAuthContactVerificationPayload({}), {});
+  assert.deepEqual(decodeAndroidLoginAuthContactVerificationPayload({
+    errors: null,
+    phoneVerificationMode: null,
+    loginMethods: null
+  }), {
+    errors: null,
+    phoneVerificationMode: null,
+    loginMethods: null
+  });
+  for (const mode of schema.ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES) {
+    assert.deepEqual(
+      decodeAndroidLoginAuthContactVerificationPayload({ phoneVerificationMode: mode }),
+      { phoneVerificationMode: mode }
+    );
+  }
+});
+
+test('contact_verification payload rejects malformed mode, login methods and nested passkey challenge', () => {
+  const invalidValues = [
+    [{ phoneVerificationMode: 'sms_only' }, /recognized Android LoginAuth enum/],
+    [{ phoneVerificationMode: 1 }, /recognized Android LoginAuth enum/],
+    [{ loginMethods: {} }, /loginMethods must be an array/],
+    [{ loginMethods: [null] }, /must be an object/],
+    [{ loginMethods: [{ type: 'email' }] }, /recognized Android LoginAuth enum/],
+    [{ loginMethods: [{ type: 'passkey', challenge: {} }] }, /passkeyRequestOptions is required/]
+  ];
+  for (const [value, pattern] of invalidValues) {
+    assert.throws(() => decodeAndroidLoginAuthContactVerificationPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
       assert.match(error.message, pattern);
       return true;
     });
