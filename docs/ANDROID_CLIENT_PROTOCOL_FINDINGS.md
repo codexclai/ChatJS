@@ -2242,3 +2242,71 @@ The coroutine path contains an explicit Job cancellation check through `Le6o0.w`
 These findings come from static DEX and generated-serializer inspection of ChatGPT Android 1.2026.321, XAPK SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d` (123,574,190 bytes), including `classes7.dex` SHA-256 `e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e` (11,752,896 bytes). The inspected response and serializer classes are in `classes7.dex`; `Lu0c.m` is in `classes8.dex`.
 
 No Android method was executed; no account, token, private key, AndroidKeyStore entry or network request was used. No ChatJS runtime code or tests were changed. The lookup-key response and repository boundary are substantially mapped, but remaining work includes the other step-specific payload schemas, generic `fieldErrors`/`formErrors` item types, full `Luub1` classification and `La0d1.g` semantics, request auth/integrity headers and provider injection, and provider-alias-to-account preference persistence.
+
+
+## Android LoginAuth response union and nested error schema — 2026-11-27
+
+### Polymorphic response envelope and step dispatch
+
+Generated serializers for the lookup-key, external URL and error variants confirm the response envelope property names type, payload, and errors. Lam8.b(String) is the sealed serializer's discriminator dispatcher. Its 15 explicit string branches are:
+
+| Wire type | Response subtype |
+| --- | --- |
+| lookup_key_authentication | Lfvk0 |
+| about_you | Lq4 |
+| email_otp_verification | Lm260 |
+| contact_verification | Liwt0 |
+| external_url | Lar70 |
+| create_account_password | Lxxw |
+| login_password | Ldpk0 |
+| workspace | Lp5i1 |
+| push_auth_verification | Lprx0 |
+| mfa_challenge | Lhcn0 |
+| mfa_enroll | Lvcn0 |
+| login_passkey | Lrok0 |
+| token_exchange | Luoa1 |
+| token_response | Lfpa1 |
+| error | Lgu60 |
+
+After those explicit branches the dispatcher returns the Lmiy serializer. This is recorded as the actual final serializer branch, not as proof that every unknown wire string is accepted or that every Lvl8 enum member has its own response subtype. The enum contains additional values which are not among these 15 explicit cases; their complete routing and live-service use remain unverified.
+
+The lookup-key branch Lfvk0 carries a Levk0 payload. Levk0 has its own errors and deviceKeyChallenge properties; its errors member is separate from the root envelope's errors member. The response union and each payload variant must therefore not be flattened into one generic error object.
+
+### Exact Lql8 error model
+
+The generated Lol8 serializer descriptor lists isRecoverable, fieldErrors, formErrors, and metadata; each is declared optional and the child serializer is wrapped as nullable. Method-level generic serializer references resolve the exact types:
+
+| Property | Generated type | Nullability |
+| --- | --- | --- |
+| isRecoverable | Boolean | Optional, nullable |
+| fieldErrors | Map<Lsl8, List<String>> | Optional, nullable |
+| formErrors | List<String> | Optional, nullable |
+| metadata | List<Lml8> | Optional, nullable |
+
+The map key serializer is the Lsl8 enum serializer; its map value serializer is a list of strings. Lsl8's exact serialized values are password, confirm_password, code, birthday, username, email, country_code, phone, name, consent, recovery_key, and unknown.
+
+Each metadata element is Lml8, whose generated serializer Lkl8 declares code, type, and field. Each property is optional and nullable: code is String?, type is String?, and field is Lsl8?. The metadata list elements themselves are non-null model objects. A two-string constructor for Lml8 sets field to null.
+
+Lql8.a() is a computed combined error summary: it merges formErrors with the values of fieldErrors and joins the strings using a newline. It does not include metadata. Conversely, the base Lyl8.a() accessor returns the root Lql8.metadata list, not formErrors. The Lyl8.b() accessor returns the root Lql8 error model and Lyl8.c() returns the typed step enum.
+
+### Private Node.js schema decoder
+
+Added a private, pure helper at src/chatgpt/android-login-auth-response-schema.cjs:
+
+- decodeAndroidLoginAuthErrors(value) accepts an absent or null errors member as absent/null and validates a present object against the observed Lql8 schema.
+- It checks the exact Lsl8 enum values for map keys and metadata field, string-list element types, nullable booleans/strings and metadata object shape.
+- It returns a defensive copy, preserves unrecognized extension properties, rejects malformed nested values, and does not mutate the caller's object.
+- AndroidLoginAuthResponseSchemaError reports CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA.
+- Six focused tests cover the full field enum, valid nested data, absent/null behavior, all enum values, malformed nested values, immutability and prototype-key rejection. The module is private and is not exposed as a ChatJS public login/auth API.
+
+This helper decodes only Lql8. It does not parse or dispatch the top-level Lyl8 union, validate any step-specific payload, perform a login request, sign a proof, access a key store, authenticate a user, or send network traffic. No placeholder response or runtime service behavior was added.
+
+### Remaining Android LoginAuth work
+
+- Decode the remaining branch-specific payload serializers beyond the lookup-key payload; currently the other branch payloads are not implemented and only the external URL url property and selected error-envelope structure have been inspected.
+- Establish exactly which unknown discriminator strings, if any, the Lmiy fallback accepts; do not infer this from the existence of a fallback serializer.
+- Finish Luub1 authentication failure classification, the La0d1.g delegated branch, state cleanup and complete cancellation/error semantics.
+- Complete the initial account-authorize and first-party next request headers, auth plugin, first-party integrity, request context, transport cancellation and native provider injection.
+- Trace provider Lozc1.lookupKeyAlias into account Lel8.key_pair_alias persistence; do not infer the account-preference write from the existing provider-branch equality guard.
+
+Evidence boundary: static DEX and generated Kotlin-serialization inspection of ChatGPT Android 1.2026.321 only. No Android method, account, credential, private key, AndroidKeyStore operation or network request was executed. The decoder was tested in Node.js as a pure nested-schema helper; authenticated/accountless ChatGPT sessions, LoginAuth HTTP transport, signer/provider, and end-to-end behavior remain unimplemented.

@@ -1,0 +1,123 @@
+'use strict';
+
+const ANDROID_LOGIN_AUTH_FIELDS = Object.freeze([
+  'password',
+  'confirm_password',
+  'code',
+  'birthday',
+  'username',
+  'email',
+  'country_code',
+  'phone',
+  'name',
+  'consent',
+  'recovery_key',
+  'unknown'
+]);
+
+const androidLoginAuthFieldSet = new Set(ANDROID_LOGIN_AUTH_FIELDS);
+
+class AndroidLoginAuthResponseSchemaError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AndroidLoginAuthResponseSchemaError';
+    this.code = 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA';
+  }
+}
+
+function requireObject(value, label) {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be an object.');
+  }
+  return { ...value };
+}
+
+function requireString(value, label) {
+  if (typeof value !== 'string') {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be a string.');
+  }
+  return value;
+}
+
+function requireBoolean(value, label) {
+  if (typeof value !== 'boolean') {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be a boolean.');
+  }
+  return value;
+}
+
+function requireField(value, label) {
+  if (typeof value !== 'string' || !androidLoginAuthFieldSet.has(value)) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      label + ' must be a recognized Android LoginAuth field value.'
+    );
+  }
+  return value;
+}
+
+function decodeOptionalNullable(object, field, label, decoder) {
+  if (object[field] !== undefined && object[field] !== null) {
+    object[field] = decoder(object[field], label + '.' + field);
+  }
+}
+
+function decodeStringList(value, label) {
+  if (!Array.isArray(value)) {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be an array.');
+  }
+  return value.map((item, index) => requireString(item, label + '[' + index + ']'));
+}
+
+function decodeFieldErrors(value, label) {
+  const source = requireObject(value, label);
+  const result = {};
+
+  for (const key of Object.keys(source)) {
+    requireField(key, label + ' key');
+    Object.defineProperty(result, key, {
+      configurable: true,
+      enumerable: true,
+      value: decodeStringList(source[key], label + '[' + JSON.stringify(key) + ']'),
+      writable: true
+    });
+  }
+
+  return result;
+}
+
+function decodeMetadataEntry(value, label) {
+  const result = requireObject(value, label);
+  decodeOptionalNullable(result, 'code', label, requireString);
+  decodeOptionalNullable(result, 'type', label, requireString);
+  decodeOptionalNullable(result, 'field', label, requireField);
+  return result;
+}
+
+function decodeMetadata(value, label) {
+  if (!Array.isArray(value)) {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be an array.');
+  }
+  return value.map((entry, index) => decodeMetadataEntry(entry, label + '[' + index + ']'));
+}
+
+/**
+ * Decode the Android LoginAuth Lql8 error model found under a typed Lyl8
+ * response's optional errors member. This intentionally does not decode
+ * the polymorphic response's step-specific payload member.
+ */
+function decodeAndroidLoginAuthErrors(value) {
+  if (value === undefined || value === null) return value;
+
+  const result = requireObject(value, 'AndroidLoginAuthErrors');
+  decodeOptionalNullable(result, 'isRecoverable', 'AndroidLoginAuthErrors', requireBoolean);
+  decodeOptionalNullable(result, 'fieldErrors', 'AndroidLoginAuthErrors', decodeFieldErrors);
+  decodeOptionalNullable(result, 'formErrors', 'AndroidLoginAuthErrors', decodeStringList);
+  decodeOptionalNullable(result, 'metadata', 'AndroidLoginAuthErrors', decodeMetadata);
+  return result;
+}
+
+module.exports = Object.freeze({
+  ANDROID_LOGIN_AUTH_FIELDS,
+  AndroidLoginAuthResponseSchemaError,
+  decodeAndroidLoginAuthErrors
+});
