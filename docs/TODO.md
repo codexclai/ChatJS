@@ -876,3 +876,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Add three focused contact-verification tests for valid/passkey values, nullable/omitted fields and malformed nested data; shared helper suite now contains 16 tests.
 - [ ] Decode remaining Lyl8 step-specific payloads and establish the actual accepted Lmiy fallback discriminator set.
 - [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
+## Android LoginAuth contact_verification payload and shared list item contract — 2026-11-27
+
+- [x] Trace contact_verification outer subtype Liwt0, payload DTO Lhwt0, and generated serializer Lfwt0; record distinct root and payload errors locations.
+- [x] Decode payload field names errors, phoneVerificationMode, and loginMethods; establish their optional/nullable serializer behavior.
+- [x] Prove phoneVerificationMode is the shared Lfer0 enum used by email OTP, with the same nine exact serialized values.
+- [x] Prove loginMethods is List<Lmnk0> from Lifp0.c → Lifp0.a(List) and its per-item check-cast, rather than infer from the raw Java List field.
+- [x] Implement private pure decodeAndroidLoginAuthContactVerificationPayload using shared email/contact mode and Lmnk0 item validation.
+- [x] Add three focused contact-verification tests for valid/passkey values, nullable/omitted fields and malformed nested data; shared helper suite now contains 16 tests.
+- [ ] Decode remaining Lyl8 step-specific payloads and establish the actual accepted Lmiy fallback discriminator set.
+- [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
