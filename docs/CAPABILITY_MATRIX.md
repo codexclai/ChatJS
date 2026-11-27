@@ -173,3 +173,9 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | Resolve BodyIntegrity host allow-list | Source-resolved; not implemented in ChatJS | Exact hosts and dot-boundary subdomains; auth.openai.com is admitted; host-only predicate. |
 | Resolve integrity success/failure HTTP headers | Source-resolved; not implemented in ChatJS | Success header carries Looa1.c; failure header carries normalized Lrnk1.j string. Both are validated by Ktor's HeadersBuilder. |
 | Resolve request-body preservation | Source-resolved; not implemented in ChatJS | Original bytes are buffered and rewrapped as Lper0, preserving content type, length and headers metadata on both outcome branches. |
+
+## Android LoginAuth contact verification payload decoder — 2026-11-27
+
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
+| Decode Android LoginAuth contact_verification payload Lhwt0 | Implemented (private pure helper) | Validates optional nullable Lql8 errors, the shared nine-value Lfer0 phoneVerificationMode, and List<Lmnk0> using the source-traced password/passwordless-OTP/passkey/unknown variants and passkey challenge. Three new tests; focused response-schema suite now has 16 tests. Does not parse the outer Lyl8 union or perform authentication/transport. |
