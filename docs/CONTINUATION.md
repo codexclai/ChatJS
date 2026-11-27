@@ -974,3 +974,16 @@ The previous Ktor client/plugin gap is closed. Ly3b injects Lx3b into the shared
 Actual headers are resolved: success -> oai-android-play-integrity-token: Looa1.c; provider failure -> oai-android-play-integrity-token-failed: Lrnk1.j(Luub1). Ldvb0/Li9 is the Ktor HeadersBuilder. The plugin buffers/re-wraps the original body through Lgmj1.d/e into Lper0, preserving bytes and source content metadata before continuing the Ktor pipeline. The two result strings are genuine outgoing header names, correcting an earlier interim interpretation.
 
 Next: inspect broader NoAuth and NoIntegrityCheck marker effects, finish Luub1 and La0d1.g failure mapping, then continue the remaining LoginAuth response payloads and final Lmiy fallback. No Android method or Play Integrity request was executed; ChatJS still has no equivalent integrity provider, attestation or authenticated transport.
+
+## Latest handoff — Android LoginAuth contact_verification payload — 2026-11-27
+
+The next explicit Lyl8 response step is source-resolved and now has a private validator:
+
+- contact_verification maps to outer subtype Liwt0 and payload Lhwt0; generated serializer Lfwt0 names errors, phoneVerificationMode, and loginMethods. All three are optional and nullable, matching the email OTP serializer's corresponding fields.
+- phoneVerificationMode is the existing Lfer0 enum (same nine exact values as email verification).
+- The exact loginMethods generic type is proven by caller data flow, not a guess from the Java List: Lifp0.c passes both the email and contact lists into Lifp0.a(List); that method casts each item to Lmnk0. The previously decoded Lonk0 serializer and four exact method variants therefore apply to both.
+- Implemented private pure decodeAndroidLoginAuthContactVerificationPayload, reusing shared email/contact verification validators. Three focused tests were added; the combined helper suite now has 16 tests.
+
+Changed implementation: src/chatgpt/android-login-auth-response-schema.cjs; tests: tests/android-login-auth-response-schema.test.cjs. Static source evidence and hashes are in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+Next: continue other Lyl8 step payloads and the accepted Lmiy fallback behavior; trace Luub1 and La0d1.g; resolve broader NoAuth/NoIntegrityCheck effects. Keep the already-resolved BodyIntegrityPlugin clone/host/header/body facts closed, while its native provider/error taxonomy and server-side failure-header handling remain unimplemented. No top-level LoginAuth union, authentication, integrity provider, transport, account or network operation is implemented.
