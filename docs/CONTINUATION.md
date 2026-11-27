@@ -965,3 +965,12 @@ The Lmnk0 item serializers and Lmds0 nested schema are now source-resolved. Lonk
 Private decodeAndroidLoginAuthEmailOtpPayload is implemented and five tests were added; the shared response-schema helper suite now has 13 focused tests. The source file was already included in the verified archive manifest, but the updated archive and complete Node suite still need fresh CI/CodeQL verification.
 
 Next work: trace the exact Lf91 Lmvc0 client identity against Ly3b's DI-installed Lx3b, the Lar31 route predicate and token-header adaptation, then continue the other LoginAuth step payloads and failure branches.
+
+
+## Handoff — Android LoginAuth BodyIntegrityPlugin client, host, header and body contract — 2026-11-27
+
+The previous Ktor client/plugin gap is closed. Ly3b injects Lx3b into the shared client's plugin-provider set; Lxx7 installs it to Ltvc0; Lb6p0 clones those configuration maps into its LoginAuth client; and Lf91 uses that clone. Lar31 admits auth.openai.com through the openai.com dot-boundary subdomain rule and does not filter the path.
+
+Actual headers are resolved: success -> oai-android-play-integrity-token: Looa1.c; provider failure -> oai-android-play-integrity-token-failed: Lrnk1.j(Luub1). Ldvb0/Li9 is the Ktor HeadersBuilder. The plugin buffers/re-wraps the original body through Lgmj1.d/e into Lper0, preserving bytes and source content metadata before continuing the Ktor pipeline. The two result strings are genuine outgoing header names, correcting an earlier interim interpretation.
+
+Next: inspect broader NoAuth and NoIntegrityCheck marker effects, finish Luub1 and La0d1.g failure mapping, then continue the remaining LoginAuth response payloads and final Lmiy fallback. No Android method or Play Integrity request was executed; ChatJS still has no equivalent integrity provider, attestation or authenticated transport.

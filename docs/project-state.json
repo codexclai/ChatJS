@@ -194,7 +194,8 @@
     "Verified the Android LoginAuth response-schema decoders and corrected package distribution: eight focused tests pass; CI 45998505307 and CodeQL 45998505241 pass on 2d1a257; downloaded tarball has 19 regular files and includes the 4,391-byte decoder with exact Git blob SHA b9c270ee472874eee741fb4300cedd0b2b3c561a.",
     "Mapped Android LoginAuth email_otp_verification payload `Ll260` generated fields/nullability, `Lfer0` enum, and `loginMethods: List<Lmnk0>` item interface plus four concrete DEX implementers; left concrete JSON serializers explicitly open.",
     "Traced Android first-party next POST BodyIntegrityCheck request marker to the BodyIntegrityPlugin Ktor interceptor and injected provider, while recording unresolved Ktor client identity, URL predicate, request-attribute interactions and token-header behavior.",
-    "Decoded Android LoginAuth email_otp_verification loginMethods polymorphic serializers: password→Lfnk0, passwordless_otp→Link0, passkey→Lcnk0, unknown→Llnk0; decoded passkey challenge Lmds0 with required JsonObject passkeyRequestOptions and String mfaRequestId. Added a private pure Ll260 payload decoder and five focused tests (13 total in this helper suite)."
+    "Decoded Android LoginAuth email_otp_verification loginMethods polymorphic serializers: password→Lfnk0, passwordless_otp→Link0, passkey→Lcnk0, unknown→Llnk0; decoded passkey challenge Lmds0 with required JsonObject passkeyRequestOptions and String mfaRequestId. Added a private pure Ll260 payload decoder and five focused tests (13 total in this helper suite).",
+    "Traced Android LoginAuth BodyIntegrityPlugin end-to-end at the static client boundary: DI provider installed in shared Ktor config, cloned into LoginAuth Lmvc0, host-only allow-list admits auth.openai.com, success/failure integrity headers use Looa1.c/Lrnk1.j, and original body bytes/content metadata are rewrapped through Lper0 on both branches."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -216,10 +217,11 @@
     "The DPoP iat helper only adds caller-supplied epoch seconds and offset; it does not obtain time, extract/parse HTTP Date headers, persist/expire offsets or retry refresh requests. The Date-header parser, offset update and one corrective retry remain Android source findings only, not implemented ChatJS behavior.",
     "The private Android LoginAuth response-schema helpers validate only the shared nested Lql8 error model and the about_you Lp4 payload; they do not decode the other Lyl8 step payloads, define final Lmiy fallback acceptance, classify all LoginAuth failures, authenticate, sign or send HTTP requests.",
     "Only the nested Lql8 errors model and about_you Lp4 payload have private Node.js schema decoders. Other Lyl8 step payloads, complete response-union dispatch, LoginAuth failure handling, authentication and transport remain unimplemented.",
-    "The private Android LoginAuth response-schema helpers now cover Lql8 errors, about_you Lp4, and email_otp_verification Ll260 plus its four known Lmnk0 variants. They do not parse the top-level Lyl8 union, other step payloads, arbitrary unknown method discriminators, LoginAuth errors/transport, or perform authentication."
+    "The private Android LoginAuth response-schema helpers now cover Lql8 errors, about_you Lp4, and email_otp_verification Ll260 plus its four known Lmnk0 variants. They do not parse the top-level Lyl8 union, other step payloads, arbitrary unknown method discriminators, LoginAuth errors/transport, or perform authentication.",
+    "Android BodyIntegrityPlugin behavior is source-traced but not implemented: ChatJS has no Play Integrity provider/attestation, integrity token source, native secure host adapter or authenticated request transport. Do not emit integrity headers or simulate success/failure without the genuine authorized host capability."
   ],
   "nextActions": [
-    "Prove Lf91's injected Lmvc0 HttpClient identity against the DI-installed Lx3b BodyIntegrityPlugin, resolve Lar31's URL/path predicate for api/first_party_authorize/next and the final token-header/error adaptation; then trace remaining Lyl8 step payloads, Lmiy fallback and Luub1/La0d1.g failure semantics.",
+    "Trace the broader NoAuth and NoIntegrityCheck effects across Ktor plugins and other Android request paths; continue remaining Lyl8 step payloads, Lmiy fallback discriminator behavior, and Luub1/La0d1.g failure classification.",
     "Trace the complete Lozc1.lookupKeyAlias provider result to account Lel8.key_pair_alias persistence and the native auth-provider closure. Keep provider-branch alias equality separate from account preference assignment.",
     "Complete initial account-authorize and first-party next request headers, auth-plugin, first-party integrity, request context, and transport cancellation/error semantics; prove Lf91's Lmvc0 client identity against DI-installed Lx3b and trace Lar31's exact URL predicate and final token-header adaptation.",
     "Resolve the alternate Lnz6 / ImagesCreationComposer callback conditions for the messaging/rooms RetryExpiredAccessToken request; observed callback type mismatch remains unresolved and must not be ported as a working retry contract.",
@@ -286,10 +288,11 @@
     "The private Android LoginAuth decoder covers only the nested Lql8 error object. The 15 discriminator labels and fallback branch are source evidence, not proof that all LoginAuth step payloads or unknown wire types are supported.",
     "The only private LoginAuth payload decoder beyond the shared Lql8 error model is for about_you. Do not infer its optional field/default rules for any other response discriminator.",
     "The email_otp_verification loginMethods collection is typed List<Lmnk0>, but its concrete polymorphic JSON discriminator/member serializers remain open; do not validate or serialize guessed item shapes.",
-    "The first-party next request sets NoAuth, NoIntegrityCheck and BodyIntegrityCheck separately. BodyIntegrityPlugin registration/provider is traced, but the exact endpoint client instance, route predicate, attribute interactions and final token header behavior are unproven; this is not an implemented Node.js integrity capability.",
-    "The email OTP decoder accepts only the four exact Lqnk0 values observed in the generated enum. Lonk0 has an Llnk0 fallback, but acceptance and normalization of arbitrary unknown discriminator strings are not established."
+    "Android LoginAuth BodyIntegrityPlugin client-clone, host predicate, token/failure headers and body rewrap are now source-resolved; broader NoAuth/NoIntegrityCheck behavior, complete Lgeu0 failure taxonomy and server handling of the failed-integrity header remain open. No ChatJS Play Integrity host provider or authenticated transport exists.",
+    "The email OTP decoder accepts only the four exact Lqnk0 values observed in the generated enum. Lonk0 has an Llnk0 fallback, but acceptance and normalization of arbitrary unknown discriminator strings are not established.",
+    "The Android integrity source result includes a failed-integrity HTTP header and continues the request pipeline with the buffered original body; server rejection/acceptance semantics are not inferred. ChatJS must not claim success or mimic this path without a real authorized Play Integrity provider."
   ],
-  "lastVerifiedCommit": "f775437a44dbea3c8d7fdc31ffcfdaba9604a640",
-  "lastVerifiedCI": "45999139334",
-  "lastVerifiedCodeQL": "45999139599"
+  "lastVerifiedCommit": "2f7238ea7dd82fb00df3b5f675e6e453ef02554f",
+  "lastVerifiedCI": "46008081533",
+  "lastVerifiedCodeQL": "46008081399"
 }

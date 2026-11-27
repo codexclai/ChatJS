@@ -858,6 +858,10 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace `Lf91` first-party next POST request attributes (`NoAuth`, `NoIntegrityCheck`, `BodyIntegrityCheck`) and `BodyIntegrityPlugin` `La4b` / `Lx3b` registration, `Lz3b` interceptor and injected `Lgeu0` provider path.
 - [x] Decode exact Lmnk0 polymorphic discriminator mapping and per-variant generated serializers: password to Lfnk0, passwordless_otp to Link0, passkey to Lcnk0, and unknown to Llnk0; decode passkey challenge as optional nullable Lmds0 with required JsonObject passkeyRequestOptions and String mfaRequestId.
 - [x] Add and test private decodeAndroidLoginAuthEmailOtpPayload for optional nullable errors, all nine Lfer0 modes, four Lmnk0 method values and the nested passkey challenge; five new tests cover the traced schema.
-- [ ] Prove whether the `Lf91` request's injected `Lmvc0` is the same Ktor client instance receiving `Lx3b` from DI; resolve the `Lar31` URL/path predicate for `api/first_party_authorize/next`.
-- [ ] Trace final success/failure header adaptation for `oai-android-play-integrity-token` / `oai-android-play-integrity-token-failed`, all failure classification, and the independent `NoAuth` / `NoIntegrityCheck` attribute semantics.
+- [x] Prove the Lb6p0 LoginAuth Lmvc0 is cloned from the shared Lnnp0 client's Ltvc0 configuration maps, which already contain the DI-installed Lx3b / BodyIntegrityPlugin; Lf91 uses this derived client.
+- [x] Resolve Lar31 host predicate: exact hosts or proper dot-boundary subdomains of api.openai.org, api.openai-staging.com, openai.com, chatgpt.com, chatgpt-staging.com; auth.openai.com is admitted and the matcher adds no path restriction.
+- [x] Trace actual outgoing headers: success appends oai-android-play-integrity-token with Looa1.c; failure appends oai-android-play-integrity-token-failed with the normalized Lrnk1.j(Luub1) string through Ktor's validated HeadersBuilder.
+- [x] Trace request-body buffering/continuation: Lgmj1.d/e rewraps the original bytes as Lper0 while preserving content type, length and headers metadata on both branches.
+- [ ] Trace the broader independent NoAuth and NoIntegrityCheck effects across the other Ktor plugins/request paths; do not generalize from this BodyIntegrity interceptor.
+- [ ] Finish Lgeu0 failure normalization/classification and any downstream handling of the failed-integrity header.
 - [ ] Continue other `Lyl8` response payloads and establish the accepted final `Lmiy` fallback wire values; finish `Luub1` classification and `La0d1.g`.

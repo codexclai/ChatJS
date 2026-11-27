@@ -515,3 +515,14 @@ The Lmnk0 interface's polymorphic resolver is Lonk0.b(String): password selects 
 Lcnk0 declares optional nullable challenge:Lmds0? and a type default of passkey. Lmds0 (Lkds0) has required non-null passkeyRequestOptions: kotlinx.serialization.json.JsonObject and mfaRequestId: String. The other three method serializers declare only type with the corresponding enum default.
 
 A private pure decodeAndroidLoginAuthEmailOtpPayload helper now validates the three optional nullable parent fields, all nine verification modes, the four exact method types, and the nullable passkey challenge with required nested fields. Five tests were added, bringing this module's focused suite to 13. It does not decode the top-level Lyl8 union, accept arbitrary unknown method values, authenticate, sign or issue HTTP requests.
+
+
+### Android LoginAuth BodyIntegrityPlugin fully traced header/body path — 2026-11-27
+
+The exact LoginAuth HTTP client/plugin relationship is now proven. Ly3b creates Lx3b (HttpClientPlugin) around La4b; the plugin provider is included in the shared Lnnp0 client's Lnw31 provider set and registered by Lxx7 into Ltvc0. Lb6p0 clones the shared Ltvc0 maps into its dedicated LoginAuth Lmvc0; Lf91 uses that clone. Plugin registration is preserved by the configuration clone.
+
+Lar31.w applies Lc4t0.a to the parsed URL host. Exact allow-list: api.openai.org, api.openai-staging.com, openai.com, chatgpt.com, chatgpt-staging.com; it accepts exact host or proper dot-boundary subdomain, not arbitrary suffixes. auth.openai.com is admitted by openai.com; the predicate is host-only with no path restriction. cdn.openai.com is in a separate matcher.
+
+Lf91 independently sets NoAuth, NoIntegrityCheck, and BodyIntegrityCheck. Lz3b reads the third marker. On success it gets Looa1.c from the Lgeu0 provider result and calls the Ktor Ldvb0/Li9 headers builder with oai-android-play-integrity-token. On failure it maps Lu0p0 through Laad1.V and Lrnk1.j, then appends oai-android-play-integrity-token-failed with that normalized failure string. These are genuine outgoing HTTP header names and values, not telemetry labels. Lgmj1.d/e buffers the original Lner0 body and creates Lper0 with unchanged bytes and source content type, length and headers metadata; both branches continue the request pipeline with this wrapper.
+
+This is only static source reconstruction. No Play Integrity service, attestation, account, key, Android method or network request was run. ChatJS has no equivalent integrity runtime/provider, no host secure adapter and no authorized LoginAuth transport. Effects of the separate NoAuth/NoIntegrityCheck attributes outside this plugin, provider failure taxonomy and server handling of the failed-integrity header remain open.

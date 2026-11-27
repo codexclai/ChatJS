@@ -163,3 +163,13 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | Capability | Status | Evidence / boundary |
 | --- | --- | --- |
 | Decode Android LoginAuth email_otp_verification payload | Implemented (private pure helper) | Five additional tests; validates optional nullable errors, nine exact verification modes, four source-enumerated polymorphic login method types, and passkey challenge optional/null semantics with required JsonObject/String nested members. Does not parse top-level Lyl8, authenticate, sign, or send requests. |
+
+
+## Android LoginAuth BodyIntegrityPlugin source trace — 2026-11-27
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Trace DI-installed BodyIntegrityPlugin through shared and cloned LoginAuth Ktor clients | Source-resolved; not implemented in ChatJS | Ly3b -> Lx3b -> Ltvc0; Lb6p0 clones the shared plugin maps; Lf91 uses the cloned client. |
+| Resolve BodyIntegrity host allow-list | Source-resolved; not implemented in ChatJS | Exact hosts and dot-boundary subdomains; auth.openai.com is admitted; host-only predicate. |
+| Resolve integrity success/failure HTTP headers | Source-resolved; not implemented in ChatJS | Success header carries Looa1.c; failure header carries normalized Lrnk1.j string. Both are validated by Ktor's HeadersBuilder. |
+| Resolve request-body preservation | Source-resolved; not implemented in ChatJS | Original bytes are buffered and rewrapped as Lper0, preserving content type, length and headers metadata on both outcome branches. |

@@ -263,3 +263,14 @@ The private ChatJS formatter only converts DER ECDSA signatures to 64-byte `r ||
 Resolved from generated DEX serializers: loginMethods is List<Lmnk0>. The four concrete polymorphic variants and wire values are password to Lfnk0, passwordless_otp to Link0, passkey to Lcnk0, and unknown to Llnk0. Lcnk0 has optional nullable challenge:Lmds0? plus type; the nested Lmds0 schema requires non-null passkeyRequestOptions: JsonObject and mfaRequestId: String. Lfer0 email verification modes remain a separate enum. A private pure decodeAndroidLoginAuthEmailOtpPayload helper and five focused tests now cover those structures.
 
 Still open: whether the Lmnk0 polymorphic fallback accepts arbitrary unrecognized discriminator strings or only resolves to the explicit unknown enum value; the decoder currently accepts only the four source-enumerated Lqnk0 values. The overall Lyl8 union, other step payloads, complete LoginAuth error classification, native provider, authenticated transport and body-integrity header adaptation remain unimplemented.
+
+
+## Android LoginAuth BodyIntegrityPlugin client clone, host admission, and HTTP header adaptation — 2026-11-27
+
+Resolved from DEX and Ktor generated types: Ly3b provides Lx3b into the shared client's DI plugin-provider set; the shared Lmvc0 is created with that plugin installed. Lb6p0 clones the shared Ltvc0 plugin/interceptor maps into its LoginAuth Lmvc0, and Lf91 sends the next-step POST through that derived instance. The plugin is therefore present on the request client rather than merely available in an unrelated DI component.
+
+Lar31.w checks only host against Lq6t.r and Lc4t0.a; exact hosts and proper dot-boundary subdomains pass. The set is api.openai.org, api.openai-staging.com, openai.com, chatgpt.com, and chatgpt-staging.com; auth.openai.com is admitted. cdn.openai.com belongs to a separate list, not this BodyIntegrity matcher. No path-specific filter was found in this predicate.
+
+Lf91 sets NoAuth, NoIntegrityCheck, and BodyIntegrityCheck independently. On the eligible BodyIntegrity path, Lz3b calls the injected Lgeu0 provider. Success appends the actual HTTP header oai-android-play-integrity-token with Looa1.c; failure appends oai-android-play-integrity-token-failed with the normalized Lrnk1.j string. The header builder is Ktor Ldvb0/Li9, not an analytics accumulator. Both branches buffer and rewrap original request body bytes in Lper0 preserving content type, length, and headers metadata before continuing the Ktor pipeline.
+
+Still open: complete NoAuth and NoIntegrityCheck effects outside this interceptor and interactions with other plugins; the full Lgeu0 provider/native Play Integrity contract and error taxonomy; remote/server handling of the failed-integrity header. ChatJS has no Play Integrity provider, secure host adapter, first-party integrity request transport, or working LoginAuth; this source reconstruction must not be represented as runtime support.

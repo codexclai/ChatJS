@@ -2351,18 +2351,59 @@ Serializer mapping: password → Lfnk0/Ldnk0; passwordless_otp → Link0/Lgnk0; 
 
 A private pure decodeAndroidLoginAuthEmailOtpPayload helper now validates the Ll260 payload: errors, emailVerificationMode, and loginMethods are all optional nullable; all nine Lfer0 modes and four exact Lqnk0 values are validated; passkey challenge has optional nullable presence but required nested members. Five tests cover these paths. This does not parse the full Lyl8 union, accept arbitrary unknown types, authenticate, sign, or send requests.
 
-## Android LoginAuth BodyIntegrityPlugin request marker and provider path — source findings — 2026-11-27
+## Android LoginAuth BodyIntegrityPlugin client, host, header, and body path — source findings — 2026-11-27
 
-Static inspection of ChatGPT Android 1.2026.321 ties the first-party next-step request builder to the BodyIntegrity plugin path at the request-attribute level:
+### Shared-client plugin installation and LoginAuth client derivation
 
-- `Lf91.invokeSuspend` builds the `POST api/first_party_authorize/next` Ktor request and sets three distinct attributes on its request attributes: `NoAuth` (`Lq6t.a`), `NoIntegrityCheck` (`Lq6t.h`), and `BodyIntegrityCheck` (`Lq6t.o`). The `BodyIntegrityCheck` attribute value is the `Lw3b.c` tag object. It then serializes the `Lvi8` step request and sends through its injected `Lmvc0` client.
-- `La4b` is the Ktor plugin implementation named `BodyIntegrityPlugin`. Its constructor receives configuration, a `Lar31` route predicate/configuration object, and an injected `Lgeu0` provider. Its installation method registers the `Lz3b` coroutine interceptor through the Ktor client plugin hook.
-- `Lx3b` wraps `La4b` as a Ktor `HttpClientPlugin`; its install path delegates to `La4b`. DI factory `Ly3b.invoke` constructs `Lx3b` with an Android `Application`, `Lar31`, and `Lgeu0` dependencies.
-- `Lz3b.invokeSuspend` reads the same `Lq6t.o` (`BodyIntegrityCheck`) attribute from the Ktor request, then evaluates the route predicate from `Lar31` against the request URL and, on the eligible branch, invokes the injected `Lgeu0.a(...)` provider to obtain the body-integrity result. A provider failure branch contains the explicit error text `Failed to generate body integrity token` and routes the failure through the plugin's failure/reporting machinery.
-- The plugin's result-tag object `Lw3b.c` contains the strings `oai-android-play-integrity-token` and `oai-android-play-integrity-token-failed`. Their final adaptation into outgoing request headers and all success/failure header semantics have not yet been fully traced.
+Ly3b.invoke is the DI factory for BodyIntegrityPlugin: it constructs Lx3b from Application, route configuration Lar31, and provider Lgeu0. Lx3b implements the Ktor HttpClientPlugin surface and delegates installation to La4b, the plugin implementation; La4b installs interceptor Lz3b.
 
-This proves the request builder writes the attribute the plugin reads, and separately proves that the plugin wrapper is constructed by a DI factory. It does **not** yet prove that the `Lmvc0` used by `Lf91` is the same `HttpClient` instance on which `Ly3b` installs `Lx3b`, or that the `Lar31` route predicate returns true for this exact request. The host list inside `Lar31` includes `api.openai.org`, `api.openai-staging.com`, `openai.com`, `chatgpt.com`, `chatgpt-staging.com`, and `cdn.openai.com`, but the exact path predicate semantics remain open.
+The provider returned by Ly3b is part of the shared client plugin-provider set. Lnw31 exposes that set; Lxx7 resolves each provider's plugin key and installer and adds it to the shared Ltvc0 client configuration before the shared Lmvc0 is created. Thus BodyIntegrityPlugin is installed on the shared client through the normal plugin registry, not merely declared in a detached DI binding.
 
-`NoAuth`, `NoIntegrityCheck`, and `BodyIntegrityCheck` are three separate request attributes in the inspected builder. Their interaction with every other Ktor plugin and policy is not fully reconstructed; do not collapse them into a generic `integrity: true` flag or infer that the request bypasses all integrity. This is static source evidence only, not a working Node.js integrity provider or authenticated transport.
+Lb6p0 receives the shared Lnnp0 service and reads its shared Lmvc0 instance. It constructs a separate LoginAuth Lmvc0 using a cloned Ltvc0 configuration. Ltvc0.b() copies the client configuration's three plugin/interceptor maps into fresh LinkedHashMap instances; the clone then uses the retained engine and copied client settings. Lb6p0 stores this derived client, and Lf91.invokeSuspend uses that exact Lb6p0 client for POST api/first_party_authorize/next. Therefore the LoginAuth request's dedicated client retains the shared plugin registration, including Lx3b/BodyIntegrityPlugin.
 
-Evidence package: ChatGPT Android 1.2026.321. Base APK SHA-256 `312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c`; `classes2.dex` SHA-256 `aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a` (plugin/interceptor/DI), `classes5.dex` SHA-256 `5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44` (next-step request builder), and `classes7.dex` SHA-256 `e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e` (email-OTP serializers/consumer). Static DEX only; no app method, key, account, credential, network request, or AndroidKeyStore operation was executed.
+### Exact Lar31 host predicate
+
+Lz3b reads the BodyIntegrityCheck attribute from the request and calls the route predicate Lar31.w. The predicate reads the parsed URL host and calls Lc4t0.a with the Lq6t.r host allow-list:
+
+- api.openai.org
+- api.openai-staging.com
+- openai.com
+- chatgpt.com
+- chatgpt-staging.com
+
+A separate allow-list Lq6t.s contains cdn.openai.com; it is not the matcher used by this BodyIntegrityPlugin route predicate.
+
+Lc4t0.a matches either an exact host or a proper subdomain whose suffix boundary is a dot. It does not use unrestricted string-suffix matching. Consequently, auth.openai.com is admitted through openai.com; a lookalike such as not-openai.com is not. This predicate uses the host only; it does not impose a separate route-path restriction. The Android auth.openai.com next-step request is therefore within the configured BodyIntegrity host set.
+
+### Independent request attributes and integrity-provider result
+
+Lf91 sets three distinct request attributes:
+
+- Lq6t.a — NoAuth
+- Lq6t.h — NoIntegrityCheck
+- Lq6t.o — BodyIntegrityCheck, with Lw3b.c as its marker/value
+
+Lz3b specifically reads BodyIntegrityCheck and, for an admitted host, invokes the injected Lgeu0 provider. Do not collapse the three attributes into a generic Boolean or assume the broader effects of NoAuth/NoIntegrityCheck from this single path. Their interactions with all other client plugins and request paths remain separate work.
+
+The provider result is represented by generic result wrappers: success passes through La1p0 as Lavb1, whose value is Looa1; Looa1.c is the token string read by the interceptor. Failure passes through Lu0p0, is mapped by Laad1.V to Luub1, and is converted by Lrnk1.j to a normalized failure string. The exact upstream provider/native Play Integrity implementation is not invoked by this static analysis.
+
+### Actual outgoing headers and request-body continuation
+
+The result tag Lw3b.c supplies the two header-name strings:
+
+| Provider outcome | Ktor request header | Header value |
+| --- | --- | --- |
+| Success | oai-android-play-integrity-token | Looa1.c, the returned integrity token string |
+| Failure | oai-android-play-integrity-token-failed | The normalized string returned by Lrnk1.j |
+
+These are actual HTTP header names, not telemetry or merely diagnostic accumulator keys. The interceptor obtains the Ktor Ldvb0 headers builder through Llxc0.a() and calls Li9.b(name,value). Li9.b validates the value; Ldvb0 overrides header-name and value validation and can raise Ktor's illegal-header-name/value exceptions. The resulting header collection is retained in the request's Ktor pipeline state. The earlier interim interpretation of these two strings as reporting labels is superseded.
+
+The plugin also buffers the original outgoing content. Lgmj1.d reads/extracts the source Lner0 body's bytes. Lgmj1.e creates a new Lper0 byte-backed outgoing-content wrapper while preserving the source content's content type, content length, and headers metadata. Lz3b performs this body wrapping on both the success and failure paths and calls the Ktor pipeline continuation with the wrapped content, so the integrity token is added as a header while the original body bytes/metadata are preserved for continuation; this is not a body-token substitution.
+
+The provider-failure branch additionally reports Failed to generate body integrity token through its failure/reporting path. The source trace proves the failed header is appended and the request pipeline is continued with the rewrapped body; it does not prove what a remote service will do with that failure header or eliminate other provider/client failure modes.
+
+### Evidence boundary and remaining work
+
+Evidence comes from static generated-code/DEX inspection of Android ChatGPT 1.2026.321: base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes2.dex SHA-256 aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a; classes5.dex SHA-256 5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44; and classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant methods include Ly3b.invoke, Lxx7, Ltvc0.b, Lb6p0.<init>, Lf91.invokeSuspend, Lz3b.invokeSuspend, Lar31.w, Lc4t0.a, Lgmj1.d/e, and Li9.b / Ldvb0.
+
+No Android method, account, private key, AndroidKeyStore operation, Play Integrity request, login, or network call was executed. The source trace does not implement a Play Integrity provider, secure host capability, authenticated ChatJS transport, LoginAuth, or first-party integrity behavior in Node.js. Broader NoAuth and NoIntegrityCheck semantics, complete Lgeu0 failure/error classification, and server-side handling of the failure header remain open.
