@@ -273,6 +273,21 @@ function decodeAndroidLoginAuthExternalUrlPayload(value) {
   return result;
 }
 
+/**
+ * Decode the token_exchange payload DTO. Its generated serializer exposes
+ * one required, non-null String property named code.
+ */
+function decodeAndroidLoginAuthTokenExchangePayload(value) {
+  const result = requireObject(value, 'AndroidLoginAuthTokenExchangePayload');
+  if (result.code === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      'AndroidLoginAuthTokenExchangePayload.code is required.'
+    );
+  }
+  result.code = requireString(result.code, 'AndroidLoginAuthTokenExchangePayload.code');
+  return result;
+}
+
 module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_FIELDS,
   AndroidLoginAuthResponseSchemaError,
@@ -282,5 +297,6 @@ module.exports = Object.freeze({
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
-  decodeAndroidLoginAuthExternalUrlPayload
+  decodeAndroidLoginAuthExternalUrlPayload,
+  decodeAndroidLoginAuthTokenExchangePayload
 });
