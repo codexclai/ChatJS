@@ -2407,3 +2407,26 @@ The provider-failure branch additionally reports Failed to generate body integri
 Evidence comes from static generated-code/DEX inspection of Android ChatGPT 1.2026.321: base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes2.dex SHA-256 aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a; classes5.dex SHA-256 5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44; and classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant methods include Ly3b.invoke, Lxx7, Ltvc0.b, Lb6p0.<init>, Lf91.invokeSuspend, Lz3b.invokeSuspend, Lar31.w, Lc4t0.a, Lgmj1.d/e, and Li9.b / Ldvb0.
 
 No Android method, account, private key, AndroidKeyStore operation, Play Integrity request, login, or network call was executed. The source trace does not implement a Play Integrity provider, secure host capability, authenticated ChatJS transport, LoginAuth, or first-party integrity behavior in Node.js. Broader NoAuth and NoIntegrityCheck semantics, complete Lgeu0 failure/error classification, and server-side handling of the failure header remain open.
+
+
+## Android LoginAuth contact_verification payload and shared login-method contract — 2026-11-27
+
+### Response subtype and generated payload serializer
+
+The explicit contact_verification response discriminator dispatches to outer subtype Liwt0, whose payload field is Lhwt0. The outer generated serializer Ldwt0 declares the common response envelope keys type, payload, and errors; Liwt0 extends the shared Lyl8 response model and retains its own root Lql8 errors separately from the payload's errors.
+
+The payload DTO Lhwt0 has three members: errors:Lql8?, phoneVerificationMode:Lfer0?, and loginMethods:List<Lmnk0>?. Generated serializer Lfwt0 declares the exact JSON keys errors, phoneVerificationMode, and loginMethods; each descriptor member is marked optional, and its deserialization/child-serializer structure matches the corresponding nullable members in the already-decoded email OTP serializer Lj260. The mode is not a new phone-only enum: the field is the same generated Lfer0 enum used by emailVerificationMode, with the exact previously traced values onboarding, post_onboarding_email_collection, password_reset, login_challenge, post_signup, post_registration, passwordless_login, passwordless_signup, and unknown.
+
+### Shared loginMethods element type proven by the consumer
+
+The type of Lhwt0.loginMethods is not inferred merely from its Java List field. In Lifp0.c, the contact_verification branch reads Liwt0.b (Lhwt0), reads its c list, and passes that list into the same Lifp0.a(List) conversion method used for the email OTP branch. The consumer at Lifp0.a iterates the list and performs a check-cast to Lmnk0 before processing each element. This establishes the element interface for both contact and email verification. The shared Lmnk0 polymorphic serializer therefore applies: password → Lfnk0, passwordless_otp → Link0, passkey → Lcnk0, and the explicit default branch → Llnk0. The passkey challenge remains optional nullable Lmds0; when present, it requires JSON-object passkeyRequestOptions and string mfaRequestId.
+
+### Private decoder and tests
+
+Added private pure decodeAndroidLoginAuthContactVerificationPayload. It validates optional-nullable errors, the shared exact Lfer0 value set under phoneVerificationMode, and loginMethods using the already-implemented Lmnk0 item validator. Shared validation code now serves both email and contact verification rather than maintaining two divergent method-list implementations. Three new focused tests cover valid data and passkey challenge cloning, all optional/null fields and all nine modes, and malformed mode/list/item/challenge values. The focused android-login-auth-response-schema suite is now 16 tests (13 prior + 3 added).
+
+This is a private nested-payload decoder only. It does not parse the top-level Lyl8 union, validate the root response envelope, establish every final Lmiy fallback value, authenticate, sign, access AndroidKeyStore/Play Integrity, or issue requests.
+
+### Evidence and limits
+
+Static DEX/generated Kotlin-serialization inspection of the supplied ChatGPT Android 1.2026.321 base APK: base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant class/method evidence: Liwt0, Lhwt0, Ldwt0, Lfwt0, and Lifp0.c / Lifp0.a(List). No Android method, account, login, credential, key, keystore, integrity service or network call was executed.
