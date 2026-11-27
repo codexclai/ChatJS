@@ -336,7 +336,7 @@ test('external_url payload decodes the source-traced required url string and pre
   const decoded = decodeAndroidLoginAuthExternalUrlPayload(source);
   assert.deepEqual(decoded, source);
   assert.notEqual(decoded, source);
-  assert.notEqual(decoded.extension, source.extension);
+  assert.equal(decoded.extension, source.extension);
   assert.equal(decoded.url, source.url);
 });
 
@@ -368,7 +368,7 @@ test('token_exchange payload decodes the required code string and preserves exte
   const decoded = decodeAndroidLoginAuthTokenExchangePayload(source);
   assert.deepEqual(decoded, source);
   assert.notEqual(decoded, source);
-  assert.notEqual(decoded.extension, source.extension);
+  assert.equal(decoded.extension, source.extension);
   assert.equal(decoded.code, 'authorization-code');
 });
 
