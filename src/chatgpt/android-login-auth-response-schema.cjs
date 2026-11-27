@@ -207,26 +207,54 @@ function decodeAndroidLoginAuthLoginMethod(value, label) {
  * is a polymorphic Lmnk0 collection; this validator covers only the four
  * observed Lqnk0 discriminator values and their generated member schemas.
  */
-function decodeAndroidLoginAuthEmailOtpPayload(value) {
+function decodeAndroidLoginAuthLoginMethods(items, label) {
+  if (!Array.isArray(items)) {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be an array.');
+  }
+  return items.map((item, index) =>
+    decodeAndroidLoginAuthLoginMethod(item, label + '[' + index + ']')
+  );
+}
+
+function decodeAndroidLoginAuthVerificationPayload(value, label, modeField) {
   if (value === undefined || value === null) return value;
 
-  const result = requireObject(value, 'AndroidLoginAuthEmailOtpPayload');
-  decodeOptionalNullable(result, 'errors', 'AndroidLoginAuthEmailOtpPayload', decodeAndroidLoginAuthErrors);
+  const result = requireObject(value, label);
+  decodeOptionalNullable(result, 'errors', label, decodeAndroidLoginAuthErrors);
   decodeOptionalNullable(
     result,
-    'emailVerificationMode',
-    'AndroidLoginAuthEmailOtpPayload',
-    (item, label) => requireEnum(item, label, androidLoginAuthEmailVerificationModeSet)
+    modeField,
+    label,
+    (item, fieldLabel) => requireEnum(item, fieldLabel, androidLoginAuthEmailVerificationModeSet)
   );
-  decodeOptionalNullable(result, 'loginMethods', 'AndroidLoginAuthEmailOtpPayload', (items, label) => {
-    if (!Array.isArray(items)) {
-      throw new AndroidLoginAuthResponseSchemaError(label + ' must be an array.');
-    }
-    return items.map((item, index) =>
-      decodeAndroidLoginAuthLoginMethod(item, label + '[' + index + ']')
-    );
-  });
+  decodeOptionalNullable(
+    result,
+    'loginMethods',
+    label,
+    decodeAndroidLoginAuthLoginMethods
+  );
   return result;
+}
+
+function decodeAndroidLoginAuthEmailOtpPayload(value) {
+  return decodeAndroidLoginAuthVerificationPayload(
+    value,
+    'AndroidLoginAuthEmailOtpPayload',
+    'emailVerificationMode'
+  );
+}
+
+/**
+ * Decode the contact_verification payload. Its phoneVerificationMode uses
+ * the same generated Lfer0 enum as emailVerificationMode, and the shared
+ * LoginAuth consumer casts each loginMethods item to the same Lmnk0 model.
+ */
+function decodeAndroidLoginAuthContactVerificationPayload(value) {
+  return decodeAndroidLoginAuthVerificationPayload(
+    value,
+    'AndroidLoginAuthContactVerificationPayload',
+    'phoneVerificationMode'
+  );
 }
 
 module.exports = Object.freeze({
@@ -236,5 +264,6 @@ module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_METHOD_TYPES,
   decodeAndroidLoginAuthErrors,
   decodeAndroidLoginAuthAboutYouPayload,
-  decodeAndroidLoginAuthEmailOtpPayload
+  decodeAndroidLoginAuthEmailOtpPayload,
+  decodeAndroidLoginAuthContactVerificationPayload
 });
