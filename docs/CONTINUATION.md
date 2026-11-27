@@ -999,3 +999,15 @@ The next explicit Lyl8 response step is source-resolved and now has a private va
 Changed implementation: src/chatgpt/android-login-auth-response-schema.cjs; tests: tests/android-login-auth-response-schema.test.cjs. Static source evidence and hashes are in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
 
 Next: continue other Lyl8 step payloads and the accepted Lmiy fallback behavior; trace Luub1 and La0d1.g; resolve broader NoAuth/NoIntegrityCheck effects. Keep the already-resolved BodyIntegrityPlugin clone/host/header/body facts closed, while its native provider/error taxonomy and server-side failure-header handling remain unimplemented. No top-level LoginAuth union, authentication, integrity provider, transport, account or network operation is implemented.
+## Latest handoff — Android LoginAuth external_url payload — 2026-11-27
+
+The next response payload is source-resolved and now has a private validator:
+
+- external_url maps to subtype Lar70 with payload Lzq70; generated outer serializer Lvq70 confirms the shared type/payload/errors envelope, with type and payload required and root errors optional-nullable Lql8.
+- Lzq70 has exactly one field, url:String. Its generated Lxq70 serializer descriptor names url, marks it required, and uses the non-null String serializer Ljb81.
+- Li8p0.g consumes that payload URL into the separate url state key. This is not proof ChatJS should open it or apply no URL policy; navigation/trust rules remain a separate concern.
+- Implemented private pure decodeAndroidLoginAuthExternalUrlPayload requiring an object with a required non-null string url. It preserves extension fields and deliberately does no URL parsing or non-empty check. Two tests added; focused schema suite now 18 tests.
+
+Changed implementation: src/chatgpt/android-login-auth-response-schema.cjs; tests: tests/android-login-auth-response-schema.test.cjs. Source evidence and supplied APK hashes are in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+
+Next: continue remaining Lyl8 step payloads and the Lmiy fallback contract; trace Luub1 and La0d1.g. Keep external_url DTO string validation separate from navigation policy, and keep the existing BodyIntegrityPlugin static findings separate from a missing actual provider/transport. No full response-union parser, LoginAuth workflow, account action, integrity operation or authenticated request is implemented.
