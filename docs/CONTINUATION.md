@@ -1011,3 +1011,10 @@ The next response payload is source-resolved and now has a private validator:
 Changed implementation: src/chatgpt/android-login-auth-response-schema.cjs; tests: tests/android-login-auth-response-schema.test.cjs. Source evidence and supplied APK hashes are in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
 
 Next: continue remaining Lyl8 step payloads and the Lmiy fallback contract; trace Luub1 and La0d1.g. Keep external_url DTO string validation separate from navigation policy, and keep the existing BodyIntegrityPlugin static findings separate from a missing actual provider/transport. No full response-union parser, LoginAuth workflow, account action, integrity operation or authenticated request is implemented.
+## Additional handoff — Android LoginAuth token_exchange payload — 2026-11-27
+
+token_exchange is source-resolved as outer subtype Luoa1 with payload Ltoa1. The payload has one String field. Lsoa1.serializer() returns generated serializer Lroa1, whose descriptor defines a required JSON property code backed by the non-null String serializer Ljb81. The separate root errors remain Lql8; do not flatten it into the payload.
+
+Implemented private pure decodeAndroidLoginAuthTokenExchangePayload requiring an object with a present non-null string code and preserving extension properties. It deliberately does not impose OAuth code formatting or issue an exchange. Two tests added; the focused Android LoginAuth response-schema suite now has 20 tests.
+
+Source evidence is recorded in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md (base APK/classes7 hashes and DTO/serializer mapping). Current in-scope payload validators cover Lql8 errors, about_you, email OTP, contact verification, external_url and token_exchange; the top-level Lyl8 union and all remaining step payloads remain unimplemented.
