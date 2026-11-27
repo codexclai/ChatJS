@@ -293,7 +293,7 @@
     "The email OTP decoder accepts only the four exact Lqnk0 values observed in the generated enum. Lonk0 has an Llnk0 fallback, but acceptance and normalization of arbitrary unknown discriminator strings are not established.",
     "The Android integrity source result includes a failed-integrity HTTP header and continues the request pipeline with the buffered original body; server rejection/acceptance semantics are not inferred. ChatJS must not claim success or mimic this path without a real authorized Play Integrity provider."
   ],
-  "lastVerifiedCommit": "2f7238ea7dd82fb00df3b5f675e6e453ef02554f",
-  "lastVerifiedCI": "46008081533",
-  "lastVerifiedCodeQL": "46008081399"
+  "lastVerifiedCommit": "abe326917563a35d225682eddb0fc70a115bb9bc",
+  "lastVerifiedCI": "46018127392",
+  "lastVerifiedCodeQL": "46018127188"
 }
