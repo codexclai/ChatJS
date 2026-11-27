@@ -289,3 +289,8 @@ A private pure contact payload decoder and three tests are now implemented. This
 **Resolved:** external_url is Lar70 with payload Lzq70; outer serializer Lvq70 confirms required type and payload plus optional-nullable root errors. Lzq70 has exactly one payload property url:String, marked required by Lxq70's descriptor and backed by the non-null Ljb81 String serializer. Li8p0.g copies the value into the separate url state key. A private pure decoder and two tests now validate this narrow nested model.
 
 **Still open:** how URL destinations are trusted/opened or constrained in the complete LoginAuth flow; no DTO-level URL validation was found. Other Lyl8 payloads, complete union dispatch/fallback acceptance and authentication/transport remain open.
+## Android LoginAuth token_exchange payload — source resolution update — 2026-11-27
+
+**Resolved:** token_exchange is Luoa1 with payload Ltoa1. Lsoa1.serializer() resolves to Lroa1, which declares one required JSON property code backed by a non-null String serializer. Its root Lql8 errors are separate. A private nested payload decoder and two tests now validate the model.
+
+**Still open:** the meaning/format/issuer of code and the later exchange lifecycle are not inferred from this DTO; no token exchange is implemented. Remaining Lyl8 payloads, the Lmiy fallback, failure classification and authenticated transport remain open.
