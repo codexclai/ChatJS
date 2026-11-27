@@ -2345,7 +2345,11 @@ Evidence boundary: generated DEX/Kotlin-serialization code in Android ChatGPT 1.
 
 The generic element type of `loginMethods` is established by consumer `Lifp0.a(List)`: it iterates the values and casts each element to `Lmnk0`. Four concrete DEX classes implement that interface: `Lcnk0`, `Lfnk0`, `Link0`, and `Llnk0`. `Lqnk0` is a separate enum carried by the concrete method models and has values `password`, `passwordless_otp`, `passkey`, and `unknown`. `Lcnk0` additionally carries `Lmds0` data. Do not mistake `Lqnk0` for the `emailVerificationMode` `Lfer0` enum.
 
-The exact polymorphic JSON discriminator strings, serialized member names for each concrete `Lmnk0` implementation, and the `Lmds0` nested value schema have not yet been decoded. No email-OTP payload validator has been added; accepting arbitrary list members would overstate the schema.
+
+
+Serializer mapping: password → Lfnk0/Ldnk0; passwordless_otp → Link0/Lgnk0; passkey → Lcnk0/Lank0; unknown → Llnk0/Ljnk0. Lonk0.b(String) resolves the first three explicitly and has Llnk0 as its fallback; the Lqnk0 enum values are password, passwordless_otp, passkey, unknown. Arbitrary unknown discriminator acceptance is not claimed. Lcnk0.challenge is optional nullable Lmds0. Its Lkds0 serializer requires passkeyRequestOptions (non-null kotlinx.serialization.json.JsonObject) and mfaRequestId (non-null String).
+
+A private pure decodeAndroidLoginAuthEmailOtpPayload helper now validates the Ll260 payload: errors, emailVerificationMode, and loginMethods are all optional nullable; all nine Lfer0 modes and four exact Lqnk0 values are validated; passkey challenge has optional nullable presence but required nested members. Five tests cover these paths. This does not parse the full Lyl8 union, accept arbitrary unknown types, authenticate, sign, or send requests.
 
 ## Android LoginAuth BodyIntegrityPlugin request marker and provider path — source findings — 2026-11-27
 

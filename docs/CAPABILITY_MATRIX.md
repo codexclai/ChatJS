@@ -156,3 +156,10 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | --- | --- | --- |
 | Decode shared Android LoginAuth Lql8 errors | Implemented (private pure helper) | Validates optional nullable recoverability, enum-keyed string-list field errors, form errors and structured metadata; six focused tests. |
 | Decode Android LoginAuth about_you Lp4 payload | Implemented (private pure helper) | Validates optional nullable Lql8 errors and optional non-null fullName; two focused tests. Other Lyl8 payloads and top-level union dispatch remain unimplemented. |
+
+
+## Android LoginAuth email OTP payload decoder — 2026-11-27
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Decode Android LoginAuth email_otp_verification payload | Implemented (private pure helper) | Five additional tests; validates optional nullable errors, nine exact verification modes, four source-enumerated polymorphic login method types, and passkey challenge optional/null semantics with required JsonObject/String nested members. Does not parse top-level Lyl8, authenticate, sign, or send requests. |

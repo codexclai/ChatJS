@@ -203,6 +203,7 @@
 183. Verified the Android LoginAuth response-schema decoders and corrected package distribution: eight focused tests pass; CI 45998505307 and CodeQL 45998505241 pass on 2d1a257; downloaded tarball has 19 regular files and includes the 4,391-byte decoder with exact Git blob SHA b9c270ee472874eee741fb4300cedd0b2b3c561a.
 184. Mapped Android LoginAuth email_otp_verification payload `Ll260` generated fields/nullability, `Lfer0` enum, and `loginMethods: List<Lmnk0>` item interface plus four concrete DEX implementers; left concrete JSON serializers explicitly open.
 185. Traced Android first-party next POST BodyIntegrityCheck request marker to the BodyIntegrityPlugin Ktor interceptor and injected provider, while recording unresolved Ktor client identity, URL predicate, request-attribute interactions and token-header behavior.
+186. Decoded Android LoginAuth email_otp_verification loginMethods polymorphic serializers: password→Lfnk0, passwordless_otp→Link0, passkey→Lcnk0, unknown→Llnk0; decoded passkey challenge Lmds0 with required JsonObject passkeyRequestOptions and String mfaRequestId. Added a private pure Ll260 payload decoder and five focused tests (13 total in this helper suite).
 
 ## Not implemented
 
@@ -225,10 +226,11 @@
 - The DPoP iat helper only adds caller-supplied epoch seconds and offset; it does not obtain time, extract/parse HTTP Date headers, persist/expire offsets or retry refresh requests. The Date-header parser, offset update and one corrective retry remain Android source findings only, not implemented ChatJS behavior.
 - The private Android LoginAuth response-schema helpers validate only the shared nested Lql8 error model and the about_you Lp4 payload; they do not decode the other Lyl8 step payloads, define final Lmiy fallback acceptance, classify all LoginAuth failures, authenticate, sign or send HTTP requests.
 - Only the nested Lql8 errors model and about_you Lp4 payload have private Node.js schema decoders. Other Lyl8 step payloads, complete response-union dispatch, LoginAuth failure handling, authentication and transport remain unimplemented.
+- The private Android LoginAuth response-schema helpers now cover Lql8 errors, about_you Lp4, and email_otp_verification Ll260 plus its four known Lmnk0 variants. They do not parse the top-level Lyl8 union, other step payloads, arbitrary unknown method discriminators, LoginAuth errors/transport, or perform authentication.
 
 ## Next actions
 
-1. Decode concrete Lmnk0 polymorphic discriminator names and payload serializers (Lcnk0, Lfnk0, Link0, Llnk0 and nested Lmds0); continue other Lyl8 response payloads, accepted Lmiy fallback values, and full Luub1 / La0d1.g failure handling.
+1. Prove Lf91's injected Lmvc0 HttpClient identity against the DI-installed Lx3b BodyIntegrityPlugin, resolve Lar31's URL/path predicate for api/first_party_authorize/next and the final token-header/error adaptation; then trace remaining Lyl8 step payloads, Lmiy fallback and Luub1/La0d1.g failure semantics.
 2. Trace the complete Lozc1.lookupKeyAlias provider result to account Lel8.key_pair_alias persistence and the native auth-provider closure. Keep provider-branch alias equality separate from account preference assignment.
 3. Complete initial account-authorize and first-party next request headers, auth-plugin, first-party integrity, request context, and transport cancellation/error semantics; prove Lf91's Lmvc0 client identity against DI-installed Lx3b and trace Lar31's exact URL predicate and final token-header adaptation.
 4. Resolve the alternate Lnz6 / ImagesCreationComposer callback conditions for the messaging/rooms RetryExpiredAccessToken request; observed callback type mismatch remains unresolved and must not be ported as a working retry contract.

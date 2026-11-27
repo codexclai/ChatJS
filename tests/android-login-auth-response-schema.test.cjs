@@ -7,6 +7,7 @@ const schema = require('../src/chatgpt/android-login-auth-response-schema.cjs');
 const {
   decodeAndroidLoginAuthErrors,
   decodeAndroidLoginAuthAboutYouPayload,
+  decodeAndroidLoginAuthEmailOtpPayload,
   AndroidLoginAuthResponseSchemaError
 } = schema;
 
@@ -137,4 +138,120 @@ test('about_you payload rejects a non-string fullName and malformed nested error
     assert.match(error.message, /isRecoverable must be a boolean/);
     return true;
   });
+});
+
+
+test('email_otp_verification payload exposes exact verification mode and login method enums', () => {
+  assert.deepEqual(schema.ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES, [
+    'onboarding', 'post_onboarding_email_collection', 'password_reset',
+    'login_challenge', 'post_signup', 'post_registration',
+    'passwordless_login', 'passwordless_signup', 'unknown'
+  ]);
+  assert.deepEqual(schema.ANDROID_LOGIN_AUTH_METHOD_TYPES, [
+    'password', 'passwordless_otp', 'passkey', 'unknown'
+  ]);
+});
+
+test('email OTP payload decodes nullable errors, verification mode and polymorphic login methods', () => {
+  const source = {
+    errors: { formErrors: ['A code is required'] },
+    emailVerificationMode: 'login_challenge',
+    loginMethods: [
+      { type: 'password' },
+      { type: 'passwordless_otp' },
+      {
+        type: 'passkey',
+        challenge: {
+          passkeyRequestOptions: {
+            challenge: 'abc',
+            rpId: 'chatgpt.com',
+            allowCredentials: []
+          },
+          mfaRequestId: 'mfa-request-1'
+        }
+      },
+      { type: 'unknown' }
+    ],
+    extension: { retained: true }
+  };
+
+  const decoded = decodeAndroidLoginAuthEmailOtpPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.loginMethods, source.loginMethods);
+  assert.notEqual(decoded.loginMethods[2], source.loginMethods[2]);
+  assert.notEqual(decoded.loginMethods[2].challenge, source.loginMethods[2].challenge);
+  assert.notEqual(
+    decoded.loginMethods[2].challenge.passkeyRequestOptions,
+    source.loginMethods[2].challenge.passkeyRequestOptions
+  );
+  assert.deepEqual(decoded.extension, source.extension);
+});
+
+test('email OTP payload preserves omitted and nullable generated properties', () => {
+  assert.equal(decodeAndroidLoginAuthEmailOtpPayload(undefined), undefined);
+  assert.equal(decodeAndroidLoginAuthEmailOtpPayload(null), null);
+  assert.deepEqual(decodeAndroidLoginAuthEmailOtpPayload({}), {});
+  assert.deepEqual(decodeAndroidLoginAuthEmailOtpPayload({
+    errors: null,
+    emailVerificationMode: null,
+    loginMethods: null
+  }), {
+    errors: null,
+    emailVerificationMode: null,
+    loginMethods: null
+  });
+  for (const mode of schema.ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES) {
+    assert.deepEqual(
+      decodeAndroidLoginAuthEmailOtpPayload({ emailVerificationMode: mode }),
+      { emailVerificationMode: mode }
+    );
+  }
+});
+
+test('email OTP payload rejects malformed enum values and polymorphic collection entries', () => {
+  const invalidValues = [
+    [{ emailVerificationMode: 'not-a-mode' }, /recognized Android LoginAuth enum/],
+    [{ loginMethods: {} }, /loginMethods must be an array/],
+    [{ loginMethods: [null] }, /must be an object/],
+    [{ loginMethods: [{}] }, /type is required/],
+    [{ loginMethods: [{ type: 'not-a-method' }] }, /recognized Android LoginAuth enum/]
+  ];
+  for (const [value, pattern] of invalidValues) {
+    assert.throws(() => decodeAndroidLoginAuthEmailOtpPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.match(error.message, pattern);
+      return true;
+    });
+  }
+});
+
+test('passkey login method permits omitted or null challenge but validates a present challenge', () => {
+  assert.deepEqual(decodeAndroidLoginAuthEmailOtpPayload({
+    loginMethods: [{ type: 'passkey' }]
+  }), {
+    loginMethods: [{ type: 'passkey' }]
+  });
+  assert.deepEqual(decodeAndroidLoginAuthEmailOtpPayload({
+    loginMethods: [{ type: 'passkey', challenge: null }]
+  }), {
+    loginMethods: [{ type: 'passkey', challenge: null }]
+  });
+
+  const invalidValues = [
+    [{ type: 'passkey', challenge: 'bad' }, /challenge must be an object/],
+    [{ type: 'passkey', challenge: {} }, /passkeyRequestOptions is required/],
+    [{ type: 'passkey', challenge: { passkeyRequestOptions: [] } }, /passkeyRequestOptions must be an object/],
+    [{ type: 'passkey', challenge: { passkeyRequestOptions: {}, mfaRequestId: null } }, /mfaRequestId must be a string/],
+    [{ type: 'passkey', challenge: { passkeyRequestOptions: {} } }, /mfaRequestId is required/]
+  ];
+  for (const [method, pattern] of invalidValues) {
+    assert.throws(() => decodeAndroidLoginAuthEmailOtpPayload({
+      loginMethods: [method]
+    }), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.match(error.message, pattern);
+      return true;
+    });
+  }
 });

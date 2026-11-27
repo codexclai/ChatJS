@@ -131,9 +131,110 @@ function decodeAndroidLoginAuthAboutYouPayload(value) {
   return result;
 }
 
+
+const ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES = Object.freeze([
+  'onboarding',
+  'post_onboarding_email_collection',
+  'password_reset',
+  'login_challenge',
+  'post_signup',
+  'post_registration',
+  'passwordless_login',
+  'passwordless_signup',
+  'unknown'
+]);
+
+const ANDROID_LOGIN_AUTH_METHOD_TYPES = Object.freeze([
+  'password',
+  'passwordless_otp',
+  'passkey',
+  'unknown'
+]);
+
+const androidLoginAuthEmailVerificationModeSet =
+  new Set(ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES);
+const androidLoginAuthMethodTypeSet = new Set(ANDROID_LOGIN_AUTH_METHOD_TYPES);
+
+function requireEnum(value, label, allowedValues) {
+  if (typeof value !== 'string' || !allowedValues.has(value)) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      label + ' must be a recognized Android LoginAuth enum value.'
+    );
+  }
+  return value;
+}
+
+function decodeAndroidLoginAuthPasskeyRequestOptions(value, label) {
+  const result = requireObject(value, label);
+  if (result.passkeyRequestOptions === undefined || result.passkeyRequestOptions === null) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      label + '.passkeyRequestOptions is required and must be a JSON object.'
+    );
+  }
+  result.passkeyRequestOptions = requireObject(
+    result.passkeyRequestOptions,
+    label + '.passkeyRequestOptions'
+  );
+  if (result.mfaRequestId === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      label + '.mfaRequestId is required.'
+    );
+  }
+  result.mfaRequestId = requireString(result.mfaRequestId, label + '.mfaRequestId');
+  return result;
+}
+
+function decodeAndroidLoginAuthLoginMethod(value, label) {
+  const result = requireObject(value, label);
+  if (result.type === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(label + '.type is required.');
+  }
+
+  result.type = requireEnum(result.type, label + '.type', androidLoginAuthMethodTypeSet);
+  if (result.type === 'passkey') {
+    decodeOptionalNullable(
+      result,
+      'challenge',
+      label,
+      decodeAndroidLoginAuthPasskeyRequestOptions
+    );
+  }
+  return result;
+}
+
+/**
+ * Decode the source-traced email_otp_verification payload. loginMethods
+ * is a polymorphic Lmnk0 collection; this validator covers only the four
+ * observed Lqnk0 discriminator values and their generated member schemas.
+ */
+function decodeAndroidLoginAuthEmailOtpPayload(value) {
+  if (value === undefined || value === null) return value;
+
+  const result = requireObject(value, 'AndroidLoginAuthEmailOtpPayload');
+  decodeOptionalNullable(result, 'errors', 'AndroidLoginAuthEmailOtpPayload', decodeAndroidLoginAuthErrors);
+  decodeOptionalNullable(
+    result,
+    'emailVerificationMode',
+    'AndroidLoginAuthEmailOtpPayload',
+    (item, label) => requireEnum(item, label, androidLoginAuthEmailVerificationModeSet)
+  );
+  decodeOptionalNullable(result, 'loginMethods', 'AndroidLoginAuthEmailOtpPayload', (items, label) => {
+    if (!Array.isArray(items)) {
+      throw new AndroidLoginAuthResponseSchemaError(label + ' must be an array.');
+    }
+    return items.map((item, index) =>
+      decodeAndroidLoginAuthLoginMethod(item, label + '[' + index + ']')
+    );
+  });
+  return result;
+}
+
 module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_FIELDS,
   AndroidLoginAuthResponseSchemaError,
+  ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES,
+  ANDROID_LOGIN_AUTH_METHOD_TYPES,
   decodeAndroidLoginAuthErrors,
-  decodeAndroidLoginAuthAboutYouPayload
+  decodeAndroidLoginAuthAboutYouPayload,
+  decodeAndroidLoginAuthEmailOtpPayload
 });

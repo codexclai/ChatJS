@@ -955,4 +955,13 @@ The first-party `POST api/first_party_authorize/next` builder (`Lf91`) independe
 
 Important unresolved edges: the exact `Lmvc0` client instance used by `Lf91` versus the client receiving the DI-installed plugin; whether `Lar31`'s predicate admits this exact path; semantics/interactions of the three separate request attributes; and complete token-to-header/success/failure behavior. Do not treat this as an implemented Node.js integrity flow. Full hashes and method notes are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`.
 
-Next: trace the four concrete `Lmnk0` serializers and their discriminator/member names; continue the remaining LoginAuth payload branches and `Lmiy` fallback; resolve Ktor client identity, route predicate and integrity header/error path without bypassing the app's gate.
+Next: prove the exact Lf91 injected Lmvc0 Ktor client identity against the DI-installed Lx3b plugin, evaluate the Lar31 URL/path predicate for the next-step route, and trace the final integrity-result-to-header/error adaptation; then continue remaining Lyl8 payloads and Luub1/La0d1.g failure branches.
+
+
+## Handoff — Android LoginAuth email OTP payload decoder — 2026-11-27
+
+The Lmnk0 item serializers and Lmds0 nested schema are now source-resolved. Lonk0.b(String) dispatches password to Lfnk0, passwordless_otp to Link0, and passkey to Lcnk0, then uses Llnk0 as its default serializer. The explicit Lqnk0 wire values are password, passwordless_otp, passkey, and unknown. Only Lcnk0 adds challenge?:Lmds0?; Lmds0 requires a JSON object passkeyRequestOptions and string mfaRequestId. Arbitrary unknown discriminator acceptance is not claimed.
+
+Private decodeAndroidLoginAuthEmailOtpPayload is implemented and five tests were added; the shared response-schema helper suite now has 13 focused tests. The source file was already included in the verified archive manifest, but the updated archive and complete Node suite still need fresh CI/CodeQL verification.
+
+Next work: trace the exact Lf91 Lmvc0 client identity against Ly3b's DI-installed Lx3b, the Lar31 route predicate and token-header adaptation, then continue the other LoginAuth step payloads and failure branches.
