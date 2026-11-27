@@ -2330,3 +2330,35 @@ The `about_you` discriminator dispatches to response variant `Lq4`. `Lq4` extend
 - Complete `Luub1` error classification, `La0d1.g`, state cleanup, request headers/auth plugin/first-party integrity and native signer/provider ownership.
 
 Evidence boundary: generated DEX/Kotlin-serialization code in Android ChatGPT 1.2026.321. No login, account, credential, signer, keystore or network operation was run. The two pure response-schema decoders are Node.js helpers, not a complete LoginAuth workflow.
+
+## Android LoginAuth email_otp_verification payload — source findings — 2026-11-27
+
+`email_otp_verification` dispatches to response subtype `Lm260`, whose payload is `Ll260`. Generated serializer `Lj260` declares the exact JSON fields `errors`, `emailVerificationMode`, and `loginMethods`; all three descriptor entries are optional and all three child serializers are wrapped by the app's nullable-serializer helper.
+
+| JSON property | Verified type | Presence/nullability |
+| --- | --- | --- |
+| `errors` | `Lql8` | Optional, nullable |
+| `emailVerificationMode` | `Lfer0` enum | Optional, nullable |
+| `loginMethods` | `List<Lmnk0>` | Optional, nullable; items are typed interface values |
+
+`Lfer0` serial names are `onboarding`, `post_onboarding_email_collection`, `password_reset`, `login_challenge`, `post_signup`, `post_registration`, `passwordless_login`, `passwordless_signup`, and `unknown`. This is a verification-mode enum, not the method-type enum below.
+
+The generic element type of `loginMethods` is established by consumer `Lifp0.a(List)`: it iterates the values and casts each element to `Lmnk0`. Four concrete DEX classes implement that interface: `Lcnk0`, `Lfnk0`, `Link0`, and `Llnk0`. `Lqnk0` is a separate enum carried by the concrete method models and has values `password`, `passwordless_otp`, `passkey`, and `unknown`. `Lcnk0` additionally carries `Lmds0` data. Do not mistake `Lqnk0` for the `emailVerificationMode` `Lfer0` enum.
+
+The exact polymorphic JSON discriminator strings, serialized member names for each concrete `Lmnk0` implementation, and the `Lmds0` nested value schema have not yet been decoded. No email-OTP payload validator has been added; accepting arbitrary list members would overstate the schema.
+
+## Android LoginAuth BodyIntegrityPlugin request marker and provider path — source findings — 2026-11-27
+
+Static inspection of ChatGPT Android 1.2026.321 ties the first-party next-step request builder to the BodyIntegrity plugin path at the request-attribute level:
+
+- `Lf91.invokeSuspend` builds the `POST api/first_party_authorize/next` Ktor request and sets three distinct attributes on its request attributes: `NoAuth` (`Lq6t.a`), `NoIntegrityCheck` (`Lq6t.h`), and `BodyIntegrityCheck` (`Lq6t.o`). The `BodyIntegrityCheck` attribute value is the `Lw3b.c` tag object. It then serializes the `Lvi8` step request and sends through its injected `Lmvc0` client.
+- `La4b` is the Ktor plugin implementation named `BodyIntegrityPlugin`. Its constructor receives configuration, a `Lar31` route predicate/configuration object, and an injected `Lgeu0` provider. Its installation method registers the `Lz3b` coroutine interceptor through the Ktor client plugin hook.
+- `Lx3b` wraps `La4b` as a Ktor `HttpClientPlugin`; its install path delegates to `La4b`. DI factory `Ly3b.invoke` constructs `Lx3b` with an Android `Application`, `Lar31`, and `Lgeu0` dependencies.
+- `Lz3b.invokeSuspend` reads the same `Lq6t.o` (`BodyIntegrityCheck`) attribute from the Ktor request, then evaluates the route predicate from `Lar31` against the request URL and, on the eligible branch, invokes the injected `Lgeu0.a(...)` provider to obtain the body-integrity result. A provider failure branch contains the explicit error text `Failed to generate body integrity token` and routes the failure through the plugin's failure/reporting machinery.
+- The plugin's result-tag object `Lw3b.c` contains the strings `oai-android-play-integrity-token` and `oai-android-play-integrity-token-failed`. Their final adaptation into outgoing request headers and all success/failure header semantics have not yet been fully traced.
+
+This proves the request builder writes the attribute the plugin reads, and separately proves that the plugin wrapper is constructed by a DI factory. It does **not** yet prove that the `Lmvc0` used by `Lf91` is the same `HttpClient` instance on which `Ly3b` installs `Lx3b`, or that the `Lar31` route predicate returns true for this exact request. The host list inside `Lar31` includes `api.openai.org`, `api.openai-staging.com`, `openai.com`, `chatgpt.com`, `chatgpt-staging.com`, and `cdn.openai.com`, but the exact path predicate semantics remain open.
+
+`NoAuth`, `NoIntegrityCheck`, and `BodyIntegrityCheck` are three separate request attributes in the inspected builder. Their interaction with every other Ktor plugin and policy is not fully reconstructed; do not collapse them into a generic `integrity: true` flag or infer that the request bypasses all integrity. This is static source evidence only, not a working Node.js integrity provider or authenticated transport.
+
+Evidence package: ChatGPT Android 1.2026.321. Base APK SHA-256 `312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c`; `classes2.dex` SHA-256 `aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a` (plugin/interceptor/DI), `classes5.dex` SHA-256 `5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44` (next-step request builder), and `classes7.dex` SHA-256 `e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e` (email-OTP serializers/consumer). Static DEX only; no app method, key, account, credential, network request, or AndroidKeyStore operation was executed.

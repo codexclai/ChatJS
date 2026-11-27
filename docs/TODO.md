@@ -819,8 +819,8 @@ Never create branches or worktrees. Keep all repository work on main.
 
 - [x] Correct the initial challenge-fetch route: Lb6p0.a parses Lqk00 from the successful response, using Lbu8 GET api/accounts/authorize or Lau8 POST api/accounts/authorize/native; Lnxc0 enum confirms GET/POST mapping.
 - [x] Distinguish the separate api/first_party_authorize/next path: Lb6p0 stores it; Lf91.invokeSuspend later sets up a POST and decodes Lvi8 (step enum Lvl8 plus typed Ljl8 data).
-- [x] Identify Livk0 as a concrete Ljl8 subtype, while explicitly keeping the exact signed-proof-to-follow-up-POST serializer edge unresolved.
-- [ ] Trace the concrete Livk0 value from Lsk00 caller through the branch that builds the Lf91 step request and establish whether/how the object is serialized into the POST body.
+- [x] Identify `Livk0` as concrete `Ljl8` subtype and resolve value continuity through `Lcgu.invokeSuspend` into the `Lvi8` payload and `Lti8` polymorphic serializer for `POST api/first_party_authorize/next` (`origin_page_type` plus `data`).
+
 - [ ] Complete exact request body/header, Ktor auth-plugin and error/cancellation contracts for the initial account-authorize GET/native POST and later first-party next POST.
 - [ ] Trace the exact Lozc1.lookupKeyAlias provider result to account Lel8.key_pair_alias persistence, and complete native signer/provider ownership.
 
@@ -849,3 +849,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Complete `Luub1` auth-failure classification, the `La0d1.g` delegated branch, state cleanup and all relevant cancellation/error paths.
 - [ ] Complete initial account-authorize and first-party next request headers, auth-plugin, first-party integrity, request context and provider-injection tracing.
 - [ ] Trace `Lozc1.lookupKeyAlias` through account `Lel8.key_pair_alias` persistence and native auth-provider closure.
+
+## Android LoginAuth email OTP and BodyIntegrityPlugin request-marker trace — 2026-11-27
+
+- [x] Decode `email_otp_verification` subtype `Lm260` / payload `Ll260` generated names (`errors`, `emailVerificationMode`, `loginMethods`) and prove all three are optional nullable.
+- [x] Decode `emailVerificationMode` enum `Lfer0`: `onboarding`, `post_onboarding_email_collection`, `password_reset`, `login_challenge`, `post_signup`, `post_registration`, `passwordless_login`, `passwordless_signup`, `unknown`.
+- [x] Resolve `loginMethods` exact generic element type to polymorphic interface `Lmnk0` from consumer casts and identify four concrete DEX implementers; keep their wire discriminator/member serializers open.
+- [x] Trace `Lf91` first-party next POST request attributes (`NoAuth`, `NoIntegrityCheck`, `BodyIntegrityCheck`) and `BodyIntegrityPlugin` `La4b` / `Lx3b` registration, `Lz3b` interceptor and injected `Lgeu0` provider path.
+- [ ] Decode exact polymorphic discriminator names and per-variant payload serializer fields for all four `Lmnk0` concrete implementations, plus nested `Lmds0`.
+- [ ] Prove whether the `Lf91` request's injected `Lmvc0` is the same Ktor client instance receiving `Lx3b` from DI; resolve the `Lar31` URL/path predicate for `api/first_party_authorize/next`.
+- [ ] Trace final success/failure header adaptation for `oai-android-play-integrity-token` / `oai-android-play-integrity-token-failed`, all failure classification, and the independent `NoAuth` / `NoIntegrityCheck` attribute semantics.
+- [ ] Continue other `Lyl8` response payloads and establish the accepted final `Lmiy` fallback wire values; finish `Luub1` classification and `La0d1.g`.
