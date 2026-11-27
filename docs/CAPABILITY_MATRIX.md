@@ -189,3 +189,8 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | Capability | Status | Evidence and limits |
 | --- | --- | --- |
 | Decode Android LoginAuth external_url payload Lzq70 | Implemented (private pure helper) | Requires the generated required, non-null string url; preserves extension members. Two tests. No URL parsing/navigation/allow-list is inferred, and no outer Lyl8 union or transport is implemented. |
+## Android LoginAuth token_exchange payload decoder — 2026-11-27
+
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
+| Decode Android LoginAuth token_exchange payload Ltoa1 | Implemented (private pure helper) | Requires the generated required, non-null string code; preserves extension members. Two tests. No OAuth code-format inference or exchange/network operation; no outer Lyl8 union or transport. |
