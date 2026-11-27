@@ -9,6 +9,7 @@ const {
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
+  decodeAndroidLoginAuthExternalUrlPayload,
   AndroidLoginAuthResponseSchemaError
 } = schema;
 
@@ -320,6 +321,41 @@ test('contact_verification payload rejects malformed mode, login methods and nes
       assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
       assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
       assert.match(error.message, pattern);
+      return true;
+    });
+  }
+});
+
+
+test('external_url payload decodes the source-traced required url string and preserves extensions', () => {
+  const source = {
+    url: 'https://auth.openai.com/authorize?flow=example',
+    extension: { preserved: true }
+  };
+  const decoded = decodeAndroidLoginAuthExternalUrlPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.extension, source.extension);
+  assert.equal(decoded.url, source.url);
+});
+
+test('external_url payload requires a non-null string url but does not assume URL validation', () => {
+  assert.deepEqual(decodeAndroidLoginAuthExternalUrlPayload({ url: '' }), { url: '' });
+  assert.deepEqual(decodeAndroidLoginAuthExternalUrlPayload({ url: 'not parsed here' }), {
+    url: 'not parsed here'
+  });
+  for (const value of [undefined, null, false, 1, 'https://example.test', []]) {
+    assert.throws(() => decodeAndroidLoginAuthExternalUrlPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.match(error.message, /must be an object/);
+      return true;
+    });
+  }
+  for (const value of [{}, { url: null }, { url: 1 }, { url: false }]) {
+    assert.throws(() => decodeAndroidLoginAuthExternalUrlPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      assert.match(error.message, /url (is required|must be a string)/);
       return true;
     });
   }
