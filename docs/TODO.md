@@ -886,3 +886,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Add three focused contact-verification tests for valid/passkey values, nullable/omitted fields and malformed nested data; shared helper suite now contains 16 tests.
 - [ ] Decode remaining Lyl8 step-specific payloads and establish the actual accepted Lmiy fallback discriminator set.
 - [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
+## Android LoginAuth external_url payload — 2026-11-27
+
+- [x] Trace external_url outer subtype Lar70, payload DTO Lzq70, and outer serializer Lvq70; keep root Lql8 errors separate from payload members.
+- [x] Decode exact payload serializer Lxq70 descriptor: required JSON url field, with non-null String child serializer Ljb81.
+- [x] Confirm Li8p0.g reads the payload URL into the separate url state key; do not infer URL navigation or allow-list policy from the DTO.
+- [x] Implement private pure decodeAndroidLoginAuthExternalUrlPayload requiring an object with a required non-null string url; preserve extension members and do not impose URL parsing or non-empty assumptions.
+- [x] Add two focused tests for the required string contract, malformed values, extension preservation and lack of URL-format assumptions; focused schema suite now has 18 tests.
+- [ ] Decode remaining Lyl8 step payloads and establish the actual accepted Lmiy fallback discriminator set.
+- [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
