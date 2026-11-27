@@ -257,6 +257,22 @@ function decodeAndroidLoginAuthContactVerificationPayload(value) {
   );
 }
 
+/**
+ * Decode the external_url payload DTO. The generated serializer declares
+ * one required, non-null String member named url. It is not a URL parser:
+ * the Android model's member type is String, so preserve arbitrary strings.
+ */
+function decodeAndroidLoginAuthExternalUrlPayload(value) {
+  const result = requireObject(value, 'AndroidLoginAuthExternalUrlPayload');
+  if (result.url === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      'AndroidLoginAuthExternalUrlPayload.url is required.'
+    );
+  }
+  result.url = requireString(result.url, 'AndroidLoginAuthExternalUrlPayload.url');
+  return result;
+}
+
 module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_FIELDS,
   AndroidLoginAuthResponseSchemaError,
@@ -265,5 +281,6 @@ module.exports = Object.freeze({
   decodeAndroidLoginAuthErrors,
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
-  decodeAndroidLoginAuthContactVerificationPayload
+  decodeAndroidLoginAuthContactVerificationPayload,
+  decodeAndroidLoginAuthExternalUrlPayload
 });
