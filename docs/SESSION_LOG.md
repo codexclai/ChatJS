@@ -1657,4 +1657,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - The implementation commit 44e9833 added the private LoginAuth error decoder and six tests. CI initially failed at generated project-state synchronization because the manually generated notice had one extra leading space; corrected the exact generated header in follow-up commit 879da91.
 - CI run 45997123354 on 879da91 passed npm run check, archive extraction, installed-package smoke tests, and archive upload. CodeQL run 45997123274 was still in progress at this log update.
 - Downloaded and inspected CI artifact 15196671447 (ChatJS ZIP, 34,962-byte artifact). The nested ChatJS.tar.gz had 19 tar entries including its root directory, but its explicit manifest omitted the newly added decoder. Identified that both scripts/build-module-archive.cjs and tests/archive.test.cjs maintain exact matching allow-lists.
-- Corrected the archive builder manifest and exact archive-test manifest to include src/chatgpt/android-login-auth-response-schema.cjs. A follow-up CI run is required to verify the corrected distribution and recreate/inspect its archive.
+- Corrected the archive builder manifest and exact archive-test manifest to include src/chatgpt/android-login-auth-response-schema.cjs. Follow-up CI 45997325091 and CodeQL 45997325201 both passed. Downloaded artifact 15196043211 (35,697 bytes); verified the nested ChatJS.tar.gz (35,542 bytes) has 20 tar entries (19 files) and contains the 3,726-byte decoder whose Git blob SHA matches c02740d85113e493e30cd6d14ba8d054ee6e8d5f.
+
+
+## 2026-11-27 — Android LoginAuth about_you payload schema and decoder
+
+- Traced `about_you` from `Lam8.b` to response subtype `Lq4`, payload `Lp4`, and generated payload serializer `Ln4`. The payload serializer defines optional `errors` and `fullName`; `errors` uses the nullable `Lql8` serializer while `fullName` uses the non-null String serializer directly.
+- Confirmed `Lq4` has its own root response errors member separate from `Lp4.errors`; kept the two schema levels separate.
+- Extended the private helper with `decodeAndroidLoginAuthAboutYouPayload`, which validates only the source-proven payload members and does not synthesize the unknown default `fullName` value or parse the response union.
+- Added two tests. Local focused schema suite: 8 passed, 0 failed. The helper is already included in the allow-listed distribution archive, whose previous CI artifact was verified byte-for-byte.
+- The newly extended decoder and docs have not yet run through CI; the prior passing CI/CodeQL pair is on db20962c70403aa790daa67996f49bd2901309ec. Local full-repository `npm run check` remains unavailable because no repository checkout is mounted and external Git clone DNS is blocked.

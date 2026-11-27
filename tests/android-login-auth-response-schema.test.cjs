@@ -4,7 +4,11 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const schema = require('../src/chatgpt/android-login-auth-response-schema.cjs');
 
-const { decodeAndroidLoginAuthErrors, AndroidLoginAuthResponseSchemaError } = schema;
+const {
+  decodeAndroidLoginAuthErrors,
+  decodeAndroidLoginAuthAboutYouPayload,
+  AndroidLoginAuthResponseSchemaError
+} = schema;
 
 function invalid(value, pathFragment) {
   assert.throws(() => decodeAndroidLoginAuthErrors(value), (error) => {
@@ -100,4 +104,37 @@ test('decoder does not mutate its input or permit prototype-key map injection', 
   assert.notEqual(decoded.fieldErrors.email, originalList);
   assert.deepEqual(source, { fieldErrors: { email: ['bad'] } });
   invalid(JSON.parse('{"fieldErrors":{"__proto__":["bad"]}}'));
+});
+
+
+test('about_you payload decodes optional fullName and a distinct nullable nested errors model', () => {
+  const source = {
+    fullName: 'Ada Lovelace',
+    errors: {
+      formErrors: ['Additional details required'],
+      fieldErrors: { name: ['Use your legal name'] }
+    },
+    extension: 'preserved'
+  };
+  const decoded = decodeAndroidLoginAuthAboutYouPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.errors, source.errors);
+  assert.equal(decoded.extension, 'preserved');
+  assert.deepEqual(decodeAndroidLoginAuthAboutYouPayload({}), {});
+  assert.deepEqual(decodeAndroidLoginAuthAboutYouPayload({ errors: null }), { errors: null });
+  assert.deepEqual(decodeAndroidLoginAuthAboutYouPayload({ fullName: 'Ada' }), { fullName: 'Ada' });
+});
+
+test('about_you payload rejects a non-string fullName and malformed nested errors', () => {
+  assert.throws(() => decodeAndroidLoginAuthAboutYouPayload({ fullName: null }), (error) => {
+    assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+    assert.match(error.message, /fullName must be a string/);
+    return true;
+  });
+  assert.throws(() => decodeAndroidLoginAuthAboutYouPayload({ errors: { isRecoverable: 'yes' } }), (error) => {
+    assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+    assert.match(error.message, /isRecoverable must be a boolean/);
+    return true;
+  });
 });

@@ -843,7 +843,8 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Distinguish `Lavb1` successful `Lyl8` response from `Luub1(Throwable)` failure and verify the explicit coroutine Job cancellation exception path.
 - [x] Resolve `Lql8` generic types and generated nullability: `fieldErrors: Map<Lsl8,List<String>>?`, `formErrors: List<String>?`, `metadata: List<Lml8>?`; all four `Lql8` properties are optional nullable, and each metadata field is optional nullable.
 - [x] Add and test the private pure `decodeAndroidLoginAuthErrors` helper for the source-proven nested `Lql8` error schema; six focused tests cover valid/nullable/malformed/enum/prototype-key behavior.
-- [ ] Decode every remaining `Lyl8` step payload serializer; only the lookup-key payload, external URL `url`, and selected error envelope have been inspected in this slice.
+- [x] Add and test the private pure `decodeAndroidLoginAuthAboutYouPayload` helper for the source-traced `Lq4`/`Lp4` about_you payload (`errors?: Lql8?`, `fullName?: string` non-null when present); the combined response-schema suite has eight focused tests.
+- [ ] Decode every remaining `Lyl8` step payload serializer; the lookup-key and `about_you` payloads are now mapped, but other branches remain untraced.
 - [ ] Establish which discriminator values the final `Lmiy` fallback accepts; do not assume arbitrary unknown strings are valid.
 - [ ] Complete `Luub1` auth-failure classification, the `La0d1.g` delegated branch, state cleanup and all relevant cancellation/error paths.
 - [ ] Complete initial account-authorize and first-party next request headers, auth-plugin, first-party integrity, request context and provider-injection tracing.

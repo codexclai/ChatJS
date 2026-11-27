@@ -189,7 +189,8 @@
     "Traced LoginAuth provider-branch exact alias validation: Llli0.invokeSuspend holds selected provider Lo zc1 and resolved Lyt2, compares Lo zc1.i (lookupKeyAlias) to Lyt2.a, and gates continuation on equality. This proves provider lookup resolution uses the exact alias advertised by that provider record; it does not prove that value is copied into the separate account Lel8.key_pair_alias/Lvg8.n record.",
     "Traced the LoginAuth challenge HTTP paths and corrected route attribution: Lb6p0.a (classes7 method 3532) returns typed Lqk00 challenge data in Lzt8 using Lbu8 GET api/accounts/authorize or Lau8 POST api/accounts/authorize/native; Lnxc0 enum confirms GET/POST. Distinguished the separate api/first_party_authorize/next path stored by Lb6p0 and later consumed by Lf91 as a POST returning Lvi8 (Lvl8 + Ljl8). Livk0 is a concrete Ljl8 subtype, but the exact callsite/serializer proving a particular signed Livk0 is the later POST body remains unproven; the prior progress attribution of the next endpoint as initial challenge fetch is superseded.",
     "Proved the end-to-end LoginAuth DEVICE_KEY proof submission path. Lcgu.invokeSuspend (classes6 5130) reads successful Lavb1.b, casts it to Livk0, and passes that exact register as the Ljl8 payload to repository a.j (classes7 7181) with Lvl8.c. Lvl8.c is lookup_key_authentication. a.j→Lk6p0→Lu0c.m selects api/first_party_authorize/next; Lf91 creates Lvi8(step,payload), stores it in Lfyc0.d outgoing body, sets POST and sends. Lti8 serializer (classes7 49861/49865) proves JSON fields origin_page_type and polymorphic data. Corrected direction: Lvi8 is request body; Lyl8 is response with b():Lql8, c():Lvl8, a():List. Full response JSON property names/Lql8 schema remain open.",
-    "Decoded the Android LoginAuth Lql8 error schema from generated serializers: optional nullable Boolean isRecoverable, Map<Lsl8,List<String>> fieldErrors, List<String> formErrors and List<Lml8> metadata; each metadata field code/type/field is optional nullable. Added a private pure nested-error decoder with six focused tests; no authentication or transport."
+    "Decoded the Android LoginAuth Lql8 error schema from generated serializers: optional nullable Boolean isRecoverable, Map<Lsl8,List<String>> fieldErrors, List<String> formErrors and List<Lml8> metadata; each metadata field code/type/field is optional nullable. Added a private pure nested-error decoder with six focused tests; no authentication or transport.",
+    "Traced the Android LoginAuth about_you response payload: Lq4 contains Lp4 with optional errors (nullable Lql8) and optional non-null fullName string; added a private pure about_you payload validator and two tests (eight focused schema tests total)."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -209,10 +210,11 @@
     "The private P-256 JWK formatter serializes supplied public coordinates only; it does not generate/load keys, access AndroidKeyStore, sign, prove hardware-backed key ownership, or create a DPoP request.",
     "The DPoP serializer only builds signing input and appends an externally supplied 64-byte signature; it does not sign, access keystores, generate clock/jti, implement nonce/refresh, manage sessions or issue requests. Secure host signer/provider and authorized E2E tests remain prerequisites.",
     "The DPoP iat helper only adds caller-supplied epoch seconds and offset; it does not obtain time, extract/parse HTTP Date headers, persist/expire offsets or retry refresh requests. The Date-header parser, offset update and one corrective retry remain Android source findings only, not implemented ChatJS behavior.",
-    "The private Android LoginAuth error decoder validates only the nested Lql8 object; it does not decode every Lyl8 step-specific payload, accept unknown discriminator values, classify all LoginAuth failures, authenticate, sign, or send HTTP requests."
+    "The private Android LoginAuth error decoder validates only the nested Lql8 object; it does not decode every Lyl8 step-specific payload, accept unknown discriminator values, classify all LoginAuth failures, authenticate, sign, or send HTTP requests.",
+    "Only the nested Lql8 errors model and about_you Lp4 payload have private Node.js schema decoders. Other Lyl8 step payloads, complete response-union dispatch, LoginAuth failure handling, authentication and transport remain unimplemented."
   ],
   "nextActions": [
-    "Decode remaining Lyl8 branch-specific payload schemas beyond lookup_key_authentication; establish which discriminator strings the final Lmiy fallback accepts; complete Luub1 failure classification and the La0d1.g branch.",
+    "Trace and decode remaining Lyl8 branch-specific payloads beyond lookup_key_authentication and about_you; establish which discriminator strings the final Lmiy fallback accepts; complete Luub1 failure classification and the La0d1.g branch.",
     "Trace the complete Lozc1.lookupKeyAlias provider result to account Lel8.key_pair_alias persistence and the native auth-provider closure. Keep provider-branch alias equality separate from account preference assignment.",
     "Complete initial account-authorize and first-party next request headers, auth-plugin, first-party integrity, request context, transport cancellation/error semantics and native provider injection.",
     "Resolve the alternate Lnz6 / ImagesCreationComposer callback conditions for the messaging/rooms RetryExpiredAccessToken request; observed callback type mismatch remains unresolved and must not be ported as a working retry contract.",
@@ -276,9 +278,10 @@
     "The DPoP serializer and clock helper use caller-supplied inputs only. Epoch-second iat plus server-minus-local offset is source-traced; offset acquisition/persistence, secure native provider and host signer remain unresolved. Node URL behavior for exotic IDNA/authority cases has not been shown equivalent to java.net.URL.",
     "Android's DPoP timestamp-correction path calculates server epoch seconds minus local Instant epoch seconds and retries after correcting proof time, but the exact server timestamp source and overall retry ceiling remain open; do not add unbounded retries.",
     "The Android LoginAuth response union is only partially reconstructed: 15 explicit Lam8 discriminator branches and the lookup-key payload are mapped, but not all branch-specific payloads or generic Lql8 Map/List element types are proven. The Luub1/La0d1.g failure paths are not fully traced. Do not treat the DTO research as a ChatJS login implementation.",
-    "The private Android LoginAuth decoder covers only the nested Lql8 error object. The 15 discriminator labels and fallback branch are source evidence, not proof that all LoginAuth step payloads or unknown wire types are supported."
+    "The private Android LoginAuth decoder covers only the nested Lql8 error object. The 15 discriminator labels and fallback branch are source evidence, not proof that all LoginAuth step payloads or unknown wire types are supported.",
+    "The only private LoginAuth payload decoder beyond the shared Lql8 error model is for about_you. Do not infer its optional field/default rules for any other response discriminator."
   ],
-  "lastVerifiedCommit": "e73be253e461b8d5b809c79d7b3819723b18238f",
-  "lastVerifiedCI": "45996398320",
-  "lastVerifiedCodeQL": "45996398035"
+  "lastVerifiedCommit": "db20962c70403aa790daa67996f49bd2901309ec",
+  "lastVerifiedCI": "45997325091",
+  "lastVerifiedCodeQL": "45997325201"
 }

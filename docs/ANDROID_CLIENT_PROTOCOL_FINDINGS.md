@@ -2310,3 +2310,23 @@ This helper decodes only Lql8. It does not parse or dispatch the top-level Lyl8 
 - Trace provider Lozc1.lookupKeyAlias into account Lel8.key_pair_alias persistence; do not infer the account-preference write from the existing provider-branch equality guard.
 
 Evidence boundary: static DEX and generated Kotlin-serialization inspection of ChatGPT Android 1.2026.321 only. No Android method, account, credential, private key, AndroidKeyStore operation or network request was executed. The decoder was tested in Node.js as a pure nested-schema helper; authenticated/accountless ChatGPT sessions, LoginAuth HTTP transport, signer/provider, and end-to-end behavior remain unimplemented.
+
+## Android LoginAuth about_you payload — 2026-11-27
+
+### Generated serializer trace
+
+The `about_you` discriminator dispatches to response variant `Lq4`. `Lq4` extends the shared `Lyl8` response model and stores a payload of type `Lp4` plus its own root `Lql8` errors member. The payload is therefore not the same object as the root response.
+
+`Lp4`'s generated payload serializer is `Ln4`. Its `PluginGeneratedSerialDescriptor` contains `errors` and `fullName`; both descriptor elements are marked optional. `errors` uses the nullable wrapper around the `Lql8` serializer, so it may be omitted or null. `fullName` uses the non-null String serializer (`Ljb81`) directly; if present it must be a string, not null. Its default value is not needed for schema decoding and is not reproduced by ChatJS.
+
+### Private decoder
+
+`decodeAndroidLoginAuthAboutYouPayload` now validates a present payload object, validates optional nullable `errors` using the shared `decodeAndroidLoginAuthErrors` routine, and validates optional `fullName` as a non-null string. It returns a defensive object copy and retains extension members. It deliberately does not add `fullName` defaults, parse the enclosing `Lyl8` discriminator, or handle any other step payload. Two additional tests cover valid/omitted/null-errors data and malformed values; the full focused schema test suite now has eight passing tests.
+
+### Remaining work
+
+- Trace and decode the remaining 13 explicit `Lyl8` payload variants individually; do not generalize the `about_you` schema to other steps.
+- Establish the precise set of discriminator strings accepted by the final `Lmiy` fallback.
+- Complete `Luub1` error classification, `La0d1.g`, state cleanup, request headers/auth plugin/first-party integrity and native signer/provider ownership.
+
+Evidence boundary: generated DEX/Kotlin-serialization code in Android ChatGPT 1.2026.321. No login, account, credential, signer, keystore or network operation was run. The two pure response-schema decoders are Node.js helpers, not a complete LoginAuth workflow.

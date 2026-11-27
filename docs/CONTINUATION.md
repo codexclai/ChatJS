@@ -941,3 +941,8 @@ The `Lyl8` response model following the signed `lookup_key_authentication` POST 
 Full method/serializer detail and SHA-256 evidence are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Static analysis only; no application methods, credentials, keys, AndroidKeyStore operations or network requests were run, and no ChatJS runtime behavior was added.
 
 Next: decode step-specific payloads beyond `lookup_key_authentication`, prove generic error collection types, map all `Luub1` failure handling plus the `La0d1.g` branch, and continue request auth/integrity/provider and lookup-alias persistence tracing.
+
+
+## Handoff — Android LoginAuth about_you payload decoder — 2026-11-27
+
+The `about_you` discriminator is a `Lq4` response subtype with `Lp4` payload. Generated serializer `Ln4` declares optional `errors` (nullable `Lql8`) and `fullName` (non-null String). These are payload properties, separate from the response variant's root errors. `decodeAndroidLoginAuthAboutYouPayload` is implemented and tested alongside the nested Lql8 error decoder; eight targeted tests pass locally. All other step-specific payloads, top-level union dispatch, authentication and transport remain open.

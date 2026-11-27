@@ -116,8 +116,24 @@ function decodeAndroidLoginAuthErrors(value) {
   return result;
 }
 
+/**
+ * Decode only the source-traced about_you payload model. The enclosing Lyl8
+ * response variant and its separate root errors member are handled elsewhere.
+ */
+function decodeAndroidLoginAuthAboutYouPayload(value) {
+  if (value === undefined || value === null) return value;
+
+  const result = requireObject(value, 'AndroidLoginAuthAboutYouPayload');
+  decodeOptionalNullable(result, 'errors', 'AndroidLoginAuthAboutYouPayload', decodeAndroidLoginAuthErrors);
+  if (result.fullName !== undefined) {
+    result.fullName = requireString(result.fullName, 'AndroidLoginAuthAboutYouPayload.fullName');
+  }
+  return result;
+}
+
 module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_FIELDS,
   AndroidLoginAuthResponseSchemaError,
-  decodeAndroidLoginAuthErrors
+  decodeAndroidLoginAuthErrors,
+  decodeAndroidLoginAuthAboutYouPayload
 });
