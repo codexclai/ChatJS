@@ -1674,3 +1674,12 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Follow-up about_you commit 514ec963825445785ce7c484732526e73ebebb7d was assembled from the older 879da91 tree rather than the immediate db20962 parent tree. The commit diff therefore removed the decoder from the explicit archive builder and exact archive test manifests, despite keeping both the decoder and schema tests in source.
 - CI on the header-fix commit 18374e5 passed because the reverted archive test expected the older file set. Inspection of its artifact 15196008855 confirmed the decoder was absent from ChatJS.tar.gz; this supersedes any assumption that the about_you decoder was already packaged.
 - Restore the known-good builder and test manifests from db20962 onto the current main tree. Re-run CI and CodeQL, then inspect a fresh archive to verify the helper's current Git blob hash and about_you implementation bytes.
+
+
+## 2026-11-27 — Final LoginAuth decoder and archive verification
+
+- Corrected the stale-base-tree regression by restoring both archive allow-lists from db20962 onto current main in commit 2d1a25791408ada9dc927467d38129d79ef25e8b. The archive builder and archive test both include src/chatgpt/android-login-auth-response-schema.cjs.
+- CI run 45998505307 passed the full npm run check, Node test suite, archive generation, archive extraction and installed-module smoke test. CodeQL run 45998505241 passed on the same commit.
+- Downloaded CI artifact 15196429144 (35,840-byte ZIP; SHA-256 c34e3526e94ea4457ee238a6a27c4c677d44ae265c38ff989fe2aedebafc7218). Its nested ChatJS.tar.gz is 35,685 bytes (SHA-256 78e9591e1ead28bb76032238e633bce30b61d34b5af02c620ba2e3c066fc3b86). The tar contains 20 entries: 19 regular module files. The decoder entry is 4,391 bytes, contains decodeAndroidLoginAuthAboutYouPayload, and its Git blob SHA b9c270ee472874eee741fb4300cedd0b2b3c561a exactly matches current main.
+- The final private decoder has eight focused tests: six cover Lql8 shared errors and two cover the about_you Lp4 payload. It does not parse the full Lyl8 union, validate other step payloads, execute LoginAuth, authenticate, sign or send network traffic.
+- Final verified implementation head: 2d1a25791408ada9dc927467d38129d79ef25e8b. Only main exists; no open issues or pull requests were found. The repository has no local checkout in this runtime, so full npm run check was executed by GitHub Actions rather than locally.

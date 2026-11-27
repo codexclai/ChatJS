@@ -148,3 +148,11 @@ The supplied Android 1.2026.321 XAPK contains 111 decompressed Valdi modules. Ni
 ### Android DPoP timestamp alignment — 2026-11-25
 
 The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-minus-local epoch-second offset. The refresh correction uses the response `Date` header and the `Lxb8.j` predicate: the request `iat` must lead Date by more than 30 seconds, or Date must lead `iat` by more than 300 seconds, and the response must match the 400/401/403 plus API-error allowlist. The eligible branch updates the offset and performs one corrective refresh retry. The `Lpvx` holder is in-memory in the traced path; its DI lifetime/reset and other refresh retries remain unresolved. The private ChatJS helper still only applies supplied integer values and does not parse headers, persist state or retry.
+
+
+## Android LoginAuth response-schema decoders — 2026-11-27
+
+| Capability | Status | Evidence / boundary |
+| --- | --- | --- |
+| Decode shared Android LoginAuth Lql8 errors | Implemented (private pure helper) | Validates optional nullable recoverability, enum-keyed string-list field errors, form errors and structured metadata; six focused tests. |
+| Decode Android LoginAuth about_you Lp4 payload | Implemented (private pure helper) | Validates optional nullable Lql8 errors and optional non-null fullName; two focused tests. Other Lyl8 payloads and top-level union dispatch remain unimplemented. |
