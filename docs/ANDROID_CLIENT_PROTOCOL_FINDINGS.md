@@ -2476,3 +2476,11 @@ Added private pure decodeAndroidLoginAuthExternalUrlPayload. It requires a paylo
 Static inspection of the supplied ChatGPT Android 1.2026.321 base APK: base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant DTO/serializer classes are Lar70, Lzq70, Lxq70 and Lvq70; the serializer constant and code paths establish descriptor member url and required String child serializer. The classes' mapped method offsets are recorded in the local analysis notes; no Android method, login, account, key, keystore, Play Integrity service or network call was executed.
 
 This adds only a private nested-payload validator. The top-level Lyl8 response-union dispatcher, remaining step payloads, final Lmiy fallback acceptance, LoginAuth authentication, transport and integrity provider remain unimplemented.
+
+## Android LoginAuth token_exchange payload — 2026-11-27
+
+The token_exchange discriminator maps to response subtype Luoa1. Its payload is Ltoa1, with a separate root Lql8 errors member. Ltoa1 has one model property of type String; generated serializer Lroa1 is returned by companion Lsoa1.serializer(). The serializer descriptor defines the exact JSON field name code, marks it required, and its childSerializers method returns the non-null String serializer Ljb81. The DTO layer does not establish a code format, non-empty constraint, or token-exchange network effect.
+
+Added private pure decodeAndroidLoginAuthTokenExchangePayload. It requires a payload object with a present non-null string code, returns a defensive shallow copy, and preserves extension members. It does not parse/validate an OAuth authorization-code format or perform an exchange. Two focused tests cover valid and extension data, missing/null/wrong-type values, and the absence of format/non-empty assumptions. The combined Android LoginAuth response-schema suite now has 20 tests.
+
+Evidence: supplied ChatGPT Android 1.2026.321 base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant DTO/serializer classes: Luoa1, Ltoa1, Lsoa1, Lroa1. No Android method, login, account, credential, key, keystore, token exchange, or network request was executed.
