@@ -895,3 +895,11 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Add two focused tests for the required string contract, malformed values, extension preservation and lack of URL-format assumptions; focused schema suite now has 18 tests.
 - [ ] Decode remaining Lyl8 step payloads and establish the actual accepted Lmiy fallback discriminator set.
 - [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
+## Android LoginAuth token_exchange payload — 2026-11-27
+
+- [x] Trace token_exchange outer subtype Luoa1 and payload DTO Ltoa1; keep root Lql8 errors separate.
+- [x] Resolve Ltoa1 generated serializer: Lsoa1.serializer() returns Lroa1, whose descriptor has one required JSON property code and whose child serializer is non-null String Ljb81.
+- [x] Implement private pure decodeAndroidLoginAuthTokenExchangePayload requiring an object with a present non-null string code; preserve extensions and avoid code-format/network assumptions.
+- [x] Add two focused token-exchange tests for valid values, extension preservation, malformed types and no extra code-format constraints; focused schema suite now has 20 tests.
+- [ ] Decode remaining Lyl8 step payloads and establish the actual accepted Lmiy fallback discriminator set.
+- [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
