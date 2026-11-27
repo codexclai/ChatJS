@@ -2166,3 +2166,79 @@ This closes the previously unresolved signed-proof-submission edge for the trace
 ### Evidence boundary
 
 All details come from static inspection of the supplied DEX files and generated serializer code. No Android method was run; no account, token, private key, keystore or network request was used. No ChatJS runtime code or tests were changed. The lookup challenge fetch → signing → exact `Livk0` request payload → first-party POST path is now source-mapped, but the full response schema, request headers/auth/integrity configuration, native provider injection and provider-alias-to-account preference write remain open.
+
+## Android LoginAuth next-response serializers, nested challenge and error handling — source findings — 2026-11-27
+
+### Typed response union and step dispatch
+
+`Lu0c.m` (classes8.dex) returns the onboarding request outcome consumed by `Lk6p0.invokeSuspend` (classes7.dex). The successful body is a `Lyl8` sealed response value, not the outgoing `Lvi8` request DTO. The generated sealed serializer dispatcher `Lam8.b(String)` explicitly maps these discriminator values:
+
+- `lookup_key_authentication` → `Lfvk0`
+- `about_you` → `Lq4`
+- `email_otp_verification` → `Lm260`
+- `contact_verification` → `Liwt0`
+- `external_url` → `Lar70`
+- `create_account_password` → `Lxxw`
+- `login_password` → `Ldpk0`
+- `workspace` → `Lp5i1`
+- `push_auth_verification` → `Lprx0`
+- `mfa_challenge` → `Lhcn0`
+- `mfa_enroll` → `Lvcn0`
+- `login_passkey` → `Lrok0`
+- `token_exchange` → `Luoa1`
+- `token_response` → `Lfpa1`
+- `error` → `Lgu60`
+
+The dispatcher then has a final `Lmiy` serializer branch. This is recorded as the observed fallback dispatch branch, not as proof that every `Lvl8` enum member has an independently supported server response serializer. The enum has additional values not explicitly listed in the 15 comparisons above.
+
+Generated serializers `Lavk0` (lookup-key response), `Lvq70` (external URL response) and `Lbu60` (error response) independently expose the common root keys `type`, `payload` and `errors`. This directly verifies the shared envelope for those variants; it does not establish every field of all 15 variant payloads.
+
+### Lookup-key response payload and challenge data
+
+For `type = lookup_key_authentication`, the generated serializer `Lcvk0` for payload DTO `Levk0` has the exact fields `errors` and `deviceKeyChallenge`. `Levk0.errors` and the root `Lfvk0.errors` are distinct serialized locations; each is typed as `Lql8`. Do not flatten or merge them.
+
+The `deviceKeyChallenge` property is a `Lqk00` DTO. Its generated serializer `Llk00` confirms `{type, purpose, data}`. The nested `data` DTO `Lpk00`, serialized by `Lnk00`, has these exact names and declared types:
+
+| JSON property | Declared type |
+| --- | --- |
+| `challengeId` | String |
+| `challenge` | String |
+| `purpose` | String |
+| `issuedAt` | Long |
+| `expiresAt` | Long |
+| `signature` | String |
+
+This response shape connects to the already-traced `DEVICE_KEY` signing path: `Lqk00.a()` selects/validates the device-key challenge, `Lsk00.a` signs the challenge bytes through the P-256 key wrapper, and the resulting `Livk0` is placed in the later `lookup_key_authentication` next-step POST body. It remains a separate artifact from the OAuth DPoP JWT.
+
+### Error DTO and metadata item schema
+
+The `Lql8` generated serializer `Lol8` names the four root/inner error properties exactly:
+
+| JSON property | Declared type |
+| --- | --- |
+| `isRecoverable` | nullable Boolean |
+| `fieldErrors` | Map |
+| `formErrors` | List |
+| `metadata` | List |
+
+The generic key/value and element types for `fieldErrors` and `formErrors` are not yet proven. `Lql8.a()` combines `formErrors` with the values from `fieldErrors` when constructing display text, but this helper alone does not establish the generic types.
+
+The `metadata` list is consumed as `Lml8` items. Generated serializer `Lkl8` confirms `code`, `type` and `field`; `field` is nullable and uses enum `Lsl8`. The observed field enum values are `password`, `confirm_password`, `code`, `birthday`, `username`, `email`, `country_code`, `phone`, `name`, `consent`, `recovery_key` and `unknown`. The two-string `Lml8` constructor sets `field` to null.
+
+`Lyl8.a()` returns the root `Lql8.metadata` list (or null when the root error object is absent); it does not return `formErrors`. Repository method `a.i` checks metadata item codes and has an explicit `account_deactivated` comparison. `Li8p0.n` iterates metadata items and forwards code/type/nullable-field values into its error-state handler. Thus metadata is used for authentication-flow decisions as well as field/error state.
+
+### Result wrapper, step-state handling and cancellation boundary
+
+`Lk6p0.invokeSuspend` calls `Lu0c.m` for `api/first_party_authorize/next`. The generic result is a `Lbvb1` value: `Lavb1` is the success wrapper whose `.b` is cast to `Lyl8`; `Luub1` is the failure wrapper containing a `Throwable`. `a.i` sends `Luub1` to `com.openai.auth.b.a` for auth-specific classification. This transport/service failure wrapper is separate from the decoded `Lyl8` application variant whose discriminator is `error` and which carries the `Lql8` schema.
+
+`Li8p0.g(Lyl8)` stores the resolved step wire value under the state key `step`. For the `external_url` variant it reads the `url` payload and stores it under `url`. The step handler also invokes an analytics/update hook; that instrumentation is not a ChatJS product requirement and is not copied into runtime behavior.
+
+`a.i` checks the root `Lyl8` metadata list for `account_deactivated`, then follows a further `La0d1.g` path in a branch whose domain semantics are not yet established. The complete auth-failure classification, all result cleanup/side effects and this delegated branch remain open.
+
+The coroutine path contains an explicit Job cancellation check through `Le6o0.w`/`Le6o0.x`; the latter obtains and throws the Job's `CancellationException` when the Job is cancelled. This shows a cancellation-preserving path rather than converting cancellation into a decoded `Lyl8` response. It is not a proof that every transport, callback and repository cancellation edge is fully mapped.
+
+### Evidence boundary and remaining gaps
+
+These findings come from static DEX and generated-serializer inspection of ChatGPT Android 1.2026.321, XAPK SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d` (123,574,190 bytes), including `classes7.dex` SHA-256 `e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e` (11,752,896 bytes). The inspected response and serializer classes are in `classes7.dex`; `Lu0c.m` is in `classes8.dex`.
+
+No Android method was executed; no account, token, private key, AndroidKeyStore entry or network request was used. No ChatJS runtime code or tests were changed. The lookup-key response and repository boundary are substantially mapped, but remaining work includes the other step-specific payload schemas, generic `fieldErrors`/`formErrors` item types, full `Luub1` classification and `La0d1.g` semantics, request auth/integrity headers and provider injection, and provider-alias-to-account preference persistence.

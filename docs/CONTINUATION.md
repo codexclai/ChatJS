@@ -924,3 +924,20 @@ The signed lookup proof submission edge is now proven and corrects the preceding
 - Important direction correction: `Lvi8` is the **request** DTO/body, not a response. `Lu0c.m` and `Lk6p0` consume a `Lyl8` response (`b():Lql8`, `c():Lvl8`, `a():List`). Full `Lyl8` JSON names and `Lql8` details remain open.
 
 Thus the lookup path is now source-traced from initial `Lqk00` challenge fetch → DEVICE_KEY selection → `Lsk00` signing → exact `Livk0` handoff → POST body `{origin_page_type: lookup_key_authentication, data: Livk0}` to `/api/first_party_authorize/next`. Static evidence only; no application, credentials, keys or network operation executed.
+
+## Latest handoff — Android LoginAuth next-response union, nested DEVICE_KEY challenge and cancellation — 2026-11-27
+
+The `Lyl8` response model following the signed `lookup_key_authentication` POST is now traced beyond the DTO accessor names:
+
+- `Lam8.b(String)` is the generated sealed serializer dispatcher. It explicitly maps 15 response step labels: `lookup_key_authentication`, `about_you`, `email_otp_verification`, `contact_verification`, `external_url`, `create_account_password`, `login_password`, `workspace`, `push_auth_verification`, `mfa_challenge`, `mfa_enroll`, `login_passkey`, `token_exchange`, `token_response`, and `error`. It has a final `Lmiy` serializer branch; do not infer that every `Lvl8` enum value has a separately mapped response serializer.
+- Generated serializers for lookup-key, external URL and error variants verify the root envelope fields `type`, `payload`, `errors`.
+- The lookup-key payload is `Levk0`, with fields `errors` and `deviceKeyChallenge`. The root envelope `errors` and payload `errors` are distinct fields, each typed `Lql8`.
+- `deviceKeyChallenge` is `Lqk00` with `{type,purpose,data}`; nested `Lpk00` `data` has `challengeId:String`, `challenge:String`, `purpose:String`, `issuedAt:Long`, `expiresAt:Long`, and `signature:String`. This is the challenge input connected to the previously traced `Lsk00` signer and `Livk0` POST proof.
+- `Lql8` serializer fields are `isRecoverable` (nullable Boolean), `fieldErrors` (Map), `formErrors` (List), `metadata` (List). Metadata entries are `Lml8` with `code`, `type`, nullable `field`; `Lsl8` field values are `password`, `confirm_password`, `code`, `birthday`, `username`, `email`, `country_code`, `phone`, `name`, `consent`, `recovery_key`, `unknown`. Generic Map/List element types remain unknown.
+- `Lyl8.a()` returns root `errors.metadata`, not `formErrors`. `a.i` checks `account_deactivated`; `Li8p0.n` consumes metadata code/type/field. `Li8p0.g` stores the selected step as `step` and the `external_url` payload's `url` separately.
+- `Lu0c.m` / `Lk6p0` distinguish `Lavb1` successful typed data (`Lyl8`) from `Luub1` transport/service failure (`Throwable`), which is sent to `com.openai.auth.b.a` for classification. The decoded `type:error` application response remains distinct from the generic failure result.
+- `Le6o0.w`/`Le6o0.x` include a Job cancellation check that throws the Job's `CancellationException`; this establishes a cancellation-preserving branch, not full cancellation coverage of every request/callback.
+
+Full method/serializer detail and SHA-256 evidence are in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`. Static analysis only; no application methods, credentials, keys, AndroidKeyStore operations or network requests were run, and no ChatJS runtime behavior was added.
+
+Next: decode step-specific payloads beyond `lookup_key_authentication`, prove generic error collection types, map all `Luub1` failure handling plus the `La0d1.g` branch, and continue request auth/integrity/provider and lookup-alias persistence tracing.

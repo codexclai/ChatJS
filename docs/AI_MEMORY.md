@@ -483,3 +483,13 @@ The initial Lqk00 challenge response comes from Lb6p0.a (classes7 method 3532), 
 `Lf91.invokeSuspend` (classes5 method 13156) constructs `Lvi8(step,payload)`, stores it in `Lfyc0.d` outgoing request body, installs `Lti8` content serializer, sets POST and sends. `Lti8` serializer descriptor and serialization method (classes7 49861/49865) define JSON envelope `{origin_page_type,data}`; `data` uses polymorphic `Ljl8` serializer. In this branch the exact data object is the signer-produced `Livk0`. Thus signed DEVICE_KEY proof submission is now proven for this LoginAuth path.
 
 Correction: `Lvi8` is the outgoing POST body, not response. The `Lu0c.m`/`Lk6p0` response uses `Lyl8`, which exposes `b():Lql8`, `c():Lvl8`, and `a():List`; full serialized response schema remains open. Static DEX/serializer evidence only.
+
+## Android LoginAuth next-response union and result boundary — 2026-11-27
+
+After the signed `Livk0` request, the Android `Lyl8` response is a sealed union dispatched by `Lam8.b` over 15 explicit `type` labels; a final `Lmiy` fallback exists, and not every `Lvl8` enum member is independently mapped. Generated serializers checked for lookup-key, external URL and error variants verify the root `{type,payload,errors}` envelope.
+
+The `lookup_key_authentication` payload `Levk0` serializes `errors` and `deviceKeyChallenge`; the latter is `Lqk00` `{type,purpose,data}`, whose `Lpk00` data fields are `challengeId`, `challenge`, `purpose`, `issuedAt` (Long), `expiresAt` (Long), `signature`. The root and payload `errors` are separate `Lql8` instances.
+
+`Lql8` fields are `isRecoverable` (nullable Boolean), `fieldErrors` (Map), `formErrors` (List), `metadata` (List). Metadata items are `Lml8` `{code,type,field}`, with nullable `field` enum values `password`, `confirm_password`, `code`, `birthday`, `username`, `email`, `country_code`, `phone`, `name`, `consent`, `recovery_key`, `unknown`. Generic map/list item types remain open. `Lyl8.a()` returns root metadata; repository `a.i` checks `account_deactivated`; `Li8p0.n` processes metadata.
+
+`Lu0c.m`/`Lk6p0` separate `Lavb1` successful `Lyl8` from `Luub1(Throwable)` auth failures; `Le6o0.w/x` include a Job cancellation path that throws `CancellationException`. Full failure classification, `La0d1.g`, request headers/integrity/provider injection, every step payload, and provider-alias-to-account persistence remain open. These are static source findings only; ChatJS runtime auth/session/network capability is still unimplemented. See `ANDROID_CLIENT_PROTOCOL_FINDINGS.md` and `CONTINUATION.md`.

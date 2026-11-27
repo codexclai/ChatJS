@@ -830,6 +830,19 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Trace the repository/callback/network chain `a.j` → `Lk6p0` → `Lu0c.m` → `Lf91` for `api/first_party_authorize/next`.
 - [x] Decode outgoing `Lvi8` body serialization: `Lf91` stores it in `Lfyc0.d`, installs `Lti8`, sets POST; `Lti8` emits `origin_page_type` and polymorphic `data`. The traced step value is `lookup_key_authentication`; `data` is the exact `Livk0` from the signer.
 - [x] Correct DTO direction: `Lvi8` is request body; response is typed `Lyl8`, consumed through `b():Lql8`, `c():Lvl8`, `a():List`.
-- [ ] Decode full `Lyl8` response serializer/property names and `Lql8` item schema, including empty/success/failure result branches.
+- [x] Decode the `Lyl8` sealed response discriminator, the root `type`/`payload`/`errors` envelope (verified across lookup-key, external URL and error serializers), the explicit 15 step-dispatch labels, and the lookup-key payload's nested `errors`/`deviceKeyChallenge` schema.
 - [ ] Complete request headers, auth-plugin/first-party integrity, transport cancellation and error normalization for account-authorize and next-step calls.
 - [ ] Trace provider lookup alias to account `Lel8.key_pair_alias` persistence and native auth-provider injection.
+
+## Android LoginAuth next-response union and result/error/cancellation trace — 2026-11-27
+
+- [x] Trace `Lam8.b` sealed serializer dispatch for the 15 explicit response `type` values and record the separate final `Lmiy` fallback serializer branch without generalizing all `Lvl8` values.
+- [x] Verify the root `type`, `payload`, `errors` fields in generated serializers for lookup-key, external URL and error response variants.
+- [x] Decode `lookup_key_authentication` payload `Levk0`: nested `errors` and `deviceKeyChallenge`; decode `Lqk00` `{type,purpose,data}` and `Lpk00` challenge data fields and types.
+- [x] Decode `Lql8` property names/types and `Lml8` metadata item fields, nullable `field`, and `Lsl8` field enum values; trace `account_deactivated` decision and metadata consumer.
+- [x] Distinguish `Lavb1` successful `Lyl8` response from `Luub1(Throwable)` failure and verify the explicit coroutine Job cancellation exception path.
+- [ ] Determine generic key/value and element types/nullable/default behavior for `Lql8.fieldErrors`, `formErrors` and `metadata` through generated serializer internals.
+- [ ] Decode every remaining `Lyl8` step payload serializer; only the lookup-key payload, external URL `url`, and selected error envelope have been inspected in this slice.
+- [ ] Complete `Luub1` auth-failure classification, the `La0d1.g` delegated branch, state cleanup and all relevant cancellation/error paths.
+- [ ] Complete initial account-authorize and first-party next request headers, auth-plugin, first-party integrity, request context and provider-injection tracing.
+- [ ] Trace `Lozc1.lookupKeyAlias` through account `Lel8.key_pair_alias` persistence and native auth-provider closure.
