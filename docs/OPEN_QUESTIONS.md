@@ -284,3 +284,8 @@ A private pure contact payload decoder and three tests are now implemented. This
 **Resolved:** contact_verification is Liwt0 with payload Lhwt0; Lfwt0 proves errors, phoneVerificationMode, and loginMethods as optional nullable generated members. phoneVerificationMode is the same Lfer0 enum already decoded for email OTP. Lifp0.c passes both verification-step collections through Lifp0.a(List), which casts each list item to Lmnk0; therefore the same four source-enumerated login-method variants and passkey challenge schema apply.
 
 A private pure contact payload decoder and three tests are now implemented. This resolves the nested contact payload only. **Still open:** the top-level Lyl8 response-union decoder, other step payloads, accepted Lmiy fallback discriminator values, complete Luub1 / La0d1.g handling, and LoginAuth authentication/transport/integrity-provider behavior.
+## Android LoginAuth external_url nested payload — source resolution update — 2026-11-27
+
+**Resolved:** external_url is Lar70 with payload Lzq70; outer serializer Lvq70 confirms required type and payload plus optional-nullable root errors. Lzq70 has exactly one payload property url:String, marked required by Lxq70's descriptor and backed by the non-null Ljb81 String serializer. Li8p0.g copies the value into the separate url state key. A private pure decoder and two tests now validate this narrow nested model.
+
+**Still open:** how URL destinations are trusted/opened or constrained in the complete LoginAuth flow; no DTO-level URL validation was found. Other Lyl8 payloads, complete union dispatch/fallback acceptance and authentication/transport remain open.
