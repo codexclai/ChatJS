@@ -10,6 +10,7 @@ const {
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
   decodeAndroidLoginAuthExternalUrlPayload,
+  decodeAndroidLoginAuthTokenExchangePayload,
   AndroidLoginAuthResponseSchemaError
 } = schema;
 
@@ -356,6 +357,38 @@ test('external_url payload requires a non-null string url but does not assume UR
       assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
       assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
       assert.match(error.message, /url (is required|must be a string)/);
+      return true;
+    });
+  }
+});
+
+
+test('token_exchange payload decodes the required code string and preserves extension data', () => {
+  const source = { code: 'authorization-code', extension: { keep: true } };
+  const decoded = decodeAndroidLoginAuthTokenExchangePayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.extension, source.extension);
+  assert.equal(decoded.code, 'authorization-code');
+});
+
+test('token_exchange payload requires a non-null string code without adding format assumptions', () => {
+  assert.deepEqual(decodeAndroidLoginAuthTokenExchangePayload({ code: '' }), { code: '' });
+  assert.deepEqual(decodeAndroidLoginAuthTokenExchangePayload({ code: 'opaque value' }), {
+    code: 'opaque value'
+  });
+  for (const value of [undefined, null, false, 1, 'code', []]) {
+    assert.throws(() => decodeAndroidLoginAuthTokenExchangePayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.match(error.message, /must be an object/);
+      return true;
+    });
+  }
+  for (const value of [{}, { code: null }, { code: 1 }, { code: false }]) {
+    assert.throws(() => decodeAndroidLoginAuthTokenExchangePayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      assert.match(error.message, /code (is required|must be a string)/);
       return true;
     });
   }
