@@ -1650,3 +1650,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Implemented private src/chatgpt/android-login-auth-response-schema.cjs and six tests in tests/android-login-auth-response-schema.test.cjs. The decoder validates only the nested Lql8 object, preserves absent/null behavior and defensive copying, and rejects malformed fields/enum values/prototype-key injection. It intentionally does not parse the full Lyl8 union or implement authentication/transport.
 - Targeted validation: node --check on the new helper passed; the six focused Node tests passed. Full npm run check, archive creation/inspection and GitHub CI are still required; local full-repository check is unavailable because the runtime has no local checkout and GitHub clone DNS is blocked.
 - Updated the user-facing implementation inventory and canonical Android findings/TODO/open questions/continuity/state records. No original application packages, account credentials, keys or session material were committed; no Android method, keystore or network request was executed.
+
+
+## 2026-11-27 — Archive allow-list correction after CI artifact inspection
+
+- The implementation commit 44e9833 added the private LoginAuth error decoder and six tests. CI initially failed at generated project-state synchronization because the manually generated notice had one extra leading space; corrected the exact generated header in follow-up commit 879da91.
+- CI run 45997123354 on 879da91 passed npm run check, archive extraction, installed-package smoke tests, and archive upload. CodeQL run 45997123274 was still in progress at this log update.
+- Downloaded and inspected CI artifact 15196671447 (ChatJS ZIP, 34,962-byte artifact). The nested ChatJS.tar.gz had 19 tar entries including its root directory, but its explicit manifest omitted the newly added decoder. Identified that both scripts/build-module-archive.cjs and tests/archive.test.cjs maintain exact matching allow-lists.
+- Corrected the archive builder manifest and exact archive-test manifest to include src/chatgpt/android-login-auth-response-schema.cjs. A follow-up CI run is required to verify the corrected distribution and recreate/inspect its archive.
