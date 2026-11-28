@@ -236,6 +236,34 @@ function decodeAndroidLoginAuthVerificationPayload(value, label, modeField) {
   return result;
 }
 
+function decodeAndroidLoginAuthPasswordPayload(value, label) {
+  if (value === undefined || value === null) return value;
+
+  const result = requireObject(value, label);
+  decodeOptionalNullable(result, 'errors', label, decodeAndroidLoginAuthErrors);
+  decodeOptionalNullable(
+    result,
+    'loginMethods',
+    label,
+    decodeAndroidLoginAuthLoginMethods
+  );
+  return result;
+}
+
+function decodeAndroidLoginAuthCreateAccountPasswordPayload(value) {
+  return decodeAndroidLoginAuthPasswordPayload(
+    value,
+    'AndroidLoginAuthCreateAccountPasswordPayload'
+  );
+}
+
+function decodeAndroidLoginAuthLoginPasswordPayload(value) {
+  return decodeAndroidLoginAuthPasswordPayload(
+    value,
+    'AndroidLoginAuthLoginPasswordPayload'
+  );
+}
+
 function decodeAndroidLoginAuthEmailOtpPayload(value) {
   return decodeAndroidLoginAuthVerificationPayload(
     value,
@@ -297,6 +325,8 @@ module.exports = Object.freeze({
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
+  decodeAndroidLoginAuthCreateAccountPasswordPayload,
+  decodeAndroidLoginAuthLoginPasswordPayload,
   decodeAndroidLoginAuthExternalUrlPayload,
   decodeAndroidLoginAuthTokenExchangePayload
 });
