@@ -9,6 +9,8 @@ const {
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
+  decodeAndroidLoginAuthCreateAccountPasswordPayload,
+  decodeAndroidLoginAuthLoginPasswordPayload,
   decodeAndroidLoginAuthExternalUrlPayload,
   decodeAndroidLoginAuthTokenExchangePayload,
   AndroidLoginAuthResponseSchemaError
@@ -389,6 +391,107 @@ test('token_exchange payload requires a non-null string code without adding form
       assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
       assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
       assert.match(error.message, /code (is required|must be a string)/);
+      return true;
+    });
+  }
+});
+
+
+test('create_account_password payload reuses the nullable errors and Lmnk0 login-method schemas', () => {
+  const source = {
+    errors: { formErrors: ['Password is required'] },
+    loginMethods: [
+      { type: 'password' },
+      { type: 'passwordless_otp' },
+      {
+        type: 'passkey',
+        challenge: {
+          passkeyRequestOptions: { challenge: 'create-account', rpId: 'chatgpt.com' },
+          mfaRequestId: 'create-account-mfa'
+        }
+      },
+      { type: 'unknown' }
+    ],
+    extension: { retained: true }
+  };
+  const decoded = decodeAndroidLoginAuthCreateAccountPasswordPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.errors, source.errors);
+  assert.notEqual(decoded.loginMethods, source.loginMethods);
+  assert.notEqual(decoded.loginMethods[2].challenge, source.loginMethods[2].challenge);
+  assert.equal(decoded.extension, source.extension);
+  assert.equal(decodeAndroidLoginAuthCreateAccountPasswordPayload(undefined), undefined);
+  assert.equal(decodeAndroidLoginAuthCreateAccountPasswordPayload(null), null);
+  assert.deepEqual(decodeAndroidLoginAuthCreateAccountPasswordPayload({}), {});
+  assert.deepEqual(decodeAndroidLoginAuthCreateAccountPasswordPayload({
+    errors: null,
+    loginMethods: null
+  }), { errors: null, loginMethods: null });
+});
+
+test('create_account_password payload rejects malformed errors and loginMethods values', () => {
+  for (const [value, pattern] of [
+    [{ errors: false }, /AndroidLoginAuthCreateAccountPasswordPayload.*must be an object/],
+    [{ loginMethods: {} }, /AndroidLoginAuthCreateAccountPasswordPayload.*must be an array/],
+    [{ loginMethods: [null] }, /AndroidLoginAuthCreateAccountPasswordPayload.*must be an object/],
+    [{ loginMethods: [{ type: 'not-a-method' }] }, /recognized Android LoginAuth enum/],
+    [{ loginMethods: [{ type: 'passkey', challenge: {} }] }, /passkeyRequestOptions is required/]
+  ]) {
+    assert.throws(() => decodeAndroidLoginAuthCreateAccountPasswordPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      assert.match(error.message, pattern);
+      return true;
+    });
+  }
+});
+
+test('login_password payload reuses the nullable errors and Lmnk0 login-method schemas', () => {
+  const source = {
+    errors: { fieldErrors: { password: ['Try another password'] } },
+    loginMethods: [
+      { type: 'password' },
+      { type: 'passwordless_otp' },
+      {
+        type: 'passkey',
+        challenge: {
+          passkeyRequestOptions: { challenge: 'login', rpId: 'chatgpt.com' },
+          mfaRequestId: 'login-mfa'
+        }
+      },
+      { type: 'unknown' }
+    ],
+    extension: 'preserved'
+  };
+  const decoded = decodeAndroidLoginAuthLoginPasswordPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.errors, source.errors);
+  assert.notEqual(decoded.loginMethods, source.loginMethods);
+  assert.notEqual(decoded.loginMethods[2].challenge, source.loginMethods[2].challenge);
+  assert.equal(decoded.extension, source.extension);
+  assert.equal(decodeAndroidLoginAuthLoginPasswordPayload(undefined), undefined);
+  assert.equal(decodeAndroidLoginAuthLoginPasswordPayload(null), null);
+  assert.deepEqual(decodeAndroidLoginAuthLoginPasswordPayload({}), {});
+  assert.deepEqual(decodeAndroidLoginAuthLoginPasswordPayload({
+    errors: null,
+    loginMethods: null
+  }), { errors: null, loginMethods: null });
+});
+
+test('login_password payload rejects malformed errors and loginMethods values', () => {
+  for (const [value, pattern] of [
+    [{ errors: [] }, /AndroidLoginAuthLoginPasswordPayload.*must be an object/],
+    [{ loginMethods: {} }, /AndroidLoginAuthLoginPasswordPayload.*must be an array/],
+    [{ loginMethods: [false] }, /AndroidLoginAuthLoginPasswordPayload.*must be an object/],
+    [{ loginMethods: [{ type: 'email' }] }, /recognized Android LoginAuth enum/],
+    [{ loginMethods: [{ type: 'passkey', challenge: { mfaRequestId: 'missing-options' } }] }, /passkeyRequestOptions is required/]
+  ]) {
+    assert.throws(() => decodeAndroidLoginAuthLoginPasswordPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      assert.match(error.message, pattern);
       return true;
     });
   }
