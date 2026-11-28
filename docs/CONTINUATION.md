@@ -1068,3 +1068,6 @@ Implemented private `decodeAndroidLoginAuthResponse` over the common `Lyl8` enve
 Added two focused tests covering exact discriminator inventory, typed nested dispatch, opaque known-step preservation, extension-field pass-through, and malformed/missing/future discriminator rejection. The helper remains private and performs no HTTP, authentication, passkey, MFA, or account operation.
 
 Commits: `c960c55e9d8fff0670c56d2f78ec1fbc30efe509` (decoder), `d58b5559560d78eedc8aac392ea3359cb1d3d046` (tests). CI is pending verification. Static Android evidence for the 15 labels and common envelope is recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; the final fallback behavior remains deliberately unresolved.
+
+
+Verification follow-up — 2026-11-28: main commit `14ad8aba3e2d45b5a600944c9f20bf3c64db7509` passed GitHub CI run `46162580007` (the workflow's full check/test/archive/extraction/ESM+CommonJS smoke-test step) and CodeQL run `46162580030`. An initial source/test export-import formatting typo caused an intermediate CI failure; the source export was corrected in `c31cb126544c0503949a10baa1a74a059b251814`, and the test import was corrected in `14ad8aba3e2d45b5a600944c9f20bf3c64db7509`. The final head is green. This verification does not turn the private schema decoder into an authenticated LoginAuth workflow.
