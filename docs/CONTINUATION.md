@@ -1059,3 +1059,12 @@ Exact workspace entry shape:
 This is not a generic map: the item schema is source-traced field-by-field. Added private decodeAndroidLoginAuthWorkspacePayload, shared Lql8 validation, and three focused tests; LoginAuth helper suite now has 30 focused tests. Reauthentication remains string-only at schema layer; no behavior inferred. The outer Lyl8 parser and actual workspace/reauthentication action remain unimplemented.
 
 Next: trace MFA challenge/enroll, push-auth and token-response payloads; resolve exact Lmiy fallback acceptance and complete failure/cancellation/transport boundaries.
+
+
+## Handoff — Android LoginAuth common response-envelope decoder — 2026-11-28
+
+Implemented private `decodeAndroidLoginAuthResponse` over the common `Lyl8` envelope. The accepted discriminator list is exactly the 15 explicit strings recovered from `Lam8.b(String)`; unknown strings are rejected rather than assuming the final `Lmiy` fallback accepts them. The decoder validates the required string `type`, required object `payload`, and optional-nullable root `errors:Lql8`. It dispatches only the nine nested payload validators already source-resolved (about_you, email/contact OTP, external_url, create_account_password, login_password, workspace, login_passkey, token_exchange). The remaining six known step payloads are preserved as opaque objects; this does not claim their field schemas are implemented.
+
+Added two focused tests covering exact discriminator inventory, typed nested dispatch, opaque known-step preservation, extension-field pass-through, and malformed/missing/future discriminator rejection. The helper remains private and performs no HTTP, authentication, passkey, MFA, or account operation.
+
+Commits: `c960c55e9d8fff0670c56d2f78ec1fbc30efe509` (decoder), `d58b5559560d78eedc8aac392ea3359cb1d3d046` (tests). CI is pending verification. Static Android evidence for the 15 labels and common envelope is recorded in `ANDROID_CLIENT_PROTOCOL_FINDINGS.md`; the final fallback behavior remains deliberately unresolved.
