@@ -2,6 +2,8 @@
 
 **Current implementation status: foundation only.** The product goal is one general-purpose Node.js module consolidating the actual client-side capabilities of ChatGPT mobile, ChatGPT desktop and Codex CLI. Their protocols remain distinct internally. Source material and intended compatibility are not themselves implementation.
 
+**Independent Android audit:** see [ANDROID_COVERAGE_AUDIT.md](ANDROID_COVERAGE_AUDIT.md) for the feature-by-feature evidence matrix, current-head verification boundary and prioritized gaps (Subagent 3, 2026-11-28).
+
 ## Status definitions
 
 - **Implemented:** working code, docs, and repeatable tests.
@@ -19,6 +21,7 @@
 | Error base type | Partial | Foundation validation/closed-client errors |
 | TypeScript declarations | Partial | Foundation API plus generic SSE parser |
 | Generic Server-Sent Events framing | Implemented | Async byte-iterable parser, UTF-8/chunk boundaries, event fields, limits, abort and iterator cleanup; does not connect to ChatGPT or decode a product-specific event schema |
+| Android LoginAuth common response envelope | Implemented (private helper; current-head CI pending) | Decodes the 15 explicit discriminator labels and dispatches nine source-decoded nested payloads; six known payloads remain opaque; final fallback is deliberately rejected. It does not authenticate or send requests. Current-main changes after the last green CI require a fresh full check. |
 | Android generated model-catalog and chat-requirements schema helpers | Implemented (internal helper only) | Exact GET/POST descriptors, generated nested response validation, undefined-vs-null behavior, extra-field pass-through and fail-closed default requirements-header decision; no network, auth or device attestation |
 | Android generated account-check schema and selection helpers | Implemented (internal helper only) | Exact GET descriptor; `accounts` dictionary/map decoder with nested optional/nullable fields; ordered access/deactivation filtering, deduplication and initial-account preference; no network, credentials, session or account-switch side effects |
 | Android persisted credential record codec | Implemented (internal helper only) | Version-1 access-token/native-session record decode/build, optional account/session snapshot validation and JWT `exp` metadata; no encryption, filesystem, native keystore or persistence |
