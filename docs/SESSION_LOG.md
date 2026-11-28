@@ -1815,3 +1815,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Changed src/chatgpt/android-login-auth-response-schema.cjs and tests/android-login-auth-response-schema.test.cjs. Updated Android findings, AI memory, continuation, TODO, open questions, capability matrix and ChatJS.md; project state and generated Markdown synchronized with this log in one atomic main commit.
 - Source hashes: base APK 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes3.dex supplies Lmec1 selector-lambda; classes7.dex supplies workspace DTOs, item model and generated serializers. Both are from the same supplied XAPK. No Android method, account, credential, key, Play Integrity or network operation was executed.
 - Workspace implementation commit d8d687e950072e8968f0e08215b6910e87e3c01a; workspace test commit 46160883410565659414c1f76bbd5859d967cea8. CI/CodeQL for the combined new workspace snapshot remain pending; the last fully verified snapshot before this change remains 5215204835a946a3a73ca23f4027d6335ca037d0.
+
+
+### Final Android LoginAuth workspace verification — 2026-11-28
+
+- Workspace implementation commit d8d687e950072e8968f0e08215b6910e87e3c01a and test commit 46160883410565659414c1f76bbd5859d967cea8 are included in main code/docs snapshot 2ff068fe945fbbbf2b993dde479661ed3a1a0f63. CI run 46110739799 and CodeQL run 46110739831 both passed.
+- CI completed npm run check: lint/syntax, project-state JSON/generated Markdown synchronization, local Markdown links, full suite 164/164 (zero failures), module archive build, installed archive extraction and CommonJS/ESM smoke tests all passed.
+- Downloaded artifact 15249900319 (ChatJS-android-workspace-ci.zip, 38,115 bytes; SHA-256 e9ef80bf1b0d65cffcd7e573046fbab9b9ada58b09a64041bd09a90ac8ee3fe2). Inspected nested ChatJS.tar.gz (37,960 bytes; SHA-256 663e2bc4e9e03eb21fe3553f37e230dc7b03d9ee3c1ce32848bc43b917dc69f6): 20 entries (root folder plus 19 package files), containing all four recent private password, passkey and workspace validators.
+- Extracted final CI artifact locally; independent installed CommonJS and ESM imports and decoder-module node --check smoke all passed. Local npm run check was not run because there is no local repository checkout; the full command passed in GitHub CI.
