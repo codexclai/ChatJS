@@ -2517,3 +2517,28 @@ This work validates nested DTO payloads only. It does not submit a password, inf
 Source integrity evidence: supplied base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes5.dex SHA-256 5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44; classes6.dex SHA-256 6723f9c8dbf64dc50ca5bec6a978e84b24ad99a669aa685827a5540f6675f371; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e.
 
 Static DEX and generated-serializer analysis only. No Android methods, account credentials, password, key material, AndroidKeyStore operation, Play Integrity request or network request were executed.
+
+
+## Android LoginAuth login_passkey payload DTO — 2026-11-28
+
+The explicit login_passkey response subtype is Lrok0 and its nested payload is Lqok0. Lqok0's fields are errors:Lql8, passkeyChallengeOption:Lmds0 and fallbackAllowed:Boolean. Its generated serializer is Look0, returned by Lpok0.serializer().
+
+The generated Look0 descriptor contains three JSON properties:
+
+| JSON field | Serializer child | Presence/nullability |
+| --- | --- | --- |
+| errors | Lql8 error serializer wrapped by nullable adapter | Optional, nullable |
+| passkeyChallengeOption | Lmds0 serializer | Required, non-null |
+| fallbackAllowed | Boolean serializer | Optional, non-null |
+
+The childSerializers method confirms the distinction: errors passes through Lvcb.B (nullable); passkeyChallengeOption uses Lkds0 directly; fallbackAllowed uses the non-null Boolean serializer Lw4b. The nested Lmds0 model is the same option DTO already traced for Lmnk0 passkey methods: passkeyRequestOptions is a required JsonObject and mfaRequestId is a required String.
+
+Private ChatJS implementation:
+
+- Added decodeAndroidLoginAuthLoginPasskeyPayload to src/chatgpt/android-login-auth-response-schema.cjs.
+- It validates a payload object, optional nullable Lql8 errors, the required nested passkeyChallengeOption object and its required JsonObject/String members, and an optional non-null boolean fallbackAllowed.
+- Three focused tests cover the required nested challenge, optional/null members, omitted fallbackAllowed and malformed values.
+
+The optional fallbackAllowed property is preserved when omitted; this decoder does not infer its default value or business meaning. It does not invoke a passkey API, display a challenge, create or verify an assertion, submit a credential, implement a sign-in transition, decode the outer Lyl8 union or send a request.
+
+Source integrity evidence: supplied base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Static generated-serializer/DEX analysis only; no app, passkey ceremony, account, key, AndroidKeyStore, Play Integrity or network operation was run.
