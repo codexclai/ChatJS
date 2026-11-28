@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const schema = require('../src/chatgpt/android-login-auth-response-schema.cjs');
 
 const {
-  decodeAndroidLoginAuthErrors,
+  decodeAndroidLoginAuthErrors,\n  decodeAndroidLoginAuthResponse,
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
@@ -654,4 +654,56 @@ test('workspace payload rejects missing or malformed required and optional item 
       return true;
     });
   }
+});
+
+
+test('Android LoginAuth response envelope dispatches only source-explicit types and known payload decoders', () => {
+  assert.deepEqual(schema.ANDROID_LOGIN_AUTH_RESPONSE_TYPES, [
+    'lookup_key_authentication', 'about_you', 'email_otp_verification',
+    'contact_verification', 'external_url', 'create_account_password',
+    'login_password', 'workspace', 'push_auth_verification', 'mfa_challenge',
+    'mfa_enroll', 'login_passkey', 'token_exchange', 'token_response', 'error'
+  ]);
+  assert.ok(Object.isFrozen(schema.ANDROID_LOGIN_AUTH_RESPONSE_TYPES));
+
+  const source = {
+    type: 'external_url',
+    payload: { url: 'https://auth.openai.com/continue', extension: true },
+    errors: { formErrors: ['review'] },
+    extension: { retained: true }
+  };
+  const decoded = decodeAndroidLoginAuthResponse(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.payload, source.payload);
+  assert.notEqual(decoded.errors, source.errors);
+  assert.equal(decoded.extension, source.extension);
+
+  assert.deepEqual(decodeAndroidLoginAuthResponse({
+    type: 'mfa_challenge',
+    payload: { sourceSpecificFields: ['remain', 'opaque'] },
+    errors: null
+  }), {
+    type: 'mfa_challenge',
+    payload: { sourceSpecificFields: ['remain', 'opaque'] },
+    errors: null
+  });
+});
+
+test('Android LoginAuth response envelope rejects missing, malformed and untraced fallback discriminators', () => {
+  for (const value of [null, [], {}, { payload: {} }, { type: 1, payload: {} },
+    { type: 'untraced_future_step', payload: {} }, { type: 'about_you' },
+    { type: 'about_you', payload: null }, { type: 'about_you', payload: [] },
+    { type: 'about_you', payload: {}, errors: false }]) {
+    assert.throws(() => decodeAndroidLoginAuthResponse(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      return true;
+    });
+  }
+
+  assert.throws(() => decodeAndroidLoginAuthResponse({
+    type: 'external_url',
+    payload: {}
+  }), /AndroidLoginAuthExternalUrlPayload.url is required/);
 });
