@@ -911,5 +911,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Confirm both payload serializers declare optional nullable errors:Lql8? and loginMethods:List<Lmnk0>?, including lazy child serializer paths Llno selector 28 and Lxia0 selector 22.
 - [x] Implement private pure create_account_password and login_password payload validators by reusing the shared Lql8 error and Lmnk0 polymorphic method decoders.
 - [x] Add four focused tests for both variants, optional/null fields, nested passkey payload, extension preservation and malformed values; focused helper suite now has 24 tests.
-- [ ] Decode remaining workspace, MFA, push-auth, login-passkey and token-response payloads, and establish the exact accepted Lmiy fallback discriminator behavior.
+- [ ] Decode remaining workspace, MFA, push-auth and token-response payloads, and establish the exact accepted Lmiy fallback discriminator behavior.
 - [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and relevant cancellation/error paths.
+
+
+## Android LoginAuth login_passkey payload — 2026-11-28
+
+- [x] Trace login_passkey outer subtype Lrok0, payload DTO Lqok0 and generated serializer Look0.
+- [x] Confirm errors is optional nullable, passkeyChallengeOption is required non-null Lmds0, and fallbackAllowed is optional non-null Boolean.
+- [x] Reuse the traced Lmds0 required JsonObject/String decoder for the nested passkey options.
+- [x] Implement private pure decodeAndroidLoginAuthLoginPasskeyPayload and add three focused tests; LoginAuth schema helper suite now has 27 tests.
+- [ ] Trace passkey ceremony/state transition and authorized assertion submission separately; the nested response DTO is not a passkey authentication implementation.
