@@ -2542,3 +2542,30 @@ Private ChatJS implementation:
 The optional fallbackAllowed property is preserved when omitted; this decoder does not infer its default value or business meaning. It does not invoke a passkey API, display a challenge, create or verify an assertion, submit a credential, implement a sign-in transition, decode the outer Lyl8 union or send a request.
 
 Source integrity evidence: supplied base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Static generated-serializer/DEX analysis only; no app, passkey ceremony, account, key, AndroidKeyStore, Play Integrity or network operation was run.
+
+
+## Android LoginAuth workspace payload and Lxn8 item schema — 2026-11-28
+
+The explicit workspace response subtype is Lp5i1 with payload Lo5i1 and separate root Lql8 errors. Lo5i1's generated serializer is Lm5i1 (returned by Ln5i1.serializer()). Its descriptor has fields workspaces and errors, and both are optional. The child serializers wrap both the workspace list and Lql8 errors with the nullable adapter; the nested list member is therefore optional nullable.
+
+The lazy workspace list serializer is created by Lmec1 with selector 10. Its switch branch returns ListSerializer(Lvn8.a). Lvn8 is the generated serializer for model Lxn8. Its descriptor declares these four JSON fields in order:
+
+| JSON property | Model storage field | Serializer | Presence/nullability |
+| --- | --- | --- | --- |
+| id | Lxn8.a | nullable String | Required, nullable |
+| kind | Lxn8.d | nullable String | Required, nullable |
+| name | Lxn8.c | non-null String | Optional, non-null |
+| reauthentication | Lxn8.b | non-null String | Optional, non-null |
+
+The descriptor calls PluginGeneratedSerialDescriptor.j with optional=false for id and kind and optional=true for name and reauthentication. The Lvn8.childSerializers implementation wraps the String serializer with Lvcb.B only for the first two entries; the latter two use the direct non-null String serializer. The generated deserialize/serialize methods confirm property order and map the four descriptor members onto Lxn8 fields.
+
+Private ChatJS implementation:
+
+- Added decodeAndroidLoginAuthWorkspacePayload. It validates the optional nullable Lql8 errors and optional nullable workspaces array.
+- Each present workspace list entry must be an object with required nullable string id and kind, plus optional non-null strings name and reauthentication.
+- The item decoder preserves extension properties, shallow-copies objects and arrays, and rejects missing required properties, non-string values, and null in optional non-null members.
+- Three focused tests cover item field nullability/optionality, array/envelope nullability, extension preservation and malformed values.
+
+The reauthentication member is validated only as the observed String type. No semantics, challenge workflow or policy are inferred. This DTO work does not select a workspace, perform a reauthentication operation, decode the outer Lyl8 union, or send/authenticate a request.
+
+Source integrity evidence: supplied base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes3.dex (lazy serializer lambda) and classes7.dex (DTOs and generated serializers) belong to that same XAPK. Static source analysis only; no Android method, account, credential, key, Play Integrity or network operation was executed.
