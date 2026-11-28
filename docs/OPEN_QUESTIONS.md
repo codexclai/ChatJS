@@ -307,3 +307,10 @@ A private pure contact payload decoder and three tests are now implemented. This
 **Resolved:** login_passkey maps to outer Lrok0 and payload Lqok0. Generated serializer Look0 confirms errors?:Lql8? (optional nullable), passkeyChallengeOption:Lmds0 (required non-null), and fallbackAllowed:Boolean (optional non-null). Lmds0 uses required JsonObject passkeyRequestOptions and required String mfaRequestId. A private decoder and three focused tests now cover this nested DTO.
 
 **Still open:** passkey ceremony, assertion generation/verification and sign-in state transition are not inferred from the response DTO. The outer Lyl8 parser, workspace/MFA/push-auth/token-response models, accepted Lmiy fallback values and authenticated/attested request path remain open.
+
+
+## Android LoginAuth workspace payload DTO — source-resolved 2026-11-28
+
+Resolved: workspace maps to Lp5i1/Lo5i1. Its serializer proves optional nullable workspaces and errors. Workspaces is List<Lxn8> via Lmec1 selector 10 → ListSerializer(Lvn8.a). Lxn8 fields: required nullable id/kind strings and optional non-null name/reauthentication strings. A private validator and three focused tests are implemented.
+
+Still open: the business meaning of reauthentication, selection transitions, and any challenge/action triggered by that value are not inferred. The complete Lyl8 union, MFA/push-auth/token-response DTOs, Lmiy fallback acceptance and authenticated transport remain unimplemented.
