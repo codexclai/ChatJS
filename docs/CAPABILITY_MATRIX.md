@@ -194,3 +194,10 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | Capability | Status | Evidence and limits |
 | --- | --- | --- |
 | Decode Android LoginAuth token_exchange payload Ltoa1 | Implemented (private pure helper) | Requires the generated required, non-null string code; preserves extension members. Two tests. No OAuth code-format inference or exchange/network operation; no outer Lyl8 union or transport. |
+
+## Android LoginAuth password-step payload decoders — 2026-11-28
+
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
+| Decode Android LoginAuth create_account_password payload Lwxw | Implemented (private pure helper) | Validates optional nullable Lql8 errors and optional nullable List<Lmnk0> loginMethods using shared validators; two focused tests. Does not submit or validate a password or decode the outer Lyl8 union. |
+| Decode Android LoginAuth login_password payload Lcpk0 | Implemented (private pure helper) | Same source-confirmed optional nullable errors and loginMethods contract; two focused tests. Does not submit or validate a password or decode the outer Lyl8 union. |
