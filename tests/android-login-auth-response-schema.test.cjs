@@ -13,6 +13,7 @@ const {
   decodeAndroidLoginAuthLoginPasswordPayload,
   decodeAndroidLoginAuthExternalUrlPayload,
   decodeAndroidLoginAuthTokenExchangePayload,
+  decodeAndroidLoginAuthLoginPasskeyPayload,
   AndroidLoginAuthResponseSchemaError
 } = schema;
 
@@ -489,6 +490,89 @@ test('login_password payload rejects malformed errors and loginMethods values', 
     [{ loginMethods: [{ type: 'passkey', challenge: { mfaRequestId: 'missing-options' } }] }, /passkeyRequestOptions is required/]
   ]) {
     assert.throws(() => decodeAndroidLoginAuthLoginPasswordPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      assert.match(error.message, pattern);
+      return true;
+    });
+  }
+});
+
+
+test('login_passkey payload validates its required passkey challenge and optional fallback flag', () => {
+  const source = {
+    errors: null,
+    passkeyChallengeOption: {
+      passkeyRequestOptions: {
+        challenge: 'login-passkey-challenge',
+        rpId: 'chatgpt.com',
+        allowCredentials: []
+      },
+      mfaRequestId: 'login-passkey-mfa'
+    },
+    fallbackAllowed: false,
+    extension: { retained: true }
+  };
+  const decoded = decodeAndroidLoginAuthLoginPasskeyPayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.passkeyChallengeOption, source.passkeyChallengeOption);
+  assert.notEqual(
+    decoded.passkeyChallengeOption.passkeyRequestOptions,
+    source.passkeyChallengeOption.passkeyRequestOptions
+  );
+  assert.equal(decoded.extension, source.extension);
+  assert.deepEqual(decodeAndroidLoginAuthLoginPasskeyPayload({
+    passkeyChallengeOption: {
+      passkeyRequestOptions: {},
+      mfaRequestId: 'required'
+    }
+  }), {
+    passkeyChallengeOption: {
+      passkeyRequestOptions: {},
+      mfaRequestId: 'required'
+    }
+  });
+});
+
+test('login_passkey payload permits nullable errors and omitted fallbackAllowed', () => {
+  const payload = {
+    errors: { formErrors: ['Use a passkey or choose another method'] },
+    passkeyChallengeOption: {
+      passkeyRequestOptions: { challenge: 'x' },
+      mfaRequestId: 'request'
+    }
+  };
+  assert.deepEqual(decodeAndroidLoginAuthLoginPasskeyPayload(payload), payload);
+  assert.deepEqual(decodeAndroidLoginAuthLoginPasskeyPayload({
+    errors: null,
+    passkeyChallengeOption: {
+      passkeyRequestOptions: {},
+      mfaRequestId: ''
+    }
+  }), {
+    errors: null,
+    passkeyChallengeOption: {
+      passkeyRequestOptions: {},
+      mfaRequestId: ''
+    }
+  });
+});
+
+test('login_passkey payload rejects missing, nullable or malformed generated members', () => {
+  for (const [value, pattern] of [
+    [{}, /passkeyChallengeOption is required/],
+    [{ passkeyChallengeOption: null }, /passkeyChallengeOption must be an object/],
+    [{ passkeyChallengeOption: {} }, /passkeyRequestOptions is required/],
+    [{ passkeyChallengeOption: { passkeyRequestOptions: [] , mfaRequestId: 'id' } }, /passkeyRequestOptions must be an object/],
+    [{ passkeyChallengeOption: { passkeyRequestOptions: {}, mfaRequestId: null } }, /mfaRequestId must be a string/],
+    [{
+      passkeyChallengeOption: { passkeyRequestOptions: {}, mfaRequestId: 'id' },
+      fallbackAllowed: null
+    }, /fallbackAllowed must be a boolean/],
+    [{ errors: false, passkeyChallengeOption: { passkeyRequestOptions: {}, mfaRequestId: 'id' } }, /AndroidLoginAuthErrors must be an object/]
+  ]) {
+    assert.throws(() => decodeAndroidLoginAuthLoginPasskeyPayload(value), (error) => {
       assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
       assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
       assert.match(error.message, pattern);
