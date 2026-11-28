@@ -300,3 +300,10 @@ A private pure contact payload decoder and three tests are now implemented. This
 **Resolved:** create_account_password maps to Lxxw/Lwxw with serializer Luxw; login_password maps to Ldpk0/Lcpk0 with serializer Lapk0. Both generated payload serializers declare errors and loginMethods as optional, and both child serializers are nullable. Their lazy login-method list children resolve to ListSerializer(Lonk0.e), so both are errors?:Lql8? and loginMethods?:List<Lmnk0>?. Private validators and four focused tests now cover both DTOs.
 
 **Still open:** These nested schemas do not prove how passwords are collected or submitted. The outer Lyl8 union, workspace/MFA/push-auth/passkey/token-response payloads, accepted Lmiy fallback wire values, full failure/cancellation handling, legitimate auth and integrity-provider transport remain unimplemented or unresolved. Keep those as separate proof obligations.
+
+
+## Android LoginAuth login_passkey payload DTO — source-resolved 2026-11-28
+
+**Resolved:** login_passkey maps to outer Lrok0 and payload Lqok0. Generated serializer Look0 confirms errors?:Lql8? (optional nullable), passkeyChallengeOption:Lmds0 (required non-null), and fallbackAllowed:Boolean (optional non-null). Lmds0 uses required JsonObject passkeyRequestOptions and required String mfaRequestId. A private decoder and three focused tests now cover this nested DTO.
+
+**Still open:** passkey ceremony, assertion generation/verification and sign-in state transition are not inferred from the response DTO. The outer Lyl8 parser, workspace/MFA/push-auth/token-response models, accepted Lmiy fallback values and authenticated/attested request path remain open.
