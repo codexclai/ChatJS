@@ -432,7 +432,7 @@ test('create_account_password payload reuses the nullable errors and Lmnk0 login
 
 test('create_account_password payload rejects malformed errors and loginMethods values', () => {
   for (const [value, pattern] of [
-    [{ errors: false }, /AndroidLoginAuthCreateAccountPasswordPayload.*must be an object/],
+    [{ errors: false }, /AndroidLoginAuthErrors must be an object/],
     [{ loginMethods: {} }, /AndroidLoginAuthCreateAccountPasswordPayload.*must be an array/],
     [{ loginMethods: [null] }, /AndroidLoginAuthCreateAccountPasswordPayload.*must be an object/],
     [{ loginMethods: [{ type: 'not-a-method' }] }, /recognized Android LoginAuth enum/],
@@ -482,7 +482,7 @@ test('login_password payload reuses the nullable errors and Lmnk0 login-method s
 
 test('login_password payload rejects malformed errors and loginMethods values', () => {
   for (const [value, pattern] of [
-    [{ errors: [] }, /AndroidLoginAuthLoginPasswordPayload.*must be an object/],
+    [{ errors: [] }, /AndroidLoginAuthErrors must be an object/],
     [{ loginMethods: {} }, /AndroidLoginAuthLoginPasswordPayload.*must be an array/],
     [{ loginMethods: [false] }, /AndroidLoginAuthLoginPasswordPayload.*must be an object/],
     [{ loginMethods: [{ type: 'email' }] }, /recognized Android LoginAuth enum/],
