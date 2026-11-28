@@ -294,3 +294,9 @@ A private pure contact payload decoder and three tests are now implemented. This
 **Resolved:** token_exchange is Luoa1 with payload Ltoa1. Lsoa1.serializer() resolves to Lroa1, which declares one required JSON property code backed by a non-null String serializer. Its root Lql8 errors are separate. A private nested payload decoder and two tests now validate the model.
 
 **Still open:** the meaning/format/issuer of code and the later exchange lifecycle are not inferred from this DTO; no token exchange is implemented. Remaining Lyl8 payloads, the Lmiy fallback, failure classification and authenticated transport remain open.
+
+## Android LoginAuth password-step payload DTOs — source-resolved 2026-11-28
+
+**Resolved:** create_account_password maps to Lxxw/Lwxw with serializer Luxw; login_password maps to Ldpk0/Lcpk0 with serializer Lapk0. Both generated payload serializers declare errors and loginMethods as optional, and both child serializers are nullable. Their lazy login-method list children resolve to ListSerializer(Lonk0.e), so both are errors?:Lql8? and loginMethods?:List<Lmnk0>?. Private validators and four focused tests now cover both DTOs.
+
+**Still open:** These nested schemas do not prove how passwords are collected or submitted. The outer Lyl8 union, workspace/MFA/push-auth/passkey/token-response payloads, accepted Lmiy fallback wire values, full failure/cancellation handling, legitimate auth and integrity-provider transport remain unimplemented or unresolved. Keep those as separate proof obligations.
