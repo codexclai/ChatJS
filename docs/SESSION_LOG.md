@@ -1777,3 +1777,12 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - CI run 46109821521 on test commit f05f4610477f2dbf4fbf23e275b96fb2c489d9bc ran the full 158-test suite: 156 passed and two new negative-path assertions failed.
 - Both failures were overly specific expected error-path labels. The shared nested Lql8 decoder correctly emits its own AndroidLoginAuthErrors label when malformed payload errors are validated; the parent password payload label is intentionally not propagated into that decoder. No validator output or source contract was wrong.
 - Corrected only the two expected regexes in tests/android-login-auth-response-schema.test.cjs in commit c6ae47611d54508f1eca43fddc238c906867f5a6. CodeQL run 46109821542 passed on the original code/test commit. CI for the corrected commit remains to be confirmed.
+
+
+### Final Android LoginAuth password decoder verification — 2026-11-28
+
+- Corrected test commit c6ae47611d54508f1eca43fddc238c906867f5a6 was included by the final CI run on main commit f709356bd716ba9daa2aa973e39f2400ef3950da. CI run 46109983768 and CodeQL run 46109983762 both completed successfully.
+- CI executed npm run check: syntax/lint checks passed; docs/project-state.json and generated docs/PROJECT_STATE.md were synchronized; all local Markdown links passed; full test suite passed 158/158 (0 failures); archive build passed; installed-package extraction and CommonJS/ESM consumer smoke tests passed.
+- Downloaded CI artifact 15249431532 (ChatJS-android-login-password-ci.zip, 37,675 bytes; SHA-256 49cd1f262aa9f6454b70dc38ec2b67b14a3f751a60be1d1b48de87fb8109cb3c). Inspected the nested ChatJS.tar.gz (37,520 bytes; SHA-256 ebb47482d38e364556bd94f3a04af85d368a051921a17daf661023e09b6c4594): 20 tar entries (ChatJS root plus 19 package files), including android-login-auth-response-schema.cjs (10,476 bytes) and both new decoder functions.
+- Extracted the exact artifact locally; independent CommonJS import, ESM import and decoder-module syntax smoke tests passed. Local npm run check was not run because no local repository checkout is available; the authoritative full check ran in GitHub CI.
+- The two initial CI test failures were only assertions that expected a parent payload label from the nested shared errors validator. The shared validator's AndroidLoginAuthErrors label was correct; correcting the two test regexes resolved them. Final CI is green with 158 tests.
