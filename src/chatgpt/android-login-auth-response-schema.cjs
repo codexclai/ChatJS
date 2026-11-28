@@ -316,6 +316,34 @@ function decodeAndroidLoginAuthTokenExchangePayload(value) {
   return result;
 }
 
+/**
+ * Decode the login_passkey payload. The generated serializer requires a
+ * passkeyChallengeOption object, permits optional nullable errors, and
+ * permits an omitted but non-null boolean fallbackAllowed.
+ */
+function decodeAndroidLoginAuthLoginPasskeyPayload(value) {
+  const result = requireObject(value, 'AndroidLoginAuthLoginPasskeyPayload');
+  decodeOptionalNullable(result, 'errors', 'AndroidLoginAuthLoginPasskeyPayload', decodeAndroidLoginAuthErrors);
+
+  if (result.passkeyChallengeOption === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      'AndroidLoginAuthLoginPasskeyPayload.passkeyChallengeOption is required.'
+    );
+  }
+  result.passkeyChallengeOption = decodeAndroidLoginAuthPasskeyRequestOptions(
+    result.passkeyChallengeOption,
+    'AndroidLoginAuthLoginPasskeyPayload.passkeyChallengeOption'
+  );
+
+  if (result.fallbackAllowed !== undefined) {
+    result.fallbackAllowed = requireBoolean(
+      result.fallbackAllowed,
+      'AndroidLoginAuthLoginPasskeyPayload.fallbackAllowed'
+    );
+  }
+  return result;
+}
+
 module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_FIELDS,
   AndroidLoginAuthResponseSchemaError,
@@ -328,5 +356,6 @@ module.exports = Object.freeze({
   decodeAndroidLoginAuthCreateAccountPasswordPayload,
   decodeAndroidLoginAuthLoginPasswordPayload,
   decodeAndroidLoginAuthExternalUrlPayload,
-  decodeAndroidLoginAuthTokenExchangePayload
+  decodeAndroidLoginAuthTokenExchangePayload,
+  decodeAndroidLoginAuthLoginPasskeyPayload
 });
