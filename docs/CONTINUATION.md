@@ -1031,3 +1031,16 @@ The current main work has source-resolved and privately validated both explicit 
 - This is nested payload validation only. No password entry/submission, authentication, outer Lyl8 union, request, account or network operation is implemented.
 
 Next: decode the workspace, MFA, push-auth, passkey and token-response payloads; resolve the final Lmiy fallback acceptance without guessing arbitrary discriminator values; continue Luub1/La0d1.g failure and cleanup paths plus outstanding request-auth/integrity/provider details.
+
+
+## Additional handoff — Android LoginAuth login_passkey payload — 2026-11-28
+
+The explicit login_passkey subtype is Lrok0 with payload Lqok0 and generated serializer Look0 (Lpok0.serializer()). Descriptor/child serializer inspection proves:
+- errors is optional nullable Lql8.
+- passkeyChallengeOption is required non-null Lmds0.
+- fallbackAllowed is optional non-null Boolean.
+- Nested Lmds0 reuses the already-proven required passkeyRequestOptions JsonObject and mfaRequestId String fields.
+
+Added private decodeAndroidLoginAuthLoginPasskeyPayload and three focused tests. The Android LoginAuth schema helper suite now has 27 focused tests. The decoder preserves omitted fallbackAllowed and makes no claim about its default or meaning; it does not run a passkey ceremony or authenticate. DEX evidence is recorded in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md (base APK and classes7 hashes).
+
+Next: trace and decode workspace, MFA challenge/enroll, push-auth and token-response payloads; establish exact Lmiy fallback acceptance and complete LoginAuth failure/cancellation handling. The complete outer Lyl8 parser, auth transport and genuine integrity provider remain absent.
