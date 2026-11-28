@@ -2569,3 +2569,12 @@ Private ChatJS implementation:
 The reauthentication member is validated only as the observed String type. No semantics, challenge workflow or policy are inferred. This DTO work does not select a workspace, perform a reauthentication operation, decode the outer Lyl8 union, or send/authenticate a request.
 
 Source integrity evidence: supplied base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes3.dex (lazy serializer lambda) and classes7.dex (DTOs and generated serializers) belong to that same XAPK. Static source analysis only; no Android method, account, credential, key, Play Integrity or network operation was executed.
+
+
+## Android bearer request policy validation parity — 2026-11-28 — Subagent 4
+
+The private `buildAndroidAuthenticatedRequestHeaders` helper previously checked only JavaScript string types for `accessToken` and `accountId`. The source-traced `OAIBearerAPIService` constructor calls `isValidOAIBearerToken` and, when an account ID is supplied, `isValidOAIAccountIdentifier` before it builds request headers. A string-type-only check therefore accepted values that the Android client rejects.
+
+Updated the helper to reuse the existing source-backed validators from `android-auth-validation.cjs`. It now rejects empty or malformed bearer-token/account identifiers before constructing `Authorization` or `ChatGPT-Account-Id` headers. No token is logged, normalized, persisted, or sent. Added negative tests for whitespace, delimiter, path/query, and control-character-like token inputs while retaining the existing valid-header tests.
+
+This is still a pure request-policy helper: it does not perform HTTP, refresh credentials, sign DPoP proofs, establish a session, or claim the underlying Ktor/Valdi transport is implemented. The Android source evidence for constructor validation and header construction remains the `OAIBearerAPIService` method dump recorded in the 2026-11-25 authenticated bearer transport section above.

@@ -1846,3 +1846,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Inspected only existing `main`; branch search returned main only; open issues and PR searches returned none. No source-code fix was made because the latest LoginAuth work is newly landed and lacks CI evidence, and no safely isolated protocol implementation defect was established. Documented TypeScript CommonJS consumer coverage and stalled-iterator cancellation as test gaps, not confirmed defects.
 - Added `docs/ANDROID_COVERAGE_AUDIT.md` and linked/recorded it in the capability matrix, continuation guide, AI memory and TODO. The root user documentation was reviewed for the new LoginAuth envelope status; follow-up synchronization remains subject to the current main docs/CI checks.
 - Recommended next actions: verify current main with full CI/CodeQL; finish LoginAuth union variants; resolve native auth provider and secure host signing/storage; trace guest network lifecycle; then implement and verify authenticated messaging, streams and file transfer before remaining Android non-Work areas.
+
+
+## 2026-11-28 — Subagent 4: Android authenticated-request validation parity
+
+- Audited the source-backed Android bearer request helper against the recorded `OAIBearerAPIService` constructor/header path.
+- Found a protocol-policy mismatch: ChatJS accepted any string as an access token/account ID, while the Android source validates them with `isValidOAIBearerToken` and `isValidOAIAccountIdentifier` before creating the request service.
+- Updated `buildAndroidAuthenticatedRequestHeaders` to reuse those exact existing validators. Added negative tests for empty and malformed token/account identifier values; retained the existing valid-header, optional-account, body, Sheep-gateway and bounded-401-recovery tests.
+- Changed `src/chatgpt/android-authenticated-request-policy.cjs`, `tests/android-authenticated-request-policy.test.cjs`, and this session's protocol/TODO/continuation/memory records.
+- This closes only a pure local validation mismatch. No HTTP request, credential renewal, account access, DPoP signing, integrity challenge or service call was made. The actual Android-injected HTTP transport and authorized end-to-end session remain unimplemented.
+- CI and CodeQL verification are pending for this new change; do not count the added tests as passing until the new main commit has green checks.

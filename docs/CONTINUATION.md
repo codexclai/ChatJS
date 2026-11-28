@@ -1077,3 +1077,12 @@ Verification follow-up — 2026-11-28: main commit `14ad8aba3e2d45b5a600944c9f20
 ## Independent Android coverage audit — 2026-11-28
 
 Subagent 3 completed a source/code audit recorded in [ANDROID_COVERAGE_AUDIT.md](ANDROID_COVERAGE_AUDIT.md). The conclusion remains that no complete Android ChatGPT workflow is implemented: current runtime is foundation-only, with private deterministic helpers and a generic SSE parser. The latest LoginAuth response-envelope decoder adds a private 15-discriminator dispatcher (nine nested payload validators, six opaque payloads; fallback unresolved). Current main head `14ad8aba` has not yet had a verified full CI run; the prior green 164-test CI snapshot is `2ff068fe`. Verify current main before relying on the new decoder/tests. Do not begin deferred Android Work, Windows/Desktop or Codex CLI work before Android non-Work is complete.
+
+
+## Subagent 4 handoff — authenticated request validation parity — 2026-11-28
+
+The Android `OAIBearerAPIService` source validates access tokens with `isValidOAIBearerToken` and supplied account IDs with `isValidOAIAccountIdentifier` before building `Accept`, `Authorization: Bearer`, and optional `ChatGPT-Account-Id` headers. The existing ChatJS helper had only type checks, which accepted malformed strings. Subagent 4 aligned the helper with the existing source-backed validators and added regression tests.
+
+This remains a pure local policy helper, not an HTTP transport or authenticated session. The real injected Android HTTP client implementation is still not identified/reconstructed; do not guess redirect, timeout, connection-pool or retry semantics. Current source-specific 401 recovery remains a separate single replay with renewal disabled and must not be generalized.
+
+Verification pending: run the full CI suite and CodeQL on the new main commit. Keep the next transport implementation blocked on complete source evidence and host secure-auth prerequisites.

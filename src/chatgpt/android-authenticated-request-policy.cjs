@@ -1,13 +1,18 @@
 'use strict';
 
+const {
+  isValidOAIBearerToken,
+  isValidOAIAccountIdentifier
+} = require('./android-auth-validation.cjs');
+
 const { TextEncoder } = require('node:util');
 
 function buildAndroidAuthenticatedRequestHeaders(accept, accessToken, accountId) {
   if (typeof accept !== 'string') {
     throw new TypeError('accept must be a string.');
   }
-  if (typeof accessToken !== 'string') {
-    throw new TypeError('accessToken must be a string.');
+  if (!isValidOAIBearerToken(accessToken)) {
+    throw new TypeError('accessToken must be a valid bearer token.');
   }
 
   const headers = {
@@ -16,8 +21,8 @@ function buildAndroidAuthenticatedRequestHeaders(accept, accessToken, accountId)
   };
 
   if (accountId !== undefined) {
-    if (typeof accountId !== 'string') {
-      throw new TypeError('accountId must be a string when present.');
+    if (!isValidOAIAccountIdentifier(accountId)) {
+      throw new TypeError('accountId must be a valid account identifier when present.');
     }
     headers['ChatGPT-Account-Id'] = accountId;
   }

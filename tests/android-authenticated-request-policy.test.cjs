@@ -33,6 +33,22 @@ test('header builder rejects non-string accept and token inputs', () => {
   assert.throws(() => policy.buildAndroidAuthenticatedRequestHeaders('application/json', 'token', 1), /accountId/);
 });
 
+test('header builder rejects invalid bearer-token and account-identifier syntax', () => {
+  for (const token of ['', 'token with spaces', 'token:with-colon', 'token\\r\\nInjected: yes']) {
+    assert.throws(
+      () => policy.buildAndroidAuthenticatedRequestHeaders('application/json', token),
+      /valid bearer token/
+    );
+  }
+
+  for (const accountId of ['', 'acct with spaces', 'acct/unsafe', 'acct?query']) {
+    assert.throws(
+      () => policy.buildAndroidAuthenticatedRequestHeaders('application/json', 'valid-token', accountId),
+      /valid account identifier/
+    );
+  }
+});
+
 test('JSON content type is only added when bodyJson is not undefined', () => {
   const headers = { Accept: 'application/json', Authorization: 'Bearer token' };
   assert.deepEqual(policy.buildAndroidJSONRequestHeaders(headers, undefined), headers);

@@ -944,3 +944,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Implement real upload/download transfer, expiry, retries, cancellation and cleanup after the complete source contract is traced.
 - [ ] Continue the remaining Android non-Work areas (projects, instructions, context, memory/personalization, images, video, voice/audio, search, tools, connectors and plugins) with source-backed workflows and host/account prerequisites.
 - [ ] Add TypeScript ESM and CommonJS consumer compile fixtures; document/test cancellation against stalled non-cooperative async iterators.
+
+
+## Android authenticated request policy validation parity — 2026-11-28
+
+- [x] Reconcile the ChatJS bearer-header helper with the source-traced Android constructor's access-token and account-ID validation gates.
+- [x] Reuse `isValidOAIBearerToken` and `isValidOAIAccountIdentifier` instead of accepting arbitrary strings.
+- [x] Add malformed/empty token and account-ID regression tests.
+- [ ] Implement the actual injected HTTP transport only after its request/response, redirect, timeout, cancellation and resource semantics are traced from the shipped client.
+- [ ] Add transport integration tests and authorized account E2E only when the legitimate host credential, DPoP signer and integrity-provider prerequisites exist.
