@@ -1786,3 +1786,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Downloaded CI artifact 15249431532 (ChatJS-android-login-password-ci.zip, 37,675 bytes; SHA-256 49cd1f262aa9f6454b70dc38ec2b67b14a3f751a60be1d1b48de87fb8109cb3c). Inspected the nested ChatJS.tar.gz (37,520 bytes; SHA-256 ebb47482d38e364556bd94f3a04af85d368a051921a17daf661023e09b6c4594): 20 tar entries (ChatJS root plus 19 package files), including android-login-auth-response-schema.cjs (10,476 bytes) and both new decoder functions.
 - Extracted the exact artifact locally; independent CommonJS import, ESM import and decoder-module syntax smoke tests passed. Local npm run check was not run because no local repository checkout is available; the authoritative full check ran in GitHub CI.
 - The two initial CI test failures were only assertions that expected a parent payload label from the nested shared errors validator. The shared validator's AndroidLoginAuthErrors label was correct; correcting the two test regexes resolved them. Final CI is green with 158 tests.
+
+
+## 2026-11-28 — Android LoginAuth login_passkey payload decoder
+
+- Continued Android non-Work LoginAuth DEX analysis in the supplied ChatGPT Android 1.2026.321 base APK. Resolved login_passkey subtype Lrok0, payload Lqok0 and generated serializer Look0 (returned by Lpok0.serializer()).
+- Generated serializer descriptor and childSerializers prove errors is optional nullable Lql8, passkeyChallengeOption is required non-null Lmds0, and fallbackAllowed is optional non-null Boolean. Lmds0 is the existing passkey DTO with required passkeyRequestOptions JsonObject and mfaRequestId String.
+- Added private pure decodeAndroidLoginAuthLoginPasskeyPayload. It reuses the nested passkey-options validator and does not initiate a passkey ceremony, create an assertion or authenticate. Added three focused tests, taking the Android LoginAuth schema helper suite to 27.
+- Changed src/chatgpt/android-login-auth-response-schema.cjs and tests/android-login-auth-response-schema.test.cjs. Updated Android findings, AI memory, continuation, TODO, open questions, capability matrix and root ChatJS.md. Updated project-state JSON, generated state Markdown and this log atomically in the same main commit.
+- Implementation commit fba2508376f1b6ef3114fdc1b07dc76ad0dfaa29; test commit c60985c8fea3012b7c78af0c6e741b47c1d2dad6. Full CI/CodeQL verification for the combined passkey change is pending at this point.
+- Source hashes: base APK 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. No Android method, account, credential, key, AndroidKeyStore, Play Integrity or network request was executed.
