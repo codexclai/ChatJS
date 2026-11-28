@@ -314,3 +314,16 @@ A private pure contact payload decoder and three tests are now implemented. This
 Resolved: workspace maps to Lp5i1/Lo5i1. Its serializer proves optional nullable workspaces and errors. Workspaces is List<Lxn8> via Lmec1 selector 10 → ListSerializer(Lvn8.a). Lxn8 fields: required nullable id/kind strings and optional non-null name/reauthentication strings. A private validator and three focused tests are implemented.
 
 Still open: the business meaning of reauthentication, selection transitions, and any challenge/action triggered by that value are not inferred. The complete Lyl8 union, MFA/push-auth/token-response DTOs, Lmiy fallback acceptance and authenticated transport remain unimplemented.
+
+
+## Valdi native HTTP bridge — 2026-11-28
+
+A static inspection of the supplied Android 1.2026.321 XAPK found that the Valdi valdi_http module imports distinct NativeHTTPClient and NativeStreamingHTTPClient host modules. Its DEX and ARM64 JNI bridge expose HTTPRequestManager.performRequest and performStreamingRequest, a callback completion interface, streaming response/data/error/upload callbacks, and a handle with cancel, requestBytes(int), and write(byte[], boolean). This establishes the boundary and key lifecycle/control methods, but not their concrete executor or exact semantics.
+
+Open items:
+- [ ] Trace the runtime registration/injection that supplies NativeHTTPClient and NativeStreamingHTTPClient to Valdi modules.
+- [ ] Find the concrete Android HTTPRequestManager implementation/delegate behind its CppProxy.
+- [ ] Decode HTTPRequest/HTTPResponse and HTTPStreamingRequest/HTTPStreamingResponse field schemas and byte ownership.
+- [ ] Trace listener ordering, exactly-once terminal behavior, requestBytes(int) demand units, upload-ready/write boolean semantics, error mapping, and cancellation race behavior.
+- [ ] Determine whether the Valdi native HTTP bridge and the separately evidenced Ktor/OkHttp OAuth stack share an engine; do not assume they do.
+- [ ] Implement a Node.js transport only after those protocol contracts and the required legitimate host authentication/integrity prerequisites are established.

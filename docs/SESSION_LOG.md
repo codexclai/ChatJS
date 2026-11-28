@@ -1884,3 +1884,12 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Downloaded artifact `15270676314` (38,929 bytes; SHA-256 `0f813fbcf1bc8b1409e50e5e831c18903027eb887c6a15e71f327c7838a4183c`). Inspected nested `ChatJS.tar.gz` (38,774 bytes, 20 entries, SHA-256 `04543a0fd76fa7166adba844dcad209bfa0ce3e61b8b249ab6933e595508886f`) and confirmed the packaged bearer-policy module imports the existing Android validation helper.
 - The bearer-policy tests include valid header construction, optional account ID, exact JSON body/header behavior, Sheep-gateway version gate, bounded one-shot 401 policy, malformed token/account ID rejection and CRLF-injection rejection. This is policy-only; no HTTP request or credential/session operation ran.
 - A local `npm run check` was not run because the shell cannot resolve github.com and no local checkout exists; the full command and installed-package smoke tests passed in GitHub CI.
+
+
+## 2026-11-28 — Main coordinator: Android Valdi HTTP bridge investigation
+
+- Reopened the uploaded ChatGPT-Android.xapk, verified ZIP integrity, extracted the base APK and ARM64 split, decompressed the valdi_http and oai_authentication_session modules, inspected DEX interfaces, and inspected native ELF exported symbols. Source hashes and sizes are recorded in ANDROID_CLIENT_PROTOCOL_FINDINGS.md.
+- Identified Valdi's separate NativeHTTPClient and NativeStreamingHTTPClient module boundaries. The Android DEX exposes HTTPRequestManager.performRequest and performStreamingRequest, one-shot completion callbacks, streaming response/data/error/upload callbacks, and an explicit handle API for cancel, requestBytes(int), and write(byte[], boolean). The ARM64 libopenai_xplat_export.so contains matching JNI exports.
+- Confirmed this is a concrete native bridge contract but not the concrete network engine or runtime injection. The Valdi bridge must not be equated with the separately packaged Ktor/OkHttp engine or the injected Ktor OAuth client absent source-level wiring.
+- Recorded exact unknowns: runtime native-module registration, concrete HTTPRequestManager implementation, request/response schemas and byte ownership, callback order/terminal rules, backpressure and upload-write semantics, cancellation races, error mapping, and engine selection.
+- No ChatJS runtime code changed. No Android app was launched; no user account, credentials, key, integrity token or network endpoint was used. This is static package inspection.

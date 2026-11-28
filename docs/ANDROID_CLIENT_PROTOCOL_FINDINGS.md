@@ -2578,3 +2578,45 @@ The private `buildAndroidAuthenticatedRequestHeaders` helper previously checked 
 Updated the helper to reuse the existing source-backed validators from `android-auth-validation.cjs`. It now rejects empty or malformed bearer-token/account identifiers before constructing `Authorization` or `ChatGPT-Account-Id` headers. No token is logged, normalized, persisted, or sent. Added negative tests for whitespace, delimiter, path/query, and control-character-like token inputs while retaining the existing valid-header tests.
 
 This is still a pure request-policy helper: it does not perform HTTP, refresh credentials, sign DPoP proofs, establish a session, or claim the underlying Ktor/Valdi transport is implemented. The Android source evidence for constructor validation and header construction remains the `OAIBearerAPIService` method dump recorded in the 2026-11-25 authenticated bearer transport section above.
+
+
+## Android Valdi HTTP transport bridge — 2026-11-28
+
+### Static source and native-boundary findings
+
+A fresh read-only inspection of the supplied ChatGPT Android 1.2026.321 XAPK identified a lower-level HTTP bridge that narrows, but does not close, the existing injected-transport question.
+
+Source integrity used for this pass:
+
+- XAPK SHA-256: 22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d.
+- Base APK SHA-256: 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c.
+- Compressed assets/valdi_http.valdimodule (8,941 bytes), SHA-256: 0fd4586ae51cce8d3c4aa1011e43df0fabf3856cfdfe57aa8a9f53c99e4a7c70.
+- Compressed assets/oai_authentication_session.valdimodule (19,789 bytes), SHA-256: a3b7765647294591c4a4ec47daeed4db47aa740c48e7bb8e6f380610895032e8.
+- Base DEX hashes: classes.dex ba3ad33e7341f5c63febca8cfe9c53697f0c58f30fcf919361c0d14f61d5f89c; classes2.dex aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a; classes8.dex e678fd49b6bb24c674ce2f775bfb4c9c1bc2d2040cc7f280fa99800b77c35897.
+- ARM64 libopenai_xplat_export.so SHA-256: 938cee4f9e128d5a5ae72b15903242482d4a825b6cf68d6718be40aeb6fc965a.
+
+The Valdi valdi_http module contains separate HTTPClient, StreamingHTTPClient, and ServerSentEventClient modules. The HTTPClient module's import/symbol inventory references NativeHTTPClient, HTTPURL, perform, post, head, performRequest, baseUrl, method, headers, body, resolveHTTPURL, and promiseToCancelablePromise. The streaming module references NativeStreamingHTTPClient and exposes the request lifecycle names start, cancel, onResponse, onData, onComplete, and perform. This is a native host bridge, not Node's built-in HTTP implementation.
+
+The Android DEX defines the corresponding Valdi Java native interfaces:
+
+- HTTPRequestManager.performRequest(HTTPRequest, HTTPRequestManagerCompletion): Cancelable.
+- HTTPRequestManager.performStreamingRequest(HTTPStreamingRequest, HTTPStreamingRequestListener): HTTPStreamingRequestHandle.
+- HTTPRequestManagerCompletion.onComplete(HTTPResponse) and onFail(String).
+- HTTPStreamingRequestListener.onResponse(HTTPStreamingResponse), onData(byte[]), onComplete(), onError(String), onUploadReady(int), and onUploadStopped().
+- HTTPStreamingRequestHandle.cancel(), requestBytes(int), and write(byte[], boolean).
+
+The generated HTTPRequestManager$CppProxy delegates to native native_performRequest and native_performStreamingRequest methods. The supplied ARM64 libopenai_xplat_export.so exports JNI bridge symbols for those operations, for streaming-handle cancel/requestBytes/write, and for the streaming-listener response/data/complete/error/upload callbacks. The DEX also contains StreamingHTTPClientNativeModuleFactoryImpl. Together these facts establish a concrete callback-based native HTTP boundary and a separate streaming/upload control surface.
+
+The requestBytes(int) method is evidence of an explicit byte-demand API, but its unit/credit semantics and coupling to each onData(byte[]) callback have not yet been reconstructed. Similarly, the boolean passed to write(byte[], boolean), the exact meaning of onUploadReady(int), callback ordering, terminal-callback exclusivity, and error normalization are still unknown. Do not assume that the integer is a chunk count or that the boolean is an end-of-stream flag without following the caller/implementation.
+
+### Keep the transport stacks distinct
+
+The supplied DEX also contains Ktor's OkHttp engine classes, including OkHttpEngineContainer, and the engine's createOkHttpClient(HttpTimeoutConfig) construction hook. Separately, the Android OAuth refresh request builder is already traced through an injected Ktor HttpClient in the OAuth/DPoP findings above. These observations establish that a Ktor/OkHttp stack is packaged; they do not prove that it is the same transport instance as Valdi's NativeHTTPClient, nor that all ChatGPT requests use either single stack.
+
+The oai_authentication_session Valdi module imports valdi_http/src/HTTPClient and resolves runtime/native services through the Valdi runtime and CompilerIntrinsics boundary. Its bearer service is therefore an adapter over an injected HTTP capability. The actual provider implementation selected at runtime, request-object conversion, executor/engine choice, redirect and proxy policy, TLS configuration, connection pooling, timeouts, response-body ownership, and network cancellation behavior have not been proven by this pass.
+
+### Implementation boundary
+
+This is source reconstruction only. No Android app was installed or executed, no authenticated or guest account was used, and no HTTP request was sent. It does not implement a ChatJS transport. Do not infer a production transport from a native proxy interface, an OkHttp engine dependency, or a module name.
+
+The next transport investigation must trace: (1) who supplies NativeHTTPClient and NativeStreamingHTTPClient to the Valdi runtime; (2) the Android HTTPRequestManager concrete implementation and its delegate; (3) request/response field serialization and body ownership; (4) callback sequencing and cancellation; (5) requestBytes backpressure and upload write semantics; and (6) whether the OAuth Ktor client and Valdi HTTP bridge share any underlying engine or are separate instances.

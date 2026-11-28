@@ -975,3 +975,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Verify the complete suite on main: CI `46163168374`, 167/167 tests, archive build/extraction and installed CommonJS/ESM smoke tests; CodeQL `46163168380` passed.
 - [ ] Reconstruct the actual injected Android HTTP client transport only after request/response, redirects, timeout, cancellation, concurrency and resource semantics are fully traced from source.
 - [ ] Add authorized authenticated-session and conversation transport E2E tests only when real secure signer, credential and integrity-provider prerequisites exist.
+
+
+## Android Valdi HTTP bridge follow-up — 2026-11-28
+
+- [x] Identify the packaged Valdi HTTP module boundary: HTTPClient imports NativeHTTPClient; StreamingHTTPClient imports NativeStreamingHTTPClient; the authenticated session module imports Valdi's HTTP client.
+- [x] Recover DEX interfaces for HTTPRequestManager, completion/listener callbacks, and streaming handle operations; verify corresponding JNI exports in libopenai_xplat_export.so.
+- [ ] Trace native module registration and the concrete Android HTTPRequestManager implementation/delegate.
+- [ ] Decode request/response object schemas, body ownership, listener ordering, terminal callback rules, streaming demand, upload write semantics, cancellation, and error mapping.
+- [ ] Reconcile the Valdi native HTTP bridge with the separately packaged Ktor/OkHttp OAuth transport without assuming they are the same client.
+- [ ] Implement and test the corresponding portable Node.js transport only after concrete transport behavior and legitimate auth/DPoP/integrity prerequisites are verified.

@@ -1107,3 +1107,12 @@ The Android `OAIBearerAPIService` constructor validates the access token with `i
 Verified on main snapshot `db92496d188790cdaaa3b151da3f9c5cabacbf68`: CI run `46163168374` passed `npm run check`, 167/167 tests, generated docs/link checks, archive build/extraction and installed CommonJS/ESM smoke tests; CodeQL run `46163168380` passed. Artifact `15270676314` and its 20-entry module archive were downloaded and inspected.
 
 This is a private pure policy helper, not an authenticated transport. The actual injected Android HTTP client implementation, network cancellation and redirect semantics remain unimplemented/unknown. Do not infer them from the bearer service wrapper or add guessed retries. Android Work, Windows/Desktop and Codex CLI remain deferred only for sequencing.
+
+
+## Handoff — Android Valdi native HTTP bridge boundary — 2026-11-28
+
+A main-coordinator static pass over the supplied Android 1.2026.321 XAPK identified the Valdi native HTTP boundary beneath the previously documented bearer service. valdi_http/src/HTTPClient imports NativeHTTPClient; its streaming counterpart imports NativeStreamingHTTPClient. DEX and ARM64 JNI symbols establish HTTPRequestManager.performRequest/performStreamingRequest, completion/error callbacks, streaming response/data/upload callbacks, and handle methods cancel(), requestBytes(int), write(byte[], boolean).
+
+This is useful architectural evidence, not a transport implementation. The actual Android registration/injected implementation, callback semantics, backpressure units, upload-write boolean, response/body ownership, and network engine are still unknown. The packaged Ktor/OkHttp engine and traced OAuth Ktor client must not be conflated with the Valdi native bridge until wiring is proven.
+
+Detailed hashes, interfaces and limitations: ANDROID_CLIENT_PROTOCOL_FINDINGS.md, section “Android Valdi HTTP transport bridge”. Actionable follow-ups are in OPEN_QUESTIONS.md and TODO.md. Static inspection only; no app execution, account use or network request.
