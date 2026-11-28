@@ -41,3 +41,8 @@ The supplied XAPK manifest identifies version 1.2026.321 (version code 2632129),
 Its base APK has 5,080 ZIP entries, ten DEX files and 111 compiled Valdi modules. All 111 Valdi modules were Zstandard-decompressed for a static scan. A partial DEX method-reference scan found the Android native DeviceIntegrity service, its request/response contracts, Google Play Integrity token generation and the first-party chat-requirements/device-integrity exchange. Detailed findings and limitations are in [ANDROID_CLIENT_PROTOCOL_FINDINGS.md](ANDROID_CLIENT_PROTOCOL_FINDINGS.md).
 
 These counts describe the currently supplied XAPK. They are not a correction to the historical 2026-11-20 extracted archive's inventory of 121 Valdi modules: the archives represent different package/source snapshots. The hash match and ZIP CRC test do not establish an independent malware scan or independent signing-certificate verification.
+
+
+## Manifest verification — 2026-11-28
+
+The supplied XAPK was re-read and SHA-256 reverified as `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d` (123,574,190 bytes). Its base APK SHA-256 is `312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c`; compiled `AndroidManifest.xml` is 121,120 bytes with SHA-256 `2711b75f49bea3754010fd3860c6d3e3413a4bb35f2951a4f7b34b3c7b314f11`. A static manifest parse confirmed package version 1.2026.321, min SDK 32, target/compile SDK 37, 87 distinct permission declarations, nine uses-feature declarations and 44 `com.openai.*` application components. See [ANDROID_MANIFEST_FINDINGS.md](ANDROID_MANIFEST_FINDINGS.md). Manifest declarations are not proof of permission grants or complete feature workflows.

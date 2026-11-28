@@ -946,10 +946,14 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Add TypeScript ESM and CommonJS consumer compile fixtures; document/test cancellation against stalled non-cooperative async iterators.
 
 
-## Android authenticated request policy validation parity — 2026-11-28
+## Android package manifest capability census — 2026-11-28 (Subagent 1)
 
-- [x] Reconcile the ChatJS bearer-header helper with the source-traced Android constructor's access-token and account-ID validation gates.
-- [x] Reuse `isValidOAIBearerToken` and `isValidOAIAccountIdentifier` instead of accepting arbitrary strings.
-- [x] Add malformed/empty token and account-ID regression tests.
-- [ ] Implement the actual injected HTTP transport only after its request/response, redirect, timeout, cancellation and resource semantics are traced from the shipped client.
-- [ ] Add transport integration tests and authorized account E2E only when the legitimate host credential, DPoP signer and integrity-provider prerequisites exist.
+- [x] Re-read the supplied Android XAPK and independently recompute XAPK, base APK and compiled AndroidManifest.xml SHA-256 values.
+- [x] Decode the binary base-APK manifest and record package/version/minimum/target/compile SDK metadata.
+- [x] Count the 87 distinct permission declarations, including 43 Health Connect permissions, and classify them as package-level evidence only.
+- [x] Record the nine declared hardware/graphics features and distinguish eight optional hardware features from required OpenGL ES 3.0.
+- [x] Census 44 first-party application components and identify 12 marked exported; record selected conversation, voice, read-aloud, assistant, Health Connect and onboarding boundaries without inferring workflow semantics.
+- [ ] Trace runtime permission gates and source consumers for camera, microphone, location, screen-content and Health Connect in the Android non-Work client.
+- [ ] Trace ConversationStreamingService, ReadAloudPlaybackService and VoiceModeForegroundService lifecycle/callbacks against the identified Valdi client modules.
+- [ ] Decode exported activity intent filters and connect deep-link entry points to actual onboarding/auth request builders.
+- [ ] Trace personal-data permission consumers individually (contacts, calendar, SMS, telephony); do not infer use from manifest presence.

@@ -181,3 +181,7 @@
 ## Next investigation
 
 Prioritize remaining Android non-Work modules by product surface, then disassemble method callsites and generated schemas. Only promote route strings after confirming the request construction path; only promote workflows to implemented after adding portable Node.js code and relevant tests. Android Work, Windows/Desktop and Codex CLI remain in the overall project target but are not the active execution priority.
+
+## Android manifest cross-reference — 2026-11-28
+
+A separate static parse of the supplied base APK's compiled AndroidManifest.xml verified package/version/SDK metadata, 87 distinct permission declarations (43 Health Connect permissions), nine declared hardware/graphics features, and 44 first-party application components (12 marked exported). These are package declarations, not proof of runtime grants, active feature availability, or a complete workflow. See [ANDROID_MANIFEST_FINDINGS.md](ANDROID_MANIFEST_FINDINGS.md) for source hashes, grouped permissions, selected components, evidence limits, and follow-up work.

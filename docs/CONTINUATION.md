@@ -1079,10 +1079,14 @@ Verification follow-up — 2026-11-28: main commit `14ad8aba3e2d45b5a600944c9f20
 Subagent 3 completed a source/code audit recorded in [ANDROID_COVERAGE_AUDIT.md](ANDROID_COVERAGE_AUDIT.md). The conclusion remains that no complete Android ChatGPT workflow is implemented: current runtime is foundation-only, with private deterministic helpers and a generic SSE parser. The latest LoginAuth response-envelope decoder adds a private 15-discriminator dispatcher (nine nested payload validators, six opaque payloads; fallback unresolved). Current main head `14ad8aba` has not yet had a verified full CI run; the prior green 164-test CI snapshot is `2ff068fe`. Verify current main before relying on the new decoder/tests. Do not begin deferred Android Work, Windows/Desktop or Codex CLI work before Android non-Work is complete.
 
 
-## Subagent 4 handoff — authenticated request validation parity — 2026-11-28
+## Handoff — Android package manifest capability census — 2026-11-28
 
-The Android `OAIBearerAPIService` source validates access tokens with `isValidOAIBearerToken` and supplied account IDs with `isValidOAIAccountIdentifier` before building `Accept`, `Authorization: Bearer`, and optional `ChatGPT-Account-Id` headers. The existing ChatJS helper had only type checks, which accepted malformed strings. Subagent 4 aligned the helper with the existing source-backed validators and added regression tests.
+**IDENTITY: ChatJS Subagent 1 — Android Source Investigation.**
 
-This remains a pure local policy helper, not an HTTP transport or authenticated session. The real injected Android HTTP client implementation is still not identified/reconstructed; do not guess redirect, timeout, connection-pool or retry semantics. Current source-specific 401 recovery remains a separate single replay with renewal disabled and must not be generalized.
+Subagent 1 re-read the supplied `ChatGPT-Android.xapk` and statically decoded the base APK's binary AndroidManifest.xml. Recomputed source hashes: XAPK `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`; base APK `312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c`; manifest `2711b75f49bea3754010fd3860c6d3e3413a4bb35f2951a4f7b34b3c7b314f11`. Confirmed package 1.2026.321, min SDK 32, target/compile SDK 37, 87 permission declarations (43 Health Connect), nine uses-feature entries (eight named hardware features optional; OpenGL ES 3.0 required), and 44 `com.openai.*` application components (12 exported). No app install, launch, runtime permission prompt, account or network operation was performed.
 
-Verification pending: run the full CI suite and CodeQL on the new main commit. Keep the next transport implementation blocked on complete source evidence and host secure-auth prerequisites.
+Detailed source-backed record: `docs/ANDROID_MANIFEST_FINDINGS.md`. Cross-references added to `docs/ANDROID_CLIENT_MODULE_INVENTORY.md` and `docs/REFERENCE_APK.md`.
+
+Important evidence boundary: manifest declarations and exported components do not prove runtime grants, active feature eligibility, user consent, a server route, or a complete workflow. Android host permissions are not to be copied into the portable Node.js core. The AD_ID declaration does not override the zero-telemetry/no-ads project rule. Android Work remains deferred; Codex Remote component names are not treated as Codex CLI evidence.
+
+Next: trace actual non-Work runtime permission consumers and lifecycle callbacks for camera/audio/location/screen/Health Connect, conversation streaming/read-aloud/voice services, deep-link onboarding, and personal-data integrations. Preserve explicit consent and keep each feature source-backed.

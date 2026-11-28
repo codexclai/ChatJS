@@ -1856,3 +1856,14 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Changed `src/chatgpt/android-authenticated-request-policy.cjs`, `tests/android-authenticated-request-policy.test.cjs`, and this session's protocol/TODO/continuation/memory records.
 - This closes only a pure local validation mismatch. No HTTP request, credential renewal, account access, DPoP signing, integrity challenge or service call was made. The actual Android-injected HTTP transport and authorized end-to-end session remain unimplemented.
 - CI and CodeQL verification are pending for this new change; do not count the added tests as passing until the new main commit has green checks.
+
+
+## 2026-11-28 — ChatJS Subagent 1: Android package manifest investigation
+
+- Re-read the supplied `ChatGPT-Android.xapk` from the active upload and independently recomputed source integrity: XAPK SHA-256 `22923301cf5fdd01adb0334fcb98c1af9b6395cb1177926ee7b4c28295fb973d`; base APK SHA-256 `312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c`.
+- Decoded the base APK's binary AndroidManifest.xml statically; manifest is 121,120 bytes, SHA-256 `2711b75f49bea3754010fd3860c6d3e3413a4bb35f2951a4f7b34b3c7b314f11`.
+- Verified version 1.2026.321 / code 2632129, min SDK 32, target/compile SDK 37, 87 distinct uses-permission declarations including 43 Health Connect permissions, nine uses-feature entries, eight named optional hardware features, required OpenGL ES 3.0, and 44 `com.openai.*` components (12 exported).
+- Identified manifest component leads for main/deep-link activities, OTP and registration deep links, conversation streaming, read-aloud, voice-mode, assistant voice interaction, Quick Settings and Health Connect rationale. These remain declarations, not fully traced workflows.
+- Added `docs/ANDROID_MANIFEST_FINDINGS.md`; cross-referenced it from `docs/ANDROID_CLIENT_MODULE_INVENTORY.md` and `docs/REFERENCE_APK.md`; updated TODO and CONTINUATION.
+- Evidence limits: no app install/launch, runtime permission prompts, account access, network request or Android service invocation. No new ChatJS runtime capability was added. Permission declarations do not prove user grants, product availability, or actual client usage. AD_ID/telemetry and ads remain excluded.
+- Next: trace non-Work permission gates and source consumers; map service lifecycle/callbacks and exported deep-link intent filters to actual client request/state workflows.
