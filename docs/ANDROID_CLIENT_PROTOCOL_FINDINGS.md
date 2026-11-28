@@ -2484,3 +2484,36 @@ The token_exchange discriminator maps to response subtype Luoa1. Its payload is 
 Added private pure decodeAndroidLoginAuthTokenExchangePayload. It requires a payload object with a present non-null string code, returns a defensive shallow copy, and preserves extension members. It does not parse/validate an OAuth authorization-code format or perform an exchange. Two focused tests cover valid and extension data, missing/null/wrong-type values, and the absence of format/non-empty assumptions. The combined Android LoginAuth response-schema suite now has 20 tests.
 
 Evidence: supplied ChatGPT Android 1.2026.321 base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. Relevant DTO/serializer classes: Luoa1, Ltoa1, Lsoa1, Lroa1. No Android method, login, account, credential, key, keystore, token exchange, or network request was executed.
+
+## Android LoginAuth create_account_password and login_password payload DTOs — 2026-11-28
+
+Both password-related LoginAuth discriminators have now been traced through their generated payload serializers and lazy polymorphic list serializers.
+
+| Wire type | Response subtype | Payload DTO | Generated payload serializer |
+| --- | --- | --- | --- |
+| create_account_password | Lxxw | Lwxw | Luxw (from Lvxw.serializer()) |
+| login_password | Ldpk0 | Lcpk0 | Lapk0 (from Lbpk0.serializer()) |
+
+The outer response subtype fields keep the step (Lvl8), payload DTO and root errors (Lql8) separate. Each payload DTO contains its own errors (Lql8) and loginMethods (List) members.
+
+Generated serializer evidence:
+
+- Luxw's descriptor declares JSON fields errors and loginMethods. Both descriptor elements are optional. Its childSerializers wraps the nullable Lql8 serializer and a lazily constructed nullable list serializer.
+- Lwxw's lazy serializer closure is Llno in classes5.dex, constructed with selector 28. That branch returns ListSerializer(Lonk0.e), the generated polymorphic serializer for Lmnk0.
+- Lapk0 declares the same errors and loginMethods descriptor fields as optional and uses nullable child serializers.
+- Lcpk0's lazy serializer closure is Lxia0 in classes6.dex, constructed with selector 22. That branch also returns ListSerializer(Lonk0.e), so login_password uses the same Lmnk0 item contract as the other traced LoginAuth verification payloads.
+- The existing Lonk0 dispatch is explicitly limited by the inspected source to password, passwordless_otp, passkey and the explicit unknown variant. Do not widen it to arbitrary unknown discriminator strings.
+
+Both payloads are therefore modeled as errors?: Lql8? and loginMethods?: List<Lmnk0>?. The generated serializers establish that each member is independently optional and nullable; a present list contains non-null polymorphic Lmnk0 items validated by the already implemented shared item decoder.
+
+Private ChatJS implementation:
+
+- Added decodeAndroidLoginAuthCreateAccountPasswordPayload and decodeAndroidLoginAuthLoginPasswordPayload to src/chatgpt/android-login-auth-response-schema.cjs.
+- Both wrappers call one shared password-payload decoder, which validates only the generated nullable errors and loginMethods fields and reuses the existing Lql8 and Lmnk0 decoders.
+- Four focused tests cover the two variants, nested passkey shape, null/omission, extension-field preservation, malformed errors/list entries, and invalid method variants.
+
+This work validates nested DTO payloads only. It does not submit a password, infer credential/password requirements, implement any LoginAuth state transition, decode the outer Lyl8 union, or perform authentication/HTTP exchange.
+
+Source integrity evidence: supplied base APK SHA-256 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes5.dex SHA-256 5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44; classes6.dex SHA-256 6723f9c8dbf64dc50ca5bec6a978e84b24ad99a669aa685827a5540f6675f371; classes7.dex SHA-256 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e.
+
+Static DEX and generated-serializer analysis only. No Android methods, account credentials, password, key material, AndroidKeyStore operation, Play Integrity request or network request were executed.
