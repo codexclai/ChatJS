@@ -903,3 +903,13 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Add two focused token-exchange tests for valid values, extension preservation, malformed types and no extra code-format constraints; focused schema suite now has 20 tests.
 - [ ] Decode remaining Lyl8 step payloads and establish the actual accepted Lmiy fallback discriminator set.
 - [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and all relevant cancellation/error paths.
+
+## Android LoginAuth password-step payloads — 2026-11-28
+
+- [x] Trace create_account_password outer subtype Lxxw, payload DTO Lwxw, and generated serializer Luxw.
+- [x] Trace login_password outer subtype Ldpk0, payload DTO Lcpk0, and generated serializer Lapk0.
+- [x] Confirm both payload serializers declare optional nullable errors:Lql8? and loginMethods:List<Lmnk0>?, including lazy child serializer paths Llno selector 28 and Lxia0 selector 22.
+- [x] Implement private pure create_account_password and login_password payload validators by reusing the shared Lql8 error and Lmnk0 polymorphic method decoders.
+- [x] Add four focused tests for both variants, optional/null fields, nested passkey payload, extension preservation and malformed values; focused helper suite now has 24 tests.
+- [ ] Decode remaining workspace, MFA, push-auth, login-passkey and token-response payloads, and establish the exact accepted Lmiy fallback discriminator behavior.
+- [ ] Complete Luub1 auth-failure classification, the La0d1.g delegated branch, state cleanup and relevant cancellation/error paths.
