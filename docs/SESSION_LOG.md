@@ -1867,3 +1867,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Added `docs/ANDROID_MANIFEST_FINDINGS.md`; cross-referenced it from `docs/ANDROID_CLIENT_MODULE_INVENTORY.md` and `docs/REFERENCE_APK.md`; updated TODO and CONTINUATION.
 - Evidence limits: no app install/launch, runtime permission prompts, account access, network request or Android service invocation. No new ChatJS runtime capability was added. Permission declarations do not prove user grants, product availability, or actual client usage. AD_ID/telemetry and ads remain excluded.
 - Next: trace non-Work permission gates and source consumers; map service lifecycle/callbacks and exported deep-link intent filters to actual client request/state workflows.
+
+
+### Subagent 3 audit verification correction — parallel Android updates — 2026-11-28
+
+- Verified the parallel LoginAuth CI record against the actual Actions job and downloaded log: run 46162580007 on `14ad8aba` passed `npm run check`, 166/166 tests, archive build (19 module files), archive extraction and installed ESM/CommonJS smoke tests. CodeQL run 46162580030 passed. Artifact 15269598067 is 38,593 bytes with SHA-256 digest `ddbf04e2152233da19793d763b1ffe0f9fc421e092f5512088386a242a1509b0`.
+- Reviewed subsequent Subagent 4 commits `963c3260` and `a97560a9`: the private authenticated request header helper now reuses source-backed bearer-token and account-ID validators; the test suite adds malformed-value/CRLF coverage. This is a genuine local policy correction, not an HTTP/auth implementation. Current code head `a97560a9` has no verified CI/CodeQL result in the audit. The current policy test file has 14 test cases; do not assume the 166 total still applies.
+- Reviewed Subagent 1's `ANDROID_MANIFEST_FINDINGS.md`: static package census reports 87 permission declarations (43 Health Connect), nine feature declarations and 44 first-party components (12 exported). These are not proof of runtime grants or workflows.
+- Corrected the audit addendum and handoff: current actionable gate is to run full checks and CodeQL on the later bearer-header policy change and on the final documentation snapshot.
