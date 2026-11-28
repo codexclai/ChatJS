@@ -34,7 +34,7 @@ test('header builder rejects non-string accept and token inputs', () => {
 });
 
 test('header builder rejects invalid bearer-token and account-identifier syntax', () => {
-  for (const token of ['', 'token with spaces', 'token:with-colon', 'token\\r\\nInjected: yes']) {
+  for (const token of ['', 'token with spaces', 'token:with-colon', 'token\r\nInjected: yes']) {
     assert.throws(
       () => policy.buildAndroidAuthenticatedRequestHeaders('application/json', token),
       /valid bearer token/
