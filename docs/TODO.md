@@ -936,7 +936,8 @@ Never create branches or worktrees. Keep all repository work on main.
 
 ## Subagent 3 audit follow-ups — 2026-11-28
 
-- [ ] Run full `npm run check`, inspect the distribution archive and installed ESM/CommonJS smoke tests, and run CodeQL on current main after the LoginAuth envelope and syntax-fix commits; record the actual current-head test count and outcome. The prior verified 164-test run is not evidence for the new code.
+- [x] Verify LoginAuth envelope implementation and syntax fixes: CI 46162580007 passed 166/166 tests, archive build/extraction and installed ESM/CommonJS smoke tests; CodeQL 46162580030 passed on `14ad8aba`.
+- [ ] Run full `npm run check`, inspect the archive/consumer smoke tests and run CodeQL after Subagent 4's bearer-token/account-ID validation change (`963c3260`/`a97560a9`); the 166-test result predates this change.
 - [ ] Complete LoginAuth payload coverage: trace the six opaque payload serializers and unresolved final fallback, then add source-backed validators/tests without guessing.
 - [ ] Resolve Android native authentication-provider injection and the legitimate host secure-signer/storage boundary before implementing account login, DPoP signing or token refresh.
 - [ ] Trace guest create/refresh and guest composer prepare/send HTTP routes independently of local SessionManager and LocationCookieInitializer paths.
