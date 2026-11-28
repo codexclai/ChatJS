@@ -1018,3 +1018,16 @@ token_exchange is source-resolved as outer subtype Luoa1 with payload Ltoa1. The
 Implemented private pure decodeAndroidLoginAuthTokenExchangePayload requiring an object with a present non-null string code and preserving extension properties. It deliberately does not impose OAuth code formatting or issue an exchange. Two tests added; the focused Android LoginAuth response-schema suite now has 20 tests.
 
 Source evidence is recorded in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md (base APK/classes7 hashes and DTO/serializer mapping). Current in-scope payload validators cover Lql8 errors, about_you, email OTP, contact verification, external_url and token_exchange; the top-level Lyl8 union and all remaining step payloads remain unimplemented.
+
+## Latest handoff — Android LoginAuth password-step payload decoders — 2026-11-28
+
+The current main work has source-resolved and privately validated both explicit password-related Lyl8 payloads:
+
+- create_account_password → outer Lxxw → payload Lwxw → generated serializer Luxw.
+- login_password → outer Ldpk0 → payload Lcpk0 → generated serializer Lapk0.
+- Both serializers expose optional nullable errors:Lql8? and loginMethods:List<Lmnk0>?. Lazy child serializers independently resolve via Llno selector 28 (classes5.dex) and Lxia0 selector 22 (classes6.dex) to ListSerializer(Lonk0.e).
+- Added private decodeAndroidLoginAuthCreateAccountPasswordPayload and decodeAndroidLoginAuthLoginPasswordPayload; both share the existing Lql8 and Lmnk0 validators. Four focused tests cover valid and malformed nested payloads, null/omitted fields, passkey challenge and extension fields. The focused helper suite now has 24 tests.
+- DEX source hashes: base APK 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes5 5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44; classes6 6723f9c8dbf64dc50ca5bec6a978e84b24ad99a669aa685827a5540f6675f371; classes7 e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e.
+- This is nested payload validation only. No password entry/submission, authentication, outer Lyl8 union, request, account or network operation is implemented.
+
+Next: decode the workspace, MFA, push-auth, passkey and token-response payloads; resolve the final Lmiy fallback acceptance without guessing arbitrary discriminator values; continue Luub1/La0d1.g failure and cleanup paths plus outstanding request-auth/integrity/provider details.
