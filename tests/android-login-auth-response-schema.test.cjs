@@ -14,6 +14,7 @@ const {
   decodeAndroidLoginAuthExternalUrlPayload,
   decodeAndroidLoginAuthTokenExchangePayload,
   decodeAndroidLoginAuthLoginPasskeyPayload,
+  decodeAndroidLoginAuthWorkspacePayload,
   AndroidLoginAuthResponseSchemaError
 } = schema;
 
@@ -573,6 +574,80 @@ test('login_passkey payload rejects missing, nullable or malformed generated mem
     [{ errors: false, passkeyChallengeOption: { passkeyRequestOptions: {}, mfaRequestId: 'id' } }, /AndroidLoginAuthErrors must be an object/]
   ]) {
     assert.throws(() => decodeAndroidLoginAuthLoginPasskeyPayload(value), (error) => {
+      assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
+      assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
+      assert.match(error.message, pattern);
+      return true;
+    });
+  }
+});
+
+
+test('workspace payload decodes nullable workspaces and the generated Lxn8 entry fields', () => {
+  const source = {
+    errors: { formErrors: ['Choose a workspace'] },
+    workspaces: [
+      {
+        id: 'workspace-1',
+        kind: 'team',
+        name: 'Example Organization',
+        reauthentication: 'required'
+      },
+      { id: null, kind: null },
+      { id: 'workspace-3', kind: 'personal' }
+    ],
+    extension: { retained: true }
+  };
+  const decoded = decodeAndroidLoginAuthWorkspacePayload(source);
+  assert.deepEqual(decoded, source);
+  assert.notEqual(decoded, source);
+  assert.notEqual(decoded.errors, source.errors);
+  assert.notEqual(decoded.workspaces, source.workspaces);
+  assert.notEqual(decoded.workspaces[0], source.workspaces[0]);
+  assert.equal(decoded.extension, source.extension);
+});
+
+test('workspace payload preserves optional nullable parent members and optional non-null item fields', () => {
+  assert.equal(decodeAndroidLoginAuthWorkspacePayload(undefined), undefined);
+  assert.equal(decodeAndroidLoginAuthWorkspacePayload(null), null);
+  assert.deepEqual(decodeAndroidLoginAuthWorkspacePayload({}), {});
+  assert.deepEqual(decodeAndroidLoginAuthWorkspacePayload({
+    errors: null,
+    workspaces: null
+  }), {
+    errors: null,
+    workspaces: null
+  });
+  assert.deepEqual(decodeAndroidLoginAuthWorkspacePayload({
+    workspaces: [
+      { id: null, kind: 'team' },
+      { id: 'id', kind: null, name: 'Named' },
+      { id: 'id-2', kind: 'personal', reauthentication: 'false' }
+    ]
+  }), {
+    workspaces: [
+      { id: null, kind: 'team' },
+      { id: 'id', kind: null, name: 'Named' },
+      { id: 'id-2', kind: 'personal', reauthentication: 'false' }
+    ]
+  });
+});
+
+test('workspace payload rejects missing or malformed required and optional item fields', () => {
+  for (const [value, pattern] of [
+    [{ workspaces: {} }, /workspaces must be an array/],
+    [{ workspaces: [null] }, /workspaces.*must be an object/],
+    [{ workspaces: [{}] }, /id is required/],
+    [{ workspaces: [{ id: 'id' }] }, /kind is required/],
+    [{ workspaces: [{ id: 1, kind: 'team' }] }, /id must be a string/],
+    [{ workspaces: [{ id: null, kind: false }] }, /kind must be a string/],
+    [{ workspaces: [{ id: 'id', kind: 'team', name: null }] }, /name must be a string/],
+    [{
+      workspaces: [{ id: 'id', kind: 'team', reauthentication: null }]
+    }, /reauthentication must be a string/],
+    [{ errors: false, workspaces: [] }, /AndroidLoginAuthErrors must be an object/]
+  ]) {
+    assert.throws(() => decodeAndroidLoginAuthWorkspacePayload(value), (error) => {
       assert.ok(error instanceof AndroidLoginAuthResponseSchemaError);
       assert.equal(error.code, 'CHATGPT_ANDROID_LOGIN_AUTH_INVALID_RESPONSE_SCHEMA');
       assert.match(error.message, pattern);
