@@ -9,7 +9,8 @@ Every ChatJS conversation continues the same repository and shared project memor
 3. Read state, session history, decisions, knowledge, experiments, and open questions.
 4. Read capability matrix/inventory, Android protocol findings, Android/desktop/Codex source records, roadmap, architecture, PRODUCT_STANDARD.md, and workflow.
 5. Read root `ChatJS.md` before public API changes.
-6. Resume the highest-priority actionable work; do not return only a plan.
+6. Read `ANDROID_COVERAGE_AUDIT.md` for the latest independent Android evidence matrix and defect priorities.
+7. Resume the highest-priority actionable work; do not return only a plan.
 
 ## Product direction
 
@@ -1071,3 +1072,8 @@ Commits: `c960c55e9d8fff0670c56d2f78ec1fbc30efe509` (decoder), `d58b5559560d78ee
 
 
 Verification follow-up — 2026-11-28: main commit `14ad8aba3e2d45b5a600944c9f20bf3c64db7509` passed GitHub CI run `46162580007` (the workflow's full check/test/archive/extraction/ESM+CommonJS smoke-test step) and CodeQL run `46162580030`. An initial source/test export-import formatting typo caused an intermediate CI failure; the source export was corrected in `c31cb126544c0503949a10baa1a74a059b251814`, and the test import was corrected in `14ad8aba3e2d45b5a600944c9f20bf3c64db7509`. The final head is green. This verification does not turn the private schema decoder into an authenticated LoginAuth workflow.
+
+
+## Independent Android coverage audit — 2026-11-28
+
+Subagent 3 completed a source/code audit recorded in [ANDROID_COVERAGE_AUDIT.md](ANDROID_COVERAGE_AUDIT.md). The conclusion remains that no complete Android ChatGPT workflow is implemented: current runtime is foundation-only, with private deterministic helpers and a generic SSE parser. The latest LoginAuth response-envelope decoder adds a private 15-discriminator dispatcher (nine nested payload validators, six opaque payloads; fallback unresolved). Current main head `14ad8aba` has not yet had a verified full CI run; the prior green 164-test CI snapshot is `2ff068fe`. Verify current main before relying on the new decoder/tests. Do not begin deferred Android Work, Windows/Desktop or Codex CLI work before Android non-Work is complete.
