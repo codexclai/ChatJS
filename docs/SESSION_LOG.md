@@ -1823,3 +1823,13 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - CI completed npm run check: lint/syntax, project-state JSON/generated Markdown synchronization, local Markdown links, full suite 164/164 (zero failures), module archive build, installed archive extraction and CommonJS/ESM smoke tests all passed.
 - Downloaded artifact 15249900319 (ChatJS-android-workspace-ci.zip, 38,115 bytes; SHA-256 e9ef80bf1b0d65cffcd7e573046fbab9b9ada58b09a64041bd09a90ac8ee3fe2). Inspected nested ChatJS.tar.gz (37,960 bytes; SHA-256 663e2bc4e9e03eb21fe3553f37e230dc7b03d9ee3c1ce32848bc43b917dc69f6): 20 entries (root folder plus 19 package files), containing all four recent private password, passkey and workspace validators.
 - Extracted final CI artifact locally; independent installed CommonJS and ESM imports and decoder-module node --check smoke all passed. Local npm run check was not run because there is no local repository checkout; the full command passed in GitHub CI.
+
+
+## 2026-11-28 — Subagent 2: Android LoginAuth envelope implementation
+
+- Re-read live project memory/continuation and inspected current main, source tree, package scripts, existing LoginAuth validators/tests, branch list, recent commits and workflow state.
+- Implemented private `decodeAndroidLoginAuthResponse` using the 15 exact `Lam8.b(String)` discriminator labels. It validates the common envelope and root errors, dispatches the nine already-decoded payload validators, and preserves the other six known payload objects as opaque data. It explicitly rejects unknown labels rather than guessing the `Lmiy` fallback.
+- Added two focused tests for envelope dispatch, exact labels, opaque known-step preservation, extension fields, and malformed inputs.
+- Commits: `c960c55e9d8fff0670c56d2f78ec1fbc30efe509`, `d58b5559560d78eedc8aac392ea3359cb1d3d046`.
+- Local execution was unavailable because this task environment has no repository checkout and outbound GitHub access from the shell is unavailable. Changes were committed through the connected GitHub repository integration; CI must provide executable verification. No claim of local test success.
+- Remaining: verify CI/CodeQL on the new head; trace/decode lookup-key, push-auth, MFA challenge/enroll, token-response and error payload schemas; resolve `Lmiy` fallback and `Luub1`/ `La0d1.g` failure paths; continue genuine auth/session/transport implementation only after source proof.
