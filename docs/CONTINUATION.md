@@ -1044,3 +1044,18 @@ The explicit login_passkey subtype is Lrok0 with payload Lqok0 and generated ser
 Added private decodeAndroidLoginAuthLoginPasskeyPayload and three focused tests. The Android LoginAuth schema helper suite now has 27 focused tests. The decoder preserves omitted fallbackAllowed and makes no claim about its default or meaning; it does not run a passkey ceremony or authenticate. DEX evidence is recorded in docs/ANDROID_CLIENT_PROTOCOL_FINDINGS.md (base APK and classes7 hashes).
 
 Next: trace and decode workspace, MFA challenge/enroll, push-auth and token-response payloads; establish exact Lmiy fallback acceptance and complete LoginAuth failure/cancellation handling. The complete outer Lyl8 parser, auth transport and genuine integrity provider remain absent.
+
+
+## Additional handoff — Android LoginAuth workspace payload — 2026-11-28
+
+The workspace response subtype is Lp5i1 with payload Lo5i1 and outer root errors Lql8. Generated serializer Lm5i1 shows both payload members workspaces and errors as optional nullable. The collection lambda Lmec1 selector 10 returns ListSerializer(Lvn8.a), with Lvn8's generated model Lxn8.
+
+Exact workspace entry shape:
+- id: required nullable String.
+- kind: required nullable String.
+- name: optional non-null String.
+- reauthentication: optional non-null String.
+
+This is not a generic map: the item schema is source-traced field-by-field. Added private decodeAndroidLoginAuthWorkspacePayload, shared Lql8 validation, and three focused tests; LoginAuth helper suite now has 30 focused tests. Reauthentication remains string-only at schema layer; no behavior inferred. The outer Lyl8 parser and actual workspace/reauthentication action remain unimplemented.
+
+Next: trace MFA challenge/enroll, push-auth and token-response payloads; resolve exact Lmiy fallback acceptance and complete failure/cancellation/transport boundaries.
