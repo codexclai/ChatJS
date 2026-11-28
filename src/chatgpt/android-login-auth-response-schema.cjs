@@ -395,12 +395,79 @@ function decodeAndroidLoginAuthLoginPasskeyPayload(value) {
   return result;
 }
 
+const ANDROID_LOGIN_AUTH_RESPONSE_TYPES = Object.freeze([
+  'lookup_key_authentication',
+  'about_you',
+  'email_otp_verification',
+  'contact_verification',
+  'external_url',
+  'create_account_password',
+  'login_password',
+  'workspace',
+  'push_auth_verification',
+  'mfa_challenge',
+  'mfa_enroll',
+  'login_passkey',
+  'token_exchange',
+  'token_response',
+  'error'
+]);
+
+const androidLoginAuthResponseTypeSet = new Set(ANDROID_LOGIN_AUTH_RESPONSE_TYPES);
+
+/**
+ * Decode the common Lyl8 response envelope and the nested payloads whose
+ * generated serializers have been reconstructed. Other known step payloads
+ * remain opaque objects until their exact serializers are traced. The final
+ * Lmiy fallback is deliberately not guessed: only the 15 explicit wire
+ * discriminators observed in Lam8 are accepted here.
+ */
+function decodeAndroidLoginAuthResponse(value) {
+  const result = requireObject(value, 'AndroidLoginAuthResponse');
+
+  if (result.type === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      'AndroidLoginAuthResponse.type is required.'
+    );
+  }
+  result.type = requireString(result.type, 'AndroidLoginAuthResponse.type');
+  if (!androidLoginAuthResponseTypeSet.has(result.type)) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      'AndroidLoginAuthResponse.type is not one of the 15 explicit Android LoginAuth response types.'
+    );
+  }
+  if (result.payload === undefined) {
+    throw new AndroidLoginAuthResponseSchemaError(
+      'AndroidLoginAuthResponse.payload is required.'
+    );
+  }
+  result.payload = requireObject(result.payload, 'AndroidLoginAuthResponse.payload');
+  decodeOptionalNullable(result, 'errors', 'AndroidLoginAuthResponse', decodeAndroidLoginAuthErrors);
+
+  const payloadDecoders = {
+    about_you: decodeAndroidLoginAuthAboutYouPayload,
+    email_otp_verification: decodeAndroidLoginAuthEmailOtpPayload,
+    contact_verification: decodeAndroidLoginAuthContactVerificationPayload,
+    external_url: decodeAndroidLoginAuthExternalUrlPayload,
+    create_account_password: decodeAndroidLoginAuthCreateAccountPasswordPayload,
+    login_password: decodeAndroidLoginAuthLoginPasswordPayload,
+    workspace: decodeAndroidLoginAuthWorkspacePayload,
+    login_passkey: decodeAndroidLoginAuthLoginPasskeyPayload,
+    token_exchange: decodeAndroidLoginAuthTokenExchangePayload
+  };
+  const decodePayload = payloadDecoders[result.type];
+  if (decodePayload) {
+    result.payload = decodePayload(result.payload);
+  }
+  return result;
+}
+
 module.exports = Object.freeze({
   ANDROID_LOGIN_AUTH_FIELDS,
   AndroidLoginAuthResponseSchemaError,
   ANDROID_LOGIN_AUTH_EMAIL_VERIFICATION_MODES,
-  ANDROID_LOGIN_AUTH_METHOD_TYPES,
-  decodeAndroidLoginAuthErrors,
+  ANDROID_LOGIN_AUTH_METHOD_TYPES,\n  ANDROID_LOGIN_AUTH_RESPONSE_TYPES,
+  decodeAndroidLoginAuthErrors,\n  decodeAndroidLoginAuthResponse,
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
