@@ -316,6 +316,57 @@ function decodeAndroidLoginAuthTokenExchangePayload(value) {
   return result;
 }
 
+function requireNullableStringField(object, field, label) {
+  if (!Object.prototype.hasOwnProperty.call(object, field)) {
+    throw new AndroidLoginAuthResponseSchemaError(label + '.' + field + ' is required.');
+  }
+  if (object[field] !== null) {
+    object[field] = requireString(object[field], label + '.' + field);
+  }
+}
+
+function decodeAndroidLoginAuthWorkspaceEntry(value, label) {
+  const result = requireObject(value, label);
+  requireNullableStringField(result, 'id', label);
+  requireNullableStringField(result, 'kind', label);
+
+  if (result.name !== undefined) {
+    result.name = requireString(result.name, label + '.name');
+  }
+  if (result.reauthentication !== undefined) {
+    result.reauthentication = requireString(result.reauthentication, label + '.reauthentication');
+  }
+  return result;
+}
+
+function decodeAndroidLoginAuthWorkspaces(value, label) {
+  if (!Array.isArray(value)) {
+    throw new AndroidLoginAuthResponseSchemaError(label + ' must be an array.');
+  }
+  return value.map((entry, index) =>
+    decodeAndroidLoginAuthWorkspaceEntry(entry, label + '[' + index + ']')
+  );
+}
+
+/**
+ * Decode the workspace payload. Its generated list serializer resolves to
+ * List<Lxn8>; the item descriptor requires nullable id/kind and permits
+ * optional non-null name/reauthentication strings.
+ */
+function decodeAndroidLoginAuthWorkspacePayload(value) {
+  if (value === undefined || value === null) return value;
+
+  const result = requireObject(value, 'AndroidLoginAuthWorkspacePayload');
+  decodeOptionalNullable(result, 'errors', 'AndroidLoginAuthWorkspacePayload', decodeAndroidLoginAuthErrors);
+  decodeOptionalNullable(
+    result,
+    'workspaces',
+    'AndroidLoginAuthWorkspacePayload',
+    decodeAndroidLoginAuthWorkspaces
+  );
+  return result;
+}
+
 /**
  * Decode the login_passkey payload. The generated serializer requires a
  * passkeyChallengeOption object, permits optional nullable errors, and
@@ -357,5 +408,6 @@ module.exports = Object.freeze({
   decodeAndroidLoginAuthLoginPasswordPayload,
   decodeAndroidLoginAuthExternalUrlPayload,
   decodeAndroidLoginAuthTokenExchangePayload,
-  decodeAndroidLoginAuthLoginPasskeyPayload
+  decodeAndroidLoginAuthLoginPasskeyPayload,
+  decodeAndroidLoginAuthWorkspacePayload
 });
