@@ -23,10 +23,12 @@ Evidence levels used below:
 
 - Live repository: `codexclai/ChatJS`; default and only branch observed: `main`.
 - No open repository issues or pull requests were returned by the GitHub inspection.
-- Latest commit observed during this audit: `14ad8aba3e2d45b5a600944c9f20bf3c64db7509` (2026-11-28), following the LoginAuth response-envelope implementation and two syntax/format correction commits.
+- Latest code-bearing commit during the initial audit pass: `14ad8aba3e2d45b5a600944c9f20bf3c64db7509` (2026-11-28), following the LoginAuth response-envelope implementation and syntax/format corrections. Subsequent main commits added Subagent 4's bearer-header validation parity fix (`963c3260`, `a97560a9`) and Subagent 1's manifest evidence (`2d3a6b03`).
 - Android source package: ChatGPT 1.2026.321, version code 2632129; supplied XAPK contains ten base-APK DEX files and 111 Valdi modules. This is static source evidence; no app/account/session code was run.
-- The last verified code-bearing CI snapshot before the latest LoginAuth envelope commits is `2ff068fe945fbbbf2b993dde479661ed3a1a0f63`. CI run **46110739799** passed its single current-Node-LTS job; the job executed `npm run check`, archive extraction and installed CommonJS/ESM smoke tests. The project session record reports **164/164 tests passing**. CodeQL run **46110739831** also completed successfully.
-- The later LoginAuth response-envelope implementation/test commits (`c960c55e`, `d58b5559`) and subsequent corrections (`c31cb126`, `14ad8aba`) are on current main. The current LoginAuth test file contains 32 test cases. The combined status endpoint returned no status entries for current main head `14ad8aba`, and no workflow runs were returned for that commit. **The new envelope decoder and corrected current-head test suite are therefore not verified by CI in this audit.** Do not report 166 total tests or a green current-head build without a real run.
+- LoginAuth envelope code-bearing main snapshot `14ad8aba3e2d45b5a600944c9f20bf3c64db7509` passed GitHub CI run **46162580007** and CodeQL run **46162580030**. The CI job's `npm run check` passed; the full suite reported **166 tests, 166 passed, 0 failed**. The archive build created `dist/ChatJS.tar.gz` with 19 module files; extraction and installed CommonJS/ESM smoke-test steps completed successfully. CodeQL's JavaScript analysis job completed successfully.
+- CI artifact **15269598067** (38,593 bytes) has digest `sha256:ddbf04e2152233da19793d763b1ffe0f9fc421e092f5512088386a242a1509b0`.
+- After that green CI, Subagent 4 changed `android-authenticated-request-policy.cjs` to reuse the source-backed Android bearer-token/account-ID validators and added a CRLF regression test. The latest code-bearing commit is now `a97560a9aa54f4f7c1a122d5cdaf4d0dd7dbe25c` (main head `2d3a6b03` adds manifest documentation). No CI workflow/status was returned for `a97560a9`; **the Subagent 4 request-policy change is not yet verified by CI**. The policy test file now has 14 cases. The 166-test green result applies to `14ad8aba`, not the latest code.
+- Subagent 3's audit documentation commits are also on main. No subsequent CI result for the final documentation head was observed.
 - A local checkout was not available. A shell clone attempt failed because github.com could not be resolved from the container. No local `npm run check` was claimed or fabricated.
 - GitHub inspection showed only `main`; no branch or worktree was created.
 
@@ -120,7 +122,7 @@ Do not implement the inspected native Play Integrity exchange as a public-build 
 
 ## Main coordinator's recommended next actions
 
-1. **Verify the current main head first.** Run the full `npm run check`, inspect the archive and installed ESM/CommonJS smoke tests, and run CodeQL for `14ad8aba`. Record actual total test count and any failures; do not rely on the preceding 164-test result.
+1. **Verify current main after Subagent 4's bearer validation change.** Run full `npm run check`, inspect the archive and installed ESM/CommonJS smoke tests, and run CodeQL on `a97560a9` / current main. The prior `14ad8aba` snapshot passed 166/166 tests, but does not include this later request-policy change.
 2. Finish the LoginAuth envelope audit: trace the six opaque payload serializers and the final fallback; validate root/payload errors, nullability and exact dispatch against generated serializers; add negative tests and verify CI.
 3. Resolve native auth provider injection and the legitimate host secure-signer/storage interface before attempting account login or DPoP refresh implementation.
 4. Implement a real source-backed authenticated transport/session slice, with explicit user intent, secret-safe storage, bounded cancellation and authorized account E2E tests.
@@ -134,3 +136,14 @@ Do not implement the inspected native Play Integrity exchange as a public-build 
 ## Audit limitations
 
 This is a static source/code/repository audit, not an Android device run or an authorized ChatGPT account test. No login, token refresh, Play Integrity exchange, private-key operation, user-data request or real upload was attempted. The audit does not claim that every Android module or every possible account-dependent feature has been exhaustively decoded. All unverified paths remain explicitly unknown or incomplete.
+
+
+## Audit addendum — parallel Android updates after initial review — 2026-11-28
+
+### Subagent 4 bearer-header validation parity
+
+Subagent 4 found that `buildAndroidAuthenticatedRequestHeaders` accepted any string token/account ID, while the Android `OAIBearerAPIService` constructor validates both with `isValidOAIBearerToken` and `isValidOAIAccountIdentifier`. The helper now reuses those source-backed predicates and rejects malformed values before constructing headers. The policy test file has 14 test cases, including a CRLF injection case. This remains a pure local helper, not an HTTP transport. Code change/test commits `963c3260` and `a97560a9` post-date the green 166-test CI on `14ad8aba`; current code requires fresh CI/CodeQL.
+
+### Subagent 1 Android package manifest investigation
+
+The new `ANDROID_MANIFEST_FINDINGS.md` statically records the public APK manifest: 87 permission declarations (43 Health Connect permissions), nine declared hardware/graphics features and 44 first-party application components (12 exported). These are package declarations, not proof of runtime grants, service calls, entitlement or ChatJS capability. The findings explicitly do not impose Android permissions or hardware assumptions on portable ChatJS.
