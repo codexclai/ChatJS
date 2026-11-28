@@ -1770,3 +1770,10 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Changed src/chatgpt/android-login-auth-response-schema.cjs and tests/android-login-auth-response-schema.test.cjs. Updated Android protocol findings, AI memory, continuation, TODO, open questions, capability matrix, root ChatJS.md, project-state.json and generated PROJECT_STATE.md.
 - Source hashes: base APK 312b1d843d326a4c92f52e34ba394b9899d16cb23b3411c851ffeba7ebce3d3c; classes5.dex 5b1bc8ed9e39e21ddd48a83643bab76c97ce28ca1d04534e26d9402296aabf44; classes6.dex 6723f9c8dbf64dc50ca5bec6a978e84b24ad99a669aa685827a5540f6675f371; classes7.dex e6ce742a0ed16dcd24d839631066e1826edf61c55336869599671e7fc424c46e. No Android method, password, account credential, key, AndroidKeyStore, Play Integrity or network operation was executed.
 - Implementation commit c3d73b69f8650b81b20e363f523a1013b332ed3b; test commit f05f4610477f2dbf4fbf23e275b96fb2c489d9bc. CI run 46109821521 and CodeQL run 46109821542 were created for the test commit; results and archive inspection will be appended after verification.
+
+
+### CI correction — Android LoginAuth password-step tests — 2026-11-28
+
+- CI run 46109821521 on test commit f05f4610477f2dbf4fbf23e275b96fb2c489d9bc ran the full 158-test suite: 156 passed and two new negative-path assertions failed.
+- Both failures were overly specific expected error-path labels. The shared nested Lql8 decoder correctly emits its own AndroidLoginAuthErrors label when malformed payload errors are validated; the parent password payload label is intentionally not propagated into that decoder. No validator output or source contract was wrong.
+- Corrected only the two expected regexes in tests/android-login-auth-response-schema.test.cjs in commit c6ae47611d54508f1eca43fddc238c906867f5a6. CodeQL run 46109821542 passed on the original code/test commit. CI for the corrected commit remains to be confirmed.
