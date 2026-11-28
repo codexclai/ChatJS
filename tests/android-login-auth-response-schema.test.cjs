@@ -5,7 +5,8 @@ const assert = require('node:assert/strict');
 const schema = require('../src/chatgpt/android-login-auth-response-schema.cjs');
 
 const {
-  decodeAndroidLoginAuthErrors,\n  decodeAndroidLoginAuthResponse,
+  decodeAndroidLoginAuthErrors,
+  decodeAndroidLoginAuthResponse,
   decodeAndroidLoginAuthAboutYouPayload,
   decodeAndroidLoginAuthEmailOtpPayload,
   decodeAndroidLoginAuthContactVerificationPayload,
