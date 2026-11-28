@@ -208,3 +208,10 @@ The JWS `iat` input is the request's `Instant.epochSecond` plus stored server-mi
 | Capability | Status | Evidence and limits |
 | --- | --- | --- |
 | Decode Android LoginAuth login_passkey payload Lqok0 | Implemented (private pure helper) | Validates optional nullable Lql8 errors, required non-null Lmds0 passkeyChallengeOption, and optional non-null Boolean fallbackAllowed; three focused tests. No passkey ceremony, assertion or authentication is implemented. |
+
+
+## Android LoginAuth workspace payload decoder — 2026-11-28
+
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
+| Decode Android LoginAuth workspace payload Lo5i1 and entries Lxn8 | Implemented (private pure helper) | Validates optional nullable errors/workspaces, required nullable id/kind, optional non-null name/reauthentication strings; three focused tests. No workspace selection or reauthentication workflow is inferred. |
