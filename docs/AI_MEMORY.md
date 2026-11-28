@@ -570,3 +570,8 @@ Verification boundary: CI run 46110739799 passed `npm run check` and 164 tests o
 ### Android bearer-header validation parity — 2026-11-28 — Subagent 4
 
 The Android `OAIBearerAPIService` constructor validates its access token using `isValidOAIBearerToken` and any defined account ID using `isValidOAIAccountIdentifier` before building authenticated headers. The ChatJS private bearer-header helper previously checked only primitive string types. Subagent 4 corrected this by reusing the already source-backed validators and added negative tests for empty/malformed tokens and account IDs. This is local policy validation only; no request, auth/session operation, credential refresh or network transport is implemented.
+
+
+### Audit verification and parallel follow-up correction — 2026-11-28
+
+The LoginAuth response-envelope decoder and tests passed CI run 46162580007 on code-bearing commit `14ad8aba`: 166/166 tests, `npm run check`, 19-file archive build, installed CommonJS/ESM smoke tests; CodeQL 46162580030 passed. After that green run, Subagent 4 changed `android-authenticated-request-policy.cjs` to apply source-backed bearer-token/account-ID syntax validation and added a CRLF regression case (commits `963c3260`, `a97560a9`). That latest code change has no verified CI result yet; do not transfer the 166-test result to the new code. Subagent 1 also recorded static Android manifest declarations in `ANDROID_MANIFEST_FINDINGS.md`; declarations are not granted permissions or ChatJS feature support.
