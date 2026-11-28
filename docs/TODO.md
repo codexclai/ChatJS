@@ -966,3 +966,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Trace ConversationStreamingService, ReadAloudPlaybackService and VoiceModeForegroundService lifecycle/callbacks against the identified Valdi client modules.
 - [ ] Decode exported activity intent filters and connect deep-link entry points to actual onboarding/auth request builders.
 - [ ] Trace personal-data permission consumers individually (contacts, calendar, SMS, telephony); do not infer use from manifest presence.
+
+
+## Android bearer-header validation parity — 2026-11-28 (Subagent 4)
+
+- [x] Align `buildAndroidAuthenticatedRequestHeaders` with the source-backed Android access-token and account-ID validation predicates.
+- [x] Add malformed token/account-ID and CRLF-injection regression coverage.
+- [x] Verify the complete suite on main: CI `46163168374`, 167/167 tests, archive build/extraction and installed CommonJS/ESM smoke tests; CodeQL `46163168380` passed.
+- [ ] Reconstruct the actual injected Android HTTP client transport only after request/response, redirects, timeout, cancellation, concurrency and resource semantics are fully traced from source.
+- [ ] Add authorized authenticated-session and conversation transport E2E tests only when real secure signer, credential and integrity-provider prerequisites exist.

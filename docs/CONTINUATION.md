@@ -1098,3 +1098,12 @@ Detailed source-backed record: `docs/ANDROID_MANIFEST_FINDINGS.md`. Cross-refere
 Important evidence boundary: manifest declarations and exported components do not prove runtime grants, active feature eligibility, user consent, a server route, or a complete workflow. Android host permissions are not to be copied into the portable Node.js core. The AD_ID declaration does not override the zero-telemetry/no-ads project rule. Android Work remains deferred; Codex Remote component names are not treated as Codex CLI evidence.
 
 Next: trace actual non-Work runtime permission consumers and lifecycle callbacks for camera/audio/location/screen/Health Connect, conversation streaming/read-aloud/voice services, deep-link onboarding, and personal-data integrations. Preserve explicit consent and keep each feature source-backed.
+
+
+## Subagent 4 handoff — bearer request policy validation — 2026-11-28
+
+The Android `OAIBearerAPIService` constructor validates the access token with `isValidOAIBearerToken` and any defined account ID with `isValidOAIAccountIdentifier`. The ChatJS private `buildAndroidAuthenticatedRequestHeaders` helper now reuses those exact validators rather than accepting any string. Regression coverage includes malformed/empty tokens and account IDs plus a CRLF-injection input.
+
+Verified on main snapshot `db92496d188790cdaaa3b151da3f9c5cabacbf68`: CI run `46163168374` passed `npm run check`, 167/167 tests, generated docs/link checks, archive build/extraction and installed CommonJS/ESM smoke tests; CodeQL run `46163168380` passed. Artifact `15270676314` and its 20-entry module archive were downloaded and inspected.
+
+This is a private pure policy helper, not an authenticated transport. The actual injected Android HTTP client implementation, network cancellation and redirect semantics remain unimplemented/unknown. Do not infer them from the bearer service wrapper or add guessed retries. Android Work, Windows/Desktop and Codex CLI remain deferred only for sequencing.

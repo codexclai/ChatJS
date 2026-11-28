@@ -575,3 +575,8 @@ The Android `OAIBearerAPIService` constructor validates its access token using `
 ### Audit verification and parallel follow-up correction — 2026-11-28
 
 The LoginAuth response-envelope decoder and tests passed CI run 46162580007 on code-bearing commit `14ad8aba`: 166/166 tests, `npm run check`, 19-file archive build, installed CommonJS/ESM smoke tests; CodeQL 46162580030 passed. After that green run, Subagent 4 changed `android-authenticated-request-policy.cjs` to apply source-backed bearer-token/account-ID syntax validation and added a CRLF regression case (commits `963c3260`, `a97560a9`). That latest code change has no verified CI result yet; do not transfer the 166-test result to the new code. Subagent 1 also recorded static Android manifest declarations in `ANDROID_MANIFEST_FINDINGS.md`; declarations are not granted permissions or ChatJS feature support.
+
+
+### Subagent 4 bearer validation verification — 2026-11-28
+
+The private Android bearer-header policy helper now applies the source-backed token/account ID validators and rejects malformed values before header construction. It includes CRLF-injection regression coverage. Main snapshot `db92496d188790cdaaa3b151da3f9c5cabacbf68` passed CI run `46163168374` (167/167 tests, `npm run check`, archive/extraction and installed CommonJS/ESM smoke tests) and CodeQL run `46163168380`. Artifact `15270676314` and its nested 20-entry `ChatJS.tar.gz` were inspected. This remains request policy only; the actual injected Android HTTP transport, auth/session runtime, DPoP signer and integrity provider remain unimplemented.

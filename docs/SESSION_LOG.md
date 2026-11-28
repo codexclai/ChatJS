@@ -1875,3 +1875,12 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Reviewed subsequent Subagent 4 commits `963c3260` and `a97560a9`: the private authenticated request header helper now reuses source-backed bearer-token and account-ID validators; the test suite adds malformed-value/CRLF coverage. This is a genuine local policy correction, not an HTTP/auth implementation. Current code head `a97560a9` has no verified CI/CodeQL result in the audit. The current policy test file has 14 test cases; do not assume the 166 total still applies.
 - Reviewed Subagent 1's `ANDROID_MANIFEST_FINDINGS.md`: static package census reports 87 permission declarations (43 Health Connect), nine feature declarations and 44 first-party components (12 exported). These are not proof of runtime grants or workflows.
 - Corrected the audit addendum and handoff: current actionable gate is to run full checks and CodeQL on the later bearer-header policy change and on the final documentation snapshot.
+
+
+### Subagent 4 verification follow-up — Android bearer request validation — 2026-11-28
+
+- Main snapshot `db92496d188790cdaaa3b151da3f9c5cabacbf68` passed GitHub Actions CI run `46163168374`: `npm run check`, all 167 tests (167 passed, 0 failed), generated project-state and Markdown-link checks, archive build, archive extraction, and installed CommonJS/ESM smoke tests all succeeded.
+- CodeQL run `46163168380` completed successfully.
+- Downloaded artifact `15270676314` (38,929 bytes; SHA-256 `0f813fbcf1bc8b1409e50e5e831c18903027eb887c6a15e71f327c7838a4183c`). Inspected nested `ChatJS.tar.gz` (38,774 bytes, 20 entries, SHA-256 `04543a0fd76fa7166adba844dcad209bfa0ce3e61b8b249ab6933e595508886f`) and confirmed the packaged bearer-policy module imports the existing Android validation helper.
+- The bearer-policy tests include valid header construction, optional account ID, exact JSON body/header behavior, Sheep-gateway version gate, bounded one-shot 401 policy, malformed token/account ID rejection and CRLF-injection rejection. This is policy-only; no HTTP request or credential/session operation ran.
+- A local `npm run check` was not run because the shell cannot resolve github.com and no local checkout exists; the full command and installed-package smoke tests passed in GitHub CI.
