@@ -1116,3 +1116,12 @@ A main-coordinator static pass over the supplied Android 1.2026.321 XAPK identif
 This is useful architectural evidence, not a transport implementation. The actual Android registration/injected implementation, callback semantics, backpressure units, upload-write boolean, response/body ownership, and network engine are still unknown. The packaged Ktor/OkHttp engine and traced OAuth Ktor client must not be conflated with the Valdi native bridge until wiring is proven.
 
 Detailed hashes, interfaces and limitations: ANDROID_CLIENT_PROTOCOL_FINDINGS.md, section “Android Valdi HTTP transport bridge”. Actionable follow-ups are in OPEN_QUESTIONS.md and TODO.md. Static inspection only; no app execution, account use or network request.
+
+
+## Handoff — JNI proxy trace refinement — 2026-11-28
+
+The additional DEX pass confirms that Java HTTPRequestManager is an abstract base; its default streaming method returns null. HTTPRequestManager$CppProxy wraps a native pointer and delegates ordinary and streaming methods to native JNI functions. The ARM64 library exports those exact functions and retains Valdi/Djinni HTTPRequestManager factory/proxy type names.
+
+This refines the previous transport-boundary report: the HTTP implementation is not visible as an ordinary Java class in the inspected DEX. The next source trace must cross the native manager/factory and the Valdi runtime's NativeHTTPClient injection. The presence of packaged Ktor/OkHttp types is not enough to equate that engine with this bridge.
+
+No app execution or network/account operation occurred. Exact hashes and the DEX method-level findings are appended to ANDROID_CLIENT_PROTOCOL_FINDINGS.md.

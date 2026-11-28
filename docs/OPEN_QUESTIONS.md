@@ -327,3 +327,10 @@ Open items:
 - [ ] Trace listener ordering, exactly-once terminal behavior, requestBytes(int) demand units, upload-ready/write boolean semantics, error mapping, and cancellation race behavior.
 - [ ] Determine whether the Valdi native HTTP bridge and the separately evidenced Ktor/OkHttp OAuth stack share an engine; do not assume they do.
 - [ ] Implement a Node.js transport only after those protocol contracts and the required legitimate host authentication/integrity prerequisites are established.
+
+
+### Follow-up — JNI bridge method trace
+
+The base DEX class HTTPRequestManager declares performRequest as abstract; its default performStreamingRequest body returns null. The concrete Java HTTPRequestManager$CppProxy stores/registers a native pointer and delegates its performRequest and performStreamingRequest overrides to native_performRequest/native_performStreamingRequest JNI functions. Matching JNI exports exist in the supplied ARM64 libopenai_xplat_export.so. This is a native-proxy boundary, not a Java transport implementation.
+
+The C++ library contains type-name strings for Valdi::HTTPRequestManagerModuleFactory, snap::valdi_core::HTTPRequestManager, and Djinni NativeHTTPRequestManager::JavaProxy. The exact runtime module registration, concrete Android network adapter, engine selection, request/response conversion and cancellation/backpressure semantics remain open. Do not assume that the Ktor/OkHttp classes are the engine behind this bridge.

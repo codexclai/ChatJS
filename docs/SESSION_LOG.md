@@ -1893,3 +1893,11 @@ Correlated the parser with `Lph8.invokeSuspend` in classes2.dex (method index 43
 - Confirmed this is a concrete native bridge contract but not the concrete network engine or runtime injection. The Valdi bridge must not be equated with the separately packaged Ktor/OkHttp engine or the injected Ktor OAuth client absent source-level wiring.
 - Recorded exact unknowns: runtime native-module registration, concrete HTTPRequestManager implementation, request/response schemas and byte ownership, callback order/terminal rules, backpressure and upload-write semantics, cancellation races, error mapping, and engine selection.
 - No ChatJS runtime code changed. No Android app was launched; no user account, credentials, key, integrity token or network endpoint was used. This is static package inspection.
+
+
+## 2026-11-28 — Main coordinator: Android HTTP JNI proxy refinement
+
+- Corrected the earlier generic description of HTTPRequestManager after disassembling the class-data and method bodies: base performRequest is abstract; base performStreamingRequest returns null; the CppProxy stores/registers a native reference and delegates both methods to JNI.
+- Verified the exact JNI export names for performRequest and performStreamingRequest in the supplied ARM64 shared library, alongside the retained Valdi HTTPRequestManagerModuleFactory and Djinni NativeHTTPRequestManager::JavaProxy type names.
+- This establishes the native bridge and narrows the Android client architecture, but still does not resolve the runtime native module injection, actual HTTP engine, request/response conversion, callback ordering, cancellation or backpressure semantics.
+- Updated the protocol findings, open questions, TODO and continuation. No runtime implementation was justified by this evidence. No Android app, account or network operation was performed.

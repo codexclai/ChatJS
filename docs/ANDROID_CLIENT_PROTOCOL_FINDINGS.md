@@ -2620,3 +2620,23 @@ The oai_authentication_session Valdi module imports valdi_http/src/HTTPClient an
 This is source reconstruction only. No Android app was installed or executed, no authenticated or guest account was used, and no HTTP request was sent. It does not implement a ChatJS transport. Do not infer a production transport from a native proxy interface, an OkHttp engine dependency, or a module name.
 
 The next transport investigation must trace: (1) who supplies NativeHTTPClient and NativeStreamingHTTPClient to the Valdi runtime; (2) the Android HTTPRequestManager concrete implementation and its delegate; (3) request/response field serialization and body ownership; (4) callback sequencing and cancellation; (5) requestBytes backpressure and upload write semantics; and (6) whether the OAuth Ktor client and Valdi HTTP bridge share any underlying engine or are separate instances.
+
+
+### JNI-backed HTTPRequestManager proxy trace — 2026-11-28
+
+The follow-up DEX pass disassembled the relevant class-data and method bodies, rather than relying only on symbol strings.
+
+- DEX class \`com.snapchat.client.valdi_core.HTTPRequestManager\` declares \`performRequest(HTTPRequest, HTTPRequestManagerCompletion):Cancelable\` as an abstract method (no DEX code body).
+- Its base-class \`performStreamingRequest(HTTPStreamingRequest, HTTPStreamingRequestListener):HTTPStreamingRequestHandle\` has a concrete body that returns null. This base method is not evidence of a functioning transport.
+- \`HTTPRequestManager$CppProxy\` extends that base class. Its constructor takes a native pointer (\`long\`), registers it through \`NativeObjectManager.register\`, and keeps a native-reference lifecycle guard.
+- The proxy's Java \`performRequest\` invokes its private JNI method \`native_performRequest\`; its Java \`performStreamingRequest\` invokes \`native_performStreamingRequest\`. Both return the native result handle/object. They do not construct sockets or implement an HTTP engine in Java.
+- The ARM64 shared library exports the exact corresponding JNI entry points:
+  - \`Java_com_snapchat_client_valdi_1core_HTTPRequestManager_00024CppProxy_native_1performRequest\`
+  - \`Java_com_snapchat_client_valdi_1core_HTTPRequestManager_00024CppProxy_native_1performStreamingRequest\`
+  - plus the previously listed streaming handle/listener and completion JNI callbacks.
+- The native library's retained type-name strings include \`Valdi::HTTPRequestManagerModuleFactory\`, \`snap::valdi_core::HTTPRequestManager\`, and Djinni's \`NativeHTTPRequestManager::JavaProxy\`. This supports the conclusion that the JNI layer bridges a native Valdi request-manager object and Java proxy objects. It does not reveal the final platform HTTP engine or runtime-selected implementation.
+- \`StreamingHTTPClientNativeModuleFactoryImpl.onLoadModule()\` instantiates an obfuscated factory/module class (\`Lv781\`). Its presence alone does not identify the concrete manager injected into the \`NativeHTTPClient\` module.
+
+Relevant exact hashes (recomputed from the supplied bundle): classes.dex \`ba3ad33e7341f5c63febca8cfe9c53697f0c58f30fcf919361c0d14f61d5f89c\`; classes2.dex \`aae7493e3716d33b94af3c707acfd201fe0e8bbf3a34e56ad06d0e67af0a490a\`; classes8.dex \`e678fd49b6bb24c674ce2f775bfb4c9c1bc2d2040cc7f280fa99800b77c35897\`; ARM64 \`libopenai_xplat_export.so\` \`938cee4f9e128d5a5ae72b15903242482d4a825b6cf68d6718be40aeb6fc965a\`.
+
+**Boundary correction:** the DEX proxy and JNI exports prove only the native bridge. They do not prove whether the native implementation uses OkHttp, another Java HTTP stack, a custom native engine, or a combination. No ChatJS network transport should be written from this evidence alone.

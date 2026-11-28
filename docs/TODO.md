@@ -985,3 +985,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [ ] Decode request/response object schemas, body ownership, listener ordering, terminal callback rules, streaming demand, upload write semantics, cancellation, and error mapping.
 - [ ] Reconcile the Valdi native HTTP bridge with the separately packaged Ktor/OkHttp OAuth transport without assuming they are the same client.
 - [ ] Implement and test the corresponding portable Node.js transport only after concrete transport behavior and legitimate auth/DPoP/integrity prerequisites are verified.
+
+
+### Android Valdi HTTP manager JNI follow-up — 2026-11-28
+
+- [x] Confirm the DEX base HTTPRequestManager.performRequest method is abstract and its default performStreamingRequest implementation returns null.
+- [x] Trace HTTPRequestManager$CppProxy construction/native-reference registration and both request methods delegating to native_performRequest/native_performStreamingRequest.
+- [x] Verify matching JNI exports and native retained type names for Valdi::HTTPRequestManagerModuleFactory, snap::valdi_core::HTTPRequestManager, and Djinni NativeHTTPRequestManager::JavaProxy.
+- [ ] Trace the actual provider supplied to Valdi's NativeHTTPClient import and the concrete Android network implementation behind the native manager.
+- [ ] Resolve transport stack choice, request/response conversion, cancellation/backpressure, upload write semantics, terminal callbacks and error mapping before implementing a Node.js transport.
