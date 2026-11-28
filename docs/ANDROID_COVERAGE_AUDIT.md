@@ -108,7 +108,7 @@ The LoginAuth outer decoder passed CI on code-bearing commit `14ad8aba` (166/166
 
 ### P1 — compatibility and verification
 
-- Current-main LoginAuth envelope changes have no verified CI result yet. The last passing full CI is for the preceding 164-test snapshot.
+- The LoginAuth envelope and its current 32-case schema test file were verified within CI run 46162580007 on `14ad8aba` (166/166 total tests); archive/consumer smoke tests and CodeQL 46162580030 also passed. The subsequent Subagent 4 bearer-header validation code/test change is the current unverified code delta.
 - ESM and CommonJS runtime smoke tests passed on the earlier snapshot. A dedicated TypeScript consumer compile matrix, especially CommonJS `import = require` usage, was not evidenced; the shared declaration file is ESM-style. Treat this as a compatibility test gap, not a confirmed runtime defect.
 - Generic SSE abort races a pending iterator read and then awaits iterator cleanup. Cooperative async iterators are covered, but arbitrary non-cooperative sources may not stop promptly; cancellation guarantees should be documented and tested against deliberately stalled iterators.
 - The DPoP signing-input helper currently fixes `htm` to `POST`. It must remain scoped to the traced POST use unless source evidence and API changes establish other method support.
