@@ -922,3 +922,12 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Reuse the traced Lmds0 required JsonObject/String decoder for the nested passkey options.
 - [x] Implement private pure decodeAndroidLoginAuthLoginPasskeyPayload and add three focused tests; LoginAuth schema helper suite now has 27 tests.
 - [ ] Trace passkey ceremony/state transition and authorized assertion submission separately; the nested response DTO is not a passkey authentication implementation.
+
+
+## Android LoginAuth workspace payload — 2026-11-28
+
+- [x] Trace workspace outer subtype Lp5i1, payload DTO Lo5i1 and generated serializer Lm5i1.
+- [x] Resolve workspaces lazy serializer Lmec1 selector 10 to ListSerializer(Lvn8.a), model Lxn8.
+- [x] Confirm Lxn8 required nullable id/kind strings and optional non-null name/reauthentication strings using generated descriptor and child serializer evidence.
+- [x] Implement private pure decodeAndroidLoginAuthWorkspacePayload and three focused tests; LoginAuth helper suite now has 30 focused tests.
+- [ ] Trace reauthentication semantics and workspace selection state/action independently from the DTO string field.
