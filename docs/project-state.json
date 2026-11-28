@@ -202,7 +202,8 @@
     "Decoded and implemented Android LoginAuth token_exchange Ltoa1: one required JSON code property backed by the non-null String serializer, with outer root Lql8 errors separate. Added two focused tests, bringing the response-schema suite to 20; no code-format/exchange behavior inferred.",
     "Decoded and implemented Android LoginAuth create_account_password Lwxw and login_password Lcpk0 payloads: generated serializers Luxw/Lapk0 prove optional nullable errors:Lql8? and loginMethods:List<Lmnk0>?; the two lazy collection factories independently resolve to ListSerializer(Lonk0.e). Added four focused tests, bringing the helper suite to 24; no password submission or authentication behavior inferred.",
     "Verified Android LoginAuth password-step decoder work on main: GitHub CI run 46109983768 passed npm run check and all 158 tests (0 failures), generated-state/link checks, 19-file ChatJS.tar.gz build, extraction and CommonJS/ESM installed-module smoke tests; CodeQL run 46109983762 also passed. Downloaded and inspected the CI archive (20 tar entries including root; 37,520-byte tarball, SHA-256 ebb47482d38e364556bd94f3a04af85d368a051921a17daf661023e09b6c4594).",
-    "Decoded Android LoginAuth login_passkey Lqok0 using generated serializer Look0: optional nullable errors:Lql8?, required non-null passkeyChallengeOption:Lmds0, optional non-null fallbackAllowed:Boolean, and the existing required JsonObject/String passkey option fields. Added a private pure decoder and three focused tests, bringing the helper suite to 27; no passkey ceremony or authentication inferred."
+    "Decoded Android LoginAuth login_passkey Lqok0 using generated serializer Look0: optional nullable errors:Lql8?, required non-null passkeyChallengeOption:Lmds0, optional non-null fallbackAllowed:Boolean, and the existing required JsonObject/String passkey option fields. Added a private pure decoder and three focused tests, bringing the helper suite to 27; no passkey ceremony or authentication inferred.",
+    "Verified Android LoginAuth password-step and login_passkey payload decoder work on main commit 5215204835a946a3a73ca23f4027d6335ca037d0: CI run 46110300232 passed npm run check and all 161 tests (0 failures), generated-state/link checks, the 19-file ChatJS.tar.gz build, extraction and CommonJS/ESM consumer smoke tests; CodeQL run 46110300260 passed. Downloaded and inspected artifact 15249810084 and nested tarball (37,686 bytes, 20 tar entries, SHA-256 b1e68a3af2b5e1d5053c6c15c8447fb36ffde9eb15c07ae03614f915956e7cc8)."
   ],
   "notImplemented": [
     "Actual ChatGPT client/service connection, request/response construction, payload serialization, transport/streaming, legitimate authentication/session lifecycle, and end-to-end ChatGPT behavior.",
@@ -298,7 +299,7 @@
     "The email OTP decoder accepts only the four exact Lqnk0 values observed in the generated enum. Lonk0 has an Llnk0 fallback, but acceptance and normalization of arbitrary unknown discriminator strings are not established.",
     "The Android integrity source result includes a failed-integrity HTTP header and continues the request pipeline with the buffered original body; server rejection/acceptance semantics are not inferred. ChatJS must not claim success or mimic this path without a real authorized Play Integrity provider."
   ],
-  "lastVerifiedCommit": "f709356bd716ba9daa2aa973e39f2400ef3950da",
-  "lastVerifiedCI": "46109983768",
-  "lastVerifiedCodeQL": "46109983762"
+  "lastVerifiedCommit": "5215204835a946a3a73ca23f4027d6335ca037d0",
+  "lastVerifiedCI": "46110300232",
+  "lastVerifiedCodeQL": "46110300260"
 }
