@@ -932,3 +932,15 @@ Never create branches or worktrees. Keep all repository work on main.
 - [x] Confirm Lxn8 required nullable id/kind strings and optional non-null name/reauthentication strings using generated descriptor and child serializer evidence.
 - [x] Implement private pure decodeAndroidLoginAuthWorkspacePayload and three focused tests; LoginAuth helper suite now has 30 focused tests.
 - [ ] Trace reauthentication semantics and workspace selection state/action independently from the DTO string field.
+
+
+## Subagent 3 audit follow-ups — 2026-11-28
+
+- [ ] Run full `npm run check`, inspect the distribution archive and installed ESM/CommonJS smoke tests, and run CodeQL on current main after the LoginAuth envelope and syntax-fix commits; record the actual current-head test count and outcome. The prior verified 164-test run is not evidence for the new code.
+- [ ] Complete LoginAuth payload coverage: trace the six opaque payload serializers and unresolved final fallback, then add source-backed validators/tests without guessing.
+- [ ] Resolve Android native authentication-provider injection and the legitimate host secure-signer/storage boundary before implementing account login, DPoP signing or token refresh.
+- [ ] Trace guest create/refresh and guest composer prepare/send HTTP routes independently of local SessionManager and LocationCookieInitializer paths.
+- [ ] Implement authenticated conversation transport, send/response decoding, streaming/resume and history synchronization with authorized E2E verification.
+- [ ] Implement real upload/download transfer, expiry, retries, cancellation and cleanup after the complete source contract is traced.
+- [ ] Continue the remaining Android non-Work areas (projects, instructions, context, memory/personalization, images, video, voice/audio, search, tools, connectors and plugins) with source-backed workflows and host/account prerequisites.
+- [ ] Add TypeScript ESM and CommonJS consumer compile fixtures; document/test cancellation against stalled non-cooperative async iterators.
