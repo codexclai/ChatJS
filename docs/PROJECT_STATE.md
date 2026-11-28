@@ -218,6 +218,7 @@
 198. Implemented private Android LoginAuth Lyl8 response-envelope decoding for the 15 explicit Lam8 discriminator labels; dispatches the nine nested payload validators already source-resolved and preserves six unresolved known payloads opaquely. Added focused envelope tests; no authentication or transport is implied.
 199. Verified Android LoginAuth envelope decoder on main commit 14ad8aba3e2d45b5a600944c9f20bf3c64db7509: GitHub CI run 46162580007 passed npm run check, tests, generated-state/link checks, archive build/extraction and installed CommonJS/ESM smoke tests; CodeQL run 46162580030 passed.
 200. ChatJS Subagent 1 independently reverified the supplied Android XAPK/base APK and decoded the base APK manifest: version 1.2026.321, min SDK 32, target/compile SDK 37, 87 permission declarations (43 Health Connect), nine uses-feature entries (eight named hardware features optional; GLES 3.0 required), and 44 com.openai.* components (12 exported). Added docs/ANDROID_MANIFEST_FINDINGS.md and cross-references; this is static package evidence, not runtime permission grants or working ChatJS capability.
+201. Aligned the private Android authenticated-request header policy helper with source-traced isValidOAIBearerToken and isValidOAIAccountIdentifier checks; added malformed/empty token and account-ID regression tests. This is local input validation only, not authenticated HTTP transport or session support.
 
 ## Not implemented
 
